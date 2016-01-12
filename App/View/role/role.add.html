@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>商标交易管理系统</title>
+    <link href="<?=StaticDir?>css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="<?=StaticDir?>js/jquery.min.js"></script>
+    <script type="text/javascript" src="<?=StaticDir?>js/jquery.form.js"></script>
+    <script type="text/javascript" src="<?=StaticDir?>js/layer/layer.js"></script>
+</head>
+<body>
+
+<script type="text/javascript" src="<?=StaticDir?>js/layer/layer.js"></script>
+<style type="text/css">
+    body{width:450px;min-width:450px}
+    .input{margin-top:10px;min-height:40px;text-align:center;background:transparent;border:1px solid #ccc}
+</style>
+<div class="rightinfo">
+    <form method="post" action="" name="formRole" id="formRole">
+        <div style="text-align:center;">
+            <input type="text" name="name" class="input" placeholder="请输入角色名" value="">
+        </div>
+            <br />
+            <div style="width:100%;height:250px">
+            <? foreach ($authList as $k => $v) {?>
+            <span style="width:140px;height:100px;text-align:center;float:left;margin:10 0 10 0;">
+            <div style="text-align:left;"><?=$v['label']?></div>            
+            <ul style="text-align:left;padding-left:20px;">
+                <? if( !empty($v['child']) ){ 
+                   foreach ($v['child'] as $ky => $val) {
+                ?>
+                <li>
+                <input type="checkbox" name="role[]" class="checklist" value="<?=$ky?>"  />&nbsp;<?=$val['label']?>&nbsp;&nbsp;
+                </li>
+                <?  }
+                }?>
+            </ul>
+            </span>
+            <? //if ($k % 3 == 0) echo '<span style="width:140px;height:200px;text-align:center;float:left;"></span>'; ?>
+            <?}?>
+            </div>
+            <br />
+            <div  style="text-align:center;">
+                <input name="button" type="button" onclick="sub()" class="searchButt" style="margin-left:0;" value="确定"/>
+            </div>
+    </form>
+</div>
+<script type="text/javascript">    
+    function sub(){
+        var data = $("#formRole").serialize();
+        if ( $(".input").val() == '' ){
+            layer.msg('角色名为空或权限未选择', {
+                icon: 2,
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        $.ajax({
+            type : 'post',
+            url  : '/role/addRole/',
+            data : data,
+            dataType : 'json'
+        }).done(function(data){
+            if(data == 1) {
+                layer.msg('操作成功', {
+                    icon: 1,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    parent.reloadAll();
+                });
+            } else if(data == 3) {
+                layer.msg('角色名已存在', {
+                    icon: 2,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            } else if(data == 2) {
+                layer.msg('角色名为空或权限未选择', {
+                    icon: 2,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            } else {
+                layer.msg('操作失败', {
+                    icon: 2,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        }).error(function(error){
+            layer.msg('操作失败', {
+                icon: 2,
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+
+

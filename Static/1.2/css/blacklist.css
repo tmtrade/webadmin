@@ -1,0 +1,187 @@
+label{
+    font-weight: normal;
+}
+.wrap{
+    width: 80%;
+    margin:0 auto;
+}
+.wrap-top{
+    height: 50px;
+    position: relative;
+}
+.wrap-top h4{
+    width: 150px;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 30px;
+    font-family: "Simsun";
+    display: inline-block;
+    position: relative;
+    background: #fff;
+    z-index: 1000;
+}
+.wrap-top>span{
+    position: absolute;
+    border: 1px dashed #dadada;
+    width: 100%;
+    top: 25px;
+    left: 0;
+}
+.mj-ztBar{
+    padding: 5px 20px;
+    background: #f5f5f5;
+}
+.mj-ztBl{
+    display: inline-block;
+}
+.mj-ztBl span{
+    padding-right: 10px;
+    font-size: 12px;
+    color: #666;
+    border-right: solid 1px #8A8A8A;
+}
+.yellow{
+    color: #ff9933;
+}
+.blue{
+    color: #006633;
+}
+.red{
+    color: #f00;
+}
+
+.mj-btables{
+
+}
+.mj-btables table{
+    width: 100%;
+    font-size: 12px;
+    color: #666;
+}
+.mj-btables thead tr{
+    background: #f5f5f5;
+}
+.mj-btables td{
+    padding: 10px;
+    text-align: center;
+    border: solid 1px #ddd;
+}
+.mj-btables td input{
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.mj-deiBtns a, .mj-liBtns {
+    display: inline-block;
+    margin: 10px 0;
+    width: 100px;
+    height: 35px;
+    color: #fff;
+    background: #fc6f28;
+    text-align: center;
+    line-height: 35px;
+    border-radius: 3px;
+}
+.mj-deiBtns a.mj-abgcg, .mj-infoM li a.mj-abgcg {
+    background: #878787;
+}
+
+/*联系电话*/
+.mj-phoneList{
+    border: solid 1px #ddd;
+    background: #f5f5f5;
+}
+.mj-phoneList ul{
+    margin: 20px 50px;
+}
+.mj-phoneList li{
+    float: left;
+    margin: 0 50px 20px 0;
+}
+
+.mj-phoneList li label{
+    display: inline-block;
+    width: 255px;
+    height: 65px;
+    line-height: 65px;
+    text-align: center;
+    font-size: 20px;
+    color: #666;
+    background: #fff;
+    outline: none;
+    border: solid 1px #ddd;
+}
+
+.mj-ulTab{
+    margin-bottom: 15px;
+}
+
+.mj-ulTab li{
+    float: left;
+    width: 150px;
+    height: 50px;
+    background: #fff;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+    line-height: 50px;
+    border: solid 1px #ddd;
+    cursor: pointer;
+}
+.mj-ulTab li.on{
+    background: #fc6f28;
+    color: #fff;
+}
+
+/*弹出层*/
+.mj-phM{
+    display: none;
+    position: relative;
+    width: 500px;
+    padding: 30px;
+    background: #fff;
+}
+.mj-phM h5{
+    font-size: 16px;
+    color: #444;
+    text-align: center;
+}
+.mj-phM p{
+    margin-top: 15px;
+    font-size: 12px;
+    color: #666;
+}
+.mj-phM ul{
+    margin: 25px 0 0 70px;
+}
+.mj-phM li{
+    margin-bottom: 10px;
+}
+.mj-phM li label{
+    font-size: 12px;
+    color: #666;
+    vertical-align: middle;
+}
+.mj-phM li input[type=text]{
+    padding-left: 15px;
+    width: 203px;
+    height: 35px;
+    line-height: 35px;
+    outline: none;
+}
+.mj-phM li span{
+    display: block;
+    margin: 5px 0 0 50px;
+    font-size: 12px;
+    color: #fc6f28;
+}
+.mj-close {
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 16px;
+    height: 16px;
+    background: url(../images/mj-icon23.png) no-repeat;
+    cursor: pointer;
+}

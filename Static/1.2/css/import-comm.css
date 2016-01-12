@@ -1,0 +1,60 @@
+
+/*重置body*/
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+    margin: 0;
+    padding: 0;
+}
+ol, ul {
+    list-style: none;
+}
+ins, a {
+    text-decoration: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+em{
+    font-style: normal;
+}
+dt{
+    font-weight: normal;
+}
+
+/*清除浮动*/
+
+.f-clearfix:after {
+    clear: both;
+    display: block;
+    height: 0;
+    font-size: 0;
+    content: ".";
+    visibility: hidden;
+}
+.f-clearfix{
+    zoom: 1;
+}
+.f-hidden{
+    overflow: hidden;
+}
+.f-dn{
+    display: none;
+}
+
+.w1100{
+    width: 1100px;
+    margin: 0 auto;
+}
+.ms-pt50{
+    padding-top: 50px;
+}
+.ms-pt60{
+    padding-bottom: 50px;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+

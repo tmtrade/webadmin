@@ -1,0 +1,122 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+
+<!--出售信息弹层-->
+<div class="mj-infoM">
+    <span class="ms-close mj-close"></span>
+<form name="setContact" id="setContact" >
+    <input type="hidden" name="saleId" id="saleId" value="<?=$saleId?>">
+    <input type="hidden" name="cId" id="cId" value="<?=$cId?>">
+    <? if ( empty($contact) ) {?>
+    <ul>
+        <li><label>序号：</label><em>-</em></li>
+        <li><label>出售时间：</label><input type="text" name="date" readonly onclick="laydate()" /><em>可不填，默认为当天</em></li>
+        <li><label>选择渠道：</label>
+            <select name="source"> 
+            <? foreach ($saleSource as $k => $v) {?>
+                <option value="<?=$k?>"><?=$v?></option>
+            <? } ?>
+            </select>
+        </li>
+        <li><label>选择销售类型：</label>
+            <select name="saleType"> 
+            <? foreach ($saleType as $k => $v) {?>
+                <option value="<?=$k?>"><?=$v?></option>
+            <? } ?>
+            </select>
+        </li>
+        <li><label>联系人姓名：</label><input type="text" name="name" /></li>
+        <li><label>联系电话：</label><input type="text" name="phone" /></li>
+        <li><label>底价：</label><input type="text" name="price" /></li>
+        <li><label>顾问部门：</label><input type="text" name="department" /></li>
+        <li><label>顾问：</label><input type="text" name="advisor" /></li>
+        <li><label>出售价格审核：</label><em>同意</em></li>
+        <li><label>操作：</label>
+            <a href="javascript:void(0);" class="mj-liBtns" onclick="opContact();">确定</a>
+            <a href="javascript:void(0);" class="mj-liBtns mj-abgcg" onclick="closeAll();">取消</a>
+        </li>
+    </ul>
+    <?}else{?>
+    <ul>
+        <li><label>序号：</label><em><?=$cId?></em></li>
+        <li><label>出售时间：</label><em><?=date('Y-m-d',$contact['date']);?></em></li>
+        <li><label>选择渠道：</label>
+            <select name="source"> 
+            <? foreach ($saleSource as $k => $v) {?>
+                <option value="<?=$k?>" <?if($contact['source']==$k){echo 'selected';} ?>><?=$v?></option>
+            <? } ?>
+            </select>
+        </li>
+        <li><label>选择销售类型：</label>
+            <select name="saleType"> 
+            <? foreach ($saleType as $k => $v) {?>
+                <option value="<?=$k?>" <?if($contact['saleType']==$k){echo 'selected';} ?>><?=$v?></option>
+            <? } ?>
+            </select>
+        </li>
+        <li><label>联系人姓名：</label><input type="text" name="name" value="<?=$contact['name']?>" /></li>
+        <li><label>联系电话：</label><input type="text" name="phone" value="<?=$contact['phone']?>" /></li>
+        <li><label>底价：</label><input type="text" name="price" value="<?=$contact['price']?>" /></li>
+        <li><label>顾问部门：</label><input type="text" name="department" value="<?=$contact['department']?>" /></li>
+        <li><label>顾问：</label><input type="text" name="advisor" value="<?=$contact['advisor']?>" /></li>
+        <li><label>出售价格审核：</label><em>同意
+            <!-- <select name="isVerify">
+                <option value="1" <?if($contact['isVerify']==1){echo 'selected';}?> >同意</option>
+                <option value="2" <?if($contact['isVerify']==2){echo 'selected';}?> >不同意</option>
+            </select></li> -->
+            </em>
+        <li><label>操作：</label>
+            <a href="javascript:void(0);" class="mj-liBtns" onclick="opContact();">确定</a>
+            <a href="javascript:void(0);" class="mj-liBtns mj-abgcg" onclick="closeAll();">取消</a>
+        </li>
+    </ul>
+
+    <?}?>
+</form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".mj-infoM").show();
+        $(".mj-close").on("click",function(){
+            closeAll();
+        });
+    });
+    function closeAll()
+    {
+        parent.layer.closeAll();
+    }
+    function opContact()
+    {
+        var data = $("#setContact").serialize();
+        $.ajax({
+            type : 'post',
+            url  : '/internal/setContact/',
+            data : data,
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        parent.window.location.reload();
+                    });
+                }else{
+                    layer.msg(data.msg, {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

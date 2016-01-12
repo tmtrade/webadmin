@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>商标交易管理系统</title>
+    <link href="<?=StaticDir?>css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="<?=StaticDir?>js/jquery.min.js"></script>
+    <script type="text/javascript" src="<?=StaticDir?>js/jquery.form.js"></script>
+    <script type="text/javascript" src="<?=StaticDir?>js/layer/layer.js"></script>
+</head>
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>系统配置</li>
+        <li>角色管理</li>
+    </ul>
+</div>
+<div class="rightinfo">
+    <form method="post" action="/role/index/" name="form1" id="form1">
+    <table class="table_search" align="center" style="width:auto;">
+        <tr>
+            <td>角色名：<input type="text" name="name" class="input" value="<?php if(isset($name)){echo $name;} ?>"/>
+			<input name="button" type="button" onclick="submit();" class="searchButt" value="搜索"/>
+             </td>
+        </tr>
+    </table>
+    </form>
+
+    <div class="tools">
+        <ul class="toolsearch">
+            <li class="click" onclick="addRole()"><span><img src="<?=StaticDir?>images/t01.png" /></span>新增</li>
+        </ul>
+    </div>
+    <table class="tablelist">
+        <thead>
+        <tr>
+            <th nowrap>角色名</th>
+            <th nowrap>权限</th>
+            <th nowrap>状态</th>
+            <th nowrap>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?
+        if( !empty($data['rows']) ){
+            foreach($data['rows'] as $t){?>
+        <tr>
+            <td width="25%"><?=$t['name'] ?></td>
+            <td><?=$t['roleStr']?></td>
+            <td width="15%"><? if($t['isUse']==1){echo '启用';}else{echo '禁用';} ?></td>
+            <td width="15%">
+                <a href="javascript:;" onclick="setEdit(<?=$t['id']?>)" class="tablelink">编辑</a>&nbsp;
+				<? if ($t['id'] !=1  && $t['id']!=2){ ?>
+                <a href="javascript:;" onclick="setUse(<?=$t['id']?>,<?=$t['isUse']?>)" class="tablelink"><? if($t['isUse']==1){echo '禁用';}else{echo '启用';} ?></a> 
+				<? } ?>
+            </td>
+        </tr>
+        <? }
+        }else{ ?>
+        <tr>
+            <td colspan="4">暂无数据</td>
+        </tr>
+        <? } ?>
+        </tbody>
+    </table>
+    <div id="page" align="center"><?=$pageBar?></div>
+
+</div>
+<script>
+    var _where = "<?=$where?>";
+    var _page = "<?=$page?>";
+    function setUse(id, use){
+        $.ajax({
+            type : 'post',
+            url  : '/role/setUse/',
+            data : {'id':id,'use':use},
+            dataType : 'json'
+        }).done(function(data){
+            if(data == 1) {
+                layer.msg('操作成功', {
+                    icon: 1,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    reloadAll();
+                });
+            } else {
+                layer.msg('操作失败', {
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        }).error(function(error){
+            layer.msg('操作失败', {
+                icon: 2,
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        });
+    }
+
+    function setEdit(id){
+        //iframe层-父子操作
+        layer.open({
+            title: '设置角色',
+            type: 2,
+            area: ['500px', '400px'],
+            fix: false, //不固定
+            maxmin: true,
+            content: '/role/edit/?id='+id
+        }); 
+    }
+
+    function addRole(){
+        //iframe层-父子操作
+        layer.open({
+            title: '开通账号',
+            type: 2,
+            area: ['500px', '450px'],
+            fix: false, //不固定
+            maxmin: true,
+            content: '/role/add/',
+        }); 
+    }
+
+    function reloadAll(){
+        //window.parent.frames.location.reload();
+        window.location = '/role/index/?page='+_page+'&'+_where;
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+
+

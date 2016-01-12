@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>信息管理系统界面</title>
+<link href="<?=StaticDir?>css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" src="<?=StaticDir?>js/jquery.min.js"></script>
+<script type="text/javascript">
+$(function(){	
+	//顶部导航切换
+	$(".nav li a").click(function(){
+		$(".nav li a.selected").removeClass("selected")
+		$(this).addClass("selected");
+	})
+
+    setInterval("getRemind()",10000);
+})
+
+function getRemind(){
+    $.ajax({
+        type: "get",
+        url: "/remind/countRemind/",
+        dataType: "json",
+        success: function(data){
+            if (data.count > 0){
+                $("#mess").html('您有未处理的提醒');
+                $("#mess").slideUp('slow');
+                $("#count").slideUp('slow');
+                //setTimeout(function(){
+                    $("#mess").slideDown('slow');
+                    $("#count").slideDown('slow', function(){
+                        $("#count").html(data.count);}
+                        );
+                    
+                //},500);
+            }else{
+                $("#mess").html('');
+                if ( $("#count").text() != 0 ){
+                    $("#count").slideUp('slow');
+                    $("#count").html(0);
+                    $("#count").slideDown('slow');
+                }else{
+                    $("#count").html(0);
+                }
+            }
+        }
+    });
+    
+}
+
+function logout()
+{
+    if ( parent['goLogout'] ){
+        parent.goLogout();
+    }
+}
+
+</script>
+</head>
+<body style="background:url(<?=StaticDir?>images/topbg.gif) repeat-x;">
+    <div class="topleft">
+        <a href="javascript:;"><img src="<?=StaticDir?>images/logo.png" title="系统首页" /></a>
+    </div>   
+    <div class="topright">    
+        <ul >
+             <!-- <li><span><img src="<?=StaticDir?>images/help.png" title="帮助"  class="helpimg"/></span><a href="javascript:;void(0)">帮助</a></li> -->
+            <li><a href="/index/right" target="rightFrame">首页</a></li>
+            <li><a href="javascript:;void(0)" onclick="logout();" target="_top">退出</a></li>
+        </ul>
+        <div class="user">
+            <span><?=$username?></span>
+            <i id='mess'></i>
+            <b><a href="/remind/index/" style="color:#FFF" target="rightFrame" id='count'><?=$count?></a></b>
+        </ul>
+        </div>    
+    </div>
+</body>
+</html>

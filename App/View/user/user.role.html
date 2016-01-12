@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>商标交易管理系统</title>
+    <link href="<?=StaticDir?>css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="<?=StaticDir?>js/jquery.min.js"></script>
+    <script type="text/javascript" src="<?=StaticDir?>js/jquery.form.js"></script>
+    <script type="text/javascript" src="<?=StaticDir?>js/layer/layer.js"></script>
+</head>
+<body>
+
+<script type="text/javascript" src="<?=StaticDir?>js/layer/layer.js"></script>
+<style type="text/css">
+    body{width:200px;min-width:200px}
+</style>
+<div class="rightinfo">
+    <form method="post" action="" name="formRole" id="formRole">
+    <input type="hidden" name="id" value="<?=$id?>" />
+            <br />
+            <ul >
+            <? foreach ($role as $k => $v) {?>
+                <li style="padding-left:40px;"><input type="radio" name="roleId" value="<?=$k?>" <?if(!$roleId && $k==1) echo 'checked'?> <?if(!empty($roleId) && $roleId==$k) echo 'checked'?> />&nbsp;<?=$v?>&nbsp;&nbsp;</li>
+            <?}?>
+            </ul>
+            <br />
+            <div  style="text-align:center;">
+                <input name="button" type="button" onclick="sub()" class="searchButt" style="margin-left:0;" value="确定"/>
+            </div>
+    </form>
+</div>
+<script type="text/javascript">    
+    function sub(){
+        var data = $("#formRole").serialize();
+        $.ajax({
+            type : 'post',
+            url  : '/user/setRole/',
+            data : data,
+            dataType : 'json'
+        }).done(function(data){
+            if(data == 1) {
+                layer.msg('操作成功', {
+                    icon: 1,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    parent.reloadAll();
+                });
+            } else {
+                layer.msg('操作失败', {
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        }).error(function(error){
+            layer.msg('操作失败', {
+                icon: 2,
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+
+

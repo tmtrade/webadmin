@@ -1,0 +1,521 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+<script charset="utf-8" src="<?=StaticDir?>/editor/kindeditor.js"></script>
+<script charset="utf-8" src="<?=StaticDir?>/editor/lang/zh_CN.js"></script>
+<script>
+        KindEditor.ready(function(K) {
+                window.editor = K.create('#editor_id');
+        });
+		
+		 KindEditor.ready(function(K) {
+                window.editor1 = K.create('#editor_id1');
+        });
+</script>
+
+<div class="wrap">
+<input type="hidden" name="saleId" id="saleId" value="<?=$sale['id']?>">
+    <div class="wrap-top">
+        <h4>编辑商品</h4><span></span>
+    </div>
+    <div class="mj-ztBar f-clearfix">
+        <div class="mj-ztBl">
+            <span>商品状态</span>
+            <em class="blue"><?=$saleStatus[$sale['status']]?></em>
+            <?if(!$isBlack){?>
+                <?if($sale['status']==1){?>
+                <a href="javascript:;" class="btn-warning" onclick="doUpDown('down', <?=$sale['id']?>);">下架</a>
+                <?}elseif($sale['status']==2){?>
+                <a href="javascript:;" class="btn-success" onclick="doUpDown('up', <?=$sale['id']?>);">上架</a>
+                <?}?>
+            <?}?>
+        </div>
+        <?if($isBlack){?>
+        <span class="mj-ztBr">当前商品已在黑名单内，如需编辑请先 
+        <a href="javascript:void(0);" onclick="outBlack(<?=$sale['id']?>,'<?=$sale['number']?>');">剔除黑名单</a></span>
+        <?}else{?>
+        <a href="javascript:void(0);" onclick="setBlack(<?=$sale['id']?>,'<?=$sale['number']?>');" class="mj-ztBr">加入黑名单</a>
+        <?}?>
+    </div>
+    <div class="mj-detaImg">
+        <div class="mj-deiT">
+            <span>商标基本信息</span>
+            <a target="_blank" href="http://g.chaofan.wang/guanjia/Member/tmView?&id=<?=$sale['number']?>&tmclass=<?=substr($sale['class'],0,2)?>">去商标管家查看详细信息）</a>
+        </div>
+        <div class="mj-deiB f-clearfix">
+            <label><img src="<?=StaticDir?>1.2/images/mj-img2.jpg" alt=""/></label>
+            <table>
+                <tbody>
+                <tr>
+                    <td>商标名称：<?=$sale['name']?></td>
+                    <td>商标号：<?=$sale['number']?></td>
+                    <td>申请人：<?=$tminfo['proName']?></td>
+                    <td>商标状态：<?=$tminfo['status']?></td>
+                </tr>
+                <tr>
+                    <td>区    域：国内</td>
+                    <td>有效期至：2015-15-15</td>
+                    <td colspan="2">类别：<?=$sale['class']?>类</td>
+                </tr>
+                <tr>
+                    <td colspan="4">使用商品：<?=$tminfo['goods']?></td>
+                </tr>
+                <tr>
+                    <td colspan="4">群    组：<?=$sale['group']?></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<?if(!$isBlack){?>
+    <div class="mj-sellT">
+        <table>
+            <thead>
+            <tr>
+                <td colspan="10">出售信息</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>序号</td>
+                <td>出售时间</td>
+                <td>来源渠道</td>
+                <td>联系人</td>
+                <td>联系电话</td>
+                <td>底价(元)</td>
+                <td>销售类型</td>
+                <td>顾问-部门</td>
+                <td>出售价格审核</td>
+                <td>操作</td>
+            </tr>
+    <?foreach ($sale['contact'] as $ky => $vl) { ?>
+            <tr>
+                <td><?=$vl['id']?></td>
+                <td><?=date('Y-m-d', $vl['date'])?></td>
+                <td><?=$saleSource[$vl['source']]?></td>
+                <td><label class="mj-laTipa">认</label> <?=$vl['name']?></td>
+                <td><?=$vl['phone']?></td>
+                <td><?=$vl['price']?></td>
+                <td><?=$saleType[$vl['saleType']]?></td>
+                <td><?=$vl['advisor'].'-'.$vl['department']?></td>
+                <td><em class="blue"><?if($vl['isVerify']==1){?>已审核<?}else{?>未审核<?}?></em></td>
+                <td>
+                    <a href="">删除</a>
+                    <a href="javascript:void(0);" onclick="setContact(<?=$sale['id']?>, <?=$vl['id']?>);">编辑</a>
+                    <a href="">生成报价</a>
+                </td>
+            </tr>
+    <?}?>
+            </tbody>
+        </table>
+    </div>
+<?}?>
+    <div class="mj-deiBlist">
+<?if(!$isBlack){?>
+        <div class="mj-deiBtns">
+            <a href="javascript:void(0);" id="mj-deib">新增出售信息</a>
+        </div>
+        <table class="mj-table">
+            <thead>
+            <tr>
+                <td>出售信息</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <input type="checkbox" id="tdi1"/>
+                    <label for="tdi1">可出售</label>
+
+                    <label class="mj-lefts">可出售：</label>
+                    <select>
+                        <option>定价销售</option>
+                        <option>议价销售</option>
+                    </select>
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="tdi2"/>
+                    <label for="tdi2">可授权</label>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="mj-deiBtns">
+            <a href="javascript:void(0);">确定价格信息</a>
+            <a href="javascript:void(0);" class="mj-abgcg">取消</a>
+        </div>
+        <div class="mj-thBar">
+            <div class="mj-thbT">
+                <input type="checkbox" id="thb"/>
+                <label for="thb">商品包装信息</label>
+            </div>
+            <dl>
+                <dd>
+                    <label>商标类型：</label>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="le1"/>
+                        <label for="le1">中文</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="le2"/>
+                        <label for="le2">英文</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="le3"/>
+                        <label for="le3">图形</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="le4"/>
+                        <label for="le4">中+英</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="le5"/>
+                        <label for="le5">中+图</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="le6"/>
+                        <label for="le6">英+图</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="le7"/>
+                        <label for="le7">中+英+图</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="le8"/>
+                        <label for="le8">数字</label>
+                    </div>
+                </dd>
+                <dd>
+                    <label>商标数字：</label>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="va1"/>
+                        <label for="va1">一个字母或中文</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="va2"/>
+                        <label for="va2">两个字母或中文</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="va3"/>
+                        <label for="va3">三个字母或中文</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="va4"/>
+                        <label for="va4">四个字母或中文</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="va5"/>
+                        <label for="va5">五个字母或中文</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="va6"/>
+                        <label for="va6">五个以上字母或中文</label>
+                    </div>
+                </dd>
+                <dd>
+                    <label>商标标签：</label>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="bq1"/>
+                        <label for="bq1">精品</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="bq2"/>
+                        <label for="bq2">特价</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="bq3"/>
+                        <label for="bq3">潜力</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="bq4"/>
+                        <label for="bq4">特色</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="bq5"/>
+                        <label for="bq5">紧急</label>
+                    </div>
+                </dd>
+                <dd>
+                    <label>平台入驻：</label>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="pt0"/>
+                        <label for="pt0">自营</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="pt1"/>
+                        <label for="pt1">天猫</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="pt2"/>
+                        <label for="pt2">京东</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="pt3"/>
+                        <label for="pt3">亚马逊</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="pt4"/>
+                        <label for="pt4">1号店</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="pt5"/>
+                        <label for="pt5">美丽说</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="pt6"/>
+                        <label for="pt6">聚美优品</label>
+                    </div>
+                    <div class="mj-checkbox">
+                        <input type="checkbox" id="pt7"/>
+                        <label for="pt7">大型超市</label>
+                    </div>
+                </dd>
+                <dd><label>价值分析：</label><textarea placeholder="请用一句话表达，限100个汉字内"></textarea></dd>
+                <dd><label>商标介绍：</label><textarea></textarea></dd>
+                <dd>
+                    <label>展示电话：</label>
+                    <select>
+                        <option>13412121451</option>
+                        <option>13412121451</option>
+                        <option>13412121451</option>
+                    </select>
+                </dd>
+            </dl>
+        </div>
+        <div class="mj-becen">
+            <p>备注</p>
+            <div class="mj-sr">
+                <textarea></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="mj-deiBtns">
+        <a href="javascript:void(0);">确定价格信息</a>
+        <a href="javascript:void(0);" class="mj-abgcg">取消</a>
+    </div>
+<?}?>
+    <table class="mj-tables">
+        <tbody>
+        <tr>
+            <td>操作记录</td>
+        </tr>
+    <?foreach ($log as $v) { ?>
+        <tr>
+            <td><?if($v['roleId']==0){echo "用户";}else{echo $v['roleName'];}?>&nbsp;&nbsp;&nbsp;&nbsp;
+            <?=$v['name']?>&nbsp;&nbsp; 于&nbsp;&nbsp; <?=date("Y-m-d h:i:s",$v['date'])?> 
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$v['typeName']?>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注(原因)：<?=$v['memo']?></td>
+        </tr>
+    <?}?>
+        </tbody>
+    </table>
+</div>
+
+
+<script type="text/javascript">
+    $(function(){
+        $("#mj-deib").click(function(){
+            var id = $("#saleId").val();
+            setContact(id, 0);
+        });
+    });
+    function setContact(saleId, cId)
+    {
+        if ( saleId <= 0 || saleId == '' ) return false;
+        var url = '?saleId='+saleId+'&cId='+cId;
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['501px', '485px'],
+
+            content: '/internal/contact/'+url,
+        });
+    }
+    function outBlack(id, number)
+    {
+        if ( $.trim(number) == '' || $.trim(id) == '' ){
+            layer.msg('操作失败，请重试。', {
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        layer.confirm('确认要从黑名单中删除？', {
+            btn: ['对滴','算了'] //按钮
+        }, function(){
+            $.ajax({
+                type : 'post',
+                url  : '/internal/outBlack/',
+                data : {'id':id,'number':number},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg('操作失败，请重试。', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            });
+        });
+    }
+    function setBlack(id, number)
+    {
+        if ( $.trim(number) == '' || $.trim(id) == '' ){
+            layer.msg('操作失败，请重试。', {
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        layer.confirm('注意：如商品在销售中，会自动下架商品！！！', {
+            btn: ['要得','算了'] //按钮
+        }, function(){
+            layer.prompt({
+                formType: 2,
+                value: '',
+                maxlength: 100,
+                title: '请输入添加黑名单的原因'
+            }, function(value, index, elem){
+                if ( $.trim(value) == ''){
+                    layer.tips('请输入添加黑名单的原因',elem);
+                    return false;
+                }else{
+                    _setBlack(id, number, value);
+                }
+            });
+        });
+        
+
+    }
+    function _setBlack(id, number, reason)
+    {
+        $.ajax({
+            type : 'post',
+            url  : '/internal/setBlack/',
+            data : {'id':id,'number':number,'reason':reason},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请重试。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+
+    function doUpDown(status, id)
+    {
+        if(status != 'up' && status != 'down'){
+            return false;
+        }
+        if ( status == 'down' ){
+            layer.prompt({
+                formType: 2,
+                value: '',
+                maxlength: 100,
+                title: '请输入下架原因'
+            }, function(value, index, elem){
+                if ( $.trim(value) == ''){
+                    layer.tips('请输入下架原因',elem);
+                    return false;
+                }else{
+                    _doDown(id, value);
+                }
+            });
+        }else if (  status == 'up' ){
+            layer.confirm('确认要上架吗？请确认相关数据已审核成功！', {
+                btn: ['确认','取消'] //按钮
+            }, function(){
+                _doUp(id);
+            });
+        }else{
+            return false;
+        }
+    }
+    function _doDown(id, reason)
+    {
+        $.ajax({
+            type : 'post',
+            url  : '/internal/doDown/',
+            data : {'id':id,'reason':reason},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请重试。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        doUpDown('down', id);
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+    function _doUp(id)
+    {
+        $.ajax({
+            type : 'post',
+            url  : '/internal/doUp/',
+            data : {'id':id},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请重试。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        doUpDown('up', id);
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

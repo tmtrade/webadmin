@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>商标交易管理系统</title>
+    <link href="<?=StaticDir?>css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="<?=StaticDir?>js/jquery.min.js"></script>
+    <script type="text/javascript" src="<?=StaticDir?>js/jquery.form.js"></script>
+    <script type="text/javascript" src="<?=StaticDir?>js/layer/layer.js"></script>
+</head>
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>系统配置</li>
+        <li>账号管理</li>
+    </ul>
+</div>
+<div class="rightinfo">
+    <form method="post" action="/user/index/" name="form1" id="form1">
+    <table class="table_search" align="center" >
+        <tr>
+            <td>用户名：<input type="text" name="username" class="input" value="<?php if(isset($search['username'])){echo $search['username'];} ?>"/> </td>
+            <td>真实姓名：<input type="text" name="name" class="input"  value="<?php if(isset($search['name'])){echo $search['name'];} ?>"/></td>
+            <td>状态：
+                <select name="isUse">
+                    <option value="" >全部</option>
+                    <option value="1" <?php if(isset($search['isUse']) && $search['isUse'] == 1){echo "selected";} ?>>启用</option>
+                    <option value="2" <?php if(isset($search['isUse']) && $search['isUse'] == 2){echo "selected";} ?>>禁用</option>
+                </select>
+            </td>
+            <td>角色：
+                <select name="roleId">
+                <option value="0" >全部</option>
+                <? foreach($role as $ky => $val){ ?>
+                    <option value="<?=$ky?>" <?php if(isset($search['roleId']) && $search['roleId'] == $ky){echo "selected";} ?>><?=$val?></option>
+                <? } ?>
+                </select>
+            </td>
+            <td>
+                <input name="button" type="button" onclick="submit();" class="searchButt" value="搜索"/>
+            </td>
+        </tr>
+    </table>
+    </form>
+
+    <div class="tools">
+        <ul class="toolsearch">
+            <li class="click" onclick="addUser()"><span><img src="<?=StaticDir?>images/t01.png" /></span>新增</li>
+        </ul>
+    </div>
+    <table class="tablelist">
+        <thead>
+        <tr>
+            <th nowrap>用户名</th>
+            <th nowrap>代码（工号）</th>
+            <th nowrap>真实姓名</th>
+            <th nowrap>英文名称</th>
+            <th nowrap>状态</th>
+            <th nowrap>角色</th>
+            <th nowrap>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?
+        if( !empty($data['rows']) ){
+            //echo "<pre>";print_r($data);die;
+            foreach($data['rows'] as $t){?>
+        <tr>
+            <td><?=$t['username'] ?></td>
+            <td><?=$t['staffId'] ?></td>
+            <td ><?=$t['name'] ?></td>
+            <td><?=$t['username'] ?></td>
+            <td><? if($t['isUse']==1){echo '启用';}else{echo '禁用';} ?></td>
+            <td><? echo $role[$t['roleId']] ?></td>
+            <td>
+                <a href="javascript:;" onclick="setUse(<?=$t['id']?>,<?=$t['isUse']?>)" class="tablelink"><? if($t['isUse']==1){echo '禁用';}else{echo '启用';} ?></a> &nbsp;
+                <a href="javascript:;" onclick="setRole(<?=$t['id']?>)" class="tablelink">设置角色</a>
+            </td>
+        </tr>
+        <? }
+        }else{ ?>
+        <tr>
+            <td colspan="7">暂无数据</td>
+        </tr>
+        <? } ?>
+        </tbody>
+    </table>
+    <div id="page" align="center"><?=$pageBar?></div>
+
+</div>
+<script>
+    var _where = "<?=$where?>";
+    var _page = "<?=$page?>";
+    function setUse(id, use){
+        $.ajax({
+            type : 'post',
+            url  : '/user/setUse/',
+            data : {'id':id,'use':use},
+            dataType : 'json'
+        }).done(function(data){
+            if(data == 1) {
+                layer.msg('操作成功', {
+                    icon: 1,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    reloadAll();
+                });
+            } else {
+                layer.msg('操作失败', {
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        }).error(function(error){
+            layer.msg('操作失败', {
+                icon: 2,
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        });
+    }
+
+    function setRole(id){
+        //iframe层-父子操作
+        layer.open({
+            title: '设置角色',
+            type: 2,
+            area: ['250px', '250px'],
+            fix: false, //不固定
+            maxmin: true,
+            content: '/user/role/?id='+id
+        }); 
+    }
+    
+    function addUser(){
+        //iframe层-父子操作
+        layer.open({
+            title: '开通账号',
+            type: 2,
+            area: ['450px', '300px'],
+            fix: false, //不固定
+            maxmin: true,
+            content: '/user/add/',
+        }); 
+    }
+
+    function reloadAll(){
+        //window.parent.frames[0].location.reload();
+        window.location = '/user/index/?page='+_page+'&'+_where;
+    }
+</script>
+<? require(ViewDir.'/footer.html'); ?>
+
+

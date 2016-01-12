@@ -1,0 +1,112 @@
+<? require(ViewDir.'/header.html'); ?>
+<script type="text/javascript" src="<?=StaticDir?>js/layer/layer.js"></script>
+<style type="text/css">
+    body{width:400px;min-width:400px}
+    .input{margin-top:20px;min-height:40px;text-align:center;background:transparent;border:1px solid #ccc}
+</style>
+<div class="rightinfo">
+    <form method="post" action="" name="formAdd" id="formAdd">
+        <div style="text-align:center;">
+            <input type="text" name="username" class="input" placeholder="请输入CRM账号" value="">
+        </div>
+        <div style="text-align:center;margin-top:20px;">
+        <? foreach ($role as $k => $v) {?>
+            <label><input type="radio" name="roleId" value="<?=$k?>" <?if($k==1) echo 'checked'?> />&nbsp;<?=$v?>&nbsp;&nbsp;</label>
+            <? if ($k % 3 == 0) echo "<br />";?>
+        <?}?>
+        </div>
+
+        <br /><br />
+        <div style="text-align:center;">
+            <input name="button" type="button" onclick="sub()"style="margin-left:0;" class="searchButt" value="确定"/>
+        </div>
+            
+    </form>
+</div>
+<script type="text/javascript">    
+    function sub(){
+        var _name = $(".input").val();
+        if ( _name == '' ){
+            layer.msg('请填写账号', {
+                icon: 2,
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        $.ajax({
+            type : 'post',
+            url  : '/user/checkCrmName/',
+            data : {name:_name},
+            dataType : 'json'
+        }).done(function(data){
+            if(data == 1) {
+                _sub();//执行提交
+            }else if(data == 3) {
+                layer.msg('CRM无此账号', {
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }else if(data == 2) {
+                layer.msg('请填写账号', {
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            } else {
+                layer.msg('操作失败', {
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        }).error(function(error){
+            layer.msg('操作失败', {
+                icon: 2,
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        });
+    }
+
+    function _sub()
+    {
+        var data = $("#formAdd").serialize();
+        $.ajax({
+            type : 'post',
+            url  : '/user/addUser/',
+            data : data,
+            dataType : 'json'
+        }).done(function(data){
+            if(data == 1) {
+                layer.msg('操作成功', {
+                    icon: 1,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    parent.reloadAll();
+                });
+            }else if(data == 3) {
+                layer.msg('账号已存在', {
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }else if(data == 2) {
+                layer.msg('请填写账号', {
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            } else {
+                layer.msg('操作失败', {
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        }).error(function(error){
+            layer.msg('操作失败', {
+                icon: 2,
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        });
+
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+
+

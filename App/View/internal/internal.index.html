@@ -1,0 +1,386 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>出售管理</li>
+        <li>国内商标列表</li>
+    </ul>
+    <!-- <span style="float:right;margin-right:20px;color:red;">在售商标总数：<?=$total ?></span> -->
+</div>
+<div class="wrap">
+    <div class="mj-screening">
+        <div class="mj-seT f-clearfix">
+            <span>商标筛选</span>
+            <!-- <a href="javascript:void(0)">设置我的筛选偏好</a>-->
+        </div>
+        <form name="saleSearchForm" id="saleSearchForm" action="/internal/index/" method="GET">
+        <dl>
+            <dt><span>商标分类：<button class="btn" type="button">全部分类</button></span></dt>
+            <dd class="mj-ddList">
+                <ul class="f-clearfix">
+                <input type="hidden" id="tmClass" name="tmClass" value="<?=$s['tmClass']?>">
+                <? foreach ($tmClass as $k => $v) {?>
+                    <li><input type="checkbox" tname="tmClass"
+                    <?if(!empty($s['tmClass']) && in_array($v, array_filter(explode(',', $s['tmClass'])))){
+                        echo 'checked';} ?> value="<?=$v?>" class="tmClass" />
+                    <label for="che<?=$v?>">第<?=$v?>类</label></li>
+                <? } ?>
+                </ul>
+            </dd>
+            <dd>
+                <label>商标名称：</label><input type="text" name="tmName" value="<?=$s['tmName']?>" class="input input-sm"/> 
+                <label class="mj-mle">商标号：</label><input type="text" name="tmNumber" value="<?=$s['tmNumber']?>" class="input input-sm"/>
+                <label class="mj-mle">群组：</label><input type="text" name="tmGroup" value="<?=$s['tmGroup']?>" class="input input-sm"/>
+                <label class="mj-mle">销售状态：</label>
+                <select name="saleStatus" class="input input-sm">
+                    <option value="0">--请选择--</option>
+                <? foreach ($saleStatus as $k => $v) {?>
+                    <option value="<?=$k?>" <?if($s['saleStatus']==$k){echo 'selected';} ?> ><?=$v?></option>
+                <? } ?>
+                </select>
+            </dd>
+            <dd>
+                <label>出售时间：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
+                <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input type="text" name="dateEnd" value="<?=$s['dateEnd']?>" class="input input-sm" readonly onclick="laydate()" />
+                <label class="mj-mle">来源渠道：</label>
+                <select name="saleSource" class="input input-sm">
+                    <option value="0">--请选择--</option>
+                <? foreach ($saleSource as $k => $v) {?>
+                    <option value="<?=$k?>" <?if($s['saleSource']==$k){echo 'selected';} ?>><?=$v?></option>
+                <? } ?>
+                </select>
+                <label class="mj-mle">交易类型：</label>
+                <select name="saleType" class="input input-sm">
+                    <option value="0">--请选择--</option>
+                <? foreach ($saleType as $k => $v) {?>
+                    <option value="<?=$k?>" <?if($s['saleType']==$k){echo 'selected';} ?>><?=$v?></option>
+                <? } ?>
+                </select>
+            </dd>
+            <dd>
+                <label>商标类型：</label>
+                <input type="hidden" id="tmType" name="tmType" value="<?=$s['tmType']?>">
+                <? foreach ($tmType as $k => $v) {?>
+                <div class="mj-checkbox">
+                    <input type="checkbox" tname="tmType" 
+                    <?if(!empty($s['tmType']) && in_array($k, array_filter(explode(',', $s['tmType'])))){
+                        echo 'checked';} ?> value="<?=$k?>" class="tmType" />
+                    <label for="le<?=$k?>"><?=$v?></label>
+                </div>
+                <? } ?>
+            </dd>
+            <dd>
+                <label>商标数字：</label>
+                <input type="hidden" id="tmNums" name="tmNums" value="<?=$s['tmNums']?>">
+                <? foreach ($tmNums as $k => $v) {?>
+                <div class="mj-checkbox">
+                    <input type="checkbox" tname="tmNums" 
+                    <?if(!empty($s['tmNums']) && in_array($k, array_filter(explode(',',$s['tmNums'])))){
+                        echo 'checked';} ?> value="<?=$k?>" class="tmNums" />
+                    <label for="va<?=$k?>"><?=$v?></label>
+                </div>
+                <? } ?>
+            </dd>
+            <dd>
+                <label>底&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：</label>
+                
+                <? foreach ($tmPrice as $k => $v) {?>
+                <div class="mj-radio">
+                    <input type="radio" id="rad<?=$k?>" <?if($s['tmPrice'] == $k){echo 'checked';} ?> value="<?=$k?>" name="tmPrice"/>
+                    <label for="rad<?=$k?>"><?=$v[2]?></label>
+                </div>
+                <? } ?>
+            </dd>
+            <dd>
+                <label>商标标签：</label>
+                <input type="hidden" id="tmLabel" name="tmLabel" value="<?=$s['tmLabel']?>">
+                <? foreach ($tmLabel as $k => $v) {?>
+                <div class="mj-checkbox">
+                    <input type="checkbox" tname="tmLabel" 
+                    <?if(!empty($s['tmLabel']) && in_array($k, array_filter(explode(',',$s['tmLabel'])))){
+                        echo 'checked';} ?> value="<?=$k?>" class="tmLabel" />
+                    <label for="bq<?=$k?>"><?=$v?></label>
+                </div>
+                <? } ?>
+                <div class="mj-checkbox">
+                    <input type="checkbox" name="offprice" <?if($s['offprice']==1){echo 'checked';}?> value="1" id="bq8"/>
+                    <label for="bq8">特价</label>
+                </div>
+                <div class="mj-checkbox">
+                    <input type="checkbox" name="isTop" <?if($s['isTop']==1){echo 'checked';}?> value="1" id="bq9"/>
+                    <label for="bq9">置项</label>
+                </div>
+            </dd>
+            <dd>
+                <label>平台入驻：</label>
+                <input type="hidden" id="salePlat" name="salePlat" value="<?=$s['salePlat']?>">
+                <? foreach ($salePlat as $k => $v) {?>
+                <div class="mj-checkbox">
+                    <input type="checkbox" tname="salePlat" 
+                    <?if(!empty($s['salePlat']) && in_array($k, array_filter(explode(',',$s['salePlat'])))){
+                        echo 'checked';} ?> value="<?=$k?>" class="salePlat" />
+                    <label for="pt<?=$k?>"><?=$v['name']?></label>
+                </div>
+                <? } ?>
+            </dd>
+        </dl>
+        <a href="javascript:void(0);" class="mj-sBtn">搜索</a>
+        </form>
+    </div>
+    <div class="wrap-content">
+        <p class="text-left" style="float:left;padding-top:20px;">共有 <b class="red"><?=$allTotal?></b> 条数据，当前筛选结果 <b class="blue"><?=$total?></b> 条数据</p>
+        <div class="wrap-tittle">
+            <button class="btn btn-danger" onclick="add();" type="button">创建商品</button>
+            <button class="btn btn-danger" type="button">导入商品</button>
+            <button class="btn btn-info" type="button">导出表格EXCEL</button>
+            <button type="button" class="btn btn-info">加入黑名单</button>
+            <button type="button" class="btn btn-info">批量删除</button>
+        </div>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                    <tr class="active">
+                        <th><input type="checkbox"></th>
+                        <th>商标号</th>
+                        <th>销售状态</th>
+                        <th>出售时间</th>
+                        <th>商标名</th>
+                        <th>交易类型</th>
+                        <th width="5%">类别</th>
+                        <th>顾问/部门</th>
+                        <th>来源渠道</th>
+                        <th>联系方式</th>
+                        <th>底价</th>
+                        <th>售价</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody class="table-hover">
+                <? foreach ($saleList as $k => $v) {  ?>
+                <tr>
+                    <td><input type="checkbox" id="<?=$v['id']?>"></td>
+                    <td><?=$v['number']?></td>
+                    <td><span <?if ($v['status']==1){
+                            echo 'class="blue"';
+                        }elseif ($v['status']==2){
+                            echo 'class="red"';
+                        }else{
+                            echo 'class="yellow"';
+                        }
+                        ?> ><?=$saleStatus[$v['status']]?></span></td>
+                    <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?></td>
+                    <td title="<?=$v['name']?>"><?if(mb_strlen($v['name'],'utf8') > 15)
+                    {echo mb_substr($v['name'],0,12,'utf8')."...";}
+                    else{echo $v['name'];}?></td>
+                    <td><? if ($v['isSale'] == 1 && $v['isLicense'] == 1) {
+                            echo $saleType[3];
+                        }elseif($v['isSale'] == 1){
+                            echo $saleType[1];
+                        }elseif($v['isLicense'] == 1){
+                            echo $saleType[2];
+                        }?></td>
+                    <td><?if(count(explode(',', $v['class'])) > 1){?>
+                        <div class="more"><span>多类</span>
+                            <ol>
+                                <? foreach (explode(',', $v['class']) as $cls) {
+                                    echo "<li>$cls 类</li>";
+                                }?>
+                            </ul>
+                        </div>
+                    <?}else{echo $v['class']."类";}?></td>
+                    <td><?if(count($v['contact']) > 1){echo "多顾问";}else
+                    {$ct=current($v['contact']);echo $ct['advisor'];} ?>
+                    </td>
+                    <td><?if(count($v['contact']) > 1){echo '多渠道';}
+                    else{$ct=current($v['contact']);echo $saleSource[$ct['source']];} ?>
+                    </td>
+                    <td> <?if(count($v['contact']) > 1){?>
+                        <div class="more"><span>多联系方式</span>
+                            <ul>
+                            <?foreach ($v['contact'] as $key => $value) { ?>
+                                <li><table width="99%"><tr align="center">
+                                <td width="30%"><?=$value['advisor']?></td>
+                                <td width="15%"><?=$saleSource[$value['source']]?></td>
+                                <td width="40%"><?=$value['name']?>-<?=$value['phone']?></td>
+                                <td width="15%"><?=$value['price']?></td>
+                                </tr></table>
+                            <?}?>
+                            </ul>
+                        </div>
+                    <? }else{$ct=current($v['contact']);echo $ct['name']."-".$ct['phone'];} ?>
+                    </td>
+                    <td>10000</td>
+                    <td><?if($v['priceType']==2){echo "议价";}else{echo $v['price'];}?></td>
+                    <td>
+                        <span class="icon icon-delete">
+                        <?if($v['status']==1){?>
+                        <a href="javascript:;" class="btn-warning" onclick="doUpDown('down', <?=$v['id']?>);">下架</a>
+                        <?}elseif($v['status']==2){?>
+                        <a href="javascript:;" class="btn-success" onclick="doUpDown('up', <?=$v['id']?>);">上架</a>
+                        <?}?></span>
+                        <span class="icon icon-editor">
+                        <a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>
+                        </span>
+                    </td>
+                </tr>
+                <? } ?>
+                </tbody>
+            </table>
+            <!-- <nav>
+                <ul class="pagination">
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav> -->
+        </div>
+            
+<div id="page" align="center"><?=$pageBar?></div>  
+    </div>
+</div>
+
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $(".mj-screening dt").click(function(){
+            $(".mj-ddList").toggle();
+        });
+        $(".mj-sBtn").click(function(){
+            $("#saleSearchForm").submit();
+        });
+        //多选处理
+        $('input[type="checkbox"]').click(function(){
+            var strClass = '';
+            var id = $(this).attr('tname');
+            console.log(id);
+            $('.'+id).each(function(){
+                if($(this).prop('checked')){
+                    strClass += ","+$(this).val();
+                }
+            })
+            strClass = strClass ? strClass.substr(1) : '';
+            $('#'+id).val(strClass);
+        });
+        $(".table tr").hover(function(){
+            $(this).find('.more > ul').show();
+        },function(){
+            $(this).find('.more > ul').hide();
+        });
+
+    });
+    function doUpDown(status, id)
+    {
+        if(status != 'up' && status != 'down'){
+            return false;
+        }
+        if ( status == 'down' ){
+            layer.prompt({
+                formType: 2,
+                value: '',
+                maxlength: 100,
+                title: '请输入下架原因'
+            }, function(value, index, elem){
+                if ( $.trim(value) == ''){
+                    layer.tips('请输入下架原因',elem);
+                    return false;
+                }else{
+                    _doDown(id, value);
+                }
+            });
+        }else if (  status == 'up' ){
+            layer.confirm('确认要上架吗？请确认相关数据已审核成功！', {
+                btn: ['确认','取消'] //按钮
+            }, function(){
+                _doUp(id);
+            });
+        }else{
+            return false;
+        }
+    }
+    function _doDown(id, reason)
+    {
+        $.ajax({
+            type : 'post',
+            url  : '/internal/doDown/',
+            data : {'id':id,'reason':reason},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请重试。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        doUpDown('down', id);
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+    function _doUp(id)
+    {
+        $.ajax({
+            type : 'post',
+            url  : '/internal/doUp/',
+            data : {'id':id},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请重试。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        doUpDown('up', id);
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+    function add()
+    {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['560px', '350px'],
+
+            content: '/internal/create/'
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

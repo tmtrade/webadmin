@@ -267,7 +267,6 @@
         $('input[type="checkbox"]').click(function(){
             var strClass = '';
             var id = $(this).attr('tname');
-            console.log(id);
             $('.'+id).each(function(){
                 if($(this).prop('checked')){
                     strClass += ","+$(this).val();

@@ -51,6 +51,12 @@ class internalAction extends AppAction
 		$this->display();
 	}
 
+	//添加商品
+	public function add()
+	{
+		$this->display();
+	}
+
 
 	//添加/编辑 联系人
 	public function contact()
@@ -105,12 +111,6 @@ class internalAction extends AppAction
 			$this->returnAjax(array('code'=>1,'msg'=>'成功'));
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
-	}
-
-	//添加商品
-	public function add()
-	{
-		$this->display();
 	}
 
 	//编辑商品
@@ -191,6 +191,140 @@ class internalAction extends AppAction
 		}
 		$this->returnAjax(array('code'=>2));
 	}
+
+	//提交价格信息
+	public function setPrice()
+	{
+		$saleId 	= $this->input('saleId', 'int', 0);
+		$isSale 	= $this->input('isSale', 'int', 0);
+		$isLicense 	= $this->input('isLicense', 'int', 0);
+		if ( $saleId <= 0 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
+		}
+		$data = array();
+		if ( $isSale ){
+			$priceType 		= $this->input('priceType', 'int', 2);
+			$price 	 		= $this->input('price', 'int', 0);
+			$isOffprice 	= $this->input('isOffprice', 'int', 2);
+			$salePrice 		= $this->input('salePrice', 'int', 0);
+			$priceDate 		= $this->input('priceDate', 'int', 2);
+			$salePriceDate 	= $this->input('salePriceDate', 'text', '');
+			if ( $priceType == 1 ){//定价
+				if ( $price <= 0 ){//未填写销售价格
+					$this->returnAjax(array('code'=>2,'msg'=>'请输入销售价格')); 
+				}
+				if ( $isOffprice && $salePrice <=0 ){//是特价但未填写特价价格
+					$this->returnAjax(array('code'=>2,'msg'=>'请输入特价价格')); 
+				}elseif ( $isOffprice && $priceDate == 1 && $salePriceDate == '' ){//特价且限时未选择时间
+					$this->returnAjax(array('code'=>2,'msg'=>'请输入销售价格')); 
+				}elseif ( $isOffprice ){
+					$data['isOffprice'] = 1;
+					$data['salePrice'] 	= $salePrice;
+					$data['salePriceDate'] 	= ($priceDate == 2) ? 0 : strtotime($salePriceDate);
+				}else{
+					$data['isOffprice'] = 2;
+				}
+				$data['price'] 	= $price;
+				$data['priceType'] = 1;
+			}else{//议价
+				$data['priceType'] = 2;
+			}
+			$data['isSale'] 	= 1;
+			$data['isLicense'] 	= $isLicense ? 1 : 2;
+		}elseif ( $isLicense ){
+			$data['isLicense'] 	= 1;
+			$data['isSale'] 	= 2;
+		}else{
+			$this->returnAjax(array('code'=>2,'msg'=>'至少选择 出售与许可 中一项')); 
+		}
+		$res = $this->load('internal')->update($data, $saleId);
+		if ( $res ){
+			$this->load('log')->addSaleLog($saleId, 10);//修改价格信息
+			$this->returnAjax(array('code'=>1,'msg'=>'操作成功'));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
+	}
+
+	//提交备注信息
+	public function setMemo()
+	{
+		$saleId = $this->input('saleId', 'int', 0);
+		$memo 	= $this->input('memo', 'text', '');
+		if ( $saleId <= 0 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
+		}
+		if ( $memo == '' ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请输入备注信息')); 
+		}
+		$data = array(
+			'memo' => $memo
+		);
+		$res = $this->load('internal')->update($data, $saleId);
+		if ( $res ){
+			$this->load('log')->addSaleLog($saleId, 11);//修改备注信息
+			$this->returnAjax(array('code'=>1,'msg'=>'操作成功'));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
+	}
+
+	public function setEmbellish()
+	{
+		$saleId = $this->input('saleId', 'int', 0);
+		if ( $saleId <= 0 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
+		}
+		$type 	= $this->input('type', 'text', '');
+		$label 	= $this->input('label', 'text', '');
+		$length = $this->input('length', 'text', '');
+		$plat 	= $this->input('platform', 'text', '');
+		$isTop 	= $this->input('isTop', 'int', 2);
+		$phone 	= $this->input('viewPhone', 'text', '');
+
+		$sale = array(
+			'type' 		=> $type,
+			'label' 	=> $label,
+			'length' 	=> $length,
+			'platform' 	=> $plat,
+			'isTop' 	=> $isTop,
+			'viewPhone' => $phone,
+		);
+		$bzpic 	= $this->input('bzpic', 'text', '');
+		$tjpic 	= $this->input('tjpic', 'text', '');
+		$value 	= $this->input('value', 'text', '');
+		$intro 	= $this->input('intro', 'text', '');
+		$tminfo = array(
+			'embellish' 	=> $bzpic,
+			'indexPic' 		=> $tjpic,
+			'value' 		=> $value,
+			'intro' 		=> $intro,
+		);
+		$res = $this->load('internal')->setEmbellish($saleId, $sale, $tminfo);
+		if ( $res ){
+			$this->returnAjax(array('code'=>1,'msg'=>'操作成功'));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
+	}
+
+	public function ajaxUploadPic()
+    {
+        $msg = array(
+            'code'  => 0,
+            'msg'   => '',
+            'img'   => '',
+            );
+        if ( empty($_FILES) || empty($_FILES['fileName']) ) {
+            $msg['msg'] = '请上传图片';
+            $this->returnAjax($msg);
+        }
+        $obj = $this->load('upload')->upload('fileName', 'img');
+        if ( $obj->_imgUrl_ ){
+            $msg['code']    = 1;
+            $msg['img']     = $obj->_imgUrl_;
+        }else{
+            $msg['msg']     = $obj->msg;
+        }
+        $this->returnAjax($msg);
+    }
 
 	protected function getSetting()
 	{

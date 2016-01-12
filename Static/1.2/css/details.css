@@ -162,6 +162,18 @@ label{
     font-weight: normal;
     vertical-align: middle;
 }
+.mj-list1{
+    margin-left: 100px;
+}
+.mj-seCl{
+    margin-top: 10px;
+}
+.mj-seCl li{
+    margin-bottom: 10px;
+}
+.mj-seCl li select{
+    width: 50px!important;
+}
 .mj-lefts{
     margin-left: 50px;
 }

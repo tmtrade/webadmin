@@ -163,7 +163,7 @@ class InternalModule extends AppModule
     //更新
     public function update($data, $saleId)
     {
-        $r['eq'] = array('saleId'=>$saleId);
+        $r['eq'] = array('id'=>$saleId);
         return $this->import('sale')->modify($data, $r);
     }
 
@@ -274,6 +274,22 @@ class InternalModule extends AppModule
     public function countSale()
     {
         return $this->import('sale')->count();
+    }
+
+    public function setEmbellish($saleId, $sale, $tminfo)
+    {
+        if ( $saleId <= 0 ) return fales;
+        if ( empty($sale) ) return false;
+
+        $this->begin('sale');
+        $res1 = $this->update($sale, $saleId);
+        $res2 = $this->updateTminfo($tminfo, $saleId);
+        if ( $res1 && $res2 ){
+            $this->load('log')->addSaleLog($saleId, 12);//修改商品包装日志
+            return $this->commit('sale');
+        }
+        $this->rollBack();
+        return false;
     }
 
 }

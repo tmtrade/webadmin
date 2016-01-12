@@ -32,34 +32,27 @@ class UploadModule extends AppModule
     /**
 	 * 图片上传 
 	 *
-	 * @return void
+	 * @return
 	 *
-	 * @author    Alexey
-	 * @since     2013年11月1日17:23:43
-	 * @copyright CHOFN
+	 * @author   
+	 * @since     
+	 * @copyright
 	 */
-    public function upload($name)
+    public function upload($name, $type='all')
     {
+        if ($type == 'img') $this->type = 'jpeg|jpg|gif|png|bmp';
     	$filename    = $_FILES[$name]['name'];
         $up          = $this->com('upload');
         $up->maxSize = $this->maxSize;
         $up->path    = './'.StaticDir.$this->path;
-        $up->upType  = 'jpeg|jpg|gif|png|bmp';
+        $up->upType  = $this->type;
         $up->upload($_FILES[$name]);
-        $name = $up->msg ? '' : StaticDir.$this->path.'/'.$up->upFile;
-        return $name;
+        if ( empty($up->msg) ){
+            $up->_imgUrl_ = StaticDir.$this->path.'/'.$up->upFile;
+        }else{
+            $up->_imgUrl_ = '';
+        }        
+        return $up;
     }
-
-	public function uploadList($name)
-    {
-    	$filename    = $_FILES[$name]['name'];
-        $up          = $this->com('upload');
-        $up->maxSize = $this->maxSize;
-        $up->path    = './'.StaticDir.$this->path;
-        $up->upType  = 'jpeg|jpg|gif|png|bmp';
-        $img		 = $up->uploadMore($_FILES[$name]);
-        return $img;
-    }
-
 }
 ?>

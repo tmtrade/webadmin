@@ -4,12 +4,11 @@
 <script charset="utf-8" src="<?=StaticDir?>/editor/lang/zh_CN.js"></script>
 <script>
         KindEditor.ready(function(K) {
-                window.editor = K.create('#editor_id');
+            window.editor = K.create('#intro', {
+                afterBlur: function () { this.sync(); }
+            });
         });
 		
-		 KindEditor.ready(function(K) {
-                window.editor1 = K.create('#editor_id1');
-        });
 </script>
 
 <div class="wrap">
@@ -92,7 +91,7 @@
                 <td><?=$vl['id']?></td>
                 <td><?=date('Y-m-d', $vl['date'])?></td>
                 <td><?=$saleSource[$vl['source']]?></td>
-                <td><label class="mj-laTipa">认</label> <?=$vl['name']?></td>
+                <td><?=$vl['name']?></td>
                 <td><?=$vl['phone']?></td>
                 <td><?=$vl['price']?></td>
                 <td><?=$saleType[$vl['saleType']]?></td>
@@ -114,6 +113,7 @@
         <div class="mj-deiBtns">
             <a href="javascript:void(0);" id="mj-deib">新增出售信息</a>
         </div>
+    <form id="priceForm">
         <table class="mj-table">
             <thead>
             <tr>
@@ -122,178 +122,157 @@
             </thead>
             <tbody>
             <tr>
-                <td>
-                    <input type="checkbox" id="tdi1"/>
-                    <label for="tdi1">可出售</label>
+                <td class="f-clearfix">
+                    <div class="fl">
+                        <input type="checkbox" name="isSale" id="isSale" value="1" <?if($sale['isSale']==1){echo "checked";}?>/>
+                        <label for="tdi1">可出售</label>
+                    </div>
+                    <div class="mj-list1">
+                        <label>销售价格类型：</label>
+                        <select name="priceType" id="priceType">
+                            <option value="1" <?if($sale['priceType']==1){echo 'selected';}?>>定价</option>
+                            <option value="2" <?if($sale['priceType']==2){echo 'selected';}?>>议价</option>
+                        </select>
+                <div class="mj-seCl">
+                    <ul>
+                        <li>
+                            <label>销售价格：</label>
+                            <input type="text" name="price" id="price" value="<?=$sale['price']?>" placeholder="请输入价格"/>元
+                        </li>
+                        <li>
+                            <input type="checkbox" name="isOffprice" value="1" id="isOffprice" 
+                            <?if($sale['isOffprice']==1){echo 'checked';}?>/>
+                            <label for="in">是否参与特价</label>&nbsp;&nbsp;
+                            销售价格：<input type="text" name="salePrice" id="salePrice" value="<?=$sale['salePrice']?>" placeholder="请输入价格"/>元
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <label for="in1">截止时间：</label>
+                            <input type="radio" name="priceDate" id="priceDate" 
+                            <?if($sale['salePriceDate']<=0){echo 'checked';}?> value="2" id="in1"/>
+                            <label for="in1">不限时</label>
+                            <input type="radio" name="priceDate" id="priceDate" value="1" 
+                            <?if($sale['salePriceDate']>0){echo 'checked';}?> id="in2"/>
+                            <label for="in2">截止于</label>
+                            <input type="text" name="salePriceDate" id="salePriceDate" 
+                            value="<?if($sale['salePriceDate']>0){
+                                echo date('Y-m-d h:i:s',$sale['salePriceDate']);
+                            }?>" readonly onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" placeholder="请选择截止日期"/>
+                        </li>
+                    </ul>
+                </div>
 
-                    <label class="mj-lefts">可出售：</label>
-                    <select>
-                        <option>定价销售</option>
-                        <option>议价销售</option>
-                    </select>
+                    </div>
                 </td>
-
             </tr>
             <tr>
                 <td>
-                    <input type="checkbox" id="tdi2"/>
+                    <input type="checkbox" name="isLicense" id="isLicense"  value="1" <?if($sale['isLicense']==1){echo "checked";}?>/>
                     <label for="tdi2">可授权</label>
                 </td>
             </tr>
             </tbody>
         </table>
+    </form>
         <div class="mj-deiBtns">
-            <a href="javascript:void(0);">确定价格信息</a>
-            <a href="javascript:void(0);" class="mj-abgcg">取消</a>
+            <a href="javascript:void(0);" onclick="setPrice();">确定价格信息</a>
         </div>
         <div class="mj-thBar">
             <div class="mj-thbT">
-                <input type="checkbox" id="thb"/>
                 <label for="thb">商品包装信息</label>
             </div>
             <dl>
+    <form id="bzxxForm">
                 <dd>
                     <label>商标类型：</label>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="le1"/>
-                        <label for="le1">中文</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="le2"/>
-                        <label for="le2">英文</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="le3"/>
-                        <label for="le3">图形</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="le4"/>
-                        <label for="le4">中+英</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="le5"/>
-                        <label for="le5">中+图</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="le6"/>
-                        <label for="le6">英+图</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="le7"/>
-                        <label for="le7">中+英+图</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="le8"/>
-                        <label for="le8">数字</label>
-                    </div>
+                    <input type="hidden" id="type" name="type" value="<?=$sale['type']?>">
+                <? foreach ($tmType as $k => $v) {?>
+                <div class="mj-checkbox">
+                    <input type="checkbox" tname="type" 
+                    <?if(!empty($sale['type']) && in_array($k, array_filter(explode(',', $sale['type'])))){
+                        echo 'checked';} ?> value="<?=$k?>" class="ck_type" />
+                    <label for="le<?=$k?>"><?=$v?></label>
+                </div>
+                <? } ?>
                 </dd>
                 <dd>
                     <label>商标数字：</label>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="va1"/>
-                        <label for="va1">一个字母或中文</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="va2"/>
-                        <label for="va2">两个字母或中文</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="va3"/>
-                        <label for="va3">三个字母或中文</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="va4"/>
-                        <label for="va4">四个字母或中文</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="va5"/>
-                        <label for="va5">五个字母或中文</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="va6"/>
-                        <label for="va6">五个以上字母或中文</label>
-                    </div>
+                    <input type="hidden" id="length" name="length" value="<?=$sale['length']?>">
+                <? foreach ($tmNums as $k => $v) {?>
+                <div class="mj-checkbox">
+                    <input type="checkbox" tname="length" 
+                    <?if(!empty($sale['length']) && in_array($k, array_filter(explode(',',$sale['length'])))){
+                        echo 'checked';} ?> value="<?=$k?>" class="ck_length" />
+                    <label for="va<?=$k?>"><?=$v?></label>
+                </div>
+                <? } ?>
                 </dd>
                 <dd>
                     <label>商标标签：</label>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="bq1"/>
-                        <label for="bq1">精品</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="bq2"/>
-                        <label for="bq2">特价</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="bq3"/>
-                        <label for="bq3">潜力</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="bq4"/>
-                        <label for="bq4">特色</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="bq5"/>
-                        <label for="bq5">紧急</label>
-                    </div>
+                    <input type="hidden" id="label" name="label" value="<?=$sale['label']?>">
+                <? foreach ($tmLabel as $k => $v) {?>
+                <div class="mj-checkbox">
+                    <input type="checkbox" tname="label" 
+                    <?if(!empty($sale['label']) && in_array($k, array_filter(explode(',',$sale['label'])))){
+                        echo 'checked';} ?> value="<?=$k?>" class="ck_label" />
+                    <label for="bq<?=$k?>"><?=$v?></label>
+                </div>
+                <? } ?>
+                <div class="mj-checkbox">
+                    <input type="checkbox" name="isTop" <?if($sale['isTop']==1){echo 'checked';}?> value="1" id="bq9"/>
+                    <label for="bq9">置项</label>
+                </div>
                 </dd>
                 <dd>
                     <label>平台入驻：</label>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="pt0"/>
-                        <label for="pt0">自营</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="pt1"/>
-                        <label for="pt1">天猫</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="pt2"/>
-                        <label for="pt2">京东</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="pt3"/>
-                        <label for="pt3">亚马逊</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="pt4"/>
-                        <label for="pt4">1号店</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="pt5"/>
-                        <label for="pt5">美丽说</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="pt6"/>
-                        <label for="pt6">聚美优品</label>
-                    </div>
-                    <div class="mj-checkbox">
-                        <input type="checkbox" id="pt7"/>
-                        <label for="pt7">大型超市</label>
+                   <input type="hidden" id="platform" name="platform" value="<?=$sale['platform']?>">
+                <? foreach ($salePlat as $k => $v) {?>
+                <div class="mj-checkbox">
+                    <input type="checkbox" tname="platform" 
+                    <?if(!empty($sale['platform']) && in_array($k, array_filter(explode(',',$sale['platform'])))){
+                        echo 'checked';} ?> value="<?=$k?>" class="ck_platform" />
+                    <label for="pt<?=$k?>"><?=$v['name']?></label>
+                </div>
+                <? } ?>
+                </dd>
+                <dd><label>价值分析：</label><textarea name="value" placeholder="请用一句话表达，限100个汉字内">
+                <?=$sale['tminfo']['value']?></textarea></dd>
+                <dd >
+                    <input type="hidden" name="bzpic" class="bzpic" value="<?=$sale['tminfo']['embellish']?>" />
+                    <input type="hidden" name="tjpic" class="tjpic" value="<?=$sale['tminfo']['indexPic']?>" />
+                    <div class="bzform">
+                        <label>美化图片：</label><img src="<?=$sale['tminfo']['embellish']?>" class="bzpic" style="width:30px;height:30px;">
+                        <input type="file" id="bzfile" name="fileName" style="display: inline-block;"/>
+                    </div> &nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="tjform">
+                        <label>特价图片：</label><img src="<?=$sale['tminfo']['indexPic']?>" class="tjpic" style="width:30px;height:30px;">
+                        <input type="file" id="tjfile" name="fileName" style="display: inline-block;"/>
                     </div>
                 </dd>
-                <dd><label>价值分析：</label><textarea placeholder="请用一句话表达，限100个汉字内"></textarea></dd>
-                <dd><label>商标介绍：</label><textarea></textarea></dd>
+                <dd><label>商标介绍：</label><textarea name="intro" id="intro" style="width:80%;">
+                    <?=$sale['tminfo']['intro']?>
+                </textarea></dd>
                 <dd>
                     <label>展示电话：</label>
-                    <select>
+                    <select name="viewPhone" id="viewPhone">
                         <option>13412121451</option>
                         <option>13412121451</option>
                         <option>13412121451</option>
                     </select>
                 </dd>
+    </form>
             </dl>
         </div>
+    <div class="mj-deiBtns">
+        <a href="javascript:void(0);" onclick="setBzxx();">提交包装信息</a>
+    </div>
         <div class="mj-becen">
             <p>备注</p>
             <div class="mj-sr">
-                <textarea></textarea>
+                <textarea id="memo"><?=$sale['memo']?></textarea>
             </div>
         </div>
     </div>
     <div class="mj-deiBtns">
-        <a href="javascript:void(0);">确定价格信息</a>
-        <a href="javascript:void(0);" class="mj-abgcg">取消</a>
+        <a href="javascript:void(0);" onclick="setMemo();">提交备注</a>
     </div>
 <?}?>
     <table class="mj-tables">
@@ -306,7 +285,7 @@
             <td><?if($v['roleId']==0){echo "用户";}else{echo $v['roleName'];}?>&nbsp;&nbsp;&nbsp;&nbsp;
             <?=$v['name']?>&nbsp;&nbsp; 于&nbsp;&nbsp; <?=date("Y-m-d h:i:s",$v['date'])?> 
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$v['typeName']?>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注(原因)：<?=$v['memo']?></td>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注(原因)：<?=empty($v['memo'])?'无':$v['memo']?></td>
         </tr>
     <?}?>
         </tbody>
@@ -320,7 +299,189 @@
             var id = $("#saleId").val();
             setContact(id, 0);
         });
+        $("#priceType").change(function(){
+            var vl = $(this).children('option:selected').val();
+            if ( vl == 1 ){
+                $(".mj-seCl").show();
+            }else{
+                $(".mj-seCl").hide();
+            }
+        });
+
+        //多选处理
+        $('input[type="checkbox"]').click(function(){
+            var strClass = '';
+            var id = $(this).attr('tname');
+            $('.ck_'+id).each(function(){
+                if($(this).prop('checked')){
+                    strClass += ","+$(this).val();
+                }
+            })
+            strClass = strClass ? strClass.substr(1) : '';
+            $('#'+id).val(strClass);
+        });
+
+        $("#priceType").change();
+
+        $(".bzform").wrap("<form id='bzformupload' action='/internal/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#bzfile").on('change', function(){
+            $("#bzformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.bzpic').val(data.img);
+                        $('.bzpic').attr('src', data.img);
+                        //$('#imageurl').css('visibility', 'visible');
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
+
+        $(".tjform").wrap("<form id='tjformupload' action='/internal/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#tjfile").on('change', function(){
+            $("#tjformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.tjpic').val(data.img);
+                        $('.tjpic').attr('src', data.img);
+                        //$('#imageurl').css('visibility', 'visible');
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
     });
+    function setBzxx()
+    {
+        var saleId  = $("#saleId").val();
+        var data    = $("#bzxxForm").serialize();
+        $.ajax({
+            type : 'post',
+            url  : '/internal/setEmbellish/',
+            data : data+'&saleId='+saleId,
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请重试。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+    function setPrice()
+    {
+        var isSale      = $("#isSale").is(':checked');
+        var isLicense   = $("#isLicense").is(':checked');
+        var isOffprice  = $("#isOffprice").is(':checked');
+        var saleId      = $("#saleId").val();
+        if ( !isSale && !isLicense ){
+            layer.msg('至少选择 出售与许可 中一项');
+            return false;
+        }
+        if ( isSale ){
+            var type = $("#priceType").children('option:selected').val();
+            if ( type == 1 ){//定价
+                if ( $("#price").val() <= 0 ){//必须输入销售价格
+                    layer.msg('请输入销售价格');
+                    return false;
+                }
+                if ( isOffprice ){//选择特价
+                    if ( $("#salePrice").val() <= 0  ){
+                        layer.msg('请输入特价价格');
+                        return false;
+                    }
+                    var radio = $('input:radio[name="priceDate"]:checked').val();
+                    if ( radio == null ){
+                        layer.msg('请选择一种特价方式');
+                        return false;
+                    }else if ( radio == 1 && $("#salePriceDate").val() == '' ){
+                        layer.msg('请选择特价限时时间');
+                        return false;
+                    }
+                }
+            }
+        }
+        var data = $("#priceForm").serialize();
+        $.ajax({
+            type : 'post',
+            url  : '/internal/setPrice/',
+            data : data+'&saleId='+saleId,
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请重试。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+    function setMemo()
+    {
+        var saleId  = $("#saleId").val();
+        var memo    = $("#memo").val();
+        if ( $.trim(memo) == '' ){
+            layer.msg('请输入备注信息');
+            return false;
+        }
+        $.ajax({
+            type : 'post',
+            url  : '/internal/setMemo/',
+            data : {'saleId':saleId, 'memo':memo},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请重试。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
     function setContact(saleId, cId)
     {
         if ( saleId <= 0 || saleId == '' ) return false;

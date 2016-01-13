@@ -35,6 +35,7 @@ class internalAction extends AppAction
 		//获取所有联系人
 		foreach ($list as $k => $v) {
 			$list[$k]['contact'] = $this->load('internal')->getSaleContact($v['id']);
+			$list[$k]['isBlack'] = $this->load('blacklist')->existBlack($v['number']);
 		}
 
         $this->set("allTotal",$this->load('internal')->countSale());
@@ -93,7 +94,7 @@ class internalAction extends AppAction
 			$this->returnAjax(array('code'=>2,'msg'=>'请输入联系人电话'));
 		}
 		if ( $params['price'] <= 0 ){
-			$this->returnAjax(array('code'=>2,'msg'=>'请输入底价'));
+			$this->returnAjax(array('code'=>2,'msg'=>'请输入正确的底价'));
 		}
 		if ( $params['date'] <= 0 ) $params['date'] = time();
 		$cId = $params['cId'];
@@ -107,7 +108,7 @@ class internalAction extends AppAction
 			$res = $this->load('internal')->updateContact($params, $cId);
 		}
 		if ( $res ){
-			$this->load('log')->addSaleLog($params['saleId'], $type, '联系人ID：'.$cId);//记录日志
+			$this->load('log')->addSaleLog($params['saleId'], $type, "联系人ID：$cId 被编辑了");//记录日志
 			$this->returnAjax(array('code'=>1,'msg'=>'成功'));
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
@@ -153,9 +154,16 @@ class internalAction extends AppAction
 		if ( $id <= 0 ){
 			$this->returnAjax(array('code'=>2));
 		}
+		//TODO 判断联系人是否有一个是审核过的
+		$isVerify = $this->load('internal')->existVerifyContact($id);
+		if ( !$isVerify ) return $this->returnAjax(array('code'=>2,'msg'=>'无联系人或至少有一位联系人未审核！'));
+
+		$isBlack = $this->load('internal')->existBlacklist($id);
+		if ( $isBlack ) return $this->returnAjax(array('code'=>2,'msg'=>'商品还在黑名单中，请在编辑中剔除！'));
+
 		$res = $this->load('internal')->saleUp($id);
 		if ( $res ) $this->returnAjax(array('code'=>1));
-		$this->returnAjax(array('code'=>2));
+		$this->returnAjax(array('code'=>2,'msg'=>'操作失败，请稍后重试！'));
 	}
 
 	//删除黑名单
@@ -324,6 +332,86 @@ class internalAction extends AppAction
             $msg['msg']     = $obj->msg;
         }
         $this->returnAjax($msg);
+    }
+
+    //检查商标是否可出售
+    public function checkNumber()
+    {
+		$number = $this->input('number', 'text', '');
+		$isAdd 	= $this->input('add', 'int', 0);
+		if ( empty($number) ) $this->returnAjax(array('code'=>6));
+
+		$tm = $this->load('trademark')->getInfo($number, array('auto as `tid`'));
+		if ( empty($tm) || empty($tm['tid']) ) $this->returnAjax(array('code'=>4));//无商标信息
+
+		$first = $this->load('trademark')->getFirst($tm['tid'], 'n');
+		if ( $first == 3 ) $this->returnAjax(array('code'=>5));//商标已无效
+
+		$saleId = $this->load('internal')->existSale($number);
+		if ( $saleId ) $this->returnAjax(array('code'=>2,'id'=>$saleId));//在出售中
+
+		$isBlack = $this->load('blacklist')->existBlack($number);
+		if ( $isBlack ) $this->returnAjax(array('code'=>3));//在黑名单中
+
+		if ( $isAdd ){
+			//正常商标马上创建默认的出售信息
+			$saleId = $this->load('internal')->addDefault($number);
+			if ( $saleId ) $this->returnAjax(array('code'=>1,'id'=>$saleId));
+			$this->returnAjax(array('code'=>0));
+		}
+		$this->returnAjax(array('code'=>-1));
+    }
+
+    //删除联系人
+    public function delContact()
+    {
+		$saleId = $this->input('saleId', 'int', 0);
+		$id 	= $this->input('id', 'int', 0);
+		if ( $saleId <= 0 || $id <= 0 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
+		}
+		$res = $this->load('internal')->delContact($id, $saleId);
+		if ( $res ){
+			$this->load('log')->addSaleLog($saleId, 13, "联系人ID：$id 被删除了");//删除联系人
+			$this->returnAjax(array('code'=>1));
+		}
+		$this->returnAjax(array('code'=>2));
+    }
+
+    //审核联系人
+    public function setVerify()
+    {
+    	$saleId = $this->input('saleId', 'int', 0);
+		$id 	= $this->input('id', 'int', 0);
+		if ( $saleId <= 0 || $id <= 0 ){
+			$this->returnAjax(array('code'=>2)); 
+		}
+		$res = $this->load('internal')->setVerify($id, $saleId);
+		if ( $res ){
+			$this->load('log')->addSaleLog($saleId, 14, "联系人ID：$id 审核通过");//联系人审核通过
+			$this->returnAjax(array('code'=>1));
+		}
+		$this->returnAjax(array('code'=>2));
+    }
+
+    //驳回联系人
+    public function delVerify()
+    {
+		$id 	= $this->input('id', 'int', 0);
+		$saleId = $this->input('saleId', 'int', 0);
+    	$reason = $this->input('reason', 'text', '');
+		if ( $saleId <= 0 || $id <= 0 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
+		}
+		if ( $reason == '' ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请填写原因')); 
+		}
+		$res = $this->load('internal')->delVerify($id, $saleId, $reason);
+		if ( $res ){
+			$this->load('log')->addSaleLog($saleId, 15, "联系人ID：$id 被驳回并删除了");//联系人审核通过
+			$this->returnAjax(array('code'=>1));
+		}
+		$this->returnAjax(array('code'=>2, 'msg'=>'驳回失败了'));
     }
 
 	protected function getSetting()

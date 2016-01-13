@@ -16,21 +16,116 @@
         <div class="mj-inp">
             <p>你需要输入一个商标号来查询商标</p>
             <input type="text" id="searchNumber" />
-            <span id="tmEdit">该商标已有对应商标 <a href="">点击进入编辑</a></span>
-            <span id="tmEdit">该商标已有对应商标 <a href="">点击进入编辑</a></span>
+            <span id="searchInfo" style="display:none;"></span>
+            <div style="text-align:center"> <a class="mj-sBtn" id="addBtn" href="javascript:void(0);" style="display:none;margin:0 auto;" onclick="_addGoods('yes');" >创建商品</a></div>
         </div>
     </div>
 </div>
 
-
-
 <script type="text/javascript">
+    var _tmBlack    = '该商标位于黑名单内，请先解除黑名单限制 <a href="javascript:void(0);" onClick="_outBlack();">解除黑名单</a>';
+    var _tmEdit     = '该商标已有对应商标 ';
+    var _tmNull     = '无该商标，请验证后输入';
+    var _tmWuxiao   = '该商标号已失效';
     $(function(){
         $(".mj-glM").show();
         $(".mj-close").on("click",function(){
             parent.layer.closeAll();
         });
+        $("#searchNumber").blur(function(){
+            _addGoods();
+        });
     });
+    function _addGoods(yes)
+    {
+        var add = 0;
+        if ( yes == 'yes') {
+            add = 1;
+        }
+        $("#addBtn").hide();
+        var _value  = $.trim( $("#searchNumber").val() );
+        var _info   = $("#searchInfo");
+        _info.hide();
+        if ( _value == '' ){
+            _info.text('请输入商标号');
+            _info.show();
+        }
+        $.ajax({
+            type : 'post',
+            url  : '/internal/checkNumber/',
+            data : {'number':_value, 'add':add},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    _info.text('添加成功');
+                    _info.show();
+                    setTimeout(function(){
+                        parent.window.location = '/internal/edit/?id='+data.id;
+                    },1000);
+                }if (data.code==-1){
+                    _info.text('商品可创建，请点击 创建商品 并进行其他编辑。');
+                    _info.show();
+                    $("#addBtn").show();
+                }else if (data.code==2){//存在商品
+                    var _edit_ = '<a href="/internal/edit/?id='+data.id+'" target="rightFrame">点击进入编辑</a>';
+                    _info.html(_tmEdit+_edit_);
+                    _info.show();
+                }else if (data.code==3){//在黑名单中
+                    _info.html(_tmBlack);
+                    _info.show();
+                }else if (data.code==4){//无该商标
+                    _info.text(_tmNull);
+                    _info.show();
+                }else if (data.code==5){//商标无效
+                    _info.text(_tmWuxiao);
+                    _info.show();
+                }else if (data.code==6){//商标号为空
+                    _info.text('请输入商标号');
+                    _info.show();
+                }else if (data.code==0){//未创建成功
+                    _info.show();
+                    _info.text('操作失败');
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+    function _outBlack()
+    {
+        var _number = $.trim($("#searchNumber").val());
+        if ( _number == '' ) {
+            layer.msg('商标号不能为空');
+            return false;
+        } 
+        $.ajax({
+            type : 'post',
+            url  : '/blacklist/outBlack/',
+            data : {'number':_number},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        $("#searchNumber").blur();
+                    });
+                }else{
+                    layer.msg('操作失败，请重试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
 </script>
 
 <? require(ViewDir.'/footer.html'); ?>

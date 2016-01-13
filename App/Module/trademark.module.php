@@ -127,7 +127,7 @@ class TrademarkModule extends AppModule
     public function getTmPlatform($class)
     {
         $strArr = array();
-        $platform = C("PLATFORM_IN");
+        $platform = C("SALE_PLATFORM");
         if ( is_array($class) ){
             foreach ($class as $c) {
                 $resArr = $this->getTmPlatform($c);
@@ -153,10 +153,9 @@ class TrademarkModule extends AppModule
         $r['eq']	= array('id' => $number);
         $r['col']   = $this->col;
         $r['limit']	= 100;
-        $data		= $this->import('tm')->find($r);
+        $data		= $this->findTm($r);
 
         if(empty($data)) return array();
-
         $info   = current($data);
 
         $info['class']          = arrayColumn($data, 'class');
@@ -175,7 +174,7 @@ class TrademarkModule extends AppModule
         $r['eq']    = array('id' => $number);
         $r['col']   = array('class', 'trademark as `name`');
         $r['limit'] = 100;
-        $data       = $this->import('tm')->find($r);
+        $data       = $this->findTm($r);
         if(empty($data)) return array();
 
         $res    = array();
@@ -183,7 +182,7 @@ class TrademarkModule extends AppModule
         $class  = arrayColumn($data, 'class');
 
         $res['type']        = $this->getTmType($info['name']);
-        $res['nums']        = $this->getTmLength($info['name']);;
+        $res['length']      = $this->getTmLength($info['name']);;
         $res['platform']    = $this->getTmPlatform($class);
 
         return $res;
@@ -241,7 +240,7 @@ class TrademarkModule extends AppModule
             $r['col'] = $field;
         }
 
-        return $this->import('tm')->find($r);
+        return $this->findTm($r);
     }
 
 
@@ -410,7 +409,7 @@ class TrademarkModule extends AppModule
             $r['eq']    = array('proposer_id' => $tmArr['proposer_id'],'trademark' => $tmArr['trademark']);
             $r['notIn'] = array('auto'=>array($tmArr['auto']));
             $r['col']   = array('COUNT( * ) AS total');
-            $data       = $this->import('tm')->find($r);
+            $data       = $this->findTm($r);
             $total      = $data['total'];
         }
         return $total;

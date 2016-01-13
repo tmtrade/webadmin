@@ -171,7 +171,8 @@
                             echo 'class="yellow"';
                         }
                         ?> ><?=$saleStatus[$v['status']]?></span></td>
-                    <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?></td>
+                    <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?>
+                    <?if($v['isBlack']){?><span class="red">黑</span><?}?></td>
                     <td title="<?=$v['name']?>"><?if(mb_strlen($v['name'],'utf8') > 15)
                     {echo mb_substr($v['name'],0,12,'utf8')."...";}
                     else{echo $v['name'];}?></td>
@@ -218,7 +219,7 @@
                         <span class="icon icon-delete">
                         <?if($v['status']==1){?>
                         <a href="javascript:;" class="btn-warning" onclick="doUpDown('down', <?=$v['id']?>);">下架</a>
-                        <?}elseif($v['status']==2){?>
+                        <?}elseif($v['status']==2 && count($v['contact']) > 0 && !$v['isBlack']){?>
                         <a href="javascript:;" class="btn-success" onclick="doUpDown('up', <?=$v['id']?>);">上架</a>
                         <?}?></span>
                         <span class="icon icon-editor">
@@ -254,6 +255,8 @@
     </div>
 </div>
 
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/internal/updown.js"></script>
+
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     $(function(){
@@ -282,93 +285,7 @@
         });
 
     });
-    function doUpDown(status, id)
-    {
-        if(status != 'up' && status != 'down'){
-            return false;
-        }
-        if ( status == 'down' ){
-            layer.prompt({
-                formType: 2,
-                value: '',
-                maxlength: 100,
-                title: '请输入下架原因'
-            }, function(value, index, elem){
-                if ( $.trim(value) == ''){
-                    layer.tips('请输入下架原因',elem);
-                    return false;
-                }else{
-                    _doDown(id, value);
-                }
-            });
-        }else if (  status == 'up' ){
-            layer.confirm('确认要上架吗？请确认相关数据已审核成功！', {
-                btn: ['确认','取消'] //按钮
-            }, function(){
-                _doUp(id);
-            });
-        }else{
-            return false;
-        }
-    }
-    function _doDown(id, reason)
-    {
-        $.ajax({
-            type : 'post',
-            url  : '/internal/doDown/',
-            data : {'id':id,'reason':reason},
-            dataType : 'json',
-            success : function (data){
-                if (data.code==1){
-                    layer.msg('操作成功！', {
-                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                    }, function(){
-                        window.location.reload();
-                    });
-                }else{
-                    layer.msg('操作失败，请重试。', {
-                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                    }, function(){
-                        doUpDown('down', id);
-                    });
-                }
-            },
-            error : function (data){
-                layer.msg('操作失败，请稍后重试。', {
-                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                });
-            }
-        });
-    }
-    function _doUp(id)
-    {
-        $.ajax({
-            type : 'post',
-            url  : '/internal/doUp/',
-            data : {'id':id},
-            dataType : 'json',
-            success : function (data){
-                if (data.code==1){
-                    layer.msg('操作成功！', {
-                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                    }, function(){
-                        window.location.reload();
-                    });
-                }else{
-                    layer.msg('操作失败，请重试。', {
-                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                    }, function(){
-                        doUpDown('up', id);
-                    });
-                }
-            },
-            error : function (data){
-                layer.msg('操作失败，请稍后重试。', {
-                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                });
-            }
-        });
-    }
+
     function add()
     {
         layer.open({

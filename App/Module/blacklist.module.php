@@ -24,7 +24,7 @@ class BlacklistModule extends AppModule
             );
         $res = $this->import('black')->find($r);
         if ( empty($res) ) return false;
-        return true;
+        return $res['id'];
     }
 
     public function deleteBlack($number)

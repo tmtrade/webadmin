@@ -69,7 +69,7 @@ class InternalModule extends AppModule
         if ( !empty($params['isTop']) ){
             $r['eq']['isTop'] = 1;
         }
-
+        $r['order'] = array('date'=>'desc');
         $res = $this->import('sale')->findAll($r);
         return $res;
     }
@@ -81,8 +81,9 @@ class InternalModule extends AppModule
             );
         $info = $this->import('sale')->find($r);
         if ( empty($info) ) return array();
-        $info['contact'] = $this->getSaleContact($saleId);
-        $info['tminfo']  = $this->getSaleTminfo($saleId);
+        $info['contact']    = $this->getSaleContact($saleId);
+        $info['tminfo']     = $this->getSaleTminfo($saleId);
+        $info['isBlack']    = $this->load('blacklist')->existBlack($info['number']);
         return $info;
     }
 
@@ -133,12 +134,12 @@ class InternalModule extends AppModule
     }
 
     //上架商标
-    public function saleUp($saleId)
+    public function saleUp($saleId, $memo="商品上架了")
     {
         if ( $saleId < 1 ) return false;
 
         $this->begin('sale');
-        $logId = $this->load('log')->addSaleLog($saleId, 1);//上架日志
+        $logId = $this->load('log')->addSaleLog($saleId, 1, $memo);//上架日志
         if ( $logId <= 0 ) {
             $this->rollBack('sale');
             return false;
@@ -151,13 +152,59 @@ class InternalModule extends AppModule
         return false;
     }
 
-    public function add($data)
+    //创建默认的商品信息
+    public function addDefault($number)
     {
-        //基础sale
-        //add联系人
-        //add包装信息
-        //add价格信息
-        //add其他信息
+        if ( empty($number) ) return false;
+        if ( $this->existSale($number) ) return false;
+
+        $info   = $this->load('trademark')->getTmInfo($number);
+        if ( empty($info) ) return false;
+
+        $other  = $this->load('trademark')->getTmOther($number);
+        if ( empty($other) ) return false;
+
+        $class      = implode(',', $info['class']);
+        $platform   = implode(',', $other['platform']);
+        $sale = array(
+            'tid'           => intval($info['tid']),
+            'number'        => $number,
+            'class'         => $class,
+            'group'         => trim($info['group']),
+            'name'          => trim($info['name']),
+            'pid'           => intval($info['pid']),
+            'price'         => 0,
+            'priceType'     => 2,
+            'isOffprice'    => 2,
+            'salePrice'     => 0,
+            'salePriceDate' => 0,
+            'status'        => 3, 
+            'isSale'        => 1,
+            'isLicense'     => 2,
+            'isTop'         => 0,
+            'type'          => $other['type'],
+            'platform'      => $platform,
+            'label'         => '',
+            'length'        => $other['length'],
+            'date'          => time(),
+            'hits'          => 0,
+            'memo'          => '后台创建默认商品',
+        );
+        $tminfo = array(
+            'number'    => $number,
+            'memo'      => '后台创建默认商品',
+            'intro'     => '',
+        );
+        $this->begin('sale');
+        $saleId = $this->addSale($sale);//创建商品信息
+        $tmId   = $this->addTminfo($tminfo, $saleId);//创建商品包装信息
+        if ( $saleId && $tmId ){
+            $this->load('log')->addSaleLog($saleId, 3, '后台创建默认商品');//创建商品日志
+            $this->commit('sale');
+            return $saleId;
+        }
+        $this->rollBack('sale');
+        return false;
     }
 
     //更新
@@ -241,14 +288,75 @@ class InternalModule extends AppModule
         
     }
 
+    //删除联系人
+    public function delContact($id, $saleId, $type='one')
+    {
+        if ( empty($id) && empty($saleId) ) return false;
+
+        $r['eq'] = array('saleId'=>$saleId);
+        if ( $type == 'all' ){
+            return $this->import('contact')->remove($r);
+        }
+        if ( $saleId ){//如果有商品ID，要判断联系人是否至少有一个
+            $total = $this->import('contact')->count($r);
+            if ( $total < 2 ) return false;
+        }
+        $role['eq'] = array('id'=>$id);
+        return $this->import('contact')->remove($role);
+    }
+
+    //审核联系人
+    public function setVerify($id, $saleId)
+    {
+        if ( empty($id) && empty($saleId) ) return false;
+
+        $r['eq']    = array('id'=>$id);
+        $data       = array('isVerify'=>1);
+        $res = $this->import('contact')->modify($data, $r);
+        if ( !$res ) return false;
+        if ( $this->isSaleUp($saleId) )  return true;
+
+        $memo = '联系人审核通过并上架商品';
+        return $this->saleUp($saleId, $memo);
+    }
+
+    //驳回联系人
+    public function delVerify($id, $saleId, $reason)
+    {
+        if ( empty($id) && empty($reason) && empty($saleId) ) return false;
+        
+        return $this->delContact($id, $saleId, $reason);
+    }
+
+    //判断商品是否上架
+    public function isSaleUp($saleId)
+    {
+        if ( empty($saleId) ) return false;
+        $r['eq'] = array('id'=>$saleId,'status'=>1);
+        $isUp = $this->import('sale')->count($r);
+        if ( $isUp ) return true;
+        return false;
+    }
+
+    //判断商品联系人是否有审核通过的记录
+    public function existVerifyContact($saleId)
+    {
+        if ( empty($saleId) ) return false;
+        $r['eq'] = array('saleId'=>$saleId, 'isVerify'=>1);
+        $total = $this->import('contact')->count($r);
+        if ( $total > 0 ) return true;
+        return false;
+    }
+
     //判断是否出售基础信息是否存在
     public function existSale($number)
     {
         if ( empty($number) ) return false;
-        $r['eq'] = array('number'=>$number);
+        $r['eq']    = array('number'=>$number);
+        $r['col']   = array('id');
         $res = $this->import('sale')->find($r);
         if ( empty($res) ) return false;
-        return true;
+        return $res['id'];
     }
 
     //判断是否商标包装信息是否存在
@@ -269,6 +377,17 @@ class InternalModule extends AppModule
         $res = $this->import('contact')->find($r);
         if ( $res ) return true;
         return false;
+    }
+
+    //商品是否在黑名单中
+    public function existBlacklist($id)
+    {
+        if ( empty($id) ) return false;
+        $r['eq']    = array('id'=>$id);
+        $r['col']   = array('number');
+        $sale       = $this->import('sale')->find($r);
+        if ( empty($sale['number']) ) return false;
+        return $this->load('blacklist')->existBlack($sale['number']);
     }
 
     public function countSale()

@@ -118,26 +118,33 @@ class internalAction extends AppAction
 		}
 		$sale 		= $this->load('internal')->getSaleInfo($id);
 		$tminfo 	= $this->load('trademark')->getTminfo($sale['number']);
-		$isBlack 	= $this->load('blacklist')->isBlack($sale['number']);
+		//$isBlack 	= $this->load('blacklist')->isBlack($sale['number']);
 		$log 		= $this->load('log')->getSaleLog($id);
 
 		$this->getSetting();
-		$this->set('isBlack', $isBlack);
+		//$this->set('isBlack', $isBlack);
 		$this->set('sale', $sale);
 		$this->set('tminfo', $tminfo);
 		$this->set('log', $log);
 		$this->display();
 	}
 
-	//商品下架
+	//商品下架(可批量)
 	public function doDown()
 	{
-		$id 	= $this->input('id', 'int', 0);
+		$id 	= $this->input('id', 'string', '');
 		$reason = $this->input('reason', 'string', '');
-		if ( $id <= 0 || empty($reason) ){
-			$this->returnAjax(array('code'=>2));
+		if ( empty($id) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
 		}
-		$res = $this->load('internal')->saleDown($id, $reason);
+		if ( empty($reason) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请填写下架原因'));
+		}
+		$ids 	= array_filter( array_unique( explode(',', $id) ) );
+		if ( empty($ids) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+		}
+		$res 	= $this->load('internal')->saleDown($ids, $reason);
 		if ( $res ) $this->returnAjax(array('code'=>1));
 		$this->returnAjax(array('code'=>2));
 	}
@@ -153,8 +160,8 @@ class internalAction extends AppAction
 		$isVerify = $this->load('internal')->existVerifyContact($id);
 		if ( !$isVerify ) return $this->returnAjax(array('code'=>2,'msg'=>'无联系人或至少有一位联系人未审核！'));
 
-		$isBlack = $this->load('internal')->isBlack($id);
-		if ( $isBlack ) return $this->returnAjax(array('code'=>2,'msg'=>'商品还在黑名单中，请在编辑中剔除！'));
+		//$isBlack = $this->load('internal')->isBlack($id);
+		//if ( $isBlack ) return $this->returnAjax(array('code'=>2,'msg'=>'商品还在黑名单中，请在编辑中剔除！'));
 
 		$res = $this->load('internal')->saleUp($id);
 		if ( $res ) $this->returnAjax(array('code'=>1));
@@ -162,35 +169,35 @@ class internalAction extends AppAction
 	}
 
 	//删除黑名单
-	public function outBlack()
-	{
-		$id 	= $this->input('id', 'int', 0);
-		$number = $this->input('number', 'string', '');
-		if ( empty($number) || $id <= 0 ) $this->returnAjax(array('code'=>2)); 
+	// public function outBlack()
+	// {
+	// 	$id 	= $this->input('id', 'int', 0);
+	// 	$number = $this->input('number', 'string', '');
+	// 	if ( empty($number) || $id <= 0 ) $this->returnAjax(array('code'=>2)); 
 
-		$list 	= array_filter( array_unique( explode(',', $number) ) );
-		$res 	= $this->load('blacklist')->deleteBlack($list);
-		if ( $res ){
-			$this->load('log')->addSaleLog($id, 7);//删除黑名单
-			$this->returnAjax(array('code'=>1));
-		}
-		$this->returnAjax(array('code'=>2));
-	}
+	// 	$list 	= array_filter( array_unique( explode(',', $number) ) );
+	// 	$res 	= $this->load('blacklist')->deleteBlack($list);
+	// 	if ( $res ){
+	// 		$this->load('log')->addSaleLog($id, 7);//删除黑名单
+	// 		$this->returnAjax(array('code'=>1));
+	// 	}
+	// 	$this->returnAjax(array('code'=>2));
+	// }
 
 	//加入黑名单
-	public function setBlack()
-	{
-		$id 	= $this->input('id', 'string', '');
-		$reason = $this->input('reason', 'string', '');
-		if ( empty($id) || empty($reason) ) $this->returnAjax(array('code'=>2)); 
+	// public function setBlack()
+	// {
+	// 	$id 	= $this->input('id', 'string', '');
+	// 	$reason = $this->input('reason', 'string', '');
+	// 	if ( empty($id) || empty($reason) ) $this->returnAjax(array('code'=>2)); 
 
-		$ids 	= array_filter( array_unique( explode(',', $id) ) );
-		if ( empty($ids) ) $this->returnAjax(array('code'=>2)); 
+	// 	$ids 	= array_filter( array_unique( explode(',', $id) ) );
+	// 	if ( empty($ids) ) $this->returnAjax(array('code'=>2)); 
 
-		$res 	= $this->load('internal')->setBlack($ids, $reason);
-		if ( $res ) $this->returnAjax(array('code'=>1));
-		$this->returnAjax(array('code'=>2));
-	}
+	// 	$res 	= $this->load('internal')->setBlack($ids, $reason);
+	// 	if ( $res ) $this->returnAjax(array('code'=>1));
+	// 	$this->returnAjax(array('code'=>2));
+	// }
 
 	//提交价格信息
 	public function setPrice()
@@ -267,6 +274,7 @@ class internalAction extends AppAction
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
 	}
 
+	//更新包装信息
 	public function setEmbellish()
 	{
 		$saleId = $this->input('saleId', 'int', 0);
@@ -305,6 +313,7 @@ class internalAction extends AppAction
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
 	}
 
+	//图片上传
 	public function ajaxUploadPic()
     {
         $msg = array(
@@ -326,7 +335,7 @@ class internalAction extends AppAction
         $this->returnAjax($msg);
     }
 
-    //检查商标是否可出售
+    //检查商标是否可出售，可直接生成默认商品
     public function checkNumber()
     {
 		$number = $this->input('number', 'text', '');
@@ -342,8 +351,8 @@ class internalAction extends AppAction
 		$saleId = $this->load('internal')->existSale($number);
 		if ( $saleId ) $this->returnAjax(array('code'=>2,'id'=>$saleId));//在出售中
 
-		$isBlack = $this->load('blacklist')->isBlack($number);
-		if ( $isBlack ) $this->returnAjax(array('code'=>3));//在黑名单中
+		//$isBlack = $this->load('blacklist')->isBlack($number);
+		//if ( $isBlack ) $this->returnAjax(array('code'=>3));//在黑名单中
 
 		if ( $isAdd ){
 			//正常商标马上创建默认的出售信息

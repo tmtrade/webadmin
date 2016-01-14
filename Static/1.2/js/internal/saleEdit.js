@@ -182,98 +182,98 @@ function delContact(saleId, cId, nums)
 	});
 }
 //剔除黑名单 
-function outBlack(id, number)
-{
-	if ( $.trim(number) == '' || $.trim(id) == '' ){
-		layer.msg('操作失败，请重试。', {
-			time: 1000 //2秒关闭（如果不配置，默认是3秒）
-		});
-		return false;
-	}
-	layer.confirm('确认要从黑名单中删除？', {
-		btn: ['对滴','算了'] //按钮
-	}, function(){
-		$.ajax({
-			type : 'post',
-			url  : '/internal/outBlack/',
-			data : {'id':id,'number':number},
-			dataType : 'json',
-			success : function (data){
-				if (data.code==1){
-					layer.msg('操作成功！', {
-						time: 1000 //2秒关闭（如果不配置，默认是3秒）
-					}, function(){
-						window.location.reload();
-					});
-				}else{
-					layer.msg('操作失败，请重试。', {
-						time: 1000 //2秒关闭（如果不配置，默认是3秒）
-					});
-				}
-			},
-			error : function (data){
-				layer.msg('操作失败，请稍后重试。', {
-					time: 2000 //2秒关闭（如果不配置，默认是3秒）
-				});
-			}
-		});
-	});
-}
+// function outBlack(id, number)
+// {
+// 	if ( $.trim(number) == '' || $.trim(id) == '' ){
+// 		layer.msg('操作失败，请重试。', {
+// 			time: 1000 //2秒关闭（如果不配置，默认是3秒）
+// 		});
+// 		return false;
+// 	}
+// 	layer.confirm('确认要从黑名单中删除？', {
+// 		btn: ['对滴','算了'] //按钮
+// 	}, function(){
+// 		$.ajax({
+// 			type : 'post',
+// 			url  : '/internal/outBlack/',
+// 			data : {'id':id,'number':number},
+// 			dataType : 'json',
+// 			success : function (data){
+// 				if (data.code==1){
+// 					layer.msg('操作成功！', {
+// 						time: 1000 //2秒关闭（如果不配置，默认是3秒）
+// 					}, function(){
+// 						window.location.reload();
+// 					});
+// 				}else{
+// 					layer.msg('操作失败，请重试。', {
+// 						time: 1000 //2秒关闭（如果不配置，默认是3秒）
+// 					});
+// 				}
+// 			},
+// 			error : function (data){
+// 				layer.msg('操作失败，请稍后重试。', {
+// 					time: 2000 //2秒关闭（如果不配置，默认是3秒）
+// 				});
+// 			}
+// 		});
+// 	});
+// }
 //添加黑名单 
-function setBlack(id, number)
-{
-	if ( $.trim(number) == '' || $.trim(id) == '' ){
-		layer.msg('操作失败，请重试。', {
-			time: 1000 //2秒关闭（如果不配置，默认是3秒）
-		});
-		return false;
-	}
-	layer.confirm('<span class="red">注意：如商品在销售中，会自动下架商品！</span>', {
-		btn: ['要得','算了'] //按钮
-	}, function(){
-		layer.prompt({
-			formType: 2,
-			value: '',
-			maxlength: 100,
-			title: '请输入添加黑名单的原因'
-		}, function(value, index, elem){
-			if ( $.trim(value) == ''){
-				layer.tips('请输入添加黑名单的原因',elem);
-				return false;
-			}else{
-				_setBlack(id, number, value);
-			}
-		});
-	});
-}
+// function setBlack(id, number)
+// {
+// 	if ( $.trim(number) == '' || $.trim(id) == '' ){
+// 		layer.msg('操作失败，请重试。', {
+// 			time: 1000 //2秒关闭（如果不配置，默认是3秒）
+// 		});
+// 		return false;
+// 	}
+// 	layer.confirm('<span class="red">注意：如商品在销售中，会自动下架商品！</span>', {
+// 		btn: ['要得','算了'] //按钮
+// 	}, function(){
+// 		layer.prompt({
+// 			formType: 2,
+// 			value: '',
+// 			maxlength: 100,
+// 			title: '请输入添加黑名单的原因'
+// 		}, function(value, index, elem){
+// 			if ( $.trim(value) == ''){
+// 				layer.tips('请输入添加黑名单的原因',elem);
+// 				return false;
+// 			}else{
+// 				_setBlack(id, number, value);
+// 			}
+// 		});
+// 	});
+// }
 //添加黑名单
-function _setBlack(id, number, reason)
-{
-	$.ajax({
-		type : 'post',
-		url  : '/internal/setBlack/',
-		data : {'id':id,'number':number,'reason':reason},
-		dataType : 'json',
-		success : function (data){
-			if (data.code==1){
-				layer.msg('操作成功！', {
-					time: 1000 //2秒关闭（如果不配置，默认是3秒）
-				}, function(){
-					window.location.reload();
-				});
-			}else{
-				layer.msg('操作失败，请重试。', {
-					time: 1000 //2秒关闭（如果不配置，默认是3秒）
-				});
-			}
-		},
-		error : function (data){
-			layer.msg('操作失败，请稍后重试。', {
-				time: 2000 //2秒关闭（如果不配置，默认是3秒）
-			});
-		}
-	});
-}
+// function _setBlack(id, number, reason)
+// {
+// 	$.ajax({
+// 		type : 'post',
+// 		url  : '/internal/setBlack/',
+// 		data : {'id':id,'number':number,'reason':reason},
+// 		dataType : 'json',
+// 		success : function (data){
+// 			if (data.code==1){
+// 				layer.msg('操作成功！', {
+// 					time: 1000 //2秒关闭（如果不配置，默认是3秒）
+// 				}, function(){
+// 					window.location.reload();
+// 				});
+// 			}else{
+// 				layer.msg('操作失败，请重试。', {
+// 					time: 1000 //2秒关闭（如果不配置，默认是3秒）
+// 				});
+// 			}
+// 		},
+// 		error : function (data){
+// 			layer.msg('操作失败，请稍后重试。', {
+// 				time: 2000 //2秒关闭（如果不配置，默认是3秒）
+// 			});
+// 		}
+// 	});
+// }
 
 //审核联系人
 function setVerify(saleId, id)

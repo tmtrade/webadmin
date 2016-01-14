@@ -22,19 +22,15 @@
             <em class="blue"><?=$saleStatus[$sale['status']]?></em>
             <?if(!$isBlack){?>
                 <?if($sale['status']==1){?>
-                <a href="javascript:;" class="btn-warning" onclick="doUpDown('down', <?=$sale['id']?>);">下架</a>
+                <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$sale['id']?>);">下架</a>
                 <?}else{?>
-                <a href="javascript:;" class="btn-success" onclick="doUpDown('up', <?=$sale['id']?>);">上架</a>
+                <a href="javascript:;" class="btn-success" onclick="doUp(<?=$sale['id']?>);">上架</a>
                 <?}?>
             <?}?>
         </div>
-        <?if($isBlack){?>
-        <span class="mj-ztBr">当前商品已在黑名单内，如需编辑请先 
-        <a href="javascript:void(0);" onclick="outBlack(<?=$sale['id']?>,'<?=$sale['number']?>');">剔除黑名单</a></span>
-        <?}else{?>
-        <a href="javascript:void(0);" onclick="setBlack(<?=$sale['id']?>,'<?=$sale['number']?>');" class="mj-ztBr">加入黑名单</a>
-        <?}?>
-    </div>
+       <!--  <span class="mj-ztBr">
+            <a class="btn btn-info" href="javascript:void(0);">返回</a>
+        </span> -->
     <div class="mj-detaImg">
         <div class="mj-deiT">
             <span>商标基本信息</span>
@@ -65,7 +61,6 @@
             </table>
         </div>
     </div>
-<?if(!$isBlack){?>
     <div class="mj-sellT">
         <table>
             <thead>
@@ -112,9 +107,7 @@
             </tbody>
         </table>
     </div>
-<?}?>
     <div class="mj-deiBlist">
-<?if(!$isBlack){?>
         <div class="mj-deiBtns">
             <a href="javascript:void(0);" id="mj-deib">新增出售信息</a>
         </div>
@@ -277,7 +270,6 @@
     <div class="mj-deiBtns">
         <a href="javascript:void(0);" onclick="setMemo();">提交备注</a>
     </div>
-<?}?>
     <table class="mj-tables">
         <tbody>
         <tr>

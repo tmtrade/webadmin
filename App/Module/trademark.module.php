@@ -18,11 +18,11 @@ class TrademarkModule extends AppModule
     );
 
     protected $col = array(
-        'auto as `tid`',
-        'id as `number`',
-        'trademark as `name`',
-        'class','pid','valid_end','goods','group'
-        );
+        'auto as `tid`', 'id as `number`',
+        'trademark as `name`','class',
+        'pid','valid_end','goods','group',
+        'group_concat(distinct class) as `strclass`'
+    );
 
     /**
      * 群组字符串替换处理
@@ -152,13 +152,13 @@ class TrademarkModule extends AppModule
     {
         $r['eq']	= array('id' => $number);
         $r['col']   = $this->col;
-        $r['limit']	= 100;
-        $data		= $this->findTm($r);
+        //$r['limit']	= 100;
+        $info		= $this->findTm($r);
 
-        if(empty($data)) return array();
-        $info   = current($data);
+        if(empty($info)) return array();
+        //$info   = current($data);
 
-        $info['class']          = arrayColumn($data, 'class');
+        $info['class']          = array_filter( explode(',', $info['strclass']) );
         $info['imgUrl']         = $this->getImg($number);
         $info['group']          = $this->groupReplace($info['group']);
         $info['status']         = $this->getFirst($info['tid']);
@@ -172,14 +172,13 @@ class TrademarkModule extends AppModule
     public function getTmOther($number)
     {   
         $r['eq']    = array('id' => $number);
-        $r['col']   = array('class', 'trademark as `name`');
-        $r['limit'] = 100;
-        $data       = $this->findTm($r);
-        if(empty($data)) return array();
+        $r['col']   = array('class', 'trademark as `name`', 'group_concat(distinct class) as `strclass`');
+        //$r['limit'] = 100;
+        $info       = $this->findTm($r);
+        if(empty($info)) return array();
 
         $res    = array();
-        $info   = current($data);
-        $class  = arrayColumn($data, 'class');
+        $class  = array_filter( explode(',', $info['strclass']) );
 
         $res['type']        = $this->getTmType($info['name']);
         $res['length']      = $this->getTmLength($info['name']);;

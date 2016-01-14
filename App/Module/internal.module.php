@@ -83,72 +83,72 @@ class InternalModule extends AppModule
             );
         $info = $this->import('sale')->find($r);
         if ( empty($info) ) return array();
-        $info['isBlack'] = $this->load('blacklist')->isBlack($info['number']);
+        //$info['isBlack'] = $this->load('blacklist')->isBlack($info['number']);
         if ( $contact ) $info['contact']    = $this->getSaleContact($saleId);
         if ( $tminfo ) $info['tminfo']      = $this->getSaleTminfo($saleId);
         return $info;
     }
 
     //通过商品ID获取没有在黑名单中的商标号
-    public function getNoBlackById($ids)
-    {
-        if ( empty($ids) || !is_array($ids) ) return array();
+    // public function getNoBlackById($ids)
+    // {
+    //     if ( empty($ids) || !is_array($ids) ) return array();
         
-        $numbers = array();
-        foreach ($ids as $id) {
-            $sale = $this->getSaleInfo($id, 0, 0);
-            if ( $sale['isBlack'] ) continue;
-            if ( empty($sale) ) continue;
-            $numbers[$id] = $sale['number'];
-        }
-        return $numbers;
-    }
+    //     $numbers = array();
+    //     foreach ($ids as $id) {
+    //         $sale = $this->getSaleInfo($id, 0, 0);
+    //         if ( $sale['isBlack'] ) continue;
+    //         if ( empty($sale) ) continue;
+    //         $numbers[$id] = $sale['number'];
+    //     }
+    //     return $numbers;
+    // }
 
     //加入黑名单（要走事务，因为有自动下架。批量时，成功一条算一条，但返回值必须都成功才返回TRUE）
-    public function setBlack($saleId, $reason='')
-    {
-        if ( empty($saleId) ) return false;
-        if ( !is_array($saleId) ){
-            return $this->_setBlack($saleId, $reason);
-        }
-        //过滤掉已经是黑名单的数据
-        $list = $this->load('internal')->getNoBlackById($saleId);
-        if ( empty($list) ) return true;
+    // public function setBlack($saleId, $reason='')
+    // {
+    //     if ( empty($saleId) ) return false;
+    //     if ( !is_array($saleId) ){
+    //         return $this->_setBlack($saleId, $reason);
+    //     }
+    //     //过滤掉已经是黑名单的数据
+    //     $list = $this->load('internal')->getNoBlackById($saleId);
+    //     if ( empty($list) ) return true;
 
-        $flag = true;
-        foreach ($list as $id => $number) {
-            $res = $this->_setBlack($id, $reason);
-            if ( !$res ) $flag = false;
-        }
-        return $flag;
-    }
+    //     $flag = true;
+    //     foreach ($list as $id => $number) {
+    //         $res = $this->_setBlack($id, $reason);
+    //         if ( !$res ) $flag = false;
+    //     }
+    //     return $flag;
+    // }
 
     //单条加入黑名单
-    protected function _setBlack($saleId, $reason)
-    {
-        if ( $saleId <= 0 ) return false;
+    // protected function _setBlack($saleId, $reason)
+    // {
+    //     if ( $saleId <= 0 ) return false;
 
-        $sale = $this->getSaleInfo($saleId, 0, 0);
-        if ( $sale['isblack'] ) return true;//已经在黑名单中，直接返回
+    //     $sale = $this->getSaleInfo($saleId, 0, 0);
+    //     if ( $sale['isblack'] ) return true;//已经在黑名单中，直接返回
 
-        $this->begin('sale');
-        $res = $this->load('blacklist')->setBlack($sale['number'], $reason);        
-        if ( !$res ) {
-            $this->rollBack('sale');
-            return false;
-        }
-        $this->load('log')->addSaleLog($saleId, 6, $reason);//添加黑名单 
-        //如果是已上架，需要下架
-        if ( $sale['status'] == 1 ) {
-            $res = $this->saleDown($saleId, '添加黑名单');
-            if ( $res ){
-                return $this->commit('sale');
-            }
-            $this->rollBack('sale');
-            return false;
-        }
-        return $this->commit('sale');
-    }
+    //     $this->begin('sale');
+    //     $res = $this->load('blacklist')->setBlack($sale['number'], $reason);        
+    //     if ( !$res ) {
+    //         $this->rollBack('sale');
+    //         return false;
+    //     }
+    //     $this->load('log')->addSaleLog($saleId, 6, $reason);//添加黑名单 
+    //     //如果是已上架，需要下架
+    //     if ( $sale['status'] == 1 ) {
+    //         $res = $this->saleDown($saleId, '添加黑名单');
+    //         if ( $res ){
+    //             return $this->commit('sale');
+    //         }
+    //         $this->rollBack('sale');
+    //         return false;
+    //     }
+    //     return $this->commit('sale');
+    // }
 
     //获取商品ID（saleId）下的所有联系人信息（可选，如果传id即查询当前ID下的联系人信息）
     public function getSaleContact($saleId, $id=0)
@@ -178,8 +178,29 @@ class InternalModule extends AppModule
         return $this->import('tminfo')->find($r);
     }
 
-    //下架商标 
-    public function saleDown($saleId, $memo='')
+    //下架商标（批量时必须全部成功）
+    public function saleDown($saleId, $reason='')
+    {
+        if ( empty($saleId) ) return false;
+        //单条
+        if ( !is_array($saleId) ){
+            return $this->_saleDown($saleId, $reason);
+        }
+        //多条
+        $flag = true;
+        $this->begin('sale');
+        foreach ($saleId as $id) {
+            $res = $this->_saleDown($id, $reason);
+            if ( !$res ){
+                $this->rollBack('sale');
+                return false;
+            }
+        }
+        return $this->commit('sale');
+    }
+
+    //商品单条下架
+    protected function _saleDown($saleId, $reason)
     {
         if ( $saleId <= 0 ) return false;
         //判断是否是上架状态
@@ -189,20 +210,10 @@ class InternalModule extends AppModule
         $data['status'] = 2;
         $res = $this->import('sale')->modify($data, $r);
         if ( $res ) {
-            $this->load('log')->addSaleLog($saleId, 2, $memo);//下架日志
+            $this->load('log')->addSaleLog($saleId, 2, $reason);//下架日志
             return true;
         }
         return false;
-        //暂时不做批量下架
-        // $this->begin('sale');
-        // foreach ($saleId as $k => $id) {
-        //     if ( !$this->isSaleUp($id) ) continue;
-        //     $r['eq']    = array('id'=>$id);
-        //     $res = $this->import('sale')->modify($data, $r);
-        //     if ( !$res ) return $this->rollBack('sale');
-        //     $this->load('log')->addSaleLog($id, 2, $memo);//下架日志
-        // }
-        // return $this->commit('sale');
     }
 
     //上架商标
@@ -267,7 +278,8 @@ class InternalModule extends AppModule
         $this->begin('sale');
         $saleId = $this->addSale($sale);//创建商品信息
         $tmId   = $this->addTminfo($tminfo, $saleId);//创建商品包装信息
-        if ( $saleId && $tmId ){
+        $black  = $this->load('blacklist')->setBlack($number);
+        if ( $saleId && $tmId && $black ){
             $this->load('log')->addSaleLog($saleId, 3, '后台创建默认商品');//创建商品日志
             $this->commit('sale');
             return $saleId;

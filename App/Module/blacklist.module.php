@@ -12,6 +12,7 @@ class BlacklistModule extends AppModule
 {
     public $models = array(
         'black'     => 'blacklist',
+        'second'    => 'secondStatus',
     );
 
     //商标是否在黑名单中
@@ -20,11 +21,12 @@ class BlacklistModule extends AppModule
         if ( empty($number) ) return false;
 
         $r['eq'] = array(
-            'number' => $number,
+            'trademark_id' => $number
             );
-        $res = $this->import('black')->find($r);
+        $r['raw'] = " `isShow` != 1 ";
+        $res = $this->import('second')->find($r);
         if ( empty($res) ) return false;
-        return $res['id'];
+        return true;
     }
 
     public function deleteBlack($number)
@@ -50,9 +52,25 @@ class BlacklistModule extends AppModule
     }
 
     //单条执行加入黑名单（无事务）
-    public function setBlack($number, $memo='加入黑名单')
+    public function setBlack($number)
     {
         if ( $this->isBlack($number) ) return true;
+
+        $r['eq'] = array(
+            'trademark_id' => $number
+            );
+        $data = array('isShow'=>2);
+        $res = $this->import('second')->modify($data, $r);
+        if ( $res ){
+            $this->_addBlack($number);
+            return true;
+        }
+        return false;
+    }
+
+    //添加到黑名单日志中
+    protected function _addBlack($number)
+    {
 
         $info = $this->load('trademark')->getTminfo($number);
         if ( empty($info) ) return false;
@@ -63,7 +81,7 @@ class BlacklistModule extends AppModule
             'class'     => implode(',', $info['class']),
             'date'      => time(),
             'memberId'  => $this->userId,
-            'memo'      => $memo,
+            'memo'      => '操作员：《'.$this->username.'》将商标：《'.$info['name']."》加入到黑名单中",
             );
         $res = $this->import('black')->create($black);
         if ( $res ) return true;

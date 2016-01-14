@@ -136,8 +136,9 @@
             <button class="btn btn-danger" onclick="add();" type="button">创建商品</button>
             <!-- <button class="btn btn-danger" type="button">导入商品</button> -->
             <!-- <button class="btn btn-info" type="button">导出表格EXCEL</button> -->
-            <button type="button" class="btn btn-info" onclick="setMoreBlack();">批量下架</button>
+            <button type="button" class="btn btn-info" onclick="setMoreDown();">批量下架</button>
             <button type="button" class="btn btn-info" onclick="delMoreSale();">批量删除</button>
+            <button class="btn btn-info" type="button" onclick="reloadList();">刷新</button>
         </div>
         <div class="wrap-table">
             <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
@@ -172,7 +173,6 @@
                         }
                         ?> ><?=$saleStatus[$v['status']]?></span></td>
                     <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?>
-                    <?if($v['isBlack']){?><span class="red">黑</span><?}?>
                     <?if( !empty($v['tminfo']['embellish'])){?><span class="blue">包</span><?}?></td>
                     <td title="<?=$v['name']?>"><?if(mb_strlen($v['name'],'utf8') > 15)
                     {echo mb_substr($v['name'],0,12,'utf8')."...";}
@@ -219,9 +219,9 @@
                     <td>
                         <span class="icon icon-delete">
                         <?if($v['status']==1){?>
-                        <a href="javascript:;" class="btn-warning" onclick="doUpDown('down', <?=$v['id']?>);">下架</a>
-                        <?}elseif($v['status']==2 && count($v['contact']) > 0 && !$v['isBlack']){?>
-                        <a href="javascript:;" class="btn-success" onclick="doUpDown('up', <?=$v['id']?>);">上架</a>
+                        <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$v['id']?>);">下架</a>
+                        <?}elseif($v['status']==2 && count($v['contact']) > 0){?>
+                        <a href="javascript:;" class="btn-success" onclick="doUp(<?=$v['id']?>);">上架</a>
                         <?}?></span>
                         <span class="icon icon-editor">
                         <a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>
@@ -231,25 +231,6 @@
                 <? } ?>
                 </tbody>
             </table>
-            <!-- <nav>
-                <ul class="pagination">
-                    <li>
-                        <a href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li>
-                        <a href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav> -->
         </div>
             
 <div id="page" align="center"><?=$pageBar?></div>  
@@ -291,7 +272,8 @@
 
     });
 
-    function setMoreBlack()
+    //批量下架
+    function setMoreDown()
     {
         var chkId = getChecked();
         if ( chkId == '' ) {
@@ -300,47 +282,41 @@
             });
             return false;
         }
-        layer.confirm('<span class="red">注意：如商品在销售中，会自动下架商品！</span>', {
-            btn: ['要得','算了'] //按钮
-        }, function(){
-            layer.prompt({
-                formType: 2,
-                value: '',
-                maxlength: 100,
-                title: '请输入添加黑名单的原因'
-            }, function(value, index, elem){
-                if ( $.trim(value) == ''){
-                    layer.tips('请输入添加黑名单的原因',elem);
-                    return false;
-                }else{
-                    $.ajax({
-                        type : 'post',
-                        url  : '/internal/setBlack/',
-                        data : {'id':chkId, 'reason':value},
-                        dataType : 'json',
-                        success : function (data){
-                            if (data.code==1){
-                                layer.msg('操作成功！', {
-                                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                                }, function(){
-                                    window.location.reload();
-                                });
-                            }else{
-                                layer.msg('操作失败！', {
-                                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                                },function(){
-                                    window.location.reload();
-                                });
-                            }
-                        },
-                        error : function (data){
-                            layer.msg('操作失败，请稍后重试。', {
-                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+        layer.prompt({
+            formType: 2,
+            value: '',
+            maxlength: 100,
+            title: '请输入下架原因'
+        }, function(value, index, elem){
+            if ( $.trim(value) == ''){
+                layer.tips('请输入下架原因',elem);
+                return false;
+            }else{
+                $.ajax({
+                    type : 'post',
+                    url  : '/internal/doDown/',
+                    data : {'id':chkId, 'reason':value},
+                    dataType : 'json',
+                    success : function (data){
+                        if (data.code==1){
+                            layer.msg('操作成功！', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            layer.msg('操作失败！', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
                             });
                         }
-                    });
-                }
-            });
+                    },
+                    error : function (data){
+                        layer.msg('操作失败，请稍后重试。', {
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                });
+            }
         });
     }
 
@@ -377,6 +353,11 @@
 
             content: '/internal/create/'
         });
+    }
+
+    function reloadList()
+    {
+        window.location.reload();
     }
 </script>
 

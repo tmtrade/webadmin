@@ -32,17 +32,19 @@ class internalAction extends AppAction
 		$total 	= $result['total'];
 		$list 	= $result['rows'];
 
+		$result = array();
 		//获取所有联系人
 		foreach ($list as $k => $v) {
-			$list[$k]['contact'] = $this->load('internal')->getSaleContact($v['id']);
-			$list[$k]['isBlack'] = $this->load('blacklist')->existBlack($v['number']);
+			$result[$k] = $this->load('internal')->getSaleInfo($v['id']);
+			//$list[$k]['contact'] = $this->load('internal')->getSaleContact($v['id']);
+			//$list[$k]['isBlack'] = $this->load('blacklist')->isBlack($v['number']);
 		}
 
         $this->set("allTotal",$this->load('internal')->countSale());
 		$this->set('total', $total);
         $this->set("pageBar",$pageBar);
 		$this->set('s', $params);
-		$this->set('saleList', $list);
+		$this->set('saleList', $result);
 		$this->display();
 	}
 
@@ -51,13 +53,6 @@ class internalAction extends AppAction
 	{
 		$this->display();
 	}
-
-	//添加商品
-	public function add()
-	{
-		$this->display();
-	}
-
 
 	//添加/编辑 联系人
 	public function contact()
@@ -123,7 +118,7 @@ class internalAction extends AppAction
 		}
 		$sale 		= $this->load('internal')->getSaleInfo($id);
 		$tminfo 	= $this->load('trademark')->getTminfo($sale['number']);
-		$isBlack 	= $this->load('blacklist')->existBlack($sale['number']);
+		$isBlack 	= $this->load('blacklist')->isBlack($sale['number']);
 		$log 		= $this->load('log')->getSaleLog($id);
 
 		$this->getSetting();
@@ -158,7 +153,7 @@ class internalAction extends AppAction
 		$isVerify = $this->load('internal')->existVerifyContact($id);
 		if ( !$isVerify ) return $this->returnAjax(array('code'=>2,'msg'=>'无联系人或至少有一位联系人未审核！'));
 
-		$isBlack = $this->load('internal')->existBlacklist($id);
+		$isBlack = $this->load('internal')->isBlack($id);
 		if ( $isBlack ) return $this->returnAjax(array('code'=>2,'msg'=>'商品还在黑名单中，请在编辑中剔除！'));
 
 		$res = $this->load('internal')->saleUp($id);
@@ -182,21 +177,18 @@ class internalAction extends AppAction
 		$this->returnAjax(array('code'=>2));
 	}
 
-	//添加黑名单
+	//加入黑名单
 	public function setBlack()
 	{
-		$id 	= $this->input('id', 'int', 0);
-		$number = $this->input('number', 'string', '');
+		$id 	= $this->input('id', 'string', '');
 		$reason = $this->input('reason', 'string', '');
-		if ( empty($number) || $id <= 0 ) $this->returnAjax(array('code'=>2)); 
+		if ( empty($id) || empty($reason) ) $this->returnAjax(array('code'=>2)); 
 
-		$list 	= array_filter( array_unique( explode(',', $number) ) );
-		$res 	= $this->load('blacklist')->addBlack($list, $reason);
-		if ( $res ) {
-			$this->load('internal')->saleDown($id, '添加黑名单');//下架商品
-			$this->load('log')->addSaleLog($id, 6, $reason);//添加黑名单 
-			$this->returnAjax(array('code'=>1));
-		}
+		$ids 	= array_filter( array_unique( explode(',', $id) ) );
+		if ( empty($ids) ) $this->returnAjax(array('code'=>2)); 
+
+		$res 	= $this->load('internal')->setBlack($ids, $reason);
+		if ( $res ) $this->returnAjax(array('code'=>1));
 		$this->returnAjax(array('code'=>2));
 	}
 
@@ -350,7 +342,7 @@ class internalAction extends AppAction
 		$saleId = $this->load('internal')->existSale($number);
 		if ( $saleId ) $this->returnAjax(array('code'=>2,'id'=>$saleId));//在出售中
 
-		$isBlack = $this->load('blacklist')->existBlack($number);
+		$isBlack = $this->load('blacklist')->isBlack($number);
 		if ( $isBlack ) $this->returnAjax(array('code'=>3));//在黑名单中
 
 		if ( $isAdd ){

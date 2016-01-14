@@ -134,16 +134,16 @@
         <p class="text-left" style="float:left;padding-top:20px;">共有 <b class="red"><?=$allTotal?></b> 条数据，当前筛选结果 <b class="blue"><?=$total?></b> 条数据</p>
         <div class="wrap-tittle">
             <button class="btn btn-danger" onclick="add();" type="button">创建商品</button>
-            <button class="btn btn-danger" type="button">导入商品</button>
-            <button class="btn btn-info" type="button">导出表格EXCEL</button>
-            <button type="button" class="btn btn-info">加入黑名单</button>
-            <button type="button" class="btn btn-info">批量删除</button>
+            <!-- <button class="btn btn-danger" type="button">导入商品</button> -->
+            <!-- <button class="btn btn-info" type="button">导出表格EXCEL</button> -->
+            <button type="button" class="btn btn-info" onclick="setMoreBlack();">批量下架</button>
+            <button type="button" class="btn btn-info" onclick="delMoreSale();">批量删除</button>
         </div>
         <div class="wrap-table">
             <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
                 <thead>
                     <tr class="active">
-                        <th><input type="checkbox"></th>
+                        <th><input type="checkbox" id="chkAll"></th>
                         <th>商标号</th>
                         <th>销售状态</th>
                         <th>出售时间</th>
@@ -158,10 +158,10 @@
                         <th>操作</th>
                     </tr>
                 </thead>
-                <tbody class="table-hover">
+                <tbody class="table-list">
                 <? foreach ($saleList as $k => $v) {  ?>
                 <tr>
-                    <td><input type="checkbox" id="<?=$v['id']?>"></td>
+                    <td><input type="checkbox" name="chkId[]" class="chklist" value="<?=$v['id']?>"></td>
                     <td><?=$v['number']?></td>
                     <td><span <?if ($v['status']==1){
                             echo 'class="blue"';
@@ -172,7 +172,8 @@
                         }
                         ?> ><?=$saleStatus[$v['status']]?></span></td>
                     <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?>
-                    <?if($v['isBlack']){?><span class="red">黑</span><?}?></td>
+                    <?if($v['isBlack']){?><span class="red">黑</span><?}?>
+                    <?if( !empty($v['tminfo']['embellish'])){?><span class="blue">包</span><?}?></td>
                     <td title="<?=$v['name']?>"><?if(mb_strlen($v['name'],'utf8') > 15)
                     {echo mb_substr($v['name'],0,12,'utf8')."...";}
                     else{echo $v['name'];}?></td>
@@ -284,7 +285,87 @@
             $(this).find('.more > ul').hide();
         });
 
+        $('#chkAll').click(function(){ 
+            $('.chklist').prop("checked",this.checked);
+        });
+
     });
+
+    function setMoreBlack()
+    {
+        var chkId = getChecked();
+        if ( chkId == '' ) {
+            layer.msg('请选择至少一个商品', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        layer.confirm('<span class="red">注意：如商品在销售中，会自动下架商品！</span>', {
+            btn: ['要得','算了'] //按钮
+        }, function(){
+            layer.prompt({
+                formType: 2,
+                value: '',
+                maxlength: 100,
+                title: '请输入添加黑名单的原因'
+            }, function(value, index, elem){
+                if ( $.trim(value) == ''){
+                    layer.tips('请输入添加黑名单的原因',elem);
+                    return false;
+                }else{
+                    $.ajax({
+                        type : 'post',
+                        url  : '/internal/setBlack/',
+                        data : {'id':chkId, 'reason':value},
+                        dataType : 'json',
+                        success : function (data){
+                            if (data.code==1){
+                                layer.msg('操作成功！', {
+                                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                                }, function(){
+                                    window.location.reload();
+                                });
+                            }else{
+                                layer.msg('操作失败！', {
+                                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                                },function(){
+                                    window.location.reload();
+                                });
+                            }
+                        },
+                        error : function (data){
+                            layer.msg('操作失败，请稍后重试。', {
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    function delMoreSale()
+    {
+        var chkId = getChecked();
+        if ( chkId == '' ) {
+            layer.msg('请选择至少一个商品', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+
+    }
+
+    function getChecked()
+    {
+        var strId = '';
+        $('.chklist').each(function(){
+            if($(this).prop('checked')){
+                strId += ","+$(this).val();
+            }
+        });
+        strId = strId ? strId.substr(1) : '';
+        return strId;
+    }
 
     function add()
     {

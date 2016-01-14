@@ -21,6 +21,7 @@ class InternalModule extends AppModule
         $r = array();
         $r['page']  = $page;
         $r['limit'] = $limit;
+        $r['col']   = array('id');
         if ( empty($params) ){
             $res = $this->import('sale')->findAll($r);
             return $res;
@@ -74,30 +75,92 @@ class InternalModule extends AppModule
         return $res;
     }
 
-    public function getSaleInfo($saleId)
+    //获取商品信息（可选包含的所有联系人与包装信息）
+    public function getSaleInfo($saleId, $contact=1, $tminfo=1, $bzxx=1)
     {
         $r['eq'] = array(
             'id' => $saleId,
             );
         $info = $this->import('sale')->find($r);
         if ( empty($info) ) return array();
-        $info['contact']    = $this->getSaleContact($saleId);
-        $info['tminfo']     = $this->getSaleTminfo($saleId);
-        $info['isBlack']    = $this->load('blacklist')->existBlack($info['number']);
+        $info['isBlack'] = $this->load('blacklist')->isBlack($info['number']);
+        if ( $contact ) $info['contact']    = $this->getSaleContact($saleId);
+        if ( $tminfo ) $info['tminfo']      = $this->getSaleTminfo($saleId);
         return $info;
     }
 
-
-    public function getSaleContact($saleId, $cId=0)
+    //通过商品ID获取没有在黑名单中的商标号
+    public function getNoBlackById($ids)
     {
-        if ( $cId <= 0 ){
+        if ( empty($ids) || !is_array($ids) ) return array();
+        
+        $numbers = array();
+        foreach ($ids as $id) {
+            $sale = $this->getSaleInfo($id, 0, 0);
+            if ( $sale['isBlack'] ) continue;
+            if ( empty($sale) ) continue;
+            $numbers[$id] = $sale['number'];
+        }
+        return $numbers;
+    }
+
+    //加入黑名单（要走事务，因为有自动下架。批量时，成功一条算一条，但返回值必须都成功才返回TRUE）
+    public function setBlack($saleId, $reason='')
+    {
+        if ( empty($saleId) ) return false;
+        if ( !is_array($saleId) ){
+            return $this->_setBlack($saleId, $reason);
+        }
+        //过滤掉已经是黑名单的数据
+        $list = $this->load('internal')->getNoBlackById($saleId);
+        if ( empty($list) ) return true;
+
+        $flag = true;
+        foreach ($list as $id => $number) {
+            $res = $this->_setBlack($id, $reason);
+            if ( !$res ) $flag = false;
+        }
+        return $flag;
+    }
+
+    //单条加入黑名单
+    protected function _setBlack($saleId, $reason)
+    {
+        if ( $saleId <= 0 ) return false;
+
+        $sale = $this->getSaleInfo($saleId, 0, 0);
+        if ( $sale['isblack'] ) return true;//已经在黑名单中，直接返回
+
+        $this->begin('sale');
+        $res = $this->load('blacklist')->setBlack($sale['number'], $reason);        
+        if ( !$res ) {
+            $this->rollBack('sale');
+            return false;
+        }
+        $this->load('log')->addSaleLog($saleId, 6, $reason);//添加黑名单 
+        //如果是已上架，需要下架
+        if ( $sale['status'] == 1 ) {
+            $res = $this->saleDown($saleId, '添加黑名单');
+            if ( $res ){
+                return $this->commit('sale');
+            }
+            $this->rollBack('sale');
+            return false;
+        }
+        return $this->commit('sale');
+    }
+
+    //获取商品ID（saleId）下的所有联系人信息（可选，如果传id即查询当前ID下的联系人信息）
+    public function getSaleContact($saleId, $id=0)
+    {
+        if ( $id <= 0 ){
             $r['eq'] = array(
                 'saleId' => $saleId,
                 );
             $r['limit'] = 20;
         }else{
             $r['eq'] = array(
-                'id'        => $cId,
+                'id'        => $id,
                 'saleId'    => $saleId,
                 );
             $r['limit'] = 1;
@@ -106,6 +169,7 @@ class InternalModule extends AppModule
         return $this->import('contact')->find($r);
     }
 
+    //获取商品ID（saleId）下的商标包装信息
     public function getSaleTminfo($saleId)
     {
         $r['eq'] = array(
@@ -114,41 +178,46 @@ class InternalModule extends AppModule
         return $this->import('tminfo')->find($r);
     }
 
-    //下架商标
+    //下架商标 
     public function saleDown($saleId, $memo='')
     {
-        if ( $saleId < 1 ) return false;
+        if ( $saleId <= 0 ) return false;
+        //判断是否是上架状态
+        if ( !$this->isSaleUp($saleId) ) return true;
 
-        $this->begin('sale');
-        $logId = $this->load('log')->addSaleLog($saleId, 2, $memo);//下架日志
-        if ( $logId <= 0 ) {
-            $this->rollBack('sale');
-            return false;
-        }
         $r['eq']        = array('id'=>$saleId);
         $data['status'] = 2;
-
         $res = $this->import('sale')->modify($data, $r);
-        if ( $res ) return $this->commit('sale');
+        if ( $res ) {
+            $this->load('log')->addSaleLog($saleId, 2, $memo);//下架日志
+            return true;
+        }
         return false;
+        //暂时不做批量下架
+        // $this->begin('sale');
+        // foreach ($saleId as $k => $id) {
+        //     if ( !$this->isSaleUp($id) ) continue;
+        //     $r['eq']    = array('id'=>$id);
+        //     $res = $this->import('sale')->modify($data, $r);
+        //     if ( !$res ) return $this->rollBack('sale');
+        //     $this->load('log')->addSaleLog($id, 2, $memo);//下架日志
+        // }
+        // return $this->commit('sale');
     }
 
     //上架商标
     public function saleUp($saleId, $memo="商品上架了")
     {
         if ( $saleId < 1 ) return false;
+        if ( $this->isSaleUp($saleId) ) return true;
 
-        $this->begin('sale');
-        $logId = $this->load('log')->addSaleLog($saleId, 1, $memo);//上架日志
-        if ( $logId <= 0 ) {
-            $this->rollBack('sale');
-            return false;
-        }
         $r['eq']        = array('id'=>$saleId);
         $data['status'] = 1;
-        
-        $res = $this->import('sale')->modify($data, $r);
-        if ( $res ) return $this->commit('sale');
+        $res            = $this->import('sale')->modify($data, $r);
+        if ( $res ) {
+            $this->load('log')->addSaleLog($saleId, 1, $memo);//上架日志
+            return true;
+        }
         return false;
     }
 
@@ -379,22 +448,24 @@ class InternalModule extends AppModule
         return false;
     }
 
-    //商品是否在黑名单中
-    public function existBlacklist($id)
+    //通过商品ID判断是否在黑名单中
+    public function isBlack($saleId)
     {
-        if ( empty($id) ) return false;
-        $r['eq']    = array('id'=>$id);
+        if ( empty($saleId) ) return false;
+        $r['eq']    = array('id'=>$saleId);
         $r['col']   = array('number');
         $sale       = $this->import('sale')->find($r);
         if ( empty($sale['number']) ) return false;
-        return $this->load('blacklist')->existBlack($sale['number']);
+        return $this->load('blacklist')->isBlack($sale['number']);
     }
 
+    //统计所有商品数量
     public function countSale()
     {
         return $this->import('sale')->count();
     }
 
+    //更新包装信息
     public function setEmbellish($saleId, $sale, $tminfo)
     {
         if ( $saleId <= 0 ) return fales;

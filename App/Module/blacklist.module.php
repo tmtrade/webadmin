@@ -15,7 +15,7 @@ class BlacklistModule extends AppModule
     );
 
     //商标是否在黑名单中
-    public function existBlack($number)
+    public function isBlack($number)
     {
         if ( empty($number) ) return false;
 
@@ -36,34 +36,38 @@ class BlacklistModule extends AppModule
         return $this->import('black')->remove($r);
     }
 
-
-    public function addBlack($number, $memo='加入黑名单')
+    //多条执行加入黑名单（有事务）
+    public function addBlacklist($number, $memo='加入黑名单')
     {
         if ( !is_array($number) || empty($number) ) return false;
         $this->begin('blacklist');
         foreach ($number as $k => $v) {
-            if ( $this->existBlack($v) ) continue;
-            $info = $this->load('trademark')->getTminfo($v);
-            if ( empty($info) ){
-                $this->rollBack('blacklist');
-                return false;
-            }
-
-            $black = array(
-                'tid'       => $info['tid'],
-                'number'    => $v,
-                'class'     => implode(',', $info['class']),
-                'date'      => time(),
-                'memberId'  => $this->userId,
-                'memo'      => $memo,
-                );
-            $res = $this->import('black')->create($black);
-            if ( !$res ){
-                $this->rollBack('blacklist');
-                return false;
-            } 
+            
+            $res = $this->setBlack($v, $memo);
+            //TODO 记录成功和失败的数据，返回给用户！！！
         }
         return $this->commit('blacklist');      
+    }
+
+    //单条执行加入黑名单（无事务）
+    public function setBlack($number, $memo='加入黑名单')
+    {
+        if ( $this->isBlack($number) ) return true;
+
+        $info = $this->load('trademark')->getTminfo($number);
+        if ( empty($info) ) return false;
+
+        $black = array(
+            'tid'       => $info['tid'],
+            'number'    => $number,
+            'class'     => implode(',', $info['class']),
+            'date'      => time(),
+            'memberId'  => $this->userId,
+            'memo'      => $memo,
+            );
+        $res = $this->import('black')->create($black);
+        if ( $res ) return true;
+        return false;
     }
 
 }

@@ -63,10 +63,10 @@ abstract class AppAction extends Action
 			if ( !in_array($roleNo, $this->hasRole) ){
 				$this->redirect('', '/role/error');
 			}
-			}
-			$this->set('username' , $this->username);
-			$this->set('userId'   , $this->userId);
 		}
+		$this->set('username' , $this->username);
+		$this->set('userId'   , $this->userId);
+	}
 
 	/**
 	 * 后置操作(框架自动调用)

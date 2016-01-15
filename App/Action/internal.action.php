@@ -168,37 +168,6 @@ class internalAction extends AppAction
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败，请稍后重试！'));
 	}
 
-	//删除黑名单
-	// public function outBlack()
-	// {
-	// 	$id 	= $this->input('id', 'int', 0);
-	// 	$number = $this->input('number', 'string', '');
-	// 	if ( empty($number) || $id <= 0 ) $this->returnAjax(array('code'=>2)); 
-
-	// 	$list 	= array_filter( array_unique( explode(',', $number) ) );
-	// 	$res 	= $this->load('blacklist')->deleteBlack($list);
-	// 	if ( $res ){
-	// 		$this->load('log')->addSaleLog($id, 7);//删除黑名单
-	// 		$this->returnAjax(array('code'=>1));
-	// 	}
-	// 	$this->returnAjax(array('code'=>2));
-	// }
-
-	//加入黑名单
-	// public function setBlack()
-	// {
-	// 	$id 	= $this->input('id', 'string', '');
-	// 	$reason = $this->input('reason', 'string', '');
-	// 	if ( empty($id) || empty($reason) ) $this->returnAjax(array('code'=>2)); 
-
-	// 	$ids 	= array_filter( array_unique( explode(',', $id) ) );
-	// 	if ( empty($ids) ) $this->returnAjax(array('code'=>2)); 
-
-	// 	$res 	= $this->load('internal')->setBlack($ids, $reason);
-	// 	if ( $res ) $this->returnAjax(array('code'=>1));
-	// 	$this->returnAjax(array('code'=>2));
-	// }
-
 	//提交价格信息
 	public function setPrice()
 	{

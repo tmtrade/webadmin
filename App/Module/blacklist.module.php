@@ -71,7 +71,6 @@ class BlacklistModule extends AppModule
     //添加到黑名单日志中
     protected function _addBlack($number)
     {
-
         $info = $this->load('trademark')->getTminfo($number);
         if ( empty($info) ) return false;
 

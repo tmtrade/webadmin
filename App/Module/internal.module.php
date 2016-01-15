@@ -352,6 +352,7 @@ class InternalModule extends AppModule
     //删除联系人
     public function delContact($id, $saleId, $type='one')
     {
+        $r = array();
         if ( empty($id) && empty($saleId) ) return false;
 
         $r['eq'] = array('saleId'=>$saleId);
@@ -360,6 +361,10 @@ class InternalModule extends AppModule
         }
         //如果有商品ID，要判断联系人是否至少有一个
         if ( $saleId ){
+            if ( $this->isSaleUp($saleId) ){
+                $r['eq']['isVerify']    = 1;
+            }
+            $r['raw'] = " id != $id ";
             $total = $this->import('contact')->count($r);
             if ( $total < 2 ) return false;
         }

@@ -156,7 +156,7 @@ function delContact(saleId, cId, nums)
 	if ( saleId <= 0 || saleId == '' ) return false;
 	if ( cId <= 0 || cId == '' ) return false;
 
-	layer.confirm('确认要删除此联系人吗？<br><span class="red">注意：联系人必须至少保留一个。</span>', {
+	layer.confirm('确认要删除此联系人吗？<br><span class="red">注意：联系人必须至少保留一个。<br>如商品为上架状态，要保留一个审核过的联系人！</span>', {
 		btn: ['删了','算了'] //按钮
 	}, function(){
 		$.ajax({
@@ -172,8 +172,9 @@ function delContact(saleId, cId, nums)
 						window.location.reload();
 					});
 				}else{
-					layer.msg('操作失败', {
-						time: 1000 //2秒关闭（如果不配置，默认是3秒）
+					var msg = data.msg == undefined ? '操作失败' : data.msg;
+					layer.msg(msg, {
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
 					});
 				}
 			},

@@ -381,7 +381,7 @@ class internalAction extends AppAction
 			$this->load('log')->addSaleLog($saleId, 13, "联系人ID：$id 被删除了");//删除联系人
 			$this->returnAjax(array('code'=>1));
 		}
-		$this->returnAjax(array('code'=>2));
+		$this->returnAjax(array('code'=>2,'msg'=>'请联系人必须至少保留一个！如商品为上架状态，要保留一个审核过的联系人！'));
     }
 
     //审核联系人

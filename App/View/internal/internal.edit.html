@@ -75,26 +75,26 @@
             <tr>
                 <td>序号</td>
                 <td>出售时间</td>
+                <td>是否审核</td>
                 <td>来源渠道</td>
                 <td>联系人</td>
                 <td>联系电话</td>
                 <td>底价(元)</td>
                 <td>销售类型</td>
                 <td>顾问-部门</td>
-                <td>出售价格审核</td>
                 <td>操作</td>
             </tr>
     <?foreach ($sale['contact'] as $ky => $vl) { ?>
             <tr>
                 <td><?=$vl['id']?></td>
                 <td><?=date('Y-m-d', $vl['date'])?></td>
+                <td><?if($vl['isVerify']==1){?><em class="blue">已审核<?}else{?><em class="red">未审核<?}?></em></td>
                 <td><?=$saleSource[$vl['source']]?></td>
                 <td><?=$vl['name']?></td>
                 <td><?=$vl['phone']?></td>
                 <td><?=$vl['price']?></td>
                 <td><?=$saleType[$vl['saleType']]?></td>
                 <td><?=$vl['advisor'].'-'.$vl['department']?></td>
-                <td><em class="blue"><?if($vl['isVerify']==1){?>已审核<?}else{?>未审核<?}?></em></td>
                 <td>
                 <?if ( $vl['isVerify'] == 1) {?>
                     <a href="javascript:void(0);" onclick="delContact(<?=$sale['id']?>, <?=$vl['id']?>, <?=count($sale['contact'])?>);">删除</a>
@@ -154,9 +154,9 @@
                             <?if($sale['salePriceDate']>0){echo 'checked';}?> id="in2"/>
                             <label for="in2">截止于</label>
                             <input type="text" name="salePriceDate" id="salePriceDate" 
-                            value="<?if($sale['salePriceDate']>0){
-                                echo date('Y-m-d h:i:s',$sale['salePriceDate']);
-                            }?>" readonly onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" placeholder="请选择截止日期"/>
+                            <?if($sale['salePriceDate']>0){
+                                echo 'value="'.date('Y-m-d h:i:s',$sale['salePriceDate']).'"';
+                            }?> readonly onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" placeholder="请选择截止日期"/>
                         </li>
                     </ul>
                 </div>

@@ -54,6 +54,42 @@ class internalAction extends AppAction
 		$this->display();
 	}
 
+	//删除商品
+	public function delete()
+	{
+		$id = $this->input('id', 'string', '');
+
+		$this->set('saleId', $id);
+		$this->display();
+	}
+
+	//删除商品
+	public function deleteSale()
+	{
+		$id = $this->input('saleId', 'string', '');
+
+		if ( empty($id) ) $this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+
+		$ids 	= array_filter( array_unique( explode(',', $id) ) );
+		if ( empty($ids) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+		}
+
+		$type 	= $this->input('reason', 'int', 0);//删除原因
+		$black 	= $this->input('isBlack', 'int', 0);//是否剔除黑名单
+		$date 	= $this->input('saleDate', 'string', '');//出售日期
+		$memo 	= $this->input('memo', 'string', '');//备注（原因）
+		if ( empty($type) || empty($black) || empty($memo) || ($type == 1 && empty($date)) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'相关数据不能为空'));
+		}
+
+		$res = $this->load('internal')->deleteSale($ids, $type, $memo, $black, $date);
+		if ( $res ){
+			$this->returnAjax(array('code'=>1,'msg'=>'成功'));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
+	}
+
 	//添加/编辑 联系人
 	public function contact()
 	{

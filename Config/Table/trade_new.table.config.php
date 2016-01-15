@@ -39,6 +39,13 @@ $tbl['saleContact'] = array(
 	'configFile'=> $configFile,
 );
 
+
+$tbl['saleHistory'] = array(
+	'name'		=> $prefix.'sale_history',
+	'dbId'		=> $dbId, 
+	'configFile'=> $configFile,
+);
+
 $tbl['saleLog'] = array(
 	'name'		=> $prefix.'sale_log',
 	'dbId'		=> $dbId, 

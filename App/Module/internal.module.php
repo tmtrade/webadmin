@@ -14,6 +14,7 @@ class InternalModule extends AppModule
         'sale'		=> 'sale',
         'contact'	=> 'saleContact',
         'tminfo'    => 'saleTminfo',
+        'history'   => 'saleHistory',
     );
     
     public function getList($params, $page, $limit=20)
@@ -76,14 +77,13 @@ class InternalModule extends AppModule
     }
 
     //获取商品信息（可选包含的所有联系人与包装信息）
-    public function getSaleInfo($saleId, $contact=1, $tminfo=1, $bzxx=1)
+    public function getSaleInfo($saleId, $contact=1, $tminfo=1)
     {
         $r['eq'] = array(
             'id' => $saleId,
             );
         $info = $this->import('sale')->find($r);
         if ( empty($info) ) return array();
-        //$info['isBlack'] = $this->load('blacklist')->isBlack($info['number']);
         if ( $contact ) $info['contact']    = $this->getSaleContact($saleId);
         if ( $tminfo ) $info['tminfo']      = $this->getSaleTminfo($saleId);
         return $info;
@@ -248,9 +248,12 @@ class InternalModule extends AppModule
         return $this->import('tminfo')->modify($data, $r);
     }
 
-    //打包新增出售
+    //打包新增出售（数据过滤使用）
     public function addAll($data)
     {
+        if ( empty($data) || empty($data['sale']) || empty($data['saleTminfo']) || empty($data['saleContact']) ){
+            return false;
+        }
         $sale       = $data['sale'];
         $tminfo     = $data['saleTminfo'];
         $contact    = $data['saleContact'];
@@ -272,7 +275,7 @@ class InternalModule extends AppModule
     }
 
     //添加出售基础信息
-    public function addSale($data)
+    protected function addSale($data)
     {
         if ( $this->existSale($data['number']) ) return false;
 
@@ -280,7 +283,7 @@ class InternalModule extends AppModule
     }
 
     //添加商标基础信息
-    public function addTminfo($data, $saleId)
+    protected function addTminfo($data, $saleId)
     {
         if ( $this->existTminfo($data['number']) ) return false;
 
@@ -289,7 +292,7 @@ class InternalModule extends AppModule
     }
 
     //添加出售联系人信息（可多个）
-    public function addContact($data, $saleId)
+    protected function addContact($data, $saleId)
     {
         //判断是否二维数组
         if ( is_array(current($data)) ){
@@ -298,11 +301,52 @@ class InternalModule extends AppModule
                 if ( !$res ) return false;
             }
             return $res;
+        }        
+        $data['saleId'] = $saleId;
+        return $this->import('contact')->create($data);
+    }
+
+    //删除商品
+    public function deleteSale($ids, $type=2, $memo='', $black=2, $date='')
+    {
+        if ( empty($ids) || !is_array($ids) ) return false;
+
+        if ( $type == 1 ){
+            $saleDate = empty($date) ? 0 : strtotime($date);
         }else{
-            $data['saleId'] = $saleId;
-            return $this->import('contact')->create($data);
+            $saleDate = 0;
         }
-        
+        $this->begin('sale');
+        foreach ($ids as $id) {
+            $sale = $this->getSaleInfo($id);
+            if ( empty($sale) ) continue;
+            $data = array(
+                'number'    => $sale['number'],
+                'type'      => $type,
+                'memberId'  => $this->userId,
+                'data'      => serialize($sale),
+                'date'      => time(),
+                'saleDate'  => $saleDate,
+                'memo'      => $memo,
+            );
+            $hisId = $this->import('history')->create($data);//创建商品历史记录
+            if ( $black == 1 ) {
+                $isBlack = $this->load('blacklist')->outBlack($sale['number']);//剔除黑名单
+            }else{
+                $isBlack = true;
+            }
+            $r['eq']    = array('id'=>$sale['id']);
+            $delSale    = $this->import('sale')->remove($r);//删除商品
+
+            $rl['eq']   = array('saleId'=>$sale['id']);
+            $delContact = $this->import('contact')->remove($rl);//删除联系人
+            $delTminfo  = $this->import('tminfo')->remove($rl);//删除包装信息
+            if ( $hisId <= 0 || !$isBlack || !$delSale || !$delContact || !$delTminfo ){
+                $this->rollBack('sale');
+                return false;
+            }
+        }
+        return $this->commit('sale');
     }
 
     //删除联系人

@@ -206,7 +206,9 @@
                                 <li><table width="99%"><tr align="center">
                                 <td width="30%"><?=$value['advisor']?></td>
                                 <td width="15%"><?=$saleSource[$value['source']]?></td>
-                                <td width="40%"><?=$value['name']?>-<?=$value['phone']?></td>
+                                <td width="40%">
+                                <?if($value['isVerify'] == 2){?><span class="red">审</span><?}?>
+                                <?=$value['name']?>-<?=$value['phone']?></td>
                                 <td width="15%"><?=$value['price']?></td>
                                 </tr></table>
                             <?}?>
@@ -327,8 +329,18 @@
             layer.msg('请选择至少一个商品', {
                 time: 2000 //2秒关闭（如果不配置，默认是3秒）
             });
+            return false;
         }
+        var url = '?id='+chkId;
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['520px', '400px'],
 
+            content: '/internal/delete/'+url,
+        });
+        return false;
     }
 
     function getChecked()

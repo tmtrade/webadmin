@@ -29,13 +29,18 @@ class BlacklistModule extends AppModule
         return true;
     }
 
-    public function deleteBlack($number)
+    public function outBlack($number)
     {
-        if ( !is_array($number) || empty($number) ) return false;
-        $r['in'] = array(
-            'number' => $number,
+        if ( empty($number) ) return false;
+        if ( !$this->isBlack($number) ) return true;
+
+        $r['eq'] = array(
+            'trademark_id' => $number
             );
-        return $this->import('black')->remove($r);
+        $data = array('isShow'=>1);
+        $res = $this->import('second')->modify($data, $r);
+        if ( $res ) return true; 
+        return false;
     }
 
     //多条执行加入黑名单（有事务）

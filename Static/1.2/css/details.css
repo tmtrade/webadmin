@@ -2,7 +2,7 @@ label{
     font-weight: normal;
 }
 .wrap{
-    width: 90%;
+    width: 96%;
     margin:0 auto;
 }
 .wrap-top{
@@ -75,9 +75,9 @@ label{
     padding: 15px 0;
     background: #fff;
 }
-.mj-deiB>label{
+.mj-deiB label{
     display: block;
-    margin-right: 15px;
+    margin: 5px;
     width: 200px;
     height: 153px;
     float: left;
@@ -85,16 +85,17 @@ label{
     line-height: 200px;
     border: solid 1px #ddd;
 }
-.mj-deiB>label img{
+.mj-deiB label img{
     max-width: 200px;
-    max-height: 153px;
-    vertical-align: middle;
+    padding: 3px;
+    max-height: 150px;
+    vertical-align: top;
 }
 .mj-deiB table{
-    width: 80%;
+	width: 98%;
 }
 .mj-deiB table td{
-    padding: 10px;
+    padding: 1px;
     text-align: center;
     border: solid 1px #ddd;
 }

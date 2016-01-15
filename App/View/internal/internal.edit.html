@@ -28,18 +28,21 @@
                 <?}?>
             <?}?>
         </div>
-       <!--  <span class="mj-ztBr">
-            <a class="btn btn-info" href="javascript:void(0);">返回</a>
-        </span> -->
+        <span class="mj-ztBr">
+            <a class="btn btn-info" href="javascript:history.go(-1);">返回</a>
+        </span>
     <div class="mj-detaImg">
         <div class="mj-deiT">
             <span>商标基本信息</span>
             <a target="_blank" href="http://g.chaofan.wang/guanjia/Member/tmView?&id=<?=$sale['number']?>&tmclass=<?=substr($sale['class'],0,2)?>">去商标管家查看详细信息）</a>
         </div>
         <div class="mj-deiB f-clearfix">
-            <label><img src="<?=StaticDir?>1.2/images/mj-img2.jpg" alt=""/></label>
+            
             <table>
                 <tbody>
+                <tr>
+                    <td rowspan="5" width="20%"><label><img src="<?=$tminfo['imgUrl']?>" alt=""/></label></td>
+                </tr>
                 <tr>
                     <td>商标名称：<?=$sale['name']?></td>
                     <td>商标号：<?=$sale['number']?></td>

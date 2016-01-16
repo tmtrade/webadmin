@@ -70,5 +70,10 @@ $tbl['tempUser'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['phone'] = array(
+	'name'		=> $prefix.'phone',
+	'dbId'		=> $dbId, 
+	'configFile'=> $configFile,
+);
 
 ?>

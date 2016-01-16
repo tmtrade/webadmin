@@ -1,0 +1,80 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/blacklist.css">
+
+<!--删除电话-->
+<div class="mj-phM" id="mj-phM3">
+    <span class="ms-close mj-close"></span>
+    <input type="hidden" id="oldphone" value="<?=$phone?>" />
+    <h5>删除电话</h5>
+    <p>删除该联系电话 <?=$phone?> ，并将其绑定的商品联系方式修改为：</p>
+    <ul>
+        <li>
+            <input type="radio" name="rand" id="rand" checked value="1" />
+            <label for="rl">随机绑定一个联系电话</label>
+        </li>
+        <li>
+            <input type="radio" name="rand" id="rand" value="0" />
+            <label for="rls">指定一个联系电话</label>
+        </li>
+        <li>
+            <select id="newPhone">
+            <? foreach ($list as $k => $v) { ?>
+                <option value="<?=$v?>"><?=$v?></option>
+            <?}?>
+            </select>
+        </li>
+        <li>
+            <div class="mj-deiBtns">
+                <a href="javascript:void(0);" class="mj-delete">确定删除</a>
+                <a href="javascript:void(0);" onclick="parent.layer.closeAll();" class="mj-abgcg">取消</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".mj-phM").show();
+        $(".mj-close").click(function(){
+            parent.layer.closeAll();
+        });
+        $(".mj-delete").click(function(){
+            var old     = $.trim( $("#oldphone").val() );
+            var phone   = $("#newPhone").children('option:selected').val();           
+            var rand = $('input:radio[name="rand"]:checked').val();
+            if ( rand == null ){
+                layer.msg('请选择一种类型', {time: 2000});
+                return false;
+            }else if ( rand == 0 && phone == '' ){
+                layer.msg('请选择手机号', {time: 2000});
+                return false;
+            }
+            $.ajax({
+                type : 'post',
+                url  : '/phone/doDelete/',
+                data : {old:old,phone:phone,rand:rand},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 
+                        }, function(){
+                            parent.window.location.reload();
+                        });
+                    }else{
+                        var msg = data.msg == undefined ? '操作失败' : data.msg;
+                        layer.msg(msg, {time: 2000});
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。', {
+                        time: 2000 
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

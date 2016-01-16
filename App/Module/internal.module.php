@@ -499,5 +499,16 @@ class InternalModule extends AppModule
         return false;
     }
 
+    //更新所有相关的显示手机号码
+    public function setAllViewPhone($old, $phone)
+    {
+        $r['eq'] = array('viewPhone'=>$old);
+        $has = $this->import('sale')->count($r);
+        if ( $has <= 0 ) return true;
+        
+        $data = array('viewPhone'=>$phone);
+        return $this->import('sale')->modify($data, $r);
+    }
+
 }
 ?>

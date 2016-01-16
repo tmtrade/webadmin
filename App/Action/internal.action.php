@@ -25,12 +25,13 @@ class internalAction extends AppAction
 		$params = $this->getFormData();
 		$page 	= $this->input('page', 'int', '1');
 
-		$result 	= $this->load('internal')->getList($params, $page, $this->rowNum);
-		$pager 		= $this->pager($result['total'], $this->rowNum);
-        $pageBar 	= empty($result['rows']) ? '' : getPageBar($pager);
+		$res 		= $this->load('internal')->getList($params, $page, $this->rowNum);
 
-		$total 	= $result['total'];
-		$list 	= $result['rows'];
+		$total 	= empty($res['total']) ? 0 : $res['total'];
+		$list 	= empty($res['rows']) ? array() : $res['rows'];
+		
+		$pager 		= $this->pager($total, $this->rowNum);
+        $pageBar 	= empty($list) ? '' : getPageBar($pager);
 
 		$result = array();
 		//获取所有联系人

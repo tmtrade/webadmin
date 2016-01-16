@@ -19,7 +19,7 @@
         <form name="saleSearchForm" id="saleSearchForm" action="/internal/index/" method="GET">
         <dl>
             <dt><span>商标分类：<button class="btn" type="button">全部分类</button></span></dt>
-            <dd class="mj-ddList">
+            <dd class="mj-ddList" <?if(empty($s['tmClass'])){echo 'style="display:none"';}?> >
                 <ul class="f-clearfix">
                 <input type="hidden" id="tmClass" name="tmClass" value="<?=$s['tmClass']?>">
                 <? foreach ($tmClass as $k => $v) {?>

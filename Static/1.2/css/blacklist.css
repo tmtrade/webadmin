@@ -2,7 +2,7 @@ label{
     font-weight: normal;
 }
 .wrap{
-    width: 80%;
+    width: 96%;
     margin:0 auto;
 }
 .wrap-top{
@@ -92,16 +92,16 @@ label{
     background: #f5f5f5;
 }
 .mj-phoneList ul{
-    margin: 20px 50px;
+    margin: 20px 35px;
 }
 .mj-phoneList li{
     float: left;
-    margin: 0 50px 20px 0;
+    margin: 0 30px 20px 0;
 }
 
 .mj-phoneList li label{
     display: inline-block;
-    width: 255px;
+    width: 200px;
     height: 65px;
     line-height: 65px;
     text-align: center;

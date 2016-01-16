@@ -93,6 +93,10 @@
                     <label for="rad<?=$k?>"><?=$v[2]?></label>
                 </div>
                 <? } ?>
+                <div class="mj-radio">
+                    <input type="radio" id="rad0" <?if($s['tmPrice'] == 0){echo 'checked';} ?> value="0" name="tmPrice"/>
+                    <label for="rad0>">所有</label>
+                </div>
             </dd>
             <dd>
                 <label>商标标签：</label>

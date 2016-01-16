@@ -27,6 +27,7 @@ class InternalModule extends AppModule
             $res = $this->import('sale')->findAll($r);
             return $res;
         }
+        $r['raw'] = ' 1 ';
         if ( !empty($params['tmNums']) ){
             $r['ft']['length'] = $params['tmNums'];
         }
@@ -51,6 +52,24 @@ class InternalModule extends AppModule
         if ( !empty($params['saleStatus']) ){
             $r['eq']['status'] = $params['saleStatus'];
         }
+        if ( !empty($params['dateStart']) ){
+            $r['raw'] .= " AND date >= ".strtotime($params['dateStart']);
+        }
+        if ( !empty($params['dateEnd']) ){
+            $r['raw'] .= " AND date <= ".(strtotime($params['dateEnd'])+24*3600);
+        }
+        if ( !empty($params['tmPrice']) ){
+            $setPrice = C('SEARCH_PRICE');
+            if ( !empty($setPrice[$params['tmPrice']]) ){
+                list($start, $end, ) =  $setPrice[$params['tmPrice']];
+                if ( $end == 0 ){
+                    $r['eq']['price'] = 0;
+                }else{
+                    $r['scope'] = array('price'=>array($start, $end));
+                }
+            }
+        } 
+
         //出售类型（出售、许可）
         if ( $params['saleType'] == 3 ){
             $r['eq']['isSale']      = 1;
@@ -66,7 +85,7 @@ class InternalModule extends AppModule
         if ( !empty($params['offprice']) ){
             $r['eq']['priceType']   = 1;
             $r['eq']['isOffprice']  = 1;
-            $r['raw'] .= " salePriceDate = 0 OR salePriceDate >= unix_timestamp(now()) ";
+            $r['raw'] .= " AND (salePriceDate = 0 OR salePriceDate >= unix_timestamp(now())) ";
         }
         if ( !empty($params['isTop']) ){
             $r['eq']['isTop'] = 1;

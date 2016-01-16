@@ -7,6 +7,11 @@ function setBzxx()
 {
 	var saleId  = $("#saleId").val();
 	var data    = $("#bzxxForm").serialize();
+	var phone 	= $("#viewPhone").children('option:selected').val();
+	if ( phone == 0 ){
+		layer.msg('请选择一个联系号码');
+		return false;
+	}
 	$.ajax({
 		type : 'post',
 		url  : '/internal/setEmbellish/',

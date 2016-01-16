@@ -29,7 +29,7 @@ class internalAction extends AppAction
 
 		$total 	= empty($res['total']) ? 0 : $res['total'];
 		$list 	= empty($res['rows']) ? array() : $res['rows'];
-		
+
 		$pager 		= $this->pager($total, $this->rowNum);
         $pageBar 	= empty($list) ? '' : getPageBar($pager);
 
@@ -155,14 +155,14 @@ class internalAction extends AppAction
 		}
 		$sale 		= $this->load('internal')->getSaleInfo($id);
 		$tminfo 	= $this->load('trademark')->getTminfo($sale['number']);
-		//$isBlack 	= $this->load('blacklist')->isBlack($sale['number']);
 		$log 		= $this->load('log')->getSaleLog($id);
+		$allphone 	= $this->load('phone')->getAllPhone();
 
 		$this->getSetting();
-		//$this->set('isBlack', $isBlack);
+		$this->set('log', $log);
 		$this->set('sale', $sale);
 		$this->set('tminfo', $tminfo);
-		$this->set('log', $log);
+		$this->set('allphone', $allphone);
 		$this->display();
 	}
 

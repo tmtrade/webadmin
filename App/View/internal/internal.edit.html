@@ -252,9 +252,10 @@
                 <dd>
                     <label>展示电话：</label>
                     <select name="viewPhone" id="viewPhone">
-                        <option>13412121451</option>
-                        <option>13412121451</option>
-                        <option>13412121451</option>
+                    <?if($sale['viewPhone']==0 || !in_array($sale['viewPhone'], $allphone)){?> <option value="0" selected>请选择号码</option><?}?>
+                    <? foreach ($allphone as $phone) { ?>
+                        <option value="<?=$phone?>" <?if($sale['viewPhone']==$phone){echo 'selected';}?>><?=$phone?></option>
+                    <? } ?>
                     </select>
                 </dd>
     </form>

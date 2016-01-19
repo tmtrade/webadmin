@@ -10,16 +10,16 @@ return $menu = array(
 						'url'   => '/internal/index/',
 						'auth'	=> '1',
 					),
-					'2' => array(
-						'title' => '专利列表',
-						'url'   => '/patent/index/',
-						'auth'	=> '2',
-					),
-					'3' => array(
-						'title' => '国际商标列表',
-						'url'   => '/international/index/',
-						'auth'	=> '3',
-					),
+					// '2' => array(
+					// 	'title' => '专利列表',
+					// 	'url'   => '/patent/index/',
+					// 	'auth'	=> '2',
+					// ),
+					// '3' => array(
+					// 	'title' => '国际商标列表',
+					// 	'url'   => '/international/index/',
+					// 	'auth'	=> '3',
+					// ),
 		),
 	),
 	'2' => array(
@@ -31,6 +31,11 @@ return $menu = array(
 						'title' => '联系电话管理',
 						'url'   => '/phone/index/',
 						'auth'	=> '4',
+					),
+					'2' => array(
+						'title' => '黑名单列表',
+						'url'   => '/blacklist/index/',
+						'auth'	=> '5',
 					),
 		),
 	),
@@ -44,11 +49,11 @@ return $menu = array(
 						'url'   => '/remind/index/',
 						'auth'	=> '14',
 					),
-					'2' => array(
-						'title' => '临时求购',
-						'url'   => '/tempbuy/index/',
-						'auth'	=> '15',
-					),
+					// '2' => array(
+					// 	'title' => '临时求购',
+					// 	'url'   => '/tempbuy/index/',
+					// 	'auth'	=> '15',
+					// ),
 		),
 	),
 	'4' => array(

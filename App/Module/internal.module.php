@@ -90,6 +90,11 @@ class InternalModule extends AppModule
         if ( !empty($params['isTop']) ){
             $r['eq']['isTop'] = 1;
         }
+        if ( $params['isVerify'] == 2 ){
+            $list = $this->getNoVerifySale();
+            $list = empty($list) ? array(0) : $list;
+            $r['in'] = array('id'=>$list);
+        }
         $r['order'] = array('date'=>'desc');
         $res = $this->import('sale')->findAll($r);
         return $res;
@@ -508,6 +513,37 @@ class InternalModule extends AppModule
         
         $data = array('viewPhone'=>$phone);
         return $this->import('sale')->modify($data, $r);
+    }
+
+    public function countSaleStatus()
+    {
+        $r['eq'] = array('status'=>1);
+        $onSale = $this->import('sale')->count($r);
+        $r['eq'] = array('status'=>2);
+        $down   = $this->import('sale')->count($r);
+        $r['eq'] = array('status'=>3);
+        $verify = $this->import('sale')->count($r);
+
+        $total = array(
+            '1' => $onSale,
+            '2' => $down,
+            '3' => $verify,
+            );
+        return $total;
+    }
+
+    public function getNoVerifySale()
+    {
+        $r['eq'] = array(
+            'isVerify' => 2
+            );
+        $r['group'] = array('saleId'=>'asc');
+        $r['limit'] = 1000000;
+        $r['col']   = array('saleId');
+        $res = $this->import('contact')->find($r);
+        $list = arrayColumn($res, 'saleId');
+        $list = array_filter($list);
+        return $list;
     }
 
 }

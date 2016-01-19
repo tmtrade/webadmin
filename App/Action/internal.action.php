@@ -37,8 +37,6 @@ class internalAction extends AppAction
 		//获取所有联系人
 		foreach ($list as $k => $v) {
 			$result[$k] = $this->load('internal')->getSaleInfo($v['id']);
-			//$list[$k]['contact'] = $this->load('internal')->getSaleContact($v['id']);
-			//$list[$k]['isBlack'] = $this->load('blacklist')->isBlack($v['number']);
 		}
 
         $this->set("allTotal",$this->load('internal')->countSale());
@@ -226,11 +224,11 @@ class internalAction extends AppAction
 				if ( $price <= 0 ){//未填写销售价格
 					$this->returnAjax(array('code'=>2,'msg'=>'请输入销售价格')); 
 				}
-				if ( $isOffprice && $salePrice <=0 ){//是特价但未填写特价价格
+				if ( $isOffprice == 1 && $salePrice <=0 ){//是特价但未填写特价价格
 					$this->returnAjax(array('code'=>2,'msg'=>'请输入特价价格')); 
-				}elseif ( $isOffprice && $priceDate == 1 && $salePriceDate == '' ){//特价且限时未选择时间
+				}elseif ( $isOffprice == 1 && $priceDate == 1 && $salePriceDate == '' ){//特价且限时未选择时间
 					$this->returnAjax(array('code'=>2,'msg'=>'请输入销售价格')); 
-				}elseif ( $isOffprice ){
+				}elseif ( $isOffprice == 1 ){
 					$data['isOffprice'] = 1;
 					$data['salePrice'] 	= $salePrice;
 					$data['salePriceDate'] 	= ($priceDate == 2) ? 0 : strtotime($salePriceDate);
@@ -348,8 +346,7 @@ class internalAction extends AppAction
 		$isAdd 	= $this->input('add', 'int', 0);
 		if ( empty($number) ) $this->returnAjax(array('code'=>6));
 
-		$tm = $this->load('trademark')->getInfo($number, array('auto as `tid`'));
-		if ( empty($tm) || empty($tm['tid']) ) $this->returnAjax(array('code'=>4));//无商标信息
+		if ( !$this->load('trademark')->existTm($number) ) $this->returnAjax(array('code'=>4));//无商标信息
 
 		$first = $this->load('trademark')->getFirst($tm['tid'], 'n');
 		if ( $first == 3 ) $this->returnAjax(array('code'=>5));//商标已无效

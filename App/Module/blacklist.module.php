@@ -15,6 +15,31 @@ class BlacklistModule extends AppModule
         'second'    => 'secondStatus',
     );
 
+    //列表
+    public function getBlack($number, $name)
+    {
+        if ( empty($number) && empty($name) ) return array();
+
+        if ( empty($number) ){
+            $r['eq'] = array(
+                'trademark' => $name,
+            );
+        }else{
+            $r['eq'] = array(
+                'trademark_id' => $number,
+            );
+        }
+        $r['limit'] = 100;
+        $r['raw']   = " isShow != 1 ";
+        $r['col']   = array(
+            '`trademark_id` as `number`',
+            '`class_id` as `class`',
+        );
+
+        $res = $this->import('second')->find($r);
+        return $res;
+    }
+
     //商标是否在黑名单中
     public function isBlack($number)
     {
@@ -49,9 +74,11 @@ class BlacklistModule extends AppModule
         if ( !is_array($number) || empty($number) ) return false;
         $this->begin('blacklist');
         foreach ($number as $k => $v) {
-            
             $res = $this->setBlack($v, $memo);
-            //TODO 记录成功和失败的数据，返回给用户！！！
+            if ( !$res ){
+                $this->rollBack('blacklist');
+                return false;
+            }
         }
         return $this->commit('blacklist');      
     }

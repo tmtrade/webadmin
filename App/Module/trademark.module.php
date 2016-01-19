@@ -152,11 +152,10 @@ class TrademarkModule extends AppModule
     {
         $r['eq']	= array('id' => $number);
         $r['col']   = $this->col;
-        //$r['limit']	= 100;
+
         $info		= $this->findTm($r);
 
-        if(empty($info)) return array();
-        //$info   = current($data);
+        if(empty($info) || empty($info['tid'])) return array();
 
         $info['class']          = array_filter( explode(',', $info['strclass']) );
         $info['imgUrl']         = $this->getImg($number);
@@ -168,14 +167,14 @@ class TrademarkModule extends AppModule
         return $info;
     }
 
-    
+    //获取商标其他信息，如：字数，中英文，平台等
     public function getTmOther($number)
     {   
         $r['eq']    = array('id' => $number);
-        $r['col']   = array('class', 'trademark as `name`', 'group_concat(distinct class) as `strclass`');
-        //$r['limit'] = 100;
+        $r['col']   = array('trademark as `name`', 'group_concat(distinct class) as `strclass`');
+
         $info       = $this->findTm($r);
-        if(empty($info)) return array();
+        if(empty($info) || empty($info['name']) || empty($info['strclass'])) return array();
 
         $res    = array();
         $class  = array_filter( explode(',', $info['strclass']) );
@@ -185,6 +184,17 @@ class TrademarkModule extends AppModule
         $res['platform']    = $this->getTmPlatform($class);
 
         return $res;
+    }
+
+    //判断商标号是否存在 
+    public function existTm($number)
+    {
+        $r['eq']    = array('id'=>$number);
+        $r['col']   = array('id');
+
+        $res = $this->findTm($r);
+        if ( empty($res) || empty($res['id']) ) return false;
+        return true;
     }
 
     /**
@@ -241,7 +251,6 @@ class TrademarkModule extends AppModule
 
         return $this->findTm($r);
     }
-
 
     /**
     * 获取商标图片地址

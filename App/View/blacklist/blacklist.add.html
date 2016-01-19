@@ -1,0 +1,54 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/blacklist.css">
+
+<div class="mj-blackM">
+    <span class="ms-close mj-close"></span>
+    <h5>新增黑名单</h5>
+    <p>请输入需要加入黑名单的商标号，可一次添加多条商标号，商标号于商标号之间以为符号“,”区分，例：123456,457114,78444</p>
+    <textarea id="inputNumber"></textarea>
+    <div class="mj-deiBtns">
+        <a href="javascript:void(0);" class="mj-sBtn-add">确定</a>
+        <a href="javascript:void(0);" class="mj-abgcg" onclick="parent.layer.closeAll();">取消</a>
+    </div>
+</div> 
+
+
+<script type="text/javascript">
+    $(function(){
+        $(".mj-blackM").show();
+        $(".mj-close").bind("click",function(){
+            parent.layer.closeAll();
+        });
+        $(".mj-sBtn-add").click(function(){
+            var number  = $.trim( $("#inputNumber").val() );
+            if ( number == '' ){
+                layer.msg('请输入商标号');
+                return false;
+            }
+            $.ajax({
+                type : 'post',
+                url  : '/blacklist/setBlack/',
+                data : {number:number},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            parent.window.location.reload();
+                        });
+                    }else{
+                        var msg = data.msg == undefined ? '操作失败，请重试。' : data.msg;
+                        layer.msg(msg);
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。');
+                }
+            });
+        });
+    });
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

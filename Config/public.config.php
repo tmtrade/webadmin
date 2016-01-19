@@ -20,7 +20,7 @@ $define = array(
     'SALE_STATUS' => array(
         '1'  => '销售中',
 		'2'  => '已下架',
-        '3'  => '审核中',
+        '3'  => '待审核',
     ),
 	
 	//商标类型
@@ -109,12 +109,12 @@ $define = array(
 				'1' => array(
 					'label' => '国内商标列表',
 				),
-				'2' => array(
-					'label' => '专利列表',
-				),
-				'3' => array(
-					'label' => '国际商标列表',
-				),
+				// '2' => array(
+				// 	'label' => '专利列表',
+				// ),
+				// '3' => array(
+				// 	'label' => '国际商标列表',
+				// ),
 			),
 		),
 		'2' => array(
@@ -122,6 +122,9 @@ $define = array(
 			'child' => array(
 				'4' => array(
 					'label' => '联系电话管理',
+				),
+				'5' => array(
+					'label' => '黑名单列表',
 				),
 			),
 		),
@@ -142,9 +145,9 @@ $define = array(
 				'14' => array(
 					'label' => '提醒列表',
 				),
-				'15' => array(
-					'label' => '临时求购',
-				),
+				// '15' => array(
+				// 	'label' => '临时求购',
+				// ),
 			),
 		),
 	),
@@ -169,6 +172,11 @@ $define = array(
 			'up'	=> '2',
 			'label' => '联系电话管理',
 		),
+		'5' => array(
+			'id'	=> '5',
+			'up'	=> '2',
+			'label' => '黑名单列表',
+		),
 		'12' => array(
 			'id'	=> '12',
 			'up'	=> '3',
@@ -184,11 +192,11 @@ $define = array(
 			'up'	=> '4',
 			'label' => '提醒列表',
 		),
-		'15' => array(
-			'id'	=> '15',
-			'up'	=> '4',
-			'label' => '临时求购',
-		),
+		// '15' => array(
+		// 	'id'	=> '15',
+		// 	'up'	=> '4',
+		// 	'label' => '临时求购',
+		// ),
 	),
 	'ROLE_LIST' => array(
 		'role/index' 			=> '13',
@@ -204,10 +212,12 @@ $define = array(
 		'internal/deleteSale' 	=> '1',
 		'internal/doDown' 		=> '1',
 		'internal/doUp' 		=> '1',
-		'patent/index'			=> '2',
-		'international/index' 	=> '3',
+		//'patent/index'			=> '2',
+		//'international/index' 	=> '3',
+		'phone/index' 			=> '4',
+		'blacklist/index' 		=> '5',
 		'remind/index'			=> '14',
-		'temp/index'			=> '15',
+		// 'temp/index'			=> '15',
 	),
 
 

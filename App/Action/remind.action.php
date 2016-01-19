@@ -87,7 +87,7 @@ class RemindAction extends AppAction
 	{
 		//$return = $this->load('remind')->getRemindDiv();
 		$res = array(
-			'count' => 10,
+			'count' => 0,
 			);
 		$this->returnAjax($res);
 	}

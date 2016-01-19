@@ -1,0 +1,153 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/blacklist.css">
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+
+<div class="wrap">
+    <div class="wrap-top">
+        <h4>商标黑名单</h4><span></span>
+    </div>
+
+    <div class="mj-screening">
+        <div class="mj-seT f-clearfix">
+            <span>搜索黑名单</span>
+            <!-- <a href="javascript:void(0)">设置我的筛选偏好</a>-->
+        </div>
+        <form name="blackForm" id="blackForm" action="/blacklist/index/" method="GET">
+        <dl>
+            <dd>
+                <!-- <label>商标名称：</label><input type="text" name="inputName" id="inputName" value="<?=$s['inputName']?>" class="input input-sm"/>  -->
+                <label class="mj-mle">商标号：</label><input type="text" name="inputNumber" id="inputNumber" value="<?=$number?>" class="input input-sm"/>
+                <a href="javascript:void(0);" class="mj-sBtn mj-sBtn-search" style="display:inline-block;margin-left:50px;">搜索</a>
+                <?if(!empty($number) && empty($list) && $isHave){?>
+                <a href="javascript:void(0);" class="mj-sBtn mj-sBtn-add" style="display:inline-block;margin-left:50px;">加入黑名单</a>
+                <?}?>
+            </dd>
+        </dl>
+        </form>
+    </div>
+
+    <div class="mj-deiBtns fr">
+        <a href="javascript:void(0);" class="mj-add">添加</a>
+    </div>
+<?if(empty($list)){?>
+    <div class="mj-btables">
+     <table>
+            <thead>
+            <tr>
+                <td>商标号</td>
+                <td>分类</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+        </table>
+    </div>
+<?}else{?>
+
+    <div class="mj-btables">
+        <table>
+            <thead>
+            <tr>
+                <td>商标号</td>
+                <td>分类</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody>
+        <?foreach ($list as $k => $v) {?>
+            <tr>
+                <td><?=$v['number']?></td>
+                <td>第<?=$v['class']?>类</td>
+                <td><a href="javascript:void(0);" onclick="canel('<?=$v['number']?>')">取消</a></td>
+            </tr>
+        <?}?>
+            </tbody>
+        </table>
+
+    </div>
+<?}?>
+
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".mj-add").click(function(){
+            layer.open({
+                type: 2,
+                title: false,
+                closeBtn: false,
+                area: ['500px', '380px'],
+
+                content: '/blacklist/add/'
+            });
+        });
+        $(".mj-sBtn-search").click(function(){
+            var number  = $.trim( $("#inputNumber").val() );
+            if ( number == '' ){
+                layer.tips('请输入商标号', $(this),{tips: [2, '#78BA32']});
+                return false;
+            }
+            $("#blackForm").attr("action","/blacklist/index/");
+            $("#blackForm").submit();
+        });
+
+        $(".mj-sBtn-add").click(function(){
+            var number  = $.trim( $("#inputNumber").val() );
+            if ( number == '' ){
+                layer.tips('请输入商标号', $(this),{tips: [2, '#78BA32']});
+                return false;
+            }
+            $.ajax({
+                type : 'post',
+                url  : '/blacklist/setBlack/',
+                data : {number:number},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.reload();
+                        });
+                    }else{
+                        var msg = data.msg == undefined ? '操作失败，请重试。' : data.msg;
+                        layer.msg(msg);
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。');
+                }
+            });
+        });
+    });
+    function canel(number)
+    {
+        var _number = $.trim(number);
+        if ( _number == '' ){
+            layer.msg('参数错误');
+        }
+        $.ajax({
+            type : 'post',
+            url  : '/blacklist/outBlack/',
+            data : {number:number},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    var msg = data.msg == undefined ? '操作失败，请重试。' : data.msg;
+                    layer.msg(msg);
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。');
+            }
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

@@ -92,9 +92,11 @@ label{
     vertical-align: top;
 }
 .mj-deiB table{
+	TABLE-LAYOUT: fixed;
 	width: 98%;
 }
 .mj-deiB table td{
+    word-WRAP: break-word;
     padding: 1px;
     text-align: center;
     border: solid 1px #ddd;

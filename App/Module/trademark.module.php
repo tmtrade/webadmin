@@ -20,8 +20,9 @@ class TrademarkModule extends AppModule
     protected $col = array(
         'auto as `tid`', 'id as `number`',
         'trademark as `name`','class',
-        'pid','valid_end','goods','group',
-        'group_concat(distinct class) as `strclass`'
+        'pid','valid_end','group_concat(distinct `goods`) as `goods`',
+        'group_concat(distinct `group`) as `group`',
+        'group_concat(distinct `class`) as `strclass`'
     );
 
     /**
@@ -33,17 +34,21 @@ class TrademarkModule extends AppModule
      * @return  void
      */
     public function groupReplace($str) 
-    { 
-        $str = str_replace('　', ' ', $str); //替换全角空格为半角 
-        $str = str_replace('<br>', ' ', $str); //替换BR
-        $str = str_replace('\n', ' ', $str); //替换BR
-        $str = str_replace('\r', ' ', $str); //替换BR
-        $str = str_replace('&lt;br&gt;', ' ', $str); //替换BR
-        $str = str_replace('*', '', $str);  //替换*
-        $str = preg_replace('/\(.*?\)/', ' ', $str);//替换括号里面的
+    {
+        $str = str_replace(",", ' ', $str); //替换全角空格为半角 
+        $str = str_replace("　", ' ', $str); //替换全角空格为半角 
+        $str = str_replace("    ", ' ', $str); //替换全角空格为半角 
+        $str = str_replace("<br>", ' ', $str); //替换全角空格为半角 
+        $str = str_replace("\n", ' ', $str); //替换全角空格为半角 
+        $str = str_replace("\r", ' ', $str); //替换全角空格为半角 
+        $str = str_replace("\t", ' ', $str); //替换全角空格为半角 
+        $str = str_replace("\r\n", ' ', $str); //替换全角空格为半角 
+        $str = str_replace('&lt;br&gt;', ' ', $str); //替换全角空格为半角 
+        $str = str_replace('/\(.*?\)/', ' ', $str); //替换全角空格为半角 
         $result = '';
         $strArr = explode(" ",$str);
-        $strArr = array_unique(array_filter($strArr)); //去掉空字符串
+        $strArr = array_filter(array_unique($strArr)); //去掉空字符串
+        sort($strArr);
         $result = implode(',', $strArr);
         return $result; 
     }

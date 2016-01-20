@@ -55,10 +55,12 @@
                     <td colspan="2">类别：<?=$sale['class']?>类</td>
                 </tr>
                 <tr>
-                    <td colspan="4">使用商品：<?=$tminfo['goods']?></td>
+                    <td colspan="4"><?if(mb_strlen($tminfo['goods'],'utf8')>200){?>
+                    <textarea readonly="readonly"  rows="5" cols="120" style="resize: none;">使用商品：<?=$tminfo['goods']?></textarea><?}else{?><?=$tminfo['goods']?><?}?></td>
                 </tr>
                 <tr>
-                    <td colspan="4">群    组：<?=$sale['group']?></td>
+                    <td colspan="4"><?if(mb_strlen($sale['group'],'utf8')>200){?>
+                    <textarea readonly="readonly"  rows="5" cols="120" style="resize: none;">群组：<?=$sale['group']?></textarea><?}else{?>群  组：<br><?=$sale['group']?><?}?></td>
                 </tr>
                 </tbody>
             </table>

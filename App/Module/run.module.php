@@ -106,7 +106,7 @@ class RunModule extends AppModule
             $label      = implode(',', array_unique(array_filter($label)));//商标标签（精品、紧急。。。）
             $length     = implode(',', array_unique(array_filter($length)));//商标字数（1，2，3，4，5.。。）
             $platform   = implode(',', array_unique(array_filter($platform)));//商标可入驻的平台（天猫、京东。。。）
-
+            $viewPhone  = $this->load('phone')->getRandPhone();
             $sale = array(
                 'tid'           => intval($info['tid']),
                 'number'        => $number,
@@ -128,6 +128,7 @@ class RunModule extends AppModule
                 'label'         => $label,
                 'length'        => $length,
                 'date'          => $date,
+                'viewPhone'     => $viewPhone,
                 'hits'          => intval($hits),
                 'memo'          => $memo,
                 );

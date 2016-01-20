@@ -117,7 +117,8 @@ class IndexAction extends AppAction
 	public function right()
 	{	
 		$total 		= $this->load('internal')->countSaleStatus();
-		$noverify 	= count($this->load('internal')->getNoVerifySale());
+		$list 		= $this->load('internal')->getNoVerifySale();
+		$noverify 	= count($list);
 		$this->set('total' , $total);
 		$this->set('noverify' , $noverify);
 		$this->display();

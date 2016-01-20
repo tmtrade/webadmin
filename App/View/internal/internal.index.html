@@ -218,7 +218,7 @@
                             <?}?>
                             </ul>
                         </div>
-                    <? }else{$ct=current($v['contact']);echo $ct['name']."-".$ct['phone'];} ?>
+                    <? }else{$ct=current($v['contact']);if($ct['isVerify'] == 2){echo '<span class="red">审</span>';}echo $ct['name']."-".$ct['phone'];} ?>
                     </td>
                     <td>10000</td>
                     <td><?if($v['priceType']==2){echo "议价";}else{echo $v['price'];}?></td>

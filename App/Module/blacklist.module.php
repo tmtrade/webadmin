@@ -105,14 +105,15 @@ class BlacklistModule extends AppModule
     {
         $info = $this->load('trademark')->getTminfo($number);
         if ( empty($info) ) return false;
-
+        $userId     = empty($this->userId) ?  0 :  $this->userId;
+        $username   = empty($this->username) ? '系统' :  $this->username;
         $black = array(
             'tid'       => $info['tid'],
             'number'    => $number,
             'class'     => implode(',', $info['class']),
             'date'      => time(),
-            'memberId'  => $this->userId,
-            'memo'      => '操作员：《'.$this->username.'》将商标：《'.$info['name']."》加入到黑名单中",
+            'memberId'  => $userId,
+            'memo'      => '操作员：《'.$username.'》将商标：《'.$info['name']."》加入到黑名单中",
             );
         $res = $this->import('black')->create($black);
         if ( $res ) return true;

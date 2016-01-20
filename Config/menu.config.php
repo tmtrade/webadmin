@@ -39,23 +39,23 @@ return $menu = array(
 					),
 		),
 	),
-	'3' => array(
-		'title' => '任务管理',
-		'ico'   => 'images/menu7.png',
-		'url'   => '/remind/index/',
-		'child'	=> array(
-					'1' => array(
-						'title' => '提醒列表',
-						'url'   => '/remind/index/',
-						'auth'	=> '14',
-					),
-					// '2' => array(
-					// 	'title' => '临时求购',
-					// 	'url'   => '/tempbuy/index/',
-					// 	'auth'	=> '15',
-					// ),
-		),
-	),
+	// '3' => array(
+	// 	'title' => '任务管理',
+	// 	'ico'   => 'images/menu7.png',
+	// 	'url'   => '/remind/index/',
+	// 	'child'	=> array(
+	// 				'1' => array(
+	// 					'title' => '提醒列表',
+	// 					'url'   => '/remind/index/',
+	// 					'auth'	=> '14',
+	// 				),
+	// 				// '2' => array(
+	// 				// 	'title' => '临时求购',
+	// 				// 	'url'   => '/tempbuy/index/',
+	// 				// 	'auth'	=> '15',
+	// 				// ),
+	// 	),
+	// ),
 	'4' => array(
 		'title' => '账号管理',
 		'ico'   => 'images/menu9.png',

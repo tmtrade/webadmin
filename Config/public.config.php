@@ -139,17 +139,17 @@ $define = array(
 				),
 			),
 		),
-		'4' => array(
-			'label' => '任务管理',
-			'child' => array(
-				'14' => array(
-					'label' => '提醒列表',
-				),
-				// '15' => array(
-				// 	'label' => '临时求购',
-				// ),
-			),
-		),
+		// '4' => array(
+		// 	'label' => '任务管理',
+		// 	'child' => array(
+		// 		'14' => array(
+		// 			'label' => '提醒列表',
+		// 		),
+		// 		// '15' => array(
+		// 		// 	'label' => '临时求购',
+		// 		// ),
+		// 	),
+		// ),
 	),
 	'ALL_AUTH' => array(
 		'1' => array(
@@ -187,11 +187,11 @@ $define = array(
 			'up'	=> '3',
 			'label' => '角色管理',
 		),
-		'14' => array(
-			'id'	=> '14',
-			'up'	=> '4',
-			'label' => '提醒列表',
-		),
+		// '14' => array(
+		// 	'id'	=> '14',
+		// 	'up'	=> '4',
+		// 	'label' => '提醒列表',
+		// ),
 		// '15' => array(
 		// 	'id'	=> '15',
 		// 	'up'	=> '4',
@@ -216,7 +216,7 @@ $define = array(
 		//'international/index' 	=> '3',
 		'phone/index' 			=> '4',
 		'blacklist/index' 		=> '5',
-		'remind/index'			=> '14',
+		// 'remind/index'			=> '14',
 		// 'temp/index'			=> '15',
 	),
 

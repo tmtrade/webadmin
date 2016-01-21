@@ -25,6 +25,16 @@ $configs[] = array(
 	'objRef'	 => array('encoding' => 'encoding'),
 ));
 
+//redis管理、清除缓存
+$configs[] = array(
+'id'        => 'qcache',
+'enable'    => true,
+'source'    => LibDir.'/Util/Structure/RedisManager.php',
+'className' => 'RedisManager',
+'property'   => array(
+    'configFile' => ConfigDir.'/qcache.redis.config.php',
+));
+
 //Redis队列操作
 $configs[] = array(
 'id'        => 'redisQ',

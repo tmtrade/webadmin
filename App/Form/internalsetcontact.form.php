@@ -16,7 +16,7 @@ class InternalsetcontactForm extends AppForm
 			),
 		'date'    => array(
 			'field' => 'date',
-			'method' => 'fieldInt',
+			'method' => 'fieldName',
 			),
         'source'    => array(
             'field' => 'source',

@@ -126,7 +126,11 @@ class internalAction extends AppAction
 		if ( $params['price'] <= 0 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'请输入正确的底价'));
 		}
-		if ( $params['date'] <= 0 ) $params['date'] = time();
+		if ( $params['date'] == '' || strtotime($params['date']) === false || strtotime($params['date']) < 0 ) {
+			$params['date'] = time();
+		}else{
+			$params['date'] = strtotime($params['date']);
+		}
 		$cId = $params['cId'];
 		unset($params['cId']);
 		if ( $cId <= 0 ){

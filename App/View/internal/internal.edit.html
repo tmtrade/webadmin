@@ -89,7 +89,7 @@
     <?foreach ($sale['contact'] as $ky => $vl) { ?>
             <tr>
                 <td><?=$vl['id']?></td>
-                <td><?=date('Y-m-d', $vl['date'])?></td>
+                <td><?if ($vl['date']<=0){echo '---';}else{echo date('Y-m-d', $vl['date']);}?></td>
                 <td><?if($vl['isVerify']==1){?><em class="blue">已审核<?}else{?><em class="red">未审核<?}?></em></td>
                 <td><?=$saleSource[$vl['source']]?></td>
                 <td><?=$vl['name']?></td>

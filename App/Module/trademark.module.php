@@ -45,6 +45,7 @@ class TrademarkModule extends AppModule
         $str = str_replace("\r\n", ' ', $str); //替换全角空格为半角 
         $str = str_replace('&lt;br&gt;', ' ', $str); //替换全角空格为半角 
         $str = str_replace('/\(.*?\)/', ' ', $str); //替换全角空格为半角 
+        $str = preg_replace("/(?:\()(.*)(?:\))/i", '', $str);//替换带(1)(xx)(一)这种类型的数据
         $result = '';
         $strArr = explode(" ",$str);
         $strArr = array_filter(array_unique($strArr)); //去掉空字符串

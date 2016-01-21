@@ -72,7 +72,7 @@ class TrademarkModule extends AppModule
         $pregZWBH = "/[\x7f-\xff]/"; //包含中文
         $pregYWBH = "/[a-zA-Z]+/";//包含英文验证正则
         $pregSZBH = "/[0-9]+/";//包含数字
-
+        $value    = 0;
         if(preg_match($pregZW,$name)  && !strstr($name,$pregtx)){ $value = 1;}//中文
         if(preg_match($pregYW,$name)){$value = 2;}//英文
         if($pregtx == $name){$value = 3;}//图形
@@ -179,7 +179,7 @@ class TrademarkModule extends AppModule
         $r['col']   = array('trademark as `name`', 'group_concat(distinct class) as `strclass`');
 
         $info       = $this->findTm($r);
-        if(empty($info) || empty($info['name']) || empty($info['strclass'])) return array();
+        if(empty($info) || empty($info['strclass'])) return array();
 
         $res    = array();
         $class  = array_filter( explode(',', $info['strclass']) );

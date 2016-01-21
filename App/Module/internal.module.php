@@ -206,7 +206,7 @@ class InternalModule extends AppModule
 
         $other  = $this->load('trademark')->getTmOther($number);
         if ( empty($other) ) return false;
-
+        
         $class      = implode(',', $info['class']);
         $platform   = implode(',', $other['platform']);
         $sale = array(
@@ -316,7 +316,7 @@ class InternalModule extends AppModule
     }
 
     //添加出售联系人信息（可多个）
-    protected function addContact($data, $saleId)
+    public function addContact($data, $saleId)
     {
         //判断是否二维数组
         if ( is_array(current($data)) ){

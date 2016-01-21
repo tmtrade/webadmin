@@ -290,7 +290,7 @@ class InternalModule extends AppModule
         }
         $tminfoId   = $this->addTminfo($tminfo, $saleId);//添加包装信息
         $contactId  = $this->addContact($contact, $saleId);//添加联系人
-        $black      = $this->load('blacklist')->setBlack($data['sale']['number']);//加入黑名单
+        $black      = $this->load('blacklist')->setBlack($sale['number']);//加入黑名单
         if ( $tminfoId && $contactId && $black ) {
             return $this->commit('sale');
         } 

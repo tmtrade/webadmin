@@ -160,9 +160,12 @@ class internalAction extends AppAction
 		$log 		= $this->load('log')->getSaleLog($id);
 		$allphone 	= $this->load('phone')->getAllPhone();
 
+		$gjUrl = GUANJIA_URL.'guanjia/Member/tmView?&id='.$sale['number'].'&tmclass='.substr($sale['class'],0,2);
+		
 		$this->getSetting();
 		$this->set('log', $log);
 		$this->set('sale', $sale);
+		$this->set('gjUrl', $gjUrl);
 		$this->set('tminfo', $tminfo);
 		$this->set('allphone', $allphone);
 		$this->display();

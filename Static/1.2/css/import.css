@@ -1,0 +1,132 @@
+html,body{width: 100%;height: 100%;}
+html,body,ul,h1,p{margin:0;padding:0;}
+li{list-style:none;}
+h1{font-size:14px;color:inherit;}
+*{box-sizing:border-box;font-size:inherit;}
+a{color:inherit;font-size:inherit;}
+.iBlock{display:inline-block;}
+.borderBtmCd{border-bottom:1px solid #cdcdcd!important;;}
+.blockFFFFCD{background: #FFFFCD;border:1px solid #E5E5E6;border-radius:2px;padding:8px}
+/*color*/
+.cFF6701{color:#FF6701;}
+.c013267{color:#013267;}
+.c666{color:#666666;}
+/*font-size*/
+.f14{
+	font-size:14px;
+}
+/*margin*/
+.mb10{margin-bottom: 10px;}
+.mr25{margin-right: 25px;}
+
+
+/*padding*/
+
+#import{
+	position:absolute;
+	width: 100%;
+	height: 100%;
+	background: #000;
+	opacity:.5;
+}
+.im-wrap{
+	position:absolute;
+	width: 630px;
+	height: auto;
+	/*top:50%;
+	margin-top:-215px;
+	left:50%;
+	margin-left:-315px;*/
+	background: #fff;
+	font-size:12px;
+	padding:10px 30px 30px 30px;
+}
+.im-title{
+	color:#313131;
+}
+.im-title label{
+	cursor:pointer;
+}
+.im-title-span{
+	float:right;
+	font-size:14px;
+	font-weight:bold;
+}
+.im-title-span img{
+	vertical-align:top;
+}
+.im-title h1{
+	margin-bottom: 10px;
+}
+.commodity{
+	margin-top: 14px;
+	margin-bottom: 10px;
+	font-size:12px;
+}
+.commodity-l,.commodity-r{
+	display:inline-block;vertical-align:top;
+}
+.commodity-l{
+	width: 60px;
+	color:#666;
+}
+.commodity-r p{
+	margin-bottom: 10px;
+}
+.confit-list label span{
+	display:inline-block;
+	width: 60px;
+	color:#666666;
+}
+.confit-list{
+	margin-bottom: 10px;
+}
+.confit-list label select,.confit-list label input{
+	width: 200px;
+	border:1px solid #E5EAF1;
+	border-top:1px solid #AEAEB1;
+	border-radius:2px;
+	height: 20px;
+	line-height: 20px;
+
+}
+.confit-list li{
+	margin-bottom: 10px;
+}
+.nexta,.cancela{
+	display:inline-block;
+	width: 90px;
+	height: 40px;
+	text-align: center;
+	line-height: 40px;
+	font-size:16px;
+	color:#fff;
+	text-decoration:none;
+
+}
+.nexta{
+	background: #FF9999;
+}
+.cancela{
+	margin-left:5px;
+	background: #C9C9C9;
+}
+
+
+.loading,.leading{
+	text-align:center;
+}
+.leading{
+	margin-top: 30px;
+}
+
+.loading h1{
+	font-size:48px;
+	margin:40px 0;
+}
+
+.im-wrap .txtc{
+	padding:48px 0;
+	color:#003266;
+	text-decoration:underline;
+}

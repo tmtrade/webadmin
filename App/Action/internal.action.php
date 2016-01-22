@@ -448,5 +448,122 @@ class internalAction extends AppAction
 		$this->set('salePlat', $salePlat);
 	}
 	
+	
+	//导入数据弹出界面
+	public function import()
+	{
+		$source = C('SOURCE');
+		$this->set('source', $source);
+		$this->display();
+	}
+	
+	//excel文件上传
+	public function ajaxUploadExcel()
+    {
+        $msg = array(
+            'code'  => 0,
+            'msg'   => '',
+            'filename'   => '',
+            );
+        if ( empty($_FILES) || empty($_FILES['fileName']) ) {
+            $msg['msg'] = '请上传EXCEL文件';
+            $this->returnAjax($msg);
+        }
+        $obj = $this->load('upload')->uploadExcel('fileName', 'excel');
+        if ( $obj->fileurl ){
+            $msg['code']    = 1;
+            $msg['fileurl']     = $obj->fileurl;
+        }else{
+            $msg['msg']     = $obj->msg;
+        }
+        $this->returnAjax($msg);
+    }
+	
+	//导入数据提交操作
+	public function importForm()
+	{
+		$param['contact'] = $this->input('contact', 'text', 0); 
+		$param['phone']   = $this->input('phone', 'int', 0); //电话
+    	$param['source']  = $this->input('source', 'text', '');//来源
+		$filePath  = $this->input('excelurl', 'text', '');//来源
+		$result = $this->PHPExcelToArr($filePath,$param);
+		$this->returnAjax($result);
+	}
+	
+	
+	
+	//把文件里面的数据读取出来，然后组成一个数组返回  
+	public function PHPExcelToArr($filePath,$param){
+		$SBarr = $this->load('excel')->PHPExcelToArr($filePath);
+		/**商标已传的黑名单  不存在该商标      上传成功的  上传失败的 黑名单**/
+		$saleExists = $saleNotHas = $saleSucess = $saleError = array();
+		
+		if($SBarr){
+			foreach($SBarr as $k => $item){
+				$tmInfo = $this->load('trademark')->getTmInfo($item['number']);
+				if(!$tmInfo){//不存在该商标
+					$saleNotHas[] = $item;
+				}else{
+					//商标已上传的
+					$saleB = $this->load('internal')->existSale($item['number']);
+					if($saleB){
+						$saleExists[] = $item;
+						if($phone || $item['phone']){
+							$phone = $param['phone'] ? $param['phone'] : $item['phone'];
+						}
+						$saleBContact = $this->load('internal')->getSaleContactByPhone($item['number'],$phone);
+						//如果没有这个联系人，就写入这个联系人信息
+						if(!$saleBContact){
+							$dataContat = $item;
+							$dataContat['date']    = time();
+							$dataContat['phone']   = $param['phone'] ? $param['phone'] : $item['phone'];
+							$dataContat['name']	   = $param['name'] ? $param['name'] : $item['name'];
+							$dataContat['source']  = $param['source'];
+							$dataContat['saleType'] = 1;
+							$dataContat['tid'] = $tmInfo['tid'];
+							$dataContat['userId'] = $this->userId;
+							$dataContat['saleId'] = $saleB;
+							$result = $this->load('internal')->addContact($dataContat,$saleB);
+						}
+						continue;
+					}else{
+						//开始写入商标
+						$result = $this->load('internal')->saleZZ($tmInfo,$item,$param);
+						if($result){
+							$saleSucess[] = $item;
+						}else{
+							$saleError[] = $item;
+						}
+					}
+				}
+			}
+			$numSucess = count($saleSucess);
+			$data['code']  = 1;
+			$data['alldata'] = count($SBarr);
+			$data['sucdata'] = $numSucess;
+			$data['errdata'] = (count($SBarr)-$numSucess);
+			
+			//if($data['errdata'] > 0){
+			//	$this->load('excel')->upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError);
+			//}
+			return $data;
+		}else{
+			//没有商标数据
+			$data['code']  = 0;
+		}
+		return $data;
+	}
+	
+	
+	//导出失败数据
+	public function diwnErrorSb()
+	{
+		$param['contact'] = $this->input('contact', 'text', 0); 
+		$param['phone']   = $this->input('phone', 'int', 0); //电话
+    	$param['source']  = $this->input('source', 'text', '');//来源
+		$filePath  = $this->input('excelurl', 'text', '');//来源
+		$this->PHPExcelToArr($filePath,$param);
+	}
+	
 }
 ?>

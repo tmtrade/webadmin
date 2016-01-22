@@ -1,0 +1,169 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css" />
+	
+<div class="im-wrap" id="loadForm">
+	<div class="im-title borderBtmCd">
+		<label><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></label>
+		<h1>导入商品 </h1>
+	</div>
+	<div class="commodity borderBtmCd">
+		<div class="commodity-l">选择</div>
+		<div class="commodity-r">
+			<p><input type="file" name="fileName" id="upfile" /></p>
+			<p><a href="javascript:void(0)" onclick="downModel()" class="iBlock blockFFFFCD c013267 f14">EXCEL模板下载</a> <span class="cFF6701">注：建议每次最高不超过5000条数据</span></p>
+		</div>			
+	</div>
+	<div class="im-title">
+		<h1>可配置项</h1>
+		<p class="blockFFFFCD c666 mb10">您可对导入商品统一增加以下字段</p>
+	</div>
+	<form id="importForm" >
+	<input type="hidden" name="excelurl" id="excelurl" />
+	<ul class="confit-list borderBtmCd">
+		<li>
+			<label>
+				<span>来源渠道</span>
+				<select name="source" id="">
+					<?php 
+					foreach($source as $k => $item){
+						if($k == 1 || $k==4 || $k==5){continue;}
+						echo "<option value='".$k."'>".$item."</option>";
+					}
+					?>
+				</select>
+			</label>
+		</li>
+		<li>
+			<label>
+				<span>联系人</span>
+				<input type="text" name="name" id="contact" maxlength="20" onkeyup="value=value.replace(/[\W]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" />
+			</label>
+		</li>
+		<li>
+			<label>
+				<span>联系电话</span>
+				<input type="text" name="phone" id="phone" maxlength="30" onkeyup="value=value.replace(/[^\d{1,}\-\d{1,}|\d{1,}]/g,'')" />
+			</label>
+		</li>
+	</ul>
+	<a href="javascript:void(0)" class="nexta">下一步</a><a href="javascript:void(0)" class="cancela">取消</a>
+	</form>
+</div>
+
+
+<div class="im-wrap" style="display:none;" id="loading">
+	<div class="im-title borderBtmCd">
+		<label><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></label>
+		<h1>导入商品 </h1>
+	</div>
+	<div class="loading borderBtmCd">
+		<img src="<?=StaticDir?>1.2/images/loading.gif" />
+	</div>
+	<p class="leading">正在导入，请勿关闭页面</p>
+</div>
+
+<div class="im-wrap"  style="display:none;" id="loadok">
+	<div class="im-title borderBtmCd">
+		<label><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></label>
+		<h1>导入商品</h1>
+	</div>
+	<div class="loading borderBtmCd">
+		<h1>导入完成</h1>
+	</div>
+	<p class="leading">本次您导入了<span class="cFF0000" id="alldata"></span>条商品，成功<span class="cFF0000" id="sucdata"></span>条商品，失败<span class="cFF0000" id="errdata"></span>条商品</p>
+	<p class="tc"><a href="javascript:void(0)" class="cancela">确定</a></p>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".im-title-span,.cancela").on("click",function(){
+            parent.layer.closeAll();
+        });
+    });
+	
+	//检查文件格式
+	$('#upfile').change(function(){
+		/**文件格式**/
+		var fileInput = $("#upfile").val();
+		var result = checkfileType(fileInput);
+		if(!result){
+			return false;
+		}
+	})
+	
+	var errMsg = "上传的附件文件不能超过2M！！！";
+	var errFile = "可选择一条excel文件（仅支持后缀名为 .xls  .xlsx  .xlsm 文件）。文件最大不可超过 ( 10m ) ";
+	//检查文件类型
+	function checkfileType(fileInput){
+		var flag = true;
+		var extStart=fileInput.lastIndexOf(".");
+		var ext=fileInput.substring(extStart,fileInput.length).toUpperCase(); //wenjian 
+		var fileType=new Array(".XLS",".XLSX",".XLSM");
+		if($.inArray(ext, fileType) == -1){
+			alert(errFile);
+			flag = 0;
+			return false;
+		}
+		return flag;
+	}
+	
+	//excel文件上传
+	$("#upfile").wrap("<form id='bzformupload' action='/internal/ajaxUploadExcel/' method='post' enctype='multipart/form-data'></form>");
+	$("#upfile").on('change', function(){
+		$("#bzformupload").ajaxSubmit({
+			dataType:  'json',
+			success: function(data) {
+				if (data.code == 1){
+					$('#excelurl').val(data.fileurl);
+				}else{
+					alert(data.msg);
+				}
+			},
+			error:function(xhr){
+				alert('文件格式不正确或文件过大，请重新上传！');
+			}
+		});
+	});
+	
+	//下载模板
+	function downModel(){
+		window.location.href="/Static/1.2/出售数据导入模板 .xls";
+	}
+	
+	$('.nexta').click(function(){
+		/**文件格式**/
+		var result = true;
+		var fileInput = $("#upfile").val();
+		if(!fileInput){
+			alert('请选择文件');
+			return false;
+		}
+		result = checkfileType(fileInput);
+		if(!result){
+			return false;
+		}
+		$('#loadForm').hide();
+		$('#loading').show();
+		content = $('#importForm').serialize();
+		$.ajax({
+			type: "post",
+			url: "/internal/importForm/",
+			data: content,
+			dataType: "json",
+			success: function(data){
+				$('#loading').hide();
+				$('#loadok').show();
+				if (data.code == 1){
+					$('#alldata').text(data.alldata);
+					$('#sucdata').text(data.sucdata);
+					$('#errdata').text(data.errdata);
+				}else{
+					$('.leading').html('您导入的文件没有内容！');
+				}
+			}
+		});
+	})
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

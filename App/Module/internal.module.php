@@ -131,6 +131,18 @@ class InternalModule extends AppModule
 
         return $this->import('contact')->find($r);
     }
+	
+	
+	 //获取商品number和联系电话查询改商标下的联系人信息
+    public function getSaleContactByPhone($number, $phone)
+    {
+		$r['eq'] = array(
+			'number' => $number,
+			'phone' => $phone,
+			);
+		$r['limit'] = 1;
+        return $this->import('contact')->find($r);
+    }
 
     //获取商品ID（saleId）下的商标包装信息
     public function getSaleTminfo($saleId)
@@ -139,6 +151,16 @@ class InternalModule extends AppModule
             'saleId' => $saleId,
             );
         return $this->import('tminfo')->find($r);
+    }
+	
+	
+	//通过商标号获取商标是否存在
+    public function getSaleByNumber($number)
+    {
+        $r['eq'] = array(
+            'number' => $number,
+            );
+        return $this->import('sale')->find($r);
     }
 
     //下架商标（批量时必须全部成功）
@@ -291,6 +313,7 @@ class InternalModule extends AppModule
         $tminfoId   = $this->addTminfo($tminfo, $saleId);//添加包装信息
         $contactId  = $this->addContact($contact, $saleId);//添加联系人
         $black      = $this->load('blacklist')->setBlack($sale['number']);//加入黑名单
+		
         if ( $tminfoId && $contactId && $black ) {
             return $this->commit('sale');
         } 
@@ -544,6 +567,87 @@ class InternalModule extends AppModule
         $list = arrayColumn($res, 'saleId');
         $list = array_filter($list);
         return $list;
+    }
+	
+	//组装商标数据，写入数据库.用事物做，一个不写入，则都不写入
+	public function saleZZ($info,$data,$param)
+    {
+		//事物开始
+		//$start = $this->msectime();
+		$number = $data['number'];
+		$type = $label = $platform = $length = array();
+		$price      = 0;//指导价格
+		$priceType  = 2;//价格类型 1定价，2议价
+		$isOffprice = 2;//是否特价
+		$salePrice  = 0;//特价价格
+		$salePriceDate = 0;//特价时间
+
+		$status = 1;//销售中
+		$isTop  = 0;//不置项
+		$date   = 0;//出售时间
+		$hits   = 0;//阅读数
+		$class  = implode(',', $info['class']);
+		//联系人
+		$contact = array(
+			'source'        => intval($data['source']),
+			'userId'        => intval($this->userId),
+			'tid'           => intval($info['tid']),
+			'number'        => $number,
+			'name'          => $param['name'] ? $param['name'] : $data['name'],
+			'phone'         => $param['phone'] ? $param['phone'] : $data['phone'],
+			'price'         => $data['price'] ? $data['price'] : 0,
+			'saleType'      => 1,
+			'isVerify'      => 1,
+			'advisor'       => $data['advisor'],
+			'department'    => $data['department'],
+			'date'          => time(),
+		);
+		
+		//出售数据
+		$other  = $this->load('trademark')->getTmOther($number);
+        if ( empty($other) ) return false;
+        $platform   = implode(',', $other['platform']);
+		$length	    = implode(',', $other['length']);
+		$type	    = implode(',', $other['type']);
+		$viewPhone  = $this->load('phone')->getRandPhone();
+		$sale = array(
+			'tid'           => intval($info['tid']),
+			'number'        => $number,
+			'class'         => $class,
+			'group'         => trim($info['group']),
+			'name'          => trim($info['name']),
+			'pid'           => intval($info['pid']),
+			'price'         => $price,
+			'priceType'     => $priceType,
+			'isOffprice'    => $isOffprice,
+			'salePrice'     => $salePrice,
+			'salePriceDate' => $salePriceDate,
+			'status'        => $status, 
+			'isSale'        => 1,
+			'isLicense'     => 2,
+			'isTop'         => $isTop,
+			'type'          => $type,
+			'platform'      => $platform,
+			'label'         => '',
+			'length'        => $length,
+			'date'          => $date,
+			'viewPhone'     => $viewPhone,
+			'hits'          => intval($hits),
+			'memo'          => $data['memo'],
+			);
+		$tminfo = array(
+            'number'    => $number,
+            'memo'      => $data['memo'],
+			'intro'     => '',
+        );
+	
+		$result = array(
+			'sale'          => $sale,
+			'saleTminfo'    => $tminfo,
+			'saleContact'   => $contact,
+			);
+		$res = $this->load('internal')->addAll($result);
+		return $res;
     }
 
 }

@@ -54,5 +54,33 @@ class UploadModule extends AppModule
         }        
         return $up;
     }
+	
+	
+	/**
+	 * excel上传 
+	 *
+	 * @return
+	 *
+	 * @author   
+	 * @since     
+	 * @copyright
+	 */
+    public function uploadExcel($name, $type='all')
+    {
+        if ($type == 'excel') $this->type = 'xlsx|xls|xlsm';
+    	$filename    = $_FILES[$name]['name'];
+        $up          = $this->com('upload');
+        $up->maxSize = $this->maxSize;
+        $up->path    = './'.StaticDir.$this->path.'/excel/';
+        $up->upType  = $this->type;
+        $up->upload($_FILES[$name]);
+		
+        if ( empty($up->msg) ){
+            $up->fileurl = StaticDir.$this->path.'/excel/'.$up->upFile;
+        }else{
+            $up->fileurl = '';
+        }        
+        return $up;
+    }
 }
 ?>

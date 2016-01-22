@@ -138,7 +138,7 @@
         <p class="text-left" style="float:left;padding-top:20px;">共有 <b class="red"><?=$allTotal?></b> 条数据，当前筛选结果 <b class="blue"><?=$total?></b> 条数据</p>
         <div class="wrap-tittle">
             <button class="btn btn-danger" onclick="add();" type="button">创建商品</button>
-            <!-- <button class="btn btn-danger" type="button">导入商品</button> -->
+            <button class="btn btn-danger" onclick="Import();" type="button">导入商品</button>
             <!-- <button class="btn btn-info" type="button">导出表格EXCEL</button> -->
             <button type="button" class="btn btn-info" onclick="setMoreDown();">批量下架</button>
             <button type="button" class="btn btn-info" onclick="delMoreSale();">批量删除</button>
@@ -370,6 +370,19 @@
             area: ['560px', '350px'],
 
             content: '/internal/create/'
+        });
+    }
+	
+	//批量导入商标
+	function Import()
+    {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['650px', '420px'],
+
+            content: '/internal/import/'
         });
     }
 

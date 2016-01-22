@@ -514,7 +514,7 @@ class InternalModule extends AppModule
         $data = array('viewPhone'=>$phone);
         return $this->import('sale')->modify($data, $r);
     }
-
+    //统计所有商品的状态
     public function countSaleStatus()
     {
         $r['eq'] = array('status'=>1);
@@ -531,7 +531,7 @@ class InternalModule extends AppModule
             );
         return $total;
     }
-
+    //获取未审核的联系人
     public function getNoVerifySale()
     {
         $r['eq'] = array(

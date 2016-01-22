@@ -390,7 +390,7 @@ class InternalModule extends AppModule
             }
             $r['raw'] = " id != $id ";
             $total = $this->import('contact')->count($r);
-            if ( $total < 2 ) return false;
+            if ( $total < 1 ) return false;
         }
         $role['eq'] = array('id'=>$id);
         return $this->import('contact')->remove($role);

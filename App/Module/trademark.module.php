@@ -167,6 +167,7 @@ class TrademarkModule extends AppModule
         $info['imgUrl']         = $this->getImg($number);
         $info['group']          = $this->groupReplace($info['group']);
         $info['status']         = $this->getFirst($info['tid']);
+        $info['second']         = $this->getSecond($info['tid']);
         $proposer               = $this->load('proposer')->getNew($info['pid']);
         $info['proName']        = empty($proposer['cnName']) ? '' : $proposer['cnName'];
 
@@ -317,7 +318,7 @@ class TrademarkModule extends AppModule
         foreach (range(1, 28) as $v) {
             $key = 'status'.$v;
             if ($second[$key] == 1){
-                array_push($list, $Seconds[$v]);
+                $list[$v] = $Seconds[$v];
             }
         }
         return $list;

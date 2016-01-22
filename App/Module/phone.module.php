@@ -71,6 +71,7 @@ class PhoneModule extends AppModule
     public function getRandPhone($not)
     {
         $list = $this->getAllPhone($not);
+        if ( empty($list) ) return '0';
         $randKey = array_rand($list, 1);
         return $list[$randKey];
     }

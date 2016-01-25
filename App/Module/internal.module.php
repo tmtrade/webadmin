@@ -112,6 +112,26 @@ class InternalModule extends AppModule
         if ( $tminfo ) $info['tminfo']      = $this->getSaleTminfo($saleId);
         return $info;
     }
+	
+	 //通过商标号获取商品信息
+    public function getSaleContactByNum($number, $contact=1, $tminfo=1)
+    {
+        $r['eq'] = array(
+            'number' => $number,
+            );
+        $info = $this->import('contact')->find($r);
+        if ( empty($info) ) return array();
+        return $info;
+    }
+	
+	
+    //改变商标信息的包装图片
+    public function updateContactBZpic($data, $number)
+    {
+        $r['eq'] = array('number'=>$number);
+        return $this->import('contact')->modify($data, $r);
+    }
+	
 
     //获取商品ID（saleId）下的所有联系人信息（可选，如果传id即查询当前ID下的联系人信息）
     public function getSaleContact($saleId, $id=0)

@@ -3,7 +3,7 @@
 	
 <div class="im-wrap" id="loadForm">
 	<div class="im-title borderBtmCd">
-		<label><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></label>
+		<em><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></em>
 		<h1>导入商品 </h1>
 	</div>
 	<div class="commodity borderBtmCd">
@@ -46,14 +46,14 @@
 			</label>
 		</li>
 	</ul>
-	<a href="javascript:void(0)" class="nexta">下一步</a><a href="javascript:void(0)" class="cancela">取消</a>
+	<a href="javascript:void(0)" class="nexta" id="nextpt">下一步</a><a href="javascript:void(0)" class="cancela">取消</a>
 	</form>
 </div>
 
 
 <div class="im-wrap" style="display:none;" id="loading">
 	<div class="im-title borderBtmCd">
-		<label><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></label>
+		<em><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></em>
 		<h1>导入商品 </h1>
 	</div>
 	<div class="loading borderBtmCd">
@@ -64,20 +64,20 @@
 
 <div class="im-wrap"  style="display:none;" id="loadok">
 	<div class="im-title borderBtmCd">
-		<label><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></label>
+		<em><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></em>
 		<h1>导入商品</h1>
 	</div>
 	<div class="loading borderBtmCd">
 		<h1>导入完成</h1>
 	</div>
 	<p class="leading">本次您导入了<span class="cFF0000" id="alldata"></span>条商品，成功<span class="cFF0000" id="sucdata"></span>条商品，失败<span class="cFF0000" id="errdata"></span>条商品</p>
-	<p class="txtc tc " id="ErrorWord"><a href="javascript:void(0)" id="downError">下载失败文档</a></p>
-	<p class="tc"><a href="javascript:void(0)" class="cancela">确定</a></p>
+	<p class="txtc tc "><a href="javascript:void(0)" id="downError">下载失败文档</a></p>
+	<p class="tc"><a href="javascript:void(0)" class="nexta closed">确定</a></p>
 </div>
 
 <script type="text/javascript">
     $(function(){
-        $(".im-title-span,.cancela").on("click",function(){
+        $(".im-title-span,.cancela,.closed").on("click",function(){
             parent.layer.closeAll();
         });
     });
@@ -132,7 +132,7 @@
 	}
 	
 	var filepath;
-	$('.nexta').click(function(){
+	$('#nextpt').click(function(){
 		//文件格式
 		var result = true;
 		var fileInput = $("#upfile").val();

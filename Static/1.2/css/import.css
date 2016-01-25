@@ -10,6 +10,7 @@ a{color:inherit;font-size:inherit;}
 /*color*/
 .cFF6701{color:#FF6701;}
 .c013267{color:#013267;}
+.cFF0000{color:#FF0000;}
 .c666{color:#666666;}
 /*font-size*/
 .f14{
@@ -19,6 +20,9 @@ a{color:inherit;font-size:inherit;}
 .mb10{margin-bottom: 10px;}
 .mr25{margin-right: 25px;}
 
+.tc{text-align:center;}
+
+/*padding*/
 
 /*padding*/
 
@@ -44,7 +48,7 @@ a{color:inherit;font-size:inherit;}
 .im-title{
 	color:#313131;
 }
-.im-title label{
+.im-title em{
 	cursor:pointer;
 }
 .im-title-span{
@@ -128,5 +132,5 @@ a{color:inherit;font-size:inherit;}
 .im-wrap .txtc{
 	padding:48px 0;
 	color:#003266;
-	text-decoration:underline;
+	text-align:center;
 }

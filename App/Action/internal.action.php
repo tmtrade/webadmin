@@ -1,4 +1,5 @@
 <?
+header("Content-type: text/html; charset=utf-8"); 
 /**
  * 国内商标
  *
@@ -482,22 +483,25 @@ class internalAction extends AppAction
 	//导入数据提交操作
 	public function importForm()
 	{
-		$param['contact'] = $this->input('contact', 'text', 0); 
-		$param['phone']   = $this->input('phone', 'int', 0); //电话
+		$param['contact'] = $this->input('contact', 'text', ''); 
+		$param['phone']   = $this->input('phone', 'text', ''); //电话
     	$param['source']  = $this->input('source', 'text', '');//来源
 		$filePath  = $this->input('excelurl', 'text', '');//来源
 		$result = $this->PHPExcelToArr($filePath,$param);
 		$this->returnAjax($result);
 	}
 	
-	
-	
 	//把文件里面的数据读取出来，然后组成一个数组返回  
 	public function PHPExcelToArr($filePath,$param){
 		$SBarr = $this->load('excel')->PHPExcelToArr($filePath);
 		/**商标已传的黑名单  不存在该商标      上传成功的  上传失败的 黑名单**/
 		$saleExists = $saleNotHas = $saleSucess = $saleError = array();
-		
+		$num = count($SBarr);
+		if($num > 5000){
+			//没有商标数据
+			$data['code']  = 0;
+			$data['msg']   = '上传数量超过5000条';
+		}
 		if($SBarr){
 			foreach($SBarr as $k => $item){
 				$tmInfo = $this->load('trademark')->getTmInfo($item['number']);
@@ -542,27 +546,19 @@ class internalAction extends AppAction
 			$data['alldata'] = count($SBarr);
 			$data['sucdata'] = $numSucess;
 			$data['errdata'] = (count($SBarr)-$numSucess);
-			
-			//if($data['errdata'] > 0){
-			//	$this->load('excel')->upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError);
-			//}
-			return $data;
+			if($data['errdata'] > 0){
+				$data['filepath'] = $this->load('excel')->upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError);
+			}
 		}else{
 			//没有商标数据
 			$data['code']  = 0;
+			$data['msg']   = '文件没有数据';
+		}
+		
+		if(file_exists(FILEDIR.$filePath)){
+		  unlink(FILEDIR.$filePath);
 		}
 		return $data;
-	}
-	
-	
-	//导出失败数据
-	public function diwnErrorSb()
-	{
-		$param['contact'] = $this->input('contact', 'text', 0); 
-		$param['phone']   = $this->input('phone', 'int', 0); //电话
-    	$param['source']  = $this->input('source', 'text', '');//来源
-		$filePath  = $this->input('excelurl', 'text', '');//来源
-		$this->PHPExcelToArr($filePath,$param);
 	}
 	
 }

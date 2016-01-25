@@ -56,40 +56,43 @@ class ExcelModule extends AppModule
 		 
 		//循环读取每个单元格的内容。注意行从1开始，列从A开始  
 		for($rowIndex=2;$rowIndex<=$allRow;$rowIndex++){  
-			for($colIndex='A';$colIndex<=$allColumn;$colIndex++){  
-				$addr = $colIndex.$rowIndex;  
-				$cell = $currentSheet->getCell($addr)->getValue();  
-				
-				if($cell instanceof PHPExcel_RichText){
-					//富文本转换字符串  
-					$cell = $cell->__toString(); 
-				}
-				$key = $rowIndex-2;
-				
-				switch($colIndex){
-					case 'A' :
-						$sbArr[$key]['number'] = trim($cell);
-						break;
-					case 'B' :
-						$sbArr[$key]['name'] = $cell;
-						break;
-					case 'C' :
-						$sbArr[$key]['phone'] = $cell;
-						break;
-					case 'D' :
-						$sbArr[$key]['price'] = $cell;
-						break;
-					case 'E' :
-						$sbArr[$key]['advisor'] = $cell;
-						break;
-					case 'F' :
-						$sbArr[$key]['department'] = $cell;
-						break;
-					case 'G' :
-						$sbArr[$key]['memo'] = $cell;
-						break;
-				}
-			}  
+			$Adata = $currentSheet->getCell('A'.$rowIndex)->getValue();
+			if($Adata){
+				for($colIndex='A';$colIndex<=$allColumn;$colIndex++){  
+					$addr = $colIndex.$rowIndex;  
+					$cell = $currentSheet->getCell($addr)->getValue();  
+					
+					if($cell instanceof PHPExcel_RichText){
+						//富文本转换字符串  
+						$cell = $cell->__toString(); 
+					}
+					$key = $rowIndex-2;
+					
+					switch($colIndex){
+						case 'A' :
+							$sbArr[$key]['number'] = trim($cell);
+							break;
+						case 'B' :
+							$sbArr[$key]['name'] = $cell;
+							break;
+						case 'C' :
+							$sbArr[$key]['phone'] = $cell;
+							break;
+						case 'D' :
+							$sbArr[$key]['price'] = $cell;
+							break;
+						case 'E' :
+							$sbArr[$key]['advisor'] = $cell;
+							break;
+						case 'F' :
+							$sbArr[$key]['department'] = $cell;
+							break;
+						case 'G' :
+							$sbArr[$key]['memo'] = $cell;
+							break;
+					}
+				} 
+			}
 		}	
 		return $sbArr;
 	}
@@ -213,9 +216,8 @@ class ExcelModule extends AppModule
 			$num = $num+1;	
 			$PHPExcel->getActiveSheet()->mergeCells('A'.$num.':G'.$num);
 			$PHPExcel->getActiveSheet()->setCellValue('A'.$num, "数据表已存在商标");
-			$num = $num+1;
 			foreach($saleExists as $k => $item ){
-				$num = $num + $k;
+				$num ++;
 				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['number']);
 				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['name']);
 				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $item['phone']);
@@ -229,9 +231,8 @@ class ExcelModule extends AppModule
 			$num = $num+1;
 			$PHPExcel->getActiveSheet()->mergeCells('A'.$num.':G'.$num);
 			$PHPExcel->getActiveSheet()->setCellValue('A'.$num, "该商标号错误、无对应商标号");
-			$num = $num+1 ;
 			foreach($saleNotHas as $k => $item ){
-				$num = $num + $k;
+				$num ++;
 				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['number']);
 				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['name']);
 				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $item['phone']);
@@ -245,9 +246,8 @@ class ExcelModule extends AppModule
 			$num = $num+1;
 			$PHPExcel->getActiveSheet()->mergeCells('A'.$num.':G'.$num);
 			$PHPExcel->getActiveSheet()->setCellValue('A'.$num, "数据存入错误商标");
-			$num = $num+1 ;
 			foreach($saleError as $k => $item ){
-				$num = $num + $k;
+				$num ++;
 				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['number']);
 				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['name']);
 				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $item['phone']);
@@ -262,8 +262,8 @@ class ExcelModule extends AppModule
 		$PHPExcel->setActiveSheetIndex(0);
 
 		$filename  = iconv('utf-8', 'gbk', "商标导入信息");
-		$filenames = $filename . date('Ymd', time()) . $code; //防止乱码
-
+		//$filenames = $filename . date('Ymd', time()) . $code; //防止乱码
+		$filenames = "errorexcel" . date('Ymd', time()) . $code; //防止乱码
 		$objWriter = new PHPExcel_Writer_Excel5($PHPExcel);
 		header("Content-type:application/octet-stream");
 		header("Accept-Ranges:bytes");
@@ -271,7 +271,10 @@ class ExcelModule extends AppModule
 		header("Content-Disposition:attachment;filename=" . $filenames . ".xls");
 		header("Pragma: no-cache");
 		header("Expires: 0");
-		$objWriter->save('php://output');
+		$savepath = UPLOADEXCEL.$filenames . ".xls";
+		$pathfile = UPLOADEXCELED.$filenames . ".xls";
+		$objWriter->save($savepath);
+		return $pathfile;
 	}
 	
 }

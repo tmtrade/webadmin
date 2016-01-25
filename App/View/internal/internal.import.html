@@ -71,6 +71,7 @@
 		<h1>导入完成</h1>
 	</div>
 	<p class="leading">本次您导入了<span class="cFF0000" id="alldata"></span>条商品，成功<span class="cFF0000" id="sucdata"></span>条商品，失败<span class="cFF0000" id="errdata"></span>条商品</p>
+	<p class="txtc tc " id="ErrorWord"><a href="javascript:void(0)" id="downError">下载失败文档</a></p>
 	<p class="tc"><a href="javascript:void(0)" class="cancela">确定</a></p>
 </div>
 
@@ -130,8 +131,9 @@
 		window.location.href="/Static/1.2/出售数据导入模板 .xls";
 	}
 	
+	var filepath;
 	$('.nexta').click(function(){
-		/**文件格式**/
+		//文件格式
 		var result = true;
 		var fileInput = $("#upfile").val();
 		if(!fileInput){
@@ -151,17 +153,26 @@
 			data: content,
 			dataType: "json",
 			success: function(data){
-				$('#loading').hide();
-				$('#loadok').show();
 				if (data.code == 1){
 					$('#alldata').text(data.alldata);
 					$('#sucdata').text(data.sucdata);
 					$('#errdata').text(data.errdata);
+					filepath = data.filepath;
+					if(errdata == 0){
+						$('#errdata').hide();
+					}
+					$('#downError').attr('href',filepath);
 				}else{
-					$('.leading').html('您导入的文件没有内容！');
+					$('.leading').html(data.msg);
 				}
+				$('#loading').hide();
+				$('#loadok').show();
 			}
 		});
+	})
+	
+	$('#downError').click(function(){
+		window.location.href=filepath;
 	})
 </script>
 

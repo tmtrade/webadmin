@@ -64,6 +64,13 @@ class ProposerModule extends AppModule
         return $data ? $data : array();
     }
 
+    //获取新申请人中文名称
+    public function getNewName($id)
+    {
+        $data = $this->import('new')->get($id);
+        return empty($data['cnName']) ? '' : $data['cnName'];
+    }
+
     /**
      * 新申请人基础方法
      *

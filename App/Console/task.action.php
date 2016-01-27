@@ -20,5 +20,12 @@ class TaskAction extends QueueCommonAction
 
     }
 
+    public function one()
+    {
+        $number = $this->input('n','string','');
+        if ( empty($number) ) exit('no data.');
+        $this->load('run')->runSale($number);
+    }
+
 }
 ?>

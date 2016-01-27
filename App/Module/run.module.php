@@ -187,7 +187,7 @@ class RunModule extends AppModule
             'saleTminfo'    => $tminfo,
             'saleContact'   => $contact,
             );
-        debug($data);
+        //debug($data);
         $res = $this->load('internal')->addAll($data);
         return $res;
     }

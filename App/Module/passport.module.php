@@ -241,6 +241,7 @@ class PassportModule extends AppModule
 
         Session::remove($mbNo);//登录成功清除临时值
         Session::remove($cname);//登录成功清除临时值
+		
     }
 
 }

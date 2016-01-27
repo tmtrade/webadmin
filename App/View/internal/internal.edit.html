@@ -157,7 +157,7 @@
                             <label for="in2">截止于</label>
                             <input type="text" name="salePriceDate" id="salePriceDate" 
                             <?if($sale['salePriceDate']>0){
-                                echo 'value="'.date('Y-m-d h:i:s',$sale['salePriceDate']).'"';
+                                echo 'value="'.date('Y-m-d H:i:s',$sale['salePriceDate']).'"';
                             }?> readonly onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" placeholder="请选择截止日期"/>
                         </li>
                     </ul>

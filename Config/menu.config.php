@@ -57,7 +57,7 @@ return $menu = array(
 	// 	),
 	// ),
 	'4' => array(
-		'title' => '账号管理',
+		'title' => '系统配置',
 		'ico'   => 'images/menu9.png',
 		'url'   => '/user/index/',
 		'child'	=> array(

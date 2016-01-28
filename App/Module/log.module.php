@@ -38,6 +38,7 @@ class LogModule extends AppModule
         if ( empty($saleId) ) return false;
         $r['eq']    = array('saleId'=>$saleId);
         $r['limit'] = 100;
+        $r['order'] = array('date'=>'desc');
         $list = $this->import('saleLog')->find($r);
         if ( empty($list) ) array();
         $opType = C("OP_TYPE");

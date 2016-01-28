@@ -513,12 +513,6 @@ class internalAction extends AppAction
 		$SBarr = $this->load('excel')->PHPExcelToArr($filePath);
 		/**商标已传的黑名单  不存在该商标      上传成功的  上传失败的 黑名单**/
 		$saleExists = $saleNotHas = $saleSucess = $saleError = $saleNotContact = array();
-		// $num = count($SBarr);
-		// if($num > 5000){
-			//没有商标数据
-			// $data['code']  = 0;
-			// $data['msg']   = '上传数量超过5000条';
-		// }
 		if($SBarr){
 			if(isset($SBarr['statue']) && $SBarr['statue'] == 1){
 				$data['code']  = 0;

@@ -43,8 +43,8 @@
 		<li>
 			<label>
 				<span>联系电话</span>
-				<input type="text" name="phone" id="phone" maxlength="30" onkeyup="value=value.replace(/[^\d{1,}\-\d{1,}|\d{1,}]/g,'')" />
-				<em  class="cFF6701" >注：仅可输入数字或字符“-”，最多可输入30个字符</em>
+				<input type="text" name="phone" id="phone" maxlength="20" onkeyup="value=value.replace(/[^\d{1,}\-\d{1,}|\d{1,}]/g,'')" />
+				<em  class="cFF6701" >注：仅可输入数字或字符“-”，最多可输入20个字符</em>
 			</label>
 		</li>
 	</ul>
@@ -87,22 +87,7 @@
 			parent.window.location = '/internal/index/';
         });
     });
-	
-	var regName = /^[\u0391-\uFFE5A-Za-z]+$/;
-	
-	
-	
-	
-	//检查文件格式
-	$('#upfile').change(function(){
-		/**文件格式**/
-		var fileInput = $("#upfile").val();
-		var result = checkfileType(fileInput);
-		if(!result){
-			return false;
-		}
-	})
-	
+
 	var errMsg = "上传的附件文件不能超过2M！！！";
 	var errFile = "可选择一条excel文件（仅支持后缀名为 .xls  .xlsx  .xlsm 文件）。文件最大不可超过 ( 10m ) ";
 	//检查文件类型
@@ -122,6 +107,15 @@
 	//excel文件上传
 	$("#upfile").wrap("<form id='bzformupload' action='/internal/ajaxUploadExcel/' method='post' enctype='multipart/form-data'></form>");
 	$("#upfile").on('change', function(){
+	
+		/**文件格式**/
+		var fileInput = $("#upfile").val();
+		var result = checkfileType(fileInput);
+		if(!result){
+			$("#upfile").val('');
+			return false;
+		}
+		
 		$("#bzformupload").ajaxSubmit({
 			dataType:  'json',
 			success: function(data) {

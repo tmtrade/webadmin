@@ -33,7 +33,7 @@
             <dd>
                 <label>商标名称：</label><input type="text" name="tmName" value="<?=$s['tmName']?>" class="input input-sm"/> 
                 <label class="mj-mle">商标号：</label><input type="text" name="tmNumber" value="<?=$s['tmNumber']?>" class="input input-sm"/>
-                <label class="mj-mle">群组：</label><input type="text" name="tmGroup" value="<?=$s['tmGroup']?>" class="input input-sm"/>
+                <label class="mj-mle">群组：</label><input type="text" name="tmGroup" value="<?=$s['tmGroup']?>" id="groupes" class="input input-sm"/>
                 <label class="mj-mle">销售状态：</label>
                 <select name="saleStatus" class="input input-sm">
                     <option value="0">--请选择--</option>
@@ -391,6 +391,27 @@
     {
         window.location.reload();
     }
+	
+	//弹出群组数据
+	$('#groupes').click(function(){
+		var classes = $('#tmClass').val();
+		//var oldclasses = $('#oldclasses').val();
+		//if(oldclasses != classes){
+		//	$(this).val('');
+		//}
+		if(classes){
+			//iframe层-父子操作
+			layer.open({
+				title: '选择群组',
+				type: 2,
+				area: ['570px', '420px'],
+				fix: false, //不固定
+				maxmin: true,
+				content: '/internal/groups/?class='+classes
+			});
+		}
+		return false;
+	})
 </script>
 
 <? require(ViewDir.'/footer.html'); ?>

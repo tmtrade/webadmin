@@ -47,7 +47,24 @@ class internalAction extends AppAction
 		$this->set('saleList', $result);
 		$this->display();
 	}
-
+	
+	/**
+	 * 群组
+	 * 
+	 * @author	Jeany
+	 * @since	2015-09-10
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function groups()
+	{	
+	    $class	= trim($this->input("class"));
+	    $groups = $this->load("group")->getGroups($class);		
+		$this->set("groups", $groups['rows']);
+		$this->display();
+	}
+	
 	//添加商品
 	public function create()
 	{

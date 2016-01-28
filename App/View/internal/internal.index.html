@@ -199,7 +199,7 @@
                         </div>
                     <?}else{echo $v['class']."类";}?></td>
                     <td><?if(count($v['contact']) > 1){echo "多顾问";}else
-                    {$ct=current($v['contact']);echo $ct['advisor'];} ?>
+                    {$ct=current($v['contact']);echo $ct['advisor'].'-'.$ct['department'];} ?>
                     </td>
                     <td><?if(count($v['contact']) > 1){echo '多渠道';}
                     else{$ct=current($v['contact']);echo $saleSource[$ct['source']];} ?>
@@ -209,7 +209,7 @@
                             <ul>
                             <?foreach ($v['contact'] as $key => $value) { ?>
                                 <li><table width="99%"><tr align="center">
-                                <td width="30%"><?=$value['advisor']?></td>
+                                <td width="30%"><?=$value['advisor'].'-'.$ct['department']?></td>
                                 <td width="15%"><?=$saleSource[$value['source']]?></td>
                                 <td width="40%">
                                 <?if($value['isVerify'] == 2){?><span class="red">审</span><?}?>

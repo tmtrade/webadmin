@@ -44,7 +44,7 @@ class InternalModule extends AppModule
             $r['ft']['platform'] = $params['salePlat'];
         }
         if ( !empty($params['tmName']) ){
-            $r['eq']['name'] = $params['tmName'];
+            $r['like']['name'] = $params['tmName'];
         }
         if ( !empty($params['tmNumber']) ){
             $r['eq']['number'] = $params['tmNumber'];
@@ -58,17 +58,6 @@ class InternalModule extends AppModule
         if ( !empty($params['dateEnd']) ){
             $r['raw'] .= " AND date <= ".(strtotime($params['dateEnd'])+24*3600);
         }
-        if ( !empty($params['tmPrice']) ){
-            $setPrice = C('SEARCH_PRICE');
-            if ( !empty($setPrice[$params['tmPrice']]) ){
-                list($start, $end, ) =  $setPrice[$params['tmPrice']];
-                if ( $end == 0 ){
-                    $r['eq']['price'] = 0;
-                }else{
-                    $r['scope'] = array('price'=>array($start, $end));
-                }
-            }
-        } 
 
         //出售类型（出售、许可）
         if ( $params['saleType'] == 3 ){
@@ -95,6 +84,27 @@ class InternalModule extends AppModule
             $list = empty($list) ? array(0) : $list;
             $r['in'] = array('id'=>$list);
         }
+
+        $_child =  '';
+        if ( !empty($params['saleSource']) ){//处理子表来源
+            $source = $params['saleSource'];
+            $_child .= " AND `source` = $source ";
+        }
+        if ( !empty($params['tmPrice']) ){//处理子表底价
+            $setPrice = C('SEARCH_PRICE');
+            if ( !empty($setPrice[$params['tmPrice']]) ){
+                list($start, $end, ) =  $setPrice[$params['tmPrice']];
+                if ( $end == 0 ){
+                    $_child .= " AND `price` = 0 ";
+                }else{
+                    $_child .= " AND (`price` >= $start AND `price` <= $end) ";
+                }
+            }
+        }
+        if ( !empty($_child) ){
+            $r['raw'] .= " AND `id` IN (select distinct(`saleId`) from t_sale_contact where 1 $_child) ";
+        }
+
         $r['order'] = array('date'=>'desc');
         $res = $this->import('sale')->findAll($r);
         return $res;

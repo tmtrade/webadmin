@@ -106,7 +106,7 @@ class ExcelModule extends AppModule
 	 * @param    array $data 求购信息
 	 * @return   array
 	 */
-	public function upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError)
+	public function upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact)
 	{
 		require_once(FILEDIR."/App/Util/PHPExcel.php");	
 		$PHPExcel = new PHPExcel();
@@ -154,7 +154,7 @@ class ExcelModule extends AppModule
 		//第二行-----------------------------------------------------------
 		$PHPExcel->getActiveSheet()->mergeCells('A2:G2');
 		$PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setName('微软雅黑');
-		$PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setSize(16);
+		$PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setSize(12);
 		$PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
 		$PHPExcel->getActiveSheet()->getStyle('A2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
 		//设置居中
@@ -168,9 +168,11 @@ class ExcelModule extends AppModule
 		$numExists = count($saleExists);
 		$numNotHas = count($saleNotHas);
 		$numNError = count($saleError);
-		$error = $numExists+$numNotHas+$numNError;
+		$numNotContact = count($saleNotContact);
+		
+		$error = $numExists+$numNotHas+$numNError+$numNotContact;
 		$PHPExcel->getActiveSheet()->setCellValue('A2',
-			"导入成功".$numSucess."条   共导入失败".$error."条  数据写入失败".$numNError."条  数据表已存在商标".$numExists."条  不存在的商标".$numNotHas."条"
+			"导入成功".$numSucess."条   共导入失败".$error."条  缺少联系人、缺少联系电话".$numNotContact."条 数据写入失败".$numNError."条  数据表已存在商标".$numExists."条  不存在的商标".$numNotHas."条"
 		);
 		//----------------全局---------------------------------------------
 		//设置单元格宽度
@@ -257,6 +259,26 @@ class ExcelModule extends AppModule
 				$PHPExcel->getActiveSheet()->setCellValue('G'.$num, $item['memo']);
 			}
 		}
+		
+		if($saleNotContact){
+			$num = $num+1;
+			$PHPExcel->getActiveSheet()->mergeCells('A'.$num.':G'.$num);
+			$PHPExcel->getActiveSheet()->setCellValue('A'.$num, "缺少联系人、缺少联系电话");
+			foreach($saleNotContact as $k => $item ){
+				$num ++;
+				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['number']);
+				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['name']);
+				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $item['phone']);
+				$PHPExcel->getActiveSheet()->setCellValue('D'.$num, $item['price']);
+				$PHPExcel->getActiveSheet()->setCellValue('E'.$num, $item['advisor']);
+				$PHPExcel->getActiveSheet()->setCellValue('F'.$num, $item['department']);
+				$PHPExcel->getActiveSheet()->setCellValue('G'.$num, $item['memo']);
+			}
+		}
+		
+		
+		
+		
 		
 		//---------------------------------------------------------------------------
 		$PHPExcel->setActiveSheetIndex(0);

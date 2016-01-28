@@ -637,10 +637,12 @@ class InternalModule extends AppModule
 		
 		//出售数据
 		$other  = $this->load('trademark')->getTmOther($number);
+		
+
         if ( empty($other) ) return false;
         $platform   = implode(',', $other['platform']);
-		$length	    = implode(',', $other['length']);
-		$type	    = implode(',', $other['type']);
+		$length	    = $other['length'];
+		$type	    = $other['type'];
 		$viewPhone  = $this->load('phone')->getRandPhone();
 		$sale = array(
 			'tid'           => intval($info['tid']),

@@ -512,7 +512,7 @@ class internalAction extends AppAction
 	public function PHPExcelToArr($filePath,$param){
 		$SBarr = $this->load('excel')->PHPExcelToArr($filePath);
 		/**商标已传的黑名单  不存在该商标      上传成功的  上传失败的 黑名单**/
-		$saleExists = $saleNotHas = $saleSucess = $saleError = array();
+		$saleExists = $saleNotHas = $saleSucess = $saleError = $saleNotContact = array();
 		$num = count($SBarr);
 		if($num > 5000){
 			//没有商标数据
@@ -521,6 +521,10 @@ class internalAction extends AppAction
 		}
 		if($SBarr){
 			foreach($SBarr as $k => $item){
+				if((!$item['phone']  && !$param['phone']) || (!$item['name'] && !$param['name'])){
+					$saleNotContact[] = $item;
+					continue;
+				}
 				$tmInfo = $this->load('trademark')->getTmInfo($item['number']);
 				if(!$tmInfo){//不存在该商标
 					$saleNotHas[] = $item;
@@ -564,7 +568,7 @@ class internalAction extends AppAction
 			$data['sucdata'] = $numSucess;
 			$data['errdata'] = (count($SBarr)-$numSucess);
 			if($data['errdata'] > 0){
-				$data['filepath'] = $this->load('excel')->upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError);
+				$data['filepath'] = $this->load('excel')->upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact);
 			}
 		}else{
 			//没有商标数据

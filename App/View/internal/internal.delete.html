@@ -9,15 +9,15 @@
     <input type="hidden" name="saleId" id="saleId" value="<?=$saleId?>">
     <ul>
         <li><label>删除原因：</label>
-            <input type="radio" name="reason" id="reason" value="2">无效删除&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="reason" id="reason" value="1">交易成功
+            <input type="radio" name="reason" class="reason" value="2">无效删除&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="reason" class="reason" value="1">交易成功
         </li>        
-        <li><label>出售时间：</label><input type="text" name="saleDate" id="saleDate" readonly onclick="laydate()" /><em>(仅交易成功填写)</em></li>
+        <li id="saleTime"><label>出售时间：</label><input type="text" name="saleDate" id="saleDate" readonly onclick="laydate()" /><em>(仅交易成功填写)</em></li>
        <li><label>剔除黑名单：</label>
             <input type="radio" name="isBlack" id="isBlack" value="1">是&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="radio" name="isBlack" id="isBlack" checked value="2">否
         </li>  
-         <li><span class="red"> 注意：不建议删除原因是交易成功的，选择(是)！ </span>
+         <li><span class="red"> 注意：交易成功的，不建议剔除黑名单！ </span>
         </li>    
         <li><label>备注(原因)：</label>
         <textarea name="memo" id="memo" style="margin: 0px; width: 380px; height: 100px;"></textarea></li>
@@ -31,9 +31,18 @@
 
 <script type="text/javascript">
     $(function(){
+        $("#saleTime").hide();
         $(".mj-infoM").show();
         $(".mj-close").on("click",function(){
             closeAll();
+        });
+        $(".reason").click(function(){
+            var val = $(this).val();
+            if ( val == 1 ){
+                $("#saleTime").show();
+            }else {
+                $("#saleTime").hide();
+            }
         });
     });
     function closeAll()

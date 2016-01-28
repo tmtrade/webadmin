@@ -284,7 +284,7 @@
     <?foreach ($log as $v) { ?>
         <tr>
             <td><?if($v['roleId']==0){echo "用户";}else{echo $v['roleName'];}?>&nbsp;&nbsp;&nbsp;&nbsp;
-            <?=$v['name']?>&nbsp;&nbsp; 于&nbsp;&nbsp; <?=date("Y-m-d h:i:s",$v['date'])?> 
+            <?=$v['name']?>&nbsp;&nbsp; 于&nbsp;&nbsp; <?=date("Y-m-d H:i:s",$v['date'])?> 
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$v['typeName']?>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注(原因)：<?=empty($v['memo'])?'无':$v['memo']?></td>
         </tr>

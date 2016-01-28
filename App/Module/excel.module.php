@@ -53,47 +53,51 @@ class ExcelModule extends AppModule
 		$allRow = $currentSheet->getHighestRow();  
 		
 		$sbArr = array();
-		 
-		//循环读取每个单元格的内容。注意行从1开始，列从A开始  
-		for($rowIndex=2;$rowIndex<=$allRow;$rowIndex++){  
-			$Adata = $currentSheet->getCell('A'.$rowIndex)->getValue();
-			if($Adata){
-				for($colIndex='A';$colIndex<=$allColumn;$colIndex++){  
-					$addr = $colIndex.$rowIndex;  
-					$cell = $currentSheet->getCell($addr)->getValue();  
-					
-					if($cell instanceof PHPExcel_RichText){
-						//富文本转换字符串  
-						$cell = $cell->__toString(); 
-					}
-					$key = $rowIndex-2;
-					
-					switch($colIndex){
-						case 'A' :
-							$sbArr[$key]['number'] = trim($cell);
-							break;
-						case 'B' :
-							$sbArr[$key]['name'] = $cell;
-							break;
-						case 'C' :
-							$sbArr[$key]['phone'] = $cell;
-							break;
-						case 'D' :
-							$sbArr[$key]['price'] = $cell;
-							break;
-						case 'E' :
-							$sbArr[$key]['advisor'] = $cell;
-							break;
-						case 'F' :
-							$sbArr[$key]['department'] = $cell;
-							break;
-						case 'G' :
-							$sbArr[$key]['memo'] = $cell;
-							break;
-					}
-				} 
-			}
-		}	
+		if($allRow-2 > 5000){
+			$sbArr['statue'] = 1;	
+		}else{
+			//循环读取每个单元格的内容。注意行从1开始，列从A开始  
+			for($rowIndex=2;$rowIndex<=$allRow;$rowIndex++){  
+				$Adata = $currentSheet->getCell('A'.$rowIndex)->getValue();
+				if($Adata){
+					for($colIndex='A';$colIndex<=$allColumn;$colIndex++){  
+						$addr = $colIndex.$rowIndex;  
+						$cell = $currentSheet->getCell($addr)->getValue();  
+						
+						if($cell instanceof PHPExcel_RichText){
+							//富文本转换字符串  
+							$cell = $cell->__toString(); 
+						}
+						$key = $rowIndex-2;
+						
+						switch($colIndex){
+							case 'A' :
+								$sbArr[$key]['number'] = trim($cell);
+								break;
+							case 'B' :
+								$sbArr[$key]['name'] = $cell;
+								break;
+							case 'C' :
+								$sbArr[$key]['phone'] = $cell;
+								break;
+							case 'D' :
+								$sbArr[$key]['price'] = $cell;
+								break;
+							case 'E' :
+								$sbArr[$key]['advisor'] = $cell;
+								break;
+							case 'F' :
+								$sbArr[$key]['department'] = $cell;
+								break;
+							case 'G' :
+								$sbArr[$key]['memo'] = $cell;
+								break;
+						}
+					} 
+				}
+			}	
+			
+		}
 		return $sbArr;
 	}
 	

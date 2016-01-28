@@ -513,62 +513,67 @@ class internalAction extends AppAction
 		$SBarr = $this->load('excel')->PHPExcelToArr($filePath);
 		/**商标已传的黑名单  不存在该商标      上传成功的  上传失败的 黑名单**/
 		$saleExists = $saleNotHas = $saleSucess = $saleError = $saleNotContact = array();
-		$num = count($SBarr);
-		if($num > 5000){
+		// $num = count($SBarr);
+		// if($num > 5000){
 			//没有商标数据
-			$data['code']  = 0;
-			$data['msg']   = '上传数量超过5000条';
-		}
+			// $data['code']  = 0;
+			// $data['msg']   = '上传数量超过5000条';
+		// }
 		if($SBarr){
-			foreach($SBarr as $k => $item){
-				if((!$item['phone']  && !$param['phone']) || (!$item['name'] && !$param['name'])){
-					$saleNotContact[] = $item;
-					continue;
-				}
-				$tmInfo = $this->load('trademark')->getTmInfo($item['number']);
-				if(!$tmInfo){//不存在该商标
-					$saleNotHas[] = $item;
-				}else{
-					//商标已上传的
-					$saleB = $this->load('internal')->existSale($item['number']);
-					if($saleB){
-						$saleExists[] = $item;
-						if($phone || $item['phone']){
-							$phone = $param['phone'] ? $param['phone'] : $item['phone'];
-						}
-						$saleBContact = $this->load('internal')->getSaleContactByPhone($item['number'],$phone);
-						//如果没有这个联系人，就写入这个联系人信息
-						if(!$saleBContact){
-							$dataContat = $item;
-							$dataContat['date']    = time();
-							$dataContat['phone']   = $param['phone'] ? $param['phone'] : $item['phone'];
-							$dataContat['name']	   = $param['name'] ? $param['name'] : $item['name'];
-							$dataContat['source']  = $param['source'];
-							$dataContat['saleType'] = 1;
-							$dataContat['tid'] = $tmInfo['tid'];
-							$dataContat['userId'] = $this->userId;
-							$dataContat['saleId'] = $saleB;
-							$result = $this->load('internal')->addContact($dataContat,$saleB);
-						}
+			if(isset($SBarr['statue']) && $SBarr['statue'] == 1){
+				$data['code']  = 0;
+				$data['msg']   = '上传数量超过5000条';
+			}else{
+				foreach($SBarr as $k => $item){
+					if((!$item['phone']  && !$param['phone']) || (!$item['name'] && !$param['name'])){
+						$saleNotContact[] = $item;
 						continue;
+					}
+					$tmInfo = $this->load('trademark')->getTmInfo($item['number']);
+					if(!$tmInfo){//不存在该商标
+						$saleNotHas[] = $item;
 					}else{
-						//开始写入商标
-						$result = $this->load('internal')->saleZZ($tmInfo,$item,$param);
-						if($result){
-							$saleSucess[] = $item;
+						//商标已上传的
+						$saleB = $this->load('internal')->existSale($item['number']);
+						if($saleB){
+							$saleExists[] = $item;
+							if($phone || $item['phone']){
+								$phone = $param['phone'] ? $param['phone'] : $item['phone'];
+							}
+							$saleBContact = $this->load('internal')->getSaleContactByPhone($item['number'],$phone);
+							//如果没有这个联系人，就写入这个联系人信息
+							if(!$saleBContact){
+								$dataContat = $item;
+								$dataContat['date']    = time();
+								$dataContat['phone']   = $param['phone'] ? $param['phone'] : $item['phone'];
+								$dataContat['name']	   = $param['name'] ? $param['name'] : $item['name'];
+								$dataContat['source']  = $param['source'];
+								$dataContat['saleType'] = 1;
+								$dataContat['tid'] = $tmInfo['tid'];
+								$dataContat['userId'] = $this->userId;
+								$dataContat['saleId'] = $saleB;
+								$result = $this->load('internal')->addContact($dataContat,$saleB);
+							}
+							continue;
 						}else{
-							$saleError[] = $item;
+							//开始写入商标
+							$result = $this->load('internal')->saleZZ($tmInfo,$item,$param);
+							if($result){
+								$saleSucess[] = $item;
+							}else{
+								$saleError[] = $item;
+							}
 						}
 					}
 				}
-			}
-			$numSucess = count($saleSucess);
-			$data['code']  = 1;
-			$data['alldata'] = count($SBarr);
-			$data['sucdata'] = $numSucess;
-			$data['errdata'] = (count($SBarr)-$numSucess);
-			if($data['errdata'] > 0){
-				$data['filepath'] = $this->load('excel')->upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact);
+				$numSucess = count($saleSucess);
+				$data['code']  = 1;
+				$data['alldata'] = count($SBarr);
+				$data['sucdata'] = $numSucess;
+				$data['errdata'] = (count($SBarr)-$numSucess);
+				if($data['errdata'] > 0){
+					$data['filepath'] = $this->load('excel')->upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact);
+				}
 			}
 		}else{
 			//没有商标数据

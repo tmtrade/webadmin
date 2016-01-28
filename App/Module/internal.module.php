@@ -261,6 +261,7 @@ class InternalModule extends AppModule
         
         $class      = implode(',', $info['class']);
         $platform   = implode(',', $other['platform']);
+        $viewPhone  = $this->load('phone')->getRandPhone();
         $sale = array(
             'tid'           => intval($info['tid']),
             'number'        => $number,
@@ -282,6 +283,7 @@ class InternalModule extends AppModule
             'label'         => '',
             'length'        => $other['length'],
             'date'          => time(),
+            'viewPhone'     => $viewPhone,
             'hits'          => 0,
             'memo'          => '后台创建默认商品',
         );

@@ -619,7 +619,7 @@ class InternalModule extends AppModule
 		$class  = implode(',', $info['class']);
 		//联系人
 		$contact = array(
-			'source'        => intval($data['source']),
+			'source'        => intval($param['source']),
 			'userId'        => intval($this->userId),
 			'tid'           => intval($info['tid']),
 			'number'        => $number,
@@ -664,6 +664,7 @@ class InternalModule extends AppModule
 			'viewPhone'     => $viewPhone,
 			'hits'          => intval($hits),
 			'memo'          => $data['memo'],
+			'date'          => time(),
 			);
 		$tminfo = array(
             'number'    => $number,

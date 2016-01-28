@@ -36,13 +36,15 @@
 		<li>
 			<label>
 				<span>联系人</span>
-				<input type="text" name="name" id="contact" maxlength="20" onkeyup="value=value.replace(/[\W]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" />
+				<input type="text" name="name" id="contact" maxlength="20" onkeyup="value=value.replace(/[\d]/g,'') "onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[\d]/g,''))" />
+				<em  class="cFF6701" >注：仅可输入英文或中文，最多可输入20个字符</em>
 			</label>
 		</li>
 		<li>
 			<label>
 				<span>联系电话</span>
 				<input type="text" name="phone" id="phone" maxlength="30" onkeyup="value=value.replace(/[^\d{1,}\-\d{1,}|\d{1,}]/g,'')" />
+				<em  class="cFF6701" >注：仅可输入数字或字符“-”，最多可输入30个字符</em>
 			</label>
 		</li>
 	</ul>
@@ -72,7 +74,7 @@
 	</div>
 	<p class="leading">本次您导入了<span class="cFF0000" id="alldata"></span>条商品，成功<span class="cFF0000" id="sucdata"></span>条商品，失败<span class="cFF0000" id="errdata"></span>条商品</p>
 	<p class="txtc tc "><a href="javascript:void(0)" id="downError">下载失败文档</a></p>
-	<p class="tc"><a href="javascript:void(0)" class="nexta closed">确定</a></p>
+	<p class="tc"><a href="javascript:void(0)" class="nexta returnIndex">确定</a></p>
 </div>
 
 <script type="text/javascript">
@@ -80,7 +82,16 @@
         $(".im-title-span,.cancela,.closed").on("click",function(){
             parent.layer.closeAll();
         });
+		
+		$(".returnIndex").on("click",function(){
+			parent.window.location = '/internal/index/';
+        });
     });
+	
+	var regName = /^[\u0391-\uFFE5A-Za-z]+$/;
+	
+	
+	
 	
 	//检查文件格式
 	$('#upfile').change(function(){
@@ -171,6 +182,7 @@
 		});
 	})
 	
+	//错误文档下载
 	$('#downError').click(function(){
 		window.location.href=filepath;
 	})

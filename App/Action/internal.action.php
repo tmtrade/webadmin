@@ -500,7 +500,7 @@ class internalAction extends AppAction
 	//导入数据提交操作
 	public function importForm()
 	{
-		$param['contact'] = $this->input('contact', 'text', ''); 
+		$param['name'] = $this->input('name', 'text', ''); 
 		$param['phone']   = $this->input('phone', 'text', ''); //电话
     	$param['source']  = $this->input('source', 'text', '');//来源
 		$filePath  = $this->input('excelurl', 'text', '');//来源

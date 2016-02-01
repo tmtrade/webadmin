@@ -180,10 +180,10 @@ class internalAction extends AppAction
 		$gjUrl 		= SEARCH_URL.'search/stateQuery/?t=1&n='.$sale['number'];
 		$_referr 	= Session::get('edit_referr');
 		if ( empty($_referr) ){
-			if ( strpos($_SERVER['HTTP_REFERER'], '/internal/index/') !== false ){
+			if ( strpos($_SERVER['HTTP_REFERER'], 'internal/index/') !== false ){
 				Session::set('edit_referr', $_SERVER['HTTP_REFERER']);
 			}else{
-				Session::set('edit_referr', '/internal/index/');
+				Session::set('edit_referr', 'internal/index/');
 			}
 		}
 		$referr = Session::get('edit_referr');

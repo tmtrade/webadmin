@@ -486,15 +486,6 @@ class internalAction extends AppAction
 		$this->display();
 	}
 	
-	
-	//导入数据弹出界面
-	public function download()
-	{
-		$counts = $this->input('counts', 'int', ''); 
-		$this->set('counts', $counts);
-		$this->display();
-	}
-	
 	//excel文件上传
 	public function ajaxUploadExcel()
     {
@@ -601,5 +592,20 @@ class internalAction extends AppAction
 		return $data;
 	}
 	
+	//导出数据弹出界面
+	public function download()
+	{
+		$counts = $this->input('counts', 'int', ''); 
+		$this->set('counts', $counts);
+		$this->display();
+	}
+	
+	
+	//导出数据提交操作
+	public function downloadForm()
+	{
+		$params = $this->getFormData();
+		$data['filepath'] = $this->load('excel')->downloadExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact);
+	}		
 }
 ?>

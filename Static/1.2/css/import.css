@@ -134,3 +134,13 @@ a{color:inherit;font-size:inherit;}
 	color:#003266;
 	text-align:center;
 }
+
+.check label{
+		width: 100px;
+    	display: inline-block;
+    	margin-bottom: 14px;
+	}
+.check input{
+	margin:0px;
+	vertical-align:top;
+}

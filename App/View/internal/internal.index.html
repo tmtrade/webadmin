@@ -139,9 +139,9 @@
     <div class="wrap-content">
         <p class="text-left" style="float:left;padding-top:20px;">共有 <b class="red"><?=$allTotal?></b> 条数据，当前筛选结果 <b class="blue"><?=$total?></b> 条数据</p>
         <div class="wrap-tittle">
-            <button class="btn btn-danger" onclick="add();" type="button">创建商品</button>
+            <button class="btn btn-danger" onclick="add();"    type="button">创建商品</button>
             <button class="btn btn-danger" onclick="Import();" type="button">导入商品</button>
-            <!-- <button class="btn btn-info" type="button">导出表格EXCEL</button> -->
+            <button class="btn btn-info" onclick="download();"   type="button" type="button">导出表格EXCEL</button>
             <button type="button" class="btn btn-info" onclick="setMoreDown();">批量下架</button>
             <button type="button" class="btn btn-info" onclick="delMoreSale();">批量删除</button>
             <button class="btn btn-info" type="button" onclick="reloadList();">刷新</button>
@@ -241,8 +241,7 @@
                 <? } ?>
                 </tbody>
             </table>
-        </div>
-            
+        </div>    
 <div id="page" align="center"><?=$pageBar?></div>  
     </div>
 </div>
@@ -251,6 +250,7 @@
 
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+	var total = "<?=$allTotal?>";
     $(function(){
         $(".mj-screening dt").click(function(){
             $(".mj-ddList").toggle();
@@ -413,6 +413,18 @@
 		}
 		return false;
 	})
+	
+	//导出弹出
+	function download()
+    {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['650px', '360px'],
+            content: '/internal/download/?counts='+total
+        });
+    }
 </script>
 
 <? require(ViewDir.'/footer.html'); ?>

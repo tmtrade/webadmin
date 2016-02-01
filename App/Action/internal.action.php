@@ -181,6 +181,7 @@ class internalAction extends AppAction
 		$_referr 	= Session::get('edit_referr');
 		echo $_referr;
 		if ( empty($_referr) ){
+			print_r($_SERVER['HTTP_REFERER']);
 			if ( strpos($_SERVER['HTTP_REFERER'], 'internal/index/') !== false ){
 				Session::set('edit_referr', $_SERVER['HTTP_REFERER']);
 			}else{

@@ -9,5 +9,10 @@ define('FileSystemUrl', 'http://tr.chofn.net/'.DataDir.'/attachment/');	//定义
 
 //define('GUANJIA_URL', 'http://g.chaofan.wang/');
 define('GUANJIA_URL', 'http://192.168.0.156/');
+//新查询
+define('SEARCH_URL', 'http://s.chofn.net/');
+//define('SEARCH_URL', 'http://tuotu.chaofan.wang/');
+
+
 
 ?>

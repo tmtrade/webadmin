@@ -177,8 +177,7 @@ class internalAction extends AppAction
 		$tminfo 	= $this->load('trademark')->getTminfo($sale['number']);
 		$log 		= $this->load('log')->getSaleLog($id);
 		$allphone 	= $this->load('phone')->getAllPhone();
-
-		$gjUrl = GUANJIA_URL.'guanjia/Member/tmView?&id='.$sale['number'].'&tmclass='.substr($sale['class'],0,2);
+		$gjUrl 		= SEARCH_URL.'search/stateQuery/?t=1&n='.$sale['number'];
 		
 		$this->getSetting();
 		$this->set('log', $log);

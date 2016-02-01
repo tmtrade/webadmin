@@ -168,12 +168,13 @@ class RoleModule extends AppModule
      *
      * @return  bool
      */
-    public function setRole($id, array $role)
+    public function setRole($id, array $role, $name='')
     {
         if ( empty($id) || empty($role) ) return false;
 
         $r['eq']        = array('id'=>$id);
         $data['role']   = implode(',', $role);
+        if ( !empty($name) ) $data['name']   = $name;
 
         return $this->modifyRole($data, $r);
     }

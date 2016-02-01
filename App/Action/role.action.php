@@ -46,21 +46,24 @@ class RoleAction extends AppAction
 		else
 			$roleList 	= array();
 
-		$this->set("id",$id);
+		$this->set("id", $id);
+		$this->set("name", $info['name']);
 		$this->set("role", $roleList);
-		$this->set("authList",$authList);
+		$this->set("authList", $authList);
 		$this->display();
 	}
 
 	public function setRole()
 	{
-		$id  = $this->input("id","int");
-		$role = $this->input("role","array");
+		$id  	= $this->input("id","int");
+		$role 	= $this->input("role","array");
+		$name 	= $this->input("name","string");
 		if ( empty($id) || empty($role) ) exit('2');
+		if ( empty($name) ) exit('3');
 		sort($role);
-		$res  = $this->load('role')->setRole($id, $role);
+		$res  = $this->load('role')->setRole($id, $role, $name);
 		if ( $res ) exit('1');
-		exit('3');		
+		exit('0');		
 	}
 
 	public function add()

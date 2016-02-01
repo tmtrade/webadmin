@@ -249,6 +249,9 @@ class internalAction extends AppAction
 				if ( $price <= 0 ){//未填写销售价格
 					$this->returnAjax(array('code'=>2,'msg'=>'请输入销售价格')); 
 				}
+				if ( $isOffprice == 1 && $salePrice > $price ){
+					$this->returnAjax(array('code'=>2,'msg'=>'特价价格不能大于销售价格')); 
+				}
 				if ( $isOffprice == 1 && $salePrice <=0 ){//是特价但未填写特价价格
 					$this->returnAjax(array('code'=>2,'msg'=>'请输入特价价格')); 
 				}elseif ( $isOffprice == 1 && $priceDate == 1 && $salePriceDate == '' ){//特价且限时未选择时间

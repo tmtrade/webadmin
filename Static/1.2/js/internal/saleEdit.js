@@ -25,7 +25,7 @@ function setBzxx()
 					window.location.reload();
 				});
 			}else{
-				layer.msg('操作失败，请重试。', {
+				layer.msg('操作失败，请确认数据是否正确。', {
 					time: 1000 //2秒关闭（如果不配置，默认是3秒）
 				});
 			}
@@ -86,8 +86,9 @@ function setPrice()
 					window.location.reload();
 				});
 			}else{
-				layer.msg('操作失败，请重试。', {
-					time: 1000 //2秒关闭（如果不配置，默认是3秒）
+				var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+				layer.msg(msg, {
+					time: 2000 //2秒关闭（如果不配置，默认是3秒）
 				});
 			}
 		},
@@ -121,7 +122,7 @@ function setMemo()
 					window.location.reload();
 				});
 			}else{
-				layer.msg('操作失败，请重试。', {
+				layer.msg('操作失败，请确认数据是否正确。', {
 					time: 1000 //2秒关闭（如果不配置，默认是3秒）
 				});
 			}
@@ -177,7 +178,7 @@ function delContact(saleId, cId, nums)
 						window.location.reload();
 					});
 				}else{
-					var msg = data.msg == undefined ? '操作失败' : data.msg;
+					var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
 					layer.msg(msg, {
 						time: 2000 //2秒关闭（如果不配置，默认是3秒）
 					});
@@ -217,7 +218,7 @@ function setVerify(saleId, id)
 						window.location.reload();
 					});
 				}else{
-					layer.msg('操作失败，请重试。', {
+					layer.msg('操作失败，请确认数据是否正确。', {
 						time: 1000 //2秒关闭（如果不配置，默认是3秒）
 					});
 				}
@@ -269,7 +270,7 @@ function delVerify(saleId, id, nums)
 							window.location.reload();
 						});
 					}else{
-						var msg = data.msg == undefined ? '操作失败，请重试' : data.msg;
+						var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
 						layer.tips(msg,elem);
 					}
 				},

@@ -178,7 +178,8 @@ class internalAction extends AppAction
 		$log 		= $this->load('log')->getSaleLog($id);
 		$allphone 	= $this->load('phone')->getAllPhone();
 		$gjUrl 		= SEARCH_URL.'search/stateQuery/?t=1&n='.$sale['number'];
-		if ( empty( Session::get('edit_referr') ) ){
+		$_referr 	= Session::get('edit_referr');
+		if ( empty($_referr) ){
 			if ( strpos($_SERVER['HTTP_REFERER'], '/internal/index/') !== false ){
 				Session::set('edit_referr', $_SERVER['HTTP_REFERER']);
 			}else{

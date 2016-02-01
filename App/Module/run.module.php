@@ -63,7 +63,7 @@ class RunModule extends AppModule
     }
 
     //单条执行
-    public function runSale($number)
+    public function runSale($number, $debug=1)
     {
         $number = trim( $number );
         $resTm  = $this->load('run')->getTminfo($number);
@@ -83,8 +83,10 @@ class RunModule extends AppModule
         $memo   = '';
 
         $info   = $this->load('trademark')->getTmInfo($number);
-
-        if ( empty($info) ) return false;
+        if ( empty($info) ){
+            if ( $debug ) echo "<number is not a trademark>";
+            return false;
+        } 
 
         $class  = implode(',', $info['class']);
 
@@ -189,6 +191,11 @@ class RunModule extends AppModule
             );
         //debug($data);
         $res = $this->load('internal')->addAll($data);
+        if ( !$res && $debug ) {
+            echo "<pre><add error>";
+            print_r($data);
+            echo "</pre>";
+        }
         return $res;
     }
 

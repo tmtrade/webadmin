@@ -475,6 +475,15 @@ class internalAction extends AppAction
 		$this->display();
 	}
 	
+	
+	//导入数据弹出界面
+	public function download()
+	{
+		$counts = $this->input('counts', 'int', ''); 
+		$this->set('counts', $counts);
+		$this->display();
+	}
+	
 	//excel文件上传
 	public function ajaxUploadExcel()
     {

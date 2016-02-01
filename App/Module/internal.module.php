@@ -109,7 +109,7 @@ class InternalModule extends AppModule
         $res = $this->import('sale')->findAll($r);
         return $res;
     }
-
+	
     //获取商品信息（可选包含的所有联系人与包装信息）
     public function getSaleInfo($saleId, $contact=1, $tminfo=1)
     {
@@ -622,7 +622,7 @@ class InternalModule extends AppModule
 		//联系人
 		$contact = array(
 			'source'        => intval($param['source']),
-			'userId'        => intval($this->userId),
+			'userId'        => 0,
 			'tid'           => intval($info['tid']),
 			'number'        => $number,
 			'name'          => $param['name'] ? $param['name'] : $data['name'],

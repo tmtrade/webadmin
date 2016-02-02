@@ -212,17 +212,17 @@
                             <ul>
                             <?foreach ($v['contact'] as $key => $value) { ?>
                                 <li><table width="99%"><tr align="center">
-                                <td width="30%"><?=$value['advisor'].'-'.$ct['department']?></td>
+                                <td width="30%"><?=$value['advisor'].'-'.$value['department']?></td>
                                 <td width="15%"><?=$saleSource[$value['source']]?></td>
                                 <td width="40%">
                                 <?if($value['isVerify'] == 2){?><span class="red">审</span><?}?>
-                                <?=$value['name']?>-<?=$value['phone']?></td>
+                                <?php echo mbSub( $value['name'] , 0, 3);?>-<?=$value['phone']?></td>
                                 <td width="15%"><?=$value['price']?></td>
                                 </tr></table>
                             <?}?>
                             </ul>
                         </div>
-                    <? }else{$ct=current($v['contact']);if($ct['isVerify'] == 2){echo '<span class="red">审</span>';}echo $ct['name']."-".$ct['phone'];} ?>
+                    <? }else{$ct=current($v['contact']);if($ct['isVerify'] == 2){echo '<span class="red">审</span>';}echo  mbSub( $ct['name'] , 0, 3)."-".$ct['phone'];} ?>
                     </td>
                     <td><?if(count($v['contact']) > 1){echo '多底价';}
                     else{$ct=current($v['contact']);echo $ct['price'];} ?>

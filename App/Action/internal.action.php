@@ -546,7 +546,7 @@ class internalAction extends AppAction
 						$saleB = $this->load('internal')->existSale($item['number']);
 						if($saleB){
 							$saleExists[] = $item;
-							if($phone || $item['phone']){
+							if($param['phone'] || $item['phone']){
 								$phone = $param['phone'] ? $param['phone'] : $item['phone'];
 							}
 							$saleBContact = $this->load('internal')->getSaleContactByPhone($item['number'],$phone);

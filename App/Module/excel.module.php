@@ -52,6 +52,9 @@ class ExcelModule extends AppModule
 		/**取得一共有多少行*/  
 		$allRow = $currentSheet->getHighestRow();  
 		
+		
+		echo $allRow;
+		exit;
 		$sbArr = array();
 		if($allRow-2 > 4000){
 			$sbArr['statue'] = 1;	

@@ -254,7 +254,7 @@
 <script type="text/javascript">
 	var total = "<?=$allTotal?>";
     $(function(){
-        $(".mj-screening dt").click(function(){
+        $(".mj-screening .btn").click(function(){
             $(".mj-ddList").toggle();
         });
         $(".mj-sBtn").click(function(){
@@ -281,7 +281,6 @@
         $('#chkAll').click(function(){ 
             $('.chklist').prop("checked",this.checked);
         });
-
     });
 
     //批量下架

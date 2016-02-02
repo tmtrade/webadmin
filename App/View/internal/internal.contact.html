@@ -26,11 +26,11 @@
             <? } ?>
             </select>
         </li>
-        <li><label>联系人姓名：</label><input type="text" name="name" /></li>
-        <li><label>联系电话：</label><input type="text" name="phone" /></li>
-        <li><label>底价：</label><input type="text" name="price" /></li>
-        <li><label>顾问部门：</label><input type="text" name="department" /></li>
-        <li><label>顾问：</label><input type="text" name="advisor" /></li>
+        <li><label>联系人姓名：</label><input type="text" name="name" maxlength="15" /></li>
+        <li><label>联系电话：</label><input type="text" name="phone" maxlength="20" /></li>
+        <li><label>底价：</label><input type="text" name="price" maxlength="10" /></li>
+        <li><label>顾问部门：</label><input type="text" name="department" maxlength="15" /></li>
+        <li><label>顾问：</label><input type="text" name="advisor" maxlength="15" /></li>
         <li><label>出售价格审核：</label><em>同意</em></li>
         <li><label>操作：</label>
             <a href="javascript:void(0);" class="mj-liBtns" onclick="opContact();">确定</a>
@@ -55,11 +55,11 @@
             <? } ?>
             </select>
         </li>
-        <li><label>联系人姓名：</label><input type="text" name="name" value="<?=$contact['name']?>" /></li>
-        <li><label>联系电话：</label><input type="text" name="phone" value="<?=$contact['phone']?>" /></li>
-        <li><label>底价：</label><input type="text" name="price" value="<?=$contact['price']?>" /></li>
-        <li><label>顾问部门：</label><input type="text" name="department" value="<?=$contact['department']?>" /></li>
-        <li><label>顾问：</label><input type="text" name="advisor" value="<?=$contact['advisor']?>" /></li>
+        <li><label>联系人姓名：</label><input type="text" name="name" value="<?=$contact['name']?>" maxlength="15" /></li>
+        <li><label>联系电话：</label><input type="text" name="phone" value="<?=$contact['phone']?>" maxlength="20" /></li>
+        <li><label>底价：</label><input type="text" name="price" value="<?=$contact['price']?>" maxlength="10" /></li>
+        <li><label>顾问部门：</label><input type="text" name="department" value="<?=$contact['department']?>" maxlength="15" /></li>
+        <li><label>顾问：</label><input type="text" name="advisor" value="<?=$contact['advisor']?>" maxlength="15" /></li>
         <li><label>出售价格审核：</label><em>同意
             <!-- <select name="isVerify">
                 <option value="1" <?if($contact['isVerify']==1){echo 'selected';}?> >同意</option>

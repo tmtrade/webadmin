@@ -139,13 +139,13 @@
                     <ul>
                         <li>
                             <label>销售价格：</label>
-                            <input type="text" name="price" id="price" value="<?=$sale['price']?>" placeholder="请输入价格"/>元
+                            <input type="text" name="price" id="price" value="<?=$sale['price']?>" placeholder="请输入价格" maxlength="10" />元
                         </li>
                         <li>
                             <input type="checkbox" name="isOffprice" value="1" id="isOffprice" 
                             <?if($sale['isOffprice']==1){echo 'checked';}?>/>
                             <label for="in">是否参与特价</label>&nbsp;&nbsp;
-                            销售价格：<input type="text" name="salePrice" id="salePrice" value="<?=$sale['salePrice']?>" placeholder="请输入价格"/>元
+                            销售价格：<input type="text" name="salePrice" id="salePrice" value="<?=$sale['salePrice']?>" placeholder="请输入价格" maxlength="10"  />元
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             <label for="in1">截止时间：</label>
                             <input type="radio" name="priceDate" id="priceDate" 

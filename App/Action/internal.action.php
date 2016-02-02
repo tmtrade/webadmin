@@ -531,7 +531,7 @@ class internalAction extends AppAction
 		if($SBarr){
 			if(isset($SBarr['statue']) && $SBarr['statue'] == 1){
 				$data['code']  = 0;
-				$data['msg']   = '上传数量超过4000条';
+				$data['msg']   = '上传数量超过3000条';
 			}else{
 				foreach($SBarr as $k => $item){
 					if((!$item['phone']  && !$param['phone']) || (!$item['name'] && !$param['name'])){

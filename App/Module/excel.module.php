@@ -52,11 +52,8 @@ class ExcelModule extends AppModule
 		/**取得一共有多少行*/  
 		$allRow = $currentSheet->getHighestRow();  
 		
-		
-		echo $allRow;
-		exit;
 		$sbArr = array();
-		if($allRow-2 > 4000){
+		if($allRow-2 > 3000){
 			$sbArr['statue'] = 1;	
 		}else{
 			//循环读取每个单元格的内容。注意行从1开始，列从A开始  

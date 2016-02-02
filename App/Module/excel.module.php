@@ -81,7 +81,7 @@ class ExcelModule extends AppModule
 								$sbArr[$key]['phone'] = $cell;
 								break;
 							case 'D' :
-								$sbArr[$key]['price'] = $cell;
+								$sbArr[$key]['price'] = intval($cell);
 								break;
 							case 'E' :
 								$sbArr[$key]['advisor'] = $cell;
@@ -112,7 +112,7 @@ class ExcelModule extends AppModule
 	 */
 	public function upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact)
 	{
-		set_time_limit(1800) ;
+		
 		require_once(FILEDIR."/App/Util/PHPExcel.php");	
 		$PHPExcel = new PHPExcel();
 		$PHPExcel->getProperties()->setCreator("chofn")
@@ -286,7 +286,7 @@ class ExcelModule extends AppModule
 
 		$filename  = iconv('utf-8', 'gbk', "商标导入信息");
 		//$filenames = $filename . date('Ymd', time()) . $code; //防止乱码
-		$filenames = "errorexcel" . date('Ymd', time()) . $code; //防止乱码
+		$filenames = "errorexcel" . date('YmdHis', time()) . $code; //防止乱码
 		$objWriter = new PHPExcel_Writer_Excel5($PHPExcel);
 		header("Content-type:application/octet-stream");
 		header("Accept-Ranges:bytes");

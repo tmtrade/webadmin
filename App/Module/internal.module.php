@@ -627,7 +627,7 @@ class InternalModule extends AppModule
 			'number'        => $number,
 			'name'          => $param['name'] ? $param['name'] : $data['name'],
 			'phone'         => $param['phone'] ? $param['phone'] : $data['phone'],
-			'price'         => $data['price'] ? $data['price'] : 0,
+			'price'         => isset($data['price']) ? $data['price'] : 0,
 			'saleType'      => 1,
 			'isVerify'      => 1,
 			'advisor'       => $data['advisor'],

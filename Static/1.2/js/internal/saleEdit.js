@@ -31,7 +31,7 @@ function setBzxx()
 			}
 		},
 		error : function (data){
-			layer.msg('操作失败，请稍后重试。', {
+			layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
 				time: 2000 //2秒关闭（如果不配置，默认是3秒）
 			});
 		}
@@ -93,7 +93,7 @@ function setPrice()
 			}
 		},
 		error : function (data){
-			layer.msg('操作失败，请稍后重试。', {
+			layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
 				time: 2000 //2秒关闭（如果不配置，默认是3秒）
 			});
 		}
@@ -128,7 +128,7 @@ function setMemo()
 			}
 		},
 		error : function (data){
-			layer.msg('操作失败，请稍后重试。', {
+			layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
 				time: 2000 //2秒关闭（如果不配置，默认是3秒）
 			});
 		}
@@ -185,7 +185,7 @@ function delContact(saleId, cId, nums)
 				}
 			},
 			error : function (data){
-				layer.msg('操作失败，请稍后重试', {
+				layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
 					time: 2000 //2秒关闭（如果不配置，默认是3秒）
 				});
 			}
@@ -224,7 +224,7 @@ function setVerify(saleId, id)
 				}
 			},
 			error : function (data){
-				layer.msg('操作失败，请稍后重试。', {
+				layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
 					time: 2000 //2秒关闭（如果不配置，默认是3秒）
 				});
 			}
@@ -275,7 +275,7 @@ function delVerify(saleId, id, nums)
 					}
 				},
 				error : function (data){
-					layer.msg('操作失败，请稍后重试。', {
+					layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
 						time: 2000 //2秒关闭（如果不配置，默认是3秒）
 					});
 				}

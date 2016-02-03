@@ -1,21 +1,5 @@
 <?php
 /**
- * 接口验证key
- * @var string
- */
-define('KEY', 'NMIMwwV1lg65EBfAdXsXUSwQBHnKm3FT');
-/**
- * 系统ID
- * @var string
- */
-define('SYSTEMID', 'trade');
-/**
- * 用户中心接口地址
- * @var string
- */
-//线上测试地址
-define('SSO_HOST', 'http://nav.chofn.net/ucserver/');
-/**
  * 用户管理中心类
  * 
  * @author Inna
@@ -36,16 +20,16 @@ class ucClient
     public static function ucRequest($type, $extra = array())
     {
         $timestamp	= time();
-        $code   	= md5(KEY.SYSTEMID.$timestamp);
+        $code   	= md5(NAV_LOGIN_KEY.NAV_LOGIN_SYSTEMID.$timestamp);
         $param 		= array(
-            'systemId'  => SYSTEMID,
+            'systemId'  => NAV_LOGIN_SYSTEMID,
             'code'      => $code,
             'timestamp' => $timestamp,
         );
         if(!empty($extra) && is_array($extra)) {
             $param = array_merge($extra, $param);
         }
-        $url 	= SSO_HOST.$type.'/?'.http_build_query($param);
+        $url 	= NAV_SSO_HOST.$type.'/?'.http_build_query($param);
         $result = file_get_contents($url);
         return $result;
     }

@@ -22,7 +22,8 @@ class RunModule extends AppModule
         $succList = $faildList = array();
         //$this->begin('sale');
         foreach ($saleList as $k => $v) {
-            $flag = $this->runSale($v['number']);
+            $number = $v['number'];
+            $flag = $this->runSale($number);
             if ( $flag ) {
                 //$this->commit('sale');
                 $succ++;

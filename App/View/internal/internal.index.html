@@ -201,13 +201,13 @@
                             </ul>
                         </div>
                     <?}else{echo $v['class']."类";}?></td>
-                    <td><?if(count($v['contact']) > 1){echo "多顾问";}else
+                    <td class="showMore"><?if(count($v['contact']) > 1){echo "多顾问";}else
                     {$ct=current($v['contact']);echo $ct['advisor'].'-'.$ct['department'];} ?>
                     </td>
-                    <td><?if(count($v['contact']) > 1){echo '多渠道';}
+                    <td class="showMore"><?if(count($v['contact']) > 1){echo '多渠道';}
                     else{$ct=current($v['contact']);echo $saleSource[$ct['source']];} ?>
                     </td>
-                    <td> <?if(count($v['contact']) > 1){?>
+                    <td class="showMore"> <?if(count($v['contact']) > 1){?>
                         <div class="more"><span>多联系方式</span>
                             <ul>
                             <?foreach ($v['contact'] as $key => $value) { ?>
@@ -224,10 +224,10 @@
                         </div>
                     <? }else{$ct=current($v['contact']);if($ct['isVerify'] == 2){echo '<span class="red">审</span>';}echo  mbSub( $ct['name'] , 0, 3)."-".$ct['phone'];} ?>
                     </td>
-                    <td><?if(count($v['contact']) > 1){echo '多底价';}
+                    <td class="showMore"><?if(count($v['contact']) > 1){echo '多底价';}
                     else{$ct=current($v['contact']);echo $ct['price'];} ?>
                     </td>
-                    <td><?if($v['priceType']==2){echo "议价";}else{echo $v['price'];}?></td>
+                    <td class="showMore"><?if($v['priceType']==2){echo "议价";}else{echo $v['price'];}?></td>
                     <td>
                         <span class="icon icon-delete">
                         <?if($v['status']==1){?>
@@ -272,10 +272,10 @@
             strClass = strClass ? strClass.substr(1) : '';
             $('#'+id).val(strClass);
         });
-        $(".table tr").hover(function(){
-            $(this).find('.more > ul').show();
+        $(".table tr td.showMore").hover(function(){
+            $(this).parent('tr').find('.more > ul').show();
         },function(){
-            $(this).find('.more > ul').hide();
+            $(this).parent('tr').find('.more > ul').hide();
         });
 
         $('#chkAll').click(function(){ 

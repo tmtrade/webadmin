@@ -33,14 +33,6 @@ class RunModule extends AppModule
                 $faildList[] = $number;
             }
         }
-        // echo "<pre>";
-        // echo "TIME：".()."<br>";
-        // echo "FAILD：".$faild."<br>";
-        // print_r($faildList);
-
-        // echo "SUCC：".$succ."<br>";
-
-        // print_r($succList);
         $end = $this->msectime() - $start;
         $log = array(
             'useTime'   => $end,
@@ -63,7 +55,7 @@ class RunModule extends AppModule
     }
 
     //单条执行
-    public function runSale($number, $debug=1)
+    public function runSale($number, $debug=0)
     {
         $number = trim( $number );
         $resTm  = $this->load('run')->getTminfo($number);

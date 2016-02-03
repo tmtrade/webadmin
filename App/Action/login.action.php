@@ -24,17 +24,17 @@ class LoginAction extends AppAction
 	{
 		if(isset($_GET['key']) && empty($_GET['key'])) exit('error');
 		$userinfo = ucClient::userInfo($_GET['key']);
-
+		
 		if(!is_array($userinfo)) exit('error');
-
 		$userinfo['staffId'] = $userinfo['staffid'];
 		$userId = $this->load('member')->setMember($userinfo);
 
 		if(!empty($userinfo))
 		{
-			Session::set('username' , $userinfo['username'], 3600*8);
-			Session::set('token'    , $userinfo['token'], 3600*8);
-			Session::set('userId'   , $userId, 3600*8);
+			$userinfo['userId'] = $userId;
+			$_userinfo 			= serialize($userinfo);
+
+			Session::set(COOKIE_USER , $_userinfo, 3600*8);
 		}
 	} 
 	
@@ -49,7 +49,7 @@ class LoginAction extends AppAction
 	 */
 	public function synloginout()
 	{
-		Session::clear();
+		Session::remove(COOKIE_USER);
 		$this->redirect('', '/index/');
 	}
 }

@@ -31,21 +31,20 @@ abstract class AppAction extends Action
 	public function before()
 	{
 		//自定义业务逻辑
-		$this->username = Session::get('username');
-		$this->userId   = Session::get('userId');
+		$this->getUser();
 
 		//有用户账号就必须判断账号是否有效
 		if ( !empty($this->username) ){
 			$userinfo = $this->load('member')->get($this->username);
 			if(empty($userinfo) || $userinfo['isUse'] == 2) {
-				Session::clear();
+				Session::clear(COOKIE_USER);
 				$this->redirect('', '/role/error');
 			}
 			$this->roleId 	= $userinfo['roleId'];
 			$roleInfo 		= $this->load('role')->getRoleById($this->roleId);
 			$_role 			= empty($roleInfo['role']) ? array() : explode(',', $roleInfo['role']);
 			if ( $roleInfo['isUse'] == 2 ){
-				Session::clear();
+				Session::clear(COOKIE_USER);
 				$this->redirect('', '/role/error');
 			}
 			$this->hasRole = $_role;
@@ -94,6 +93,23 @@ abstract class AppAction extends Action
 	{
 		$jsonStr = json_encode($data);
 		exit($jsonStr);
+	}
+
+	private function getUser()
+	{
+		$userinfo = Session::get(COOKIE_USER);
+		if ( empty($userinfo) ){
+			$this->username = '';
+			$this->userId 	= '';
+			$this->isLogin 	= false;
+			return false;
+		}else{
+			$userinfo = unserialize($userinfo);
+		}
+		$this->username = $userinfo['username'];
+		$this->userId 	= $userinfo['userId'];
+		$this->isLogin 	= true;
+		return true;
 	}
 
 }

@@ -21,6 +21,9 @@ class IndexAction extends AppAction
 	 */
 	public function index()
 	{
+		if ( $this->isLogin ){
+			$this->redirect('', '/index/main/');
+		}
 		$this->display();
 	}
 	
@@ -35,7 +38,7 @@ class IndexAction extends AppAction
 	 */
 	public function main()
 	{
-		if(Session::get('username') == false){
+		if( $this->isLogin == false ){
 			$this->redirect('', '/index/');
 		}
 		

@@ -21,5 +21,7 @@ define('NAV_LOGIN_SYSTEMID', 'trade2');
 define('NAV_SSO_HOST', 'http://nav.chofn.net/ucserver/');
 //define('NAV_SSO_HOST', 'http://nav.chofn.com/ucserver/');
 
+define('COOKIE_USER', 'ChOfNjYtR2uSeR');
+
 
 ?>

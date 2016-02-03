@@ -13,8 +13,7 @@ abstract class AppModule extends Module
 	public function __construct()
 	{
 		//自定义业务逻辑
-		$this->username = Session::get('username');
-		$this->userId   = Session::get('userId');
+		$this->getUser();
 	}
 
 	/**
@@ -46,6 +45,23 @@ abstract class AppModule extends Module
 		$objList[$name] = $bi;
 		
 		return $bi;
+	}
+
+	protected function getUser()
+	{
+		$userinfo = Session::get(COOKIE_USER);
+		if ( empty($userinfo) ){
+			$this->username = '';
+			$this->userId 	= '';
+			$this->isLogin 	= false;
+			return false;
+		}else{
+			$userinfo = unserialize($userinfo);
+		}
+		$this->username = $userinfo['username'];
+		$this->userId 	= $userinfo['userId'];
+		$this->isLogin 	= true;
+		return true;
 	}
 }
 ?>

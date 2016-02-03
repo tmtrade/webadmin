@@ -183,7 +183,7 @@ class internalAction extends AppAction
 			if ( strpos($_SERVER['HTTP_REFERER'], 'internal/index/') !== false ){
 				Session::set('edit_referr', $_SERVER['HTTP_REFERER']);
 			}else{
-				Session::set('edit_referr', 'internal/index/');
+				Session::set('edit_referr', '/internal/index/');
 			}
 		}else{
 			if ( strpos($_SERVER['HTTP_REFERER'], 'internal/index/') !== false ){

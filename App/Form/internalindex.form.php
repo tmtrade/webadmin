@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2015/7/22
- * Time: 14:11
- */
 
 class InternalindexForm extends AppForm
 {
@@ -24,10 +18,18 @@ class InternalindexForm extends AppForm
 			'field' => 'saleStatus',
 			'method' => 'fieldName',
 			),
-		'tmPrice'    => array(
-			'field' => 'tmPrice',
-			'method' => 'fieldName',
+		'startPrice'    => array(
+			'field' => 'startPrice',
+			'match' => array('int', '0', ''),
 			),
+        'endPrice'    => array(
+            'field' => 'endPrice',
+            'match' => array('int', '0', ''),
+            ),
+        'isConfer'    => array(
+            'field' => 'isConfer',
+            'match' => array('int', '0', ''),
+            ),
 		'tmType'    => array(
 			'field' => 'tmType',
 			'method' => 'fieldName',

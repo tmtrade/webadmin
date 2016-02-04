@@ -86,17 +86,14 @@
                 <? } ?>
             </dd>
             <dd>
-                <label>底&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：</label>
-                
-                <? foreach ($tmPrice as $k => $v) {?>
+                <label>底&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：</label>
                 <div class="mj-radio">
-                    <input type="radio" id="rad<?=$k?>" <?if($s['tmPrice'] == $k){echo 'checked';} ?> value="<?=$k?>" name="tmPrice"/>
-                    <label for="rad<?=$k?>"><?=$v[2]?></label>
+                    <input type="text" maxlength="10" size="15"class="input input-sm" value="<?=$s['startPrice']==0?'':$s['startPrice']?>" name="startPrice"/>&nbsp;-&nbsp;
+                    <input type="text" maxlength="10" size="15" class="input input-sm" value="<?=$s['endPrice']==0?'':$s['endPrice']?>" name="endPrice"/>
                 </div>
-                <? } ?>
                 <div class="mj-radio">
-                    <input type="radio" id="rad0" <?if($s['tmPrice'] == 0){echo 'checked';} ?> value="0" name="tmPrice"/>
-                    <label for="rad0>">所有</label>
+                    <input type="checkbox" <?if($s['isConfer'] == 1){echo 'checked';} ?> value="1" name="isConfer"/>
+                    <label for="rad0>">面议</label>
                 </div>
             </dd>
             <dd>

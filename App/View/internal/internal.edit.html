@@ -93,7 +93,7 @@
                 <td><?=$saleSource[$vl['source']]?></td>
                 <td><?=$vl['name']?></td>
                 <td><?=$vl['phone']?></td>
-                <td><?=$vl['price']?></td>
+                <td><?=$vl['price']<=0?'议价':$vl['price']?></td>
                 <td><?=$saleType[$vl['saleType']]?></td>
                 <td><?=$vl['advisor'].'-'.$vl['department']?></td>
                 <td>

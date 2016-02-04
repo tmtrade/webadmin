@@ -25,8 +25,8 @@ class internalAction extends AppAction
 		//参数
 		$params = $this->getFormData();
 		$page 	= $this->input('page', 'int', '1');
-
-		$res 		= $this->load('internal')->getList($params, $page, $this->rowNum);
+		
+		$res 	= $this->load('internal')->getList($params, $page, $this->rowNum);
 
 		$total 	= empty($res['total']) ? 0 : $res['total'];
 		$list 	= empty($res['rows']) ? array() : $res['rows'];
@@ -141,7 +141,7 @@ class internalAction extends AppAction
 		if ( $params['phone'] == '' ){
 			$this->returnAjax(array('code'=>2,'msg'=>'请输入联系人电话'));
 		}
-		if ( $params['price'] <= 0 ){
+		if ( $params['price'] < 0 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'请输入正确的底价'));
 		}
 		if ( $params['date'] == '' || strtotime($params['date']) === false || strtotime($params['date']) < 0 ) {

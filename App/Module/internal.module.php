@@ -90,16 +90,14 @@ class InternalModule extends AppModule
             $source = $params['saleSource'];
             $_child .= " AND `source` = $source ";
         }
-        if ( !empty($params['tmPrice']) ){//处理子表底价
-            $setPrice = C('SEARCH_PRICE');
-            if ( !empty($setPrice[$params['tmPrice']]) ){
-                list($start, $end, ) =  $setPrice[$params['tmPrice']];
-                if ( $end == 0 ){
-                    $_child .= " AND `price` = 0 ";
-                }else{
-                    $_child .= " AND (`price` >= $start AND `price` <= $end) ";
-                }
+        if ( !empty($params['startPrice']) || !empty($params['endPrice']) ){//处理子表底价
+            $_start = ($params['startPrice'] > $params['endPrice']) ? $params['endPrice'] : $params['startPrice'];
+            $_end   = $params['startPrice'] + $params['endPrice'] - $_start;
+            $_isConfer = '';
+            if ( !empty($params['isConfer']) ){
+                $_isConfer = ' OR `price` = 0 ';
             }
+            $_child = " AND ((`price` >= $_start AND `price` <= $_end) $_isConfer) ";
         }
         if ( !empty($_child) ){
             $r['raw'] .= " AND `id` IN (select distinct(`saleId`) from t_sale_contact where 1 $_child) ";

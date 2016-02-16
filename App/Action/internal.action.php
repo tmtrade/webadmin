@@ -39,11 +39,14 @@ class internalAction extends AppAction
 		foreach ($list as $k => $v) {
 			$result[$k] = $this->load('internal')->getSaleInfo($v['id']);
 		}
-
+		
+		$paramsJosn = json_decode($params);
+		
         $this->set("allTotal",$this->load('internal')->countSale());
 		$this->set('total', $total);
         $this->set("pageBar",$pageBar);
 		$this->set('s', $params);
+		$this->set('paramsJosn', $paramsJosn);
 		$this->set('saleList', $result);
 		$this->display();
 	}
@@ -600,6 +603,11 @@ class internalAction extends AppAction
 	public function download()
 	{
 		$counts = $this->input('counts', 'int', ''); 
+		
+		$param = $this->input('params', 'text', '');  
+		
+		
+		var_dump($param);
 		$this->set('counts', $counts);
 		$this->display();
 	}

@@ -243,11 +243,60 @@
     </div>
 </div>
 
+
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css" />
+<style>
+	.check label{
+		width: 100px;
+    	display: inline-block;
+    	margin-bottom: 14px;
+	}
+	.check input{
+		margin:0px;
+		vertical-align:top;
+	}
+</style>
+<div class="im-wrap" id="download" style="display:none;" >
+	<div class="im-title borderBtmCd">
+		<em><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></em>
+		<h1>导出商品</h1>
+	</div>
+	<div class="loading borderBtmCd" style="height:70px;padding-top:25px;">
+		<em>当前共&nbsp;<?=$total?>&nbsp;条商品。如导出商品过多 ，请先通过筛选功能筛选后再进行导出。</em>
+	</div>
+	<br>
+	<p><em>请选择您需要导出的数据</em></p>
+	<br>
+	<div class="check borderBtmCd mb10">
+	<form id="downloadForm">
+		<label><input type="checkbox" checked name="saleid" value="1" >ID</label>
+		<label><input type="checkbox" checked name="number" value="1" disabled>商标号</label>
+		<label><input type="checkbox" checked name="status" value="1">销售状态</label>
+		<label><input type="checkbox" checked name="datetime" value="1">出售时间</label>
+		<label><input type="checkbox" checked name="name" value="1">商标名称</label>
+		<label><input type="checkbox" checked name="saletype" value="1">交易类型</label>
+		<label><input type="checkbox" checked name="class" value="1">类别</label>
+		<label><input type="checkbox" checked name="advisor" value="1">顾问/部门</label>
+		<label><input type="checkbox" checked name="source" value="1">来源渠道</label>
+		<label><input type="checkbox" checked name="contact" value="1">联系方式</label>
+		<label><input type="checkbox" checked name="price" value="1">底价</label>
+		<label><input type="checkbox" checked name="priceType" value="1">售价</label>
+	</form>
+	</div>
+	
+	<p class="">
+		<a href="" class="nexta">确定</a>
+		<a href="" class="cancela">取消</a>
+	</p>
+</div>
+
+
+
 <script type="text/javascript" src="<?=StaticDir?>1.2/js/internal/updown.js"></script>
 
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-	var total = "<?=$allTotal?>";
     $(function(){
         $(".mj-screening .btn").click(function(){
             $(".mj-ddList").toggle();
@@ -275,6 +324,10 @@
 
         $('#chkAll').click(function(){ 
             $('.chklist').prop("checked",this.checked);
+        });
+
+		$(".im-title-span").on("click",function(){
+            layer.closeAll('im-wrap');
         });
     });
 
@@ -379,7 +432,6 @@
             title: false,
             closeBtn: false,
             area: ['650px', '420px'],
-
             content: '/internal/import/'
         });
     }
@@ -413,12 +465,12 @@
 	//导出弹出
 	function download()
     {
-        layer.open({
-            type: 2,
+		 layer.open({
+            type: 1,
             title: false,
             closeBtn: false,
-            area: ['650px', '360px'],
-            content: '/internal/download/?counts='+total
+            area: ['630px', '360px'],
+            content: $('#download')
         });
     }
 </script>

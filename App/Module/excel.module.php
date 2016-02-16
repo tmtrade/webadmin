@@ -347,28 +347,6 @@ class ExcelModule extends AppModule
 		);
 		
 		//第二行-----------------------------------------------------------
-		$PHPExcel->getActiveSheet()->mergeCells('A2:G2');
-		$PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setName('微软雅黑');
-		$PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setSize(12);
-		$PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
-		$PHPExcel->getActiveSheet()->getStyle('A2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-		//设置居中
-		$PHPExcel->getActiveSheet()->getStyle('A2')->getAlignment()->setHorizontal(
-			PHPExcel_Style_Alignment::HORIZONTAL_CENTER
-		);
-		//所有垂直居中
-		$PHPExcel->getActiveSheet()->getStyle('A2')->getAlignment()->setVertical(
-			PHPExcel_Style_Alignment::VERTICAL_CENTER
-		);
-		$numExists = count($saleExists);
-		$numNotHas = count($saleNotHas);
-		$numNError = count($saleError);
-		$numNotContact = count($saleNotContact);
-		
-		$error = $numExists+$numNotHas+$numNError+$numNotContact;
-		$PHPExcel->getActiveSheet()->setCellValue('A2',
-			"导入成功".$numSucess."条   共导入失败".$error."条  缺少联系人、缺少联系电话".$numNotContact."条 数据写入失败".$numNError."条  数据表已存在商标".$numExists."条  不存在的商标".$numNotHas."条"
-		);
 		//----------------全局---------------------------------------------
 		//设置单元格宽度
 		$PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
@@ -378,6 +356,11 @@ class ExcelModule extends AppModule
 		$PHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
 		$PHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(20);
 		$PHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(20);
 		//设置单元格高度
 		$PHPExcel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(35);
 		//单元格样式
@@ -400,13 +383,18 @@ class ExcelModule extends AppModule
 			)
 		);
 		$style_obj->applyFromArray($style_array);
-		$PHPExcel->getActiveSheet()->setCellValue('A3', "商标号");
-		$PHPExcel->getActiveSheet()->setCellValue('B3', "联系人");
-		$PHPExcel->getActiveSheet()->setCellValue('C3', "联系电话");
-		$PHPExcel->getActiveSheet()->setCellValue('D3', "底价");
-		$PHPExcel->getActiveSheet()->setCellValue('E3', "顾问");
-		$PHPExcel->getActiveSheet()->setCellValue('F3', "顾问部门");
-		$PHPExcel->getActiveSheet()->setCellValue('G3', "备注");
+		$PHPExcel->getActiveSheet()->setCellValue('A2', "ID");
+		$PHPExcel->getActiveSheet()->setCellValue('B2', "商标号");
+		$PHPExcel->getActiveSheet()->setCellValue('C2', "销售状态");
+		$PHPExcel->getActiveSheet()->setCellValue('D2', "出售时间");
+		$PHPExcel->getActiveSheet()->setCellValue('E2', "商标名称");
+		$PHPExcel->getActiveSheet()->setCellValue('F2', "交易类型");
+		$PHPExcel->getActiveSheet()->setCellValue('G2', "类别");
+		$PHPExcel->getActiveSheet()->setCellValue('H2', "顾问/部门");
+		$PHPExcel->getActiveSheet()->setCellValue('I2', "来源渠道");
+		$PHPExcel->getActiveSheet()->setCellValue('J2', "联系方式");
+		$PHPExcel->getActiveSheet()->setCellValue('K2', "底价");
+		$PHPExcel->getActiveSheet()->setCellValue('L2', "售价");
 		//第三行--------------------------------------------------------
 		$num = 3 ;
 		if($saleExists){

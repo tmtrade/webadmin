@@ -37,6 +37,21 @@ return $menu = array(
 						'url'   => '/blacklist/index/',
 						'auth'	=> '5',
 					),
+					'3' => array(
+						'title' => '首页基本配置',
+						'url'   => '/basic/index/',
+						'auth'	=> '6',
+					),
+					'4' => array(
+						'title' => '首页模块设置',
+						'url'   => '/module/index/',
+						'auth'	=> '7',
+					),
+					'5' => array(
+						'title' => '通栏行业菜单',
+						'url'   => '/industry/index/',
+						'auth'	=> '8',
+					),
 		),
 	),
 	// '3' => array(

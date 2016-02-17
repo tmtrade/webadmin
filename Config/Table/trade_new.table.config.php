@@ -76,4 +76,28 @@ $tbl['phone'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['module'] = array(
+	'name'		=> $prefix.'module',
+	'dbId'		=> $dbId, 
+	'configFile'=> $configFile,
+);
+
+$tbl['moduleClass'] = array(
+	'name'		=> $prefix.'module_class',
+	'dbId'		=> $dbId, 
+	'configFile'=> $configFile,
+);
+
+$tbl['moduleClassItems'] = array(
+	'name'		=> $prefix.'module_class_items',
+	'dbId'		=> $dbId, 
+	'configFile'=> $configFile,
+);
+
+$tbl['modulePic'] = array(
+	'name'		=> $prefix.'module_pic',
+	'dbId'		=> $dbId, 
+	'configFile'=> $configFile,
+);
+
 ?>

@@ -269,20 +269,31 @@
 	<p><em>请选择您需要导出的数据</em></p>
 	<br>
 	<div class="check borderBtmCd mb10">
-	<form id="downloadForm">
-		<label><input type="checkbox" checked name="saleid" value="1" >ID</label>
-		<label><input type="checkbox" checked name="number" value="1" disabled>商标号</label>
-		<label><input type="checkbox" checked name="status" value="1">销售状态</label>
-		<label><input type="checkbox" checked name="datetime" value="1">出售时间</label>
-		<label><input type="checkbox" checked name="name" value="1">商标名称</label>
-		<label><input type="checkbox" checked name="saletype" value="1">交易类型</label>
-		<label><input type="checkbox" checked name="class" value="1">类别</label>
-		<label><input type="checkbox" checked name="advisor" value="1">顾问/部门</label>
-		<label><input type="checkbox" checked name="source" value="1">来源渠道</label>
-		<label><input type="checkbox" checked name="contact" value="1">联系方式</label>
-		<label><input type="checkbox" checked name="price" value="1">底价</label>
-		<label><input type="checkbox" checked name="priceType" value="1">售价</label>
-	</form>
+		<iframe name="excelpost" style="display:none;"></iframe>
+		<form name="saleSearchForm" action="/internal/excel/" method="post" id="excelpost" target="excelpost">
+		<?php
+		if($s){
+			foreach($s as $k => $v){
+				if($k != 'page'){
+					echo "<input type='hidden' checked name='".$k."' value='".$v."' /> ";
+				}
+			}
+		}
+		?>
+		<input type="hidden" name="excelTable" id="excelTable" value="" >
+		</form>
+		<label><input type="checkbox" checked class="excelTable" value="1" >ID</label>
+		<label><input type="checkbox" checked class="excelTable" value="2" disabled>商标号</label>
+		<label><input type="checkbox" checked class="excelTable" value="3">销售状态</label>
+		<label><input type="checkbox" checked class="excelTable" value="4">出售时间</label>
+		<label><input type="checkbox" checked class="excelTable" value="5">商标名称</label>
+		<label><input type="checkbox" checked class="excelTable" value="6">交易类型</label>
+		<label><input type="checkbox" checked class="excelTable" value="7">类别</label>
+		<label><input type="checkbox" checked class="excelTable" value="8">顾问/部门</label>  
+		<label><input type="checkbox" checked class="excelTable" value="9">来源渠道</label>
+		<label><input type="checkbox" checked class="excelTable" value="10">联系方式</label>
+		<label><input type="checkbox" checked class="excelTable" value="11">底价</label>
+		<label><input type="checkbox" checked class="excelTable" value="12">售价</label>
 	</div>
 	
 	<p class="">
@@ -290,8 +301,6 @@
 		<a href="" class="cancela">取消</a>
 	</p>
 </div>
-
-
 
 <script type="text/javascript" src="<?=StaticDir?>1.2/js/internal/updown.js"></script>
 
@@ -329,6 +338,21 @@
 		$(".im-title-span").on("click",function(){
             layer.closeAll('im-wrap');
         });
+		
+		//提交导出
+		$('.nexta').click(function(){
+		
+			var str = '';
+			$('.excelTable').each(function(){
+				if($(this).prop('checked')){
+					str += ","+$(this).val();
+				}
+			})
+			str = str ? str.substr(1) : '';
+			$('#excelTable').val(str);
+			$('#excelpost').submit();
+			return false;
+		})
     });
 
     //批量下架

@@ -39,14 +39,10 @@ class internalAction extends AppAction
 		foreach ($list as $k => $v) {
 			$result[$k] = $this->load('internal')->getSaleInfo($v['id']);
 		}
-		
-		$paramsJosn = json_decode($params);
-		
         $this->set("allTotal",$this->load('internal')->countSale());
 		$this->set('total', $total);
         $this->set("pageBar",$pageBar);
 		$this->set('s', $params);
-		$this->set('paramsJosn', $paramsJosn);
 		$this->set('saleList', $result);
 		$this->display();
 	}
@@ -599,25 +595,22 @@ class internalAction extends AppAction
 		return $data;
 	}
 	
-	//导出数据弹出界面
-	public function download()
-	{
-		$counts = $this->input('counts', 'int', ''); 
-		
-		$param = $this->input('params', 'text', '');  
-		
-		
-		var_dump($param);
-		$this->set('counts', $counts);
-		$this->display();
-	}
-	
 	
 	//导出数据提交操作
-	public function downloadForm()
+	public function excel()
 	{
 		$params = $this->getFormData();
-		$data['filepath'] = $this->load('excel')->downloadExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact);
+		
+		$list = $this->load('internal')->getExcelList($params);
+
+		$result = array();
+		
+		//获取所有联系人
+		foreach ($list['rows'] as $k => $v) {
+			$result[$k] = $this->load('internal')->getSaleInfo($v['id']);
+		}
+		$excelTable = $this->input('excelurl', 'text', '');
+		$data['filepath'] = $this->load('excel')->downloadExcel($result,$excelTable);
 	}		
 }
 ?>

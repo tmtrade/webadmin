@@ -108,6 +108,111 @@ class InternalModule extends AppModule
         return $res;
     }
 	
+	//获取导出EXCEL数据
+	public function getExcelList($params)
+    {
+		$r = $res = array();
+		if ( empty($params) ){
+            $res = $this->import('sale')->findAll($r);
+            return $res;
+        }
+		
+		
+        $r['col']   = array('id');
+		$r = $this->getWhere($params);
+		$num = $this->import('sale')->count($r);
+        $r['limit'] = $num;
+        $res = $this->import('sale')->findAll($r);
+        return $res;
+    }
+	
+	
+	//获取导出EXCEL数据
+	public function getWhere($params)
+    {
+        $r = array();
+        $r['col']   = array('id');
+        $r['raw'] = ' 1 ';
+        if ( !empty($params['tmNums']) ){
+            $r['ft']['length'] = $params['tmNums'];
+        }
+        if ( !empty($params['tmType']) ){
+            $r['ft']['type'] = $params['tmType'];
+        }
+        if ( !empty($params['tmClass']) ){
+            $r['ft']['class'] = $params['tmClass'];
+        }
+        if ( !empty($params['tmLabel']) ){
+            $r['ft']['label'] = $params['tmLabel'];
+        }
+        if ( !empty($params['salePlat']) ){
+            $r['ft']['platform'] = $params['salePlat'];
+        }
+        if ( !empty($params['tmName']) ){
+            $r['like']['name'] = $params['tmName'];
+        }
+        if ( !empty($params['tmNumber']) ){
+            $r['eq']['number'] = $params['tmNumber'];
+        }
+        if ( !empty($params['saleStatus']) ){
+            $r['eq']['status'] = $params['saleStatus'];
+        }
+        if ( !empty($params['dateStart']) ){
+            $r['raw'] .= " AND date >= ".strtotime($params['dateStart']);
+        }
+        if ( !empty($params['dateEnd']) ){
+            $r['raw'] .= " AND date <= ".(strtotime($params['dateEnd'])+24*3600);
+        }
+
+        //出售类型（出售、许可）
+        if ( $params['saleType'] == 3 ){
+            $r['eq']['isSale']      = 1;
+            $r['eq']['isLicense']   = 1;
+        }elseif ( $params['saleType'] == 2 ){
+            $r['eq']['isLicense']   = 1;
+        }elseif ( $params['saleType'] == 1 ){
+            $r['eq']['isSale']      = 1;
+        }
+        if ( !empty($params['tmGroup']) ){
+            $r['ft']['group'] = $params['tmGroup'];
+        }
+        if ( !empty($params['offprice']) ){
+            $r['eq']['priceType']   = 1;
+            $r['eq']['isOffprice']  = 1;
+            $r['raw'] .= " AND (salePriceDate = 0 OR salePriceDate >= unix_timestamp(now())) ";
+        }
+        if ( !empty($params['isTop']) ){
+            $r['eq']['isTop'] = 1;
+        }
+        if ( $params['isVerify'] == 2 ){
+            $list = $this->getNoVerifySale();
+            $list = empty($list) ? array(0) : $list;
+            $r['in'] = array('id'=>$list);
+        }
+
+        $_child =  '';
+        if ( !empty($params['saleSource']) ){//处理子表来源
+            $source = $params['saleSource'];
+            $_child .= " AND `source` = $source ";
+        }
+        if ( !empty($params['startPrice']) || !empty($params['endPrice']) ){//处理子表底价
+            $_start = ($params['startPrice'] > $params['endPrice']) ? $params['endPrice'] : $params['startPrice'];
+            $_end   = $params['startPrice'] + $params['endPrice'] - $_start;
+            $_isConfer = '';
+            if ( !empty($params['isConfer']) ){
+                $_isConfer = ' OR `price` = 0 ';
+            }
+            $_child = " AND ((`price` >= $_start AND `price` <= $_end) $_isConfer) ";
+        }
+        if ( !empty($_child) ){
+            $r['raw'] .= " AND `id` IN (select distinct(`saleId`) from t_sale_contact where 1 $_child) ";
+        }
+
+        $r['order'] = array('date'=>'desc');
+        return $r;
+    }
+	
+	
     //获取商品信息（可选包含的所有联系人与包装信息）
     public function getSaleInfo($saleId, $contact=1, $tminfo=1)
     {

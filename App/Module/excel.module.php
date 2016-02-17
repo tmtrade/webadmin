@@ -309,22 +309,23 @@ class ExcelModule extends AppModule
 	 * @param    array $data 求购信息
 	 * @return   array
 	 */
-	public function downloadExcel(){
+	public function downloadExcel($data,$excelTable){
 		
 		require_once(FILEDIR."/App/Util/PHPExcel.php");	
 		$PHPExcel = new PHPExcel();
 		$PHPExcel->getActiveSheet()->setTitle('商标信息');
 		$PHPExcel->setActiveSheetIndex(0);
 		//合并单元格
-		$PHPExcel->getActiveSheet()->mergeCells('B1:G1');
-		$PHPExcel->getActiveSheet()->getStyle('A1:B1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-		$PHPExcel->getActiveSheet()->getStyle('A1:B1')->getFill()->getStartColor()->setRGB('e86b1d');
+		$PHPExcel->getActiveSheet()->mergeCells('A1:C1');
+		$PHPExcel->getActiveSheet()->mergeCells('D1:L1');
+		$PHPExcel->getActiveSheet()->getStyle('A1:D1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+		$PHPExcel->getActiveSheet()->getStyle('A1:D1')->getFill()->getStartColor()->setRGB('e86b1d');
 		//设置居中
-		$PHPExcel->getActiveSheet()->getStyle('A1:B1')->getAlignment()->setHorizontal(
+		$PHPExcel->getActiveSheet()->getStyle('A1:D1')->getAlignment()->setHorizontal(
 			PHPExcel_Style_Alignment::HORIZONTAL_CENTER
 		);
 		//所有垂直居中
-		$PHPExcel->getActiveSheet()->getStyle('A1:B1')->getAlignment()->setVertical(
+		$PHPExcel->getActiveSheet()->getStyle('A1:D1')->getAlignment()->setVertical(
 			PHPExcel_Style_Alignment::VERTICAL_CENTER
 		);
 		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setName('微软雅黑');
@@ -332,14 +333,14 @@ class ExcelModule extends AppModule
 		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
 		//字体颜色
 		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
-		$PHPExcel->getActiveSheet()->setCellValue('A1', " 超凡-商标导入信息");
-		$PHPExcel->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(
+		$PHPExcel->getActiveSheet()->setCellValue('A1', " 超凡-商标导出信息");
+		$PHPExcel->getActiveSheet()->getStyle('D1')->getAlignment()->setHorizontal(
 			PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
 		);
-		$PHPExcel->getActiveSheet()->getStyle('B1')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
-		$PHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setName('微软雅黑');
-		$PHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setSize(9);
-		$PHPExcel->getActiveSheet()->setCellValue('B1',
+		$PHPExcel->getActiveSheet()->getStyle('D1')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+		$PHPExcel->getActiveSheet()->getStyle('D1')->getFont()->setName('微软雅黑');
+		$PHPExcel->getActiveSheet()->getStyle('D1')->getFont()->setSize(9);
+		$PHPExcel->getActiveSheet()->setCellValue('D1',
 			"报告编号：" . date('Ymd', time()) . randCode(4, 'NUMBER') . '  数据截止时间：' . date(
 				'Y/m/d',
 				time()
@@ -349,18 +350,18 @@ class ExcelModule extends AppModule
 		//第二行-----------------------------------------------------------
 		//----------------全局---------------------------------------------
 		//设置单元格宽度
-		$PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
-		$PHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
-		$PHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(20);
-		$PHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(10);
+		$PHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(12);
+		$PHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(12);
+		$PHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(15);
 		$PHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
-		$PHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(12);
 		$PHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
-		$PHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(20);
-		$PHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(30);
+		$PHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(15);
 		$PHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(20);
 		$PHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(20);
-		$PHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(10);
 		//设置单元格高度
 		$PHPExcel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(35);
 		//单元格样式
@@ -397,19 +398,48 @@ class ExcelModule extends AppModule
 		$PHPExcel->getActiveSheet()->setCellValue('L2', "售价");
 		//第三行--------------------------------------------------------
 		$num = 3 ;
-		if($saleExists){
-			$num = $num+1;	
-			$PHPExcel->getActiveSheet()->mergeCells('A'.$num.':G'.$num);
-			$PHPExcel->getActiveSheet()->setCellValue('A'.$num, "数据表已存在商标");
-			foreach($saleExists as $k => $item ){
+		if($data){
+			
+			$saleStatus = C("SALE_STATUS");
+			$saleType 	= C("SALE_TYPE");
+			$saleSource = C("SOURCE");
+			foreach($data as $k => $item ){
+				
+				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['id']);
+				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['number']);
+				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $saleStatus[$item['status']]);
+				if($item['date']==0){$saletime = '-';}else{$saletime = date("Y-m-d", $item['date']);}
+				$PHPExcel->getActiveSheet()->setCellValue('D'.$num, $saletime);
+				$PHPExcel->getActiveSheet()->setCellValue('E'.$num, $item['name']);
+				if ($item['isSale'] == 1 && $item['isLicense'] == 1) {
+					$saleTypeStr =  $saleType[3];
+				}elseif($item['isSale'] == 1){
+					$saleTypeStr =  $saleType[1];
+				}elseif($item['isLicense'] == 1){
+					$saleTypeStr =  $saleType[2];
+				}
+				$PHPExcel->getActiveSheet()->setCellValue('F'.$num, $saleTypeStr);	
+				$PHPExcel->getActiveSheet()->setCellValue('G'.$num, $item['class']);
+				
+				if(count($item['contact']) > 1){
+					$ct=current($item['contact']);
+					$contact = '';
+					$advisor = $ct['advisor'].'-'.$ct['department'];
+					$source  = $saleSource[$ct['source']];
+					$price = $ct['price'];
+				}else{
+					$advisor = '多顾问';
+					$contact = '多联系方式';
+					$source  = '多渠道';
+					$price = '多底价';
+				}		
+				$PHPExcel->getActiveSheet()->setCellValue('H'.$num, $advisor);
+				$PHPExcel->getActiveSheet()->setCellValue('I'.$num, $source);
+				$PHPExcel->getActiveSheet()->setCellValue('J'.$num, $contact);	
+				$PHPExcel->getActiveSheet()->setCellValue('K'.$num, $price);
+				if($item['priceType']==2){$priceSale =  "议价";}else{$priceSale =  $item['price'];}
+				$PHPExcel->getActiveSheet()->setCellValue('L'.$num, $priceSale);
 				$num ++;
-				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['number']);
-				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['name']);
-				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $item['phone']);
-				$PHPExcel->getActiveSheet()->setCellValue('D'.$num, $item['price']);
-				$PHPExcel->getActiveSheet()->setCellValue('E'.$num, $item['advisor']);
-				$PHPExcel->getActiveSheet()->setCellValue('F'.$num, $item['department']);
-				$PHPExcel->getActiveSheet()->setCellValue('G'.$num, $item['memo']);
 			}
 		}
 		//---------------------------------------------------------------------------

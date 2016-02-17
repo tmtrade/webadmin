@@ -777,6 +777,7 @@ class InternalModule extends AppModule
             'number'    => $number,
             'memo'      => $data['memo'],
 			'intro'     => '',
+			'isVerify'  => 1,
         );
 	
 		$result = array(

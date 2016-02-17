@@ -1,0 +1,312 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>首页模块设置</li>
+        <li>首页模块设置列表</li>
+    </ul>
+    <!-- <span style="float:right;margin-right:20px;color:red;">在售商标总数：<?=$total ?></span> -->
+</div>
+<div class="wrap">
+    <div class="wrap-content">
+	
+	
+		<p class="text-left" style="float:left;padding-top:20px;">您可以在此管理首页推荐的商品模块，并为每个模块添加分类和商品。建议每个模块至少有两个分类。</p>
+        <p class="text-left" style="float:left;padding-top:20px;">共有 <b class="red"><?=$total?></b> 条数据</p>
+        <div class="wrap-tittle">
+            <button class="btn btn-danger" onclick="add();"    type="button">创建一个模块</button>
+            <button class="btn btn-info" type="button" onclick="reloadList();">刷新</button>
+        </div>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                    <tr class="active">
+                        <th>模块名称</th>
+                        <th>子分类</th>
+                        <th>包含广告条数</th>
+                        <th>推广链接条数</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody class="table-list">
+                <? foreach ($saleList as $k => $v) {  ?>
+                <tr>
+                    <td><?=$v['number']?></td>
+                    <td><span <?if ($v['status']==1){
+                            echo 'class="blue"';
+                        }elseif ($v['status']==2){
+                            echo 'class="red"';
+                        }else{
+                            echo 'class="yellow"';
+                        }
+                        ?> ><?=$saleStatus[$v['status']]?></span></td>
+                    <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?>
+                    <?if( !empty($v['tminfo']['embellish'])){?><span class="blue">包</span><?}?></td>
+                    <td title="<?=$v['name']?>"><?if(mb_strlen($v['name'],'utf8') > 15)
+                    {echo mb_substr($v['name'],0,12,'utf8')."...";}
+                    else{echo $v['name'];}?></td>
+                    <td><? if ($v['isSale'] == 1 && $v['isLicense'] == 1) {
+                            echo $saleType[3];
+                        }elseif($v['isSale'] == 1){
+                            echo $saleType[1];
+                        }elseif($v['isLicense'] == 1){
+                            echo $saleType[2];
+                        }?></td>
+                    <td><?if(count(explode(',', $v['class'])) > 1){?>
+                        <div class="more" ><span>多类</span>
+                            <ol style=" max-height: 150px;  overflow-y: auto;width: 80px;">
+                                <? foreach (explode(',', $v['class']) as $cls) {
+                                    echo "<li>$cls 类</li>";
+                                }?>
+                            </ul>
+                        </div>
+                    <?}else{echo $v['class']."类";}?></td>
+                    <td class="showMore"><?if(count($v['contact']) > 1){echo "多顾问";}else
+                    {$ct=current($v['contact']);echo $ct['advisor'].'-'.$ct['department'];} ?>
+                    </td>
+                    <td class="showMore"><?if(count($v['contact']) > 1){echo '多渠道';}
+                    else{$ct=current($v['contact']);echo $saleSource[$ct['source']];} ?>
+                    </td>
+                    <td class="showMore"> <?if(count($v['contact']) > 1){?>
+                        <div class="more"><span>多联系方式</span>
+                            <ul>
+                            <?foreach ($v['contact'] as $key => $value) { ?>
+                                <li><table width="99%"><tr align="center">
+                                <td width="30%"><?=$value['advisor'].'-'.$value['department']?></td>
+                                <td width="15%"><?=$saleSource[$value['source']]?></td>
+                                <td width="40%">
+                                <?if($value['isVerify'] == 2){?><span class="red">审</span><?}?>
+                                <?php echo mbSub( $value['name'] , 0, 3);?>-<?=$value['phone']?></td>
+                                <td width="15%"><?=$value['price']?></td>
+                                </tr></table>
+                            <?}?>
+                            </ul>
+                        </div>
+                    <? }else{$ct=current($v['contact']);if($ct['isVerify'] == 2){echo '<span class="red">审</span>';}echo  mbSub( $ct['name'] , 0, 3)."-".$ct['phone'];} ?>
+                    </td>
+                    <td class="showMore"><?if(count($v['contact']) > 1){echo '多底价';}
+                    else{$ct=current($v['contact']);echo $ct['price'];} ?>
+                    </td>
+                    <td class="showMore"><?if($v['priceType']==2){echo "议价";}else{echo $v['price'];}?></td>
+                    <td>
+                        <span class="icon icon-delete">
+                        <?if($v['status']==1){?>
+                        <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$v['id']?>);">下架</a>
+                        <?}elseif($v['status']==2 && count($v['contact']) > 0){?>
+                        <a href="javascript:;" class="btn-success" onclick="doUp(<?=$v['id']?>);">上架</a>
+                        <?}?></span>
+                        <span class="icon icon-editor">
+                        <a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>
+                        </span>
+                    </td>
+                </tr>
+                <? } ?>
+                </tbody>
+            </table>
+        </div>    
+<div id="page" align="center"><?=$pageBar?></div>  
+    </div>
+</div>
+
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/internal/updown.js"></script>
+
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $(".mj-screening .btn").click(function(){
+            $(".mj-ddList").toggle();
+        });
+        $(".mj-sBtn").click(function(){
+            $("#saleSearchForm").submit();
+        });
+        //多选处理
+        $('input[type="checkbox"]').click(function(){
+            var strClass = '';
+            var id = $(this).attr('tname');
+            $('.'+id).each(function(){
+                if($(this).prop('checked')){
+                    strClass += ","+$(this).val();
+                }
+            })
+            strClass = strClass ? strClass.substr(1) : '';
+            $('#'+id).val(strClass);
+        });
+        $(".table tr td.showMore").hover(function(){
+            $(this).parent('tr').find('.more > ul').show();
+        },function(){
+            $(this).parent('tr').find('.more > ul').hide();
+        });
+
+        $('#chkAll').click(function(){ 
+            $('.chklist').prop("checked",this.checked);
+        });
+
+		$(".im-title-span").on("click",function(){
+            layer.closeAll('im-wrap');
+        });
+		
+		//提交导出
+		$('.nexta').click(function(){
+		
+			var str = '';
+			$('.excelTable').each(function(){
+				if($(this).prop('checked')){
+					str += ","+$(this).val();
+				}
+			})
+			str = str ? str.substr(1) : '';
+			$('#excelTable').val(str);
+			$('#excelpost').submit();
+			return false;
+		})
+    });
+
+    //批量下架
+    function setMoreDown()
+    {
+        var chkId = getChecked();
+        if ( chkId == '' ) {
+            layer.msg('请选择至少一个商品', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        layer.prompt({
+            formType: 2,
+            value: '',
+            maxlength: 100,
+            title: '请输入下架原因'
+        }, function(value, index, elem){
+            if ( $.trim(value) == ''){
+                layer.tips('请输入下架原因',elem);
+                return false;
+            }else{
+                $.ajax({
+                    type : 'post',
+                    url  : '/internal/doDown/',
+                    data : {'id':chkId, 'reason':value},
+                    dataType : 'json',
+                    success : function (data){
+                        if (data.code==1){
+                            layer.msg('操作成功！', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            layer.msg('操作失败！', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            });
+                        }
+                    },
+                    error : function (data){
+                        layer.msg('操作失败，请稍后重试。', {
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function delMoreSale()
+    {
+        var chkId = getChecked();
+        if ( chkId == '' ) {
+            layer.msg('请选择至少一个商品', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        var url = '?id='+chkId;
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['520px', '400px'],
+
+            content: '/internal/delete/'+url,
+        });
+        return false;
+    }
+
+    function getChecked()
+    {
+        var strId = '';
+        $('.chklist').each(function(){
+            if($(this).prop('checked')){
+                strId += ","+$(this).val();
+            }
+        });
+        strId = strId ? strId.substr(1) : '';
+        return strId;
+    }
+
+    function add()
+    {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['560px', '350px'],
+
+            content: '/internal/create/'
+        });
+    }
+	
+	//批量导入商标
+	function Import()
+    {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['650px', '420px'],
+            content: '/internal/import/'
+        });
+    }
+
+    function reloadList()
+    {
+        window.location.reload();
+    }
+	
+	//弹出群组数据
+	$('#groupes').click(function(){
+		var classes = $('#tmClass').val();
+		//var oldclasses = $('#oldclasses').val();
+		//if(oldclasses != classes){
+		//	$(this).val('');
+		//}
+		if(classes){
+			//iframe层-父子操作
+			layer.open({
+				title: '选择群组',
+				type: 2,
+				area: ['570px', '420px'],
+				fix: false, //不固定
+				maxmin: true,
+				content: '/internal/groups/?class='+classes
+			});
+		}
+		return false;
+	})
+	
+	//导出弹出
+	function download()
+    {
+		 layer.open({
+            type: 1,
+            title: false,
+            closeBtn: false,
+            area: ['630px', '360px'],
+            content: $('#download')
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

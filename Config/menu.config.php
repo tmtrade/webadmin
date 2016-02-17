@@ -27,16 +27,26 @@ return $menu = array(
 		'url'   => '/phone/index/',
 		'ico'   => 'images/menu2.png',
 		'child'	=> array(
-					'1' => array(
-						'title' => '联系电话管理',
-						'url'   => '/phone/index/',
-						'auth'	=> '4',
-					),
-					'2' => array(
-						'title' => '黑名单列表',
-						'url'   => '/blacklist/index/',
-						'auth'	=> '5',
-					),
+			'1' => array(
+				'title' => '首页基本设置',
+				'url'   => '/phone/index/',
+				'auth'	=> '4',
+			),
+			'2' => array(
+				'title' => '首页模块设置',
+				'url'   => '/module/index/',
+				'auth'	=> '5',
+			),
+			'3' => array(
+				'title' => '联系电话管理',
+				'url'   => '/phone/index/',
+				'auth'	=> '4',
+			),
+			'4' => array(
+				'title' => '黑名单列表',
+				'url'   => '/blacklist/index/',
+				'auth'	=> '5',
+			),
 					'3' => array(
 						'title' => '首页基本配置',
 						'url'   => '/basic/index/',

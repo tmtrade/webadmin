@@ -142,7 +142,8 @@ function setContact(saleId, cId)
 	var url = '?saleId='+saleId+'&cId='+cId;
 	layer.open({
 		type: 2,
-		title: false,
+        title: false,
+        scrollbar: false,
 		closeBtn: false,
 		area: ['501px', '485px'],
 
@@ -249,6 +250,7 @@ function delVerify(saleId, id, nums)
 	}
 	layer.prompt({
 		formType: 2,
+		scrollbar: false,
 		value: '',
 		maxlength: 100,
 		title: '请输入驳回联系人的原因'

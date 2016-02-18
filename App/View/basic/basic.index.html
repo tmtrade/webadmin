@@ -58,75 +58,39 @@
                 </tr>
             </thead>
             <tbody class="table-list">
+            <? foreach ($list[1] as $k => $v) { ?>
                 <tr>
-                    <td align="center" style="vertical-align:middle"><img class="info-pic" src="<?=StaticDir?>1.2/images/u279.png" /></td>
-                    <td align="center" style="vertical-align:middle">是没听到</td>
-                    <td style="vertical-align:middle">http://tr2.chofn.net/index/main/</td>
+                    <td align="center" style="vertical-align:middle">
+                    <img class="info-pic" src="<?=$v['pic']?>" /></td>
+                    <td align="center" style="vertical-align:middle">
+                    <?=$v['other']==1?'购买模块':'无'?></td>
+                    <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
                     <td style="vertical-align:middle">
                         <span class="icon icon-delete">
-                            <a href="javascript:;" class="btn-warning">删除</a>
+                            <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
                         </span>
                         <span class="icon icon-editor">
-                        <a href="/internal/edit/?id=76757" class="btn-info">编辑</a>
+                            <a href="javascript:void(0);" onclick="showEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
                         </span>
                         &nbsp;&nbsp;
-                        <span>
+                        <!-- 向下  -->
+                        <span onclick="orderBasic(<?=$v['id']?>, 1, 1)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                         &nbsp;
-                        <span class="img-flip">
+                        <!-- 向上  -->
+                        <span class="img-flip"  onclick="orderBasic(<?=$v['id']?>, 2, 1)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                       </div>
                     </td>
                 </tr>
-                <tr>
-                    <td align="center" style="vertical-align:middle"><img class="info-pic" src="<?=StaticDir?>1.2/images/u279.png" /></td>
-                    <td align="center" style="vertical-align:middle">是没听到</td>
-                    <td style="vertical-align:middle">http://tr2.chofn.net/index/main/</td>
-                    <td style="vertical-align:middle">
-                        <span class="icon icon-delete">
-                            <a href="javascript:;" class="btn-warning">删除</a>
-                        </span>
-                        <span class="icon icon-editor">
-                        <a href="/internal/edit/?id=76757" class="btn-info">编辑</a>
-                        </span>
-                        &nbsp;&nbsp;
-                        <span>
-                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
-                        </span>
-                        &nbsp;
-                        <span class="img-flip">
-                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center" style="vertical-align:middle"><img class="info-pic" src="<?=StaticDir?>1.2/images/u279.png" /></td>
-                    <td align="center" style="vertical-align:middle">是没听到</td>
-                    <td style="vertical-align:middle">http://tr2.chofn.net/index/main/</td>
-                    <td style="vertical-align:middle">
-                        <span class="icon icon-delete">
-                            <a href="javascript:;" class="btn-warning">删除</a>
-                        </span>
-                        <span class="icon icon-editor">
-                        <a href="/internal/edit/?id=76757" class="btn-info">编辑</a>
-                        </span>
-                        &nbsp;&nbsp;
-                        <span>
-                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
-                        </span>
-                        &nbsp;
-                        <span class="img-flip">
-                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
-                        </span>
-                    </td>
-                </tr>
+            <? } ?>
             </tbody>
         </table>
     </div>
     <div class="margin-sx-10">
-        <button class="btn btn-danger" onclick="add();" type="button">创建banner图</button>
+        <button class="btn btn-danger" id="add-banner" type="button">创建banner图</button>
     </div>
     
     <div class="wrap-top">
@@ -147,72 +111,34 @@
                 </tr>
             </thead>
             <tbody class="table-list">
+            <? foreach ($list[2] as $k => $v) { ?>
                 <tr>
-                    <td style="vertical-align:middle">父亲节</td>
-                    <td style="vertical-align:middle">否</td>
+                    <td style="vertical-align:middle"><?=$v['desc']?></td>
+                    <td style="vertical-align:middle"><?=$v['other']==0?'否':'是'?></td>
                     <td style="vertical-align:middle">
                         <span class="icon icon-delete">
-                            <a href="javascript:;" class="btn-warning">删除</a>
+                            <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
                         </span>
                         <span class="icon icon-editor">
-                        <a href="/internal/edit/?id=76757" class="btn-info">编辑</a>
+                        <a href="javascript:void(0);" onclick="wordEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
                         </span>
                         &nbsp;&nbsp;
-                        <span>
+                        <span onclick="orderBasic(<?=$v['id']?>, 1, 2)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                         &nbsp;
-                        <span class="img-flip">
+                        <span class="img-flip" onclick="orderBasic(<?=$v['id']?>, 2, 2)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                     </td>
                 </tr>
-                <tr>
-                    <td style="vertical-align:middle">端午节</td>
-                    <td style="vertical-align:middle">是</td>
-                    <td style="vertical-align:middle">
-                        <span class="icon icon-delete">
-                            <a href="javascript:;" class="btn-warning">删除</a>
-                        </span>
-                        <span class="icon icon-editor">
-                        <a href="/internal/edit/?id=76757" class="btn-info">编辑</a>
-                        </span>
-                        &nbsp;&nbsp;
-                        <span>
-                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
-                        </span>
-                        &nbsp;
-                        <span class="img-flip">
-                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="vertical-align:middle">回家的路</td>
-                    <td style="vertical-align:middle">是</td>
-                    <td style="vertical-align:middle">
-                        <span class="icon icon-delete">
-                            <a href="javascript:;" class="btn-warning">删除</a>
-                        </span>
-                        <span class="icon icon-editor">
-                        <a href="/internal/edit/?id=76757" class="btn-info">编辑</a>
-                        </span>
-                        &nbsp;&nbsp;
-                        <span>
-                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
-                        </span>
-                        &nbsp;
-                        <span class="img-flip">
-                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
-                        </span>
-                    </td>
-                </tr>
+            <? } ?>
             </tbody>
         </table>
     </div>
 
     <div class="margin-sx-10">
-        <button class="btn btn-danger" onclick="add();" type="button">新增搜索词</button>
+        <button class="btn btn-danger" id="add-word" type="button">新增搜索词</button>
     </div>
 
     <div class="wrap-top">
@@ -309,75 +235,89 @@
             $(this).parent().parent().children('.info-show').hide();
         });
 
-        $(".mj-add").click(function(){
+        $("#add-banner").click(function(){
             layer.open({
                 type: 2,
-                title: false,
-                closeBtn: false,
-                area: ['500px', '380px'],
+                scrollbar: false,
+                title: '创建广告图',
+                area: ['650px', '430px'],
 
-                content: '/blacklist/add/'
+                content: '/basic/addBannber/'
             });
         });
-        $(".mj-sBtn-search").click(function(){
-            var number  = $.trim( $("#inputNumber").val() );
-            if ( number == '' ){
-                layer.tips('请输入商标号', $(this),{tips: [2, '#78BA32']});
-                return false;
-            }
-            $("#blackForm").attr("action","/blacklist/index/");
-            $("#blackForm").submit();
-        });
 
-        $(".mj-sBtn-add").click(function(){
-            var number  = $.trim( $("#inputNumber").val() );
-            if ( number == '' ){
-                layer.tips('请输入商标号', $(this),{tips: [2, '#78BA32']});
-                return false;
-            }
-            $.ajax({
-                type : 'post',
-                url  : '/blacklist/setBlack/',
-                data : {number:number},
-                dataType : 'json',
-                success : function (data){
-                    if (data.code==1){
-                        layer.msg('操作成功！', {
-                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                        }, function(){
-                            window.location.reload();
-                        });
-                    }else{
-                        var msg = data.msg == undefined ? '操作失败，请重试。' : data.msg;
-                        layer.msg(msg);
-                    }
-                },
-                error : function (data){
-                    layer.msg('操作失败，请稍后重试。');
-                }
+        $("#add-word").click(function(){
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '创建热门搜索词',
+                area: ['650px', '430px'],
+
+                content: '/basic/addWord/'
             });
         });
+
     });
-    function canel(number)
+
+    function orderBasic(id, updown, type)
     {
-        var _number = $.trim(number);
-        if ( _number == '' ){
-            layer.msg('参数错误');
-        }
+        if ( id == '' || updown == '' ) return false;
         $.ajax({
             type : 'post',
-            url  : '/blacklist/outBlack/',
-            data : {number:number},
+            url  : '/basic/orderBasic/',
+            data : {id:id,updown:updown,type:type},
             dataType : 'json',
             success : function (data){
                 if (data.code==1){
-                    layer.msg('操作成功！', {
+                    layer.msg('操作成功', {
                         time: 1000 //2秒关闭（如果不配置，默认是3秒）
                     }, function(){
                         window.location.reload();
                     });
                 }else{
-                    var msg = data.msg == undefined ? '操作失败，请重试。' : data.msg;
+                    layer.msg(data.msg, {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+
+    function showEdit(id)
+    {
+        if ( id == '' || id == 0 ) return false;
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: '修改广告图',
+            area: ['650px', '430px'],
+
+            content: '/basic/editBanner/?id='+id
+        });
+    }
+
+    function cancel(id)
+    {
+        if ( id == '' || id == 0 ) return false;
+        $.ajax({
+            type : 'post',
+            url  : '/basic/delBasic/',
+            data : {id:id},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    var msg = data.msg == undefined ? '操作失败' : data.msg;
                     layer.msg(msg);
                 }
             },

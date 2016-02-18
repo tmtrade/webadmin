@@ -285,7 +285,7 @@
             <td><?if($v['roleId']==0){echo "用户";}else{echo $v['roleName'];}?>&nbsp;&nbsp;&nbsp;&nbsp;
             <?=$v['name']?>&nbsp;&nbsp; 于&nbsp;&nbsp; <?=date("Y-m-d H:i:s",$v['date'])?> 
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$v['typeName']?>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注(原因)：<?=empty($v['memo'])?'无':$v['memo']?></td>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注(原因)：<?=empty($v['memo']) || is_array(unserialize($v['memo']))?'无':$v['memo']?></td>
         </tr>
     <?}?>
         </tbody>

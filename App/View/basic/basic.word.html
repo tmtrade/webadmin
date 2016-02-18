@@ -1,0 +1,104 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+
+<style type="text/css">
+    .info-pic {
+        max-width: 250px;
+        max-height: 100px;
+    }
+</style>
+
+<!--出售信息弹层-->
+<div class="mj-infoM" style="width:99%">
+<form name="setWord" id="setWord" >
+    <input type="hidden" name="id" value="<?=$id?>" />
+    
+    <label>热门交易标题：</label>
+    <input type="input" class="form-control" maxlength="8"  name="title" value="<?=$info['desc']?>">
+    
+    <div class="alert alert-warning"style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
+    请输入交易标题，最多不可超过8个中文字符。
+    </div>
+    <label>图片链接：</label>
+    <input type="input" class="form-control" name="link" value="<?=$info['link']?>">
+
+    <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
+    请输入该广告链接，未输入链接则该图片不可点击。
+    </div>
+    <label>是否着重展示:</label>
+    <select name="model">
+        <option value="0" <? if($info['other']==0){echo 'selected';}?> >无</option>
+        <option value="1" <? if($info['other']==1){echo 'selected';}?> >红色</option>
+        <option value="2" <? if($info['other']==2){echo 'selected';}?> >黄色</option>
+        <option value="3" <? if($info['other']==3){echo 'selected';}?> >绿色</option>
+    </select>
+    <div style="bottom:10px;position: fixed;">
+        <a href="javascript:void(0);" class="mj-liBtns" onclick="opContact();">确定</a>
+        <a href="javascript:void(0);" class="mj-liBtns mj-abgcg" onclick="closeAll();">取消</a>
+    </div>
+    
+</form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".mj-infoM").show();
+
+        $(".bzform").wrap("<form id='bzformupload' action='/internal/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#bzfile").on('change', function(){
+            $("#bzformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.bzpic').val(data.img);
+                        $('#bzpic').attr('src', data.img);
+                        //$('#imageurl').css('visibility', 'visible');
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
+    });
+
+    function closeAll()
+    {
+        parent.layer.closeAll();
+    }
+    function opContact()
+    {
+        var data = $("#setWord").serialize();
+        $.ajax({
+            type : 'post',
+            url  : '/basic/setWord/',
+            data : data,
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        parent.window.location.reload();
+                    });
+                }else{
+                    layer.msg(data.msg, {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

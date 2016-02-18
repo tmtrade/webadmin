@@ -289,7 +289,7 @@ class internalAction extends AppAction
 		}
 		$res = $this->load('internal')->update($data, $saleId);
 		if ( $res ){
-			$this->load('log')->addSaleLog($saleId, 10);//修改价格信息
+			$this->load('log')->addSaleLog($saleId, 10, serialize($data));//修改价格信息
 			$this->returnAjax(array('code'=>1,'msg'=>'操作成功'));
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));

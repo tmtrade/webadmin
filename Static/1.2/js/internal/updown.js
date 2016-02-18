@@ -11,6 +11,7 @@ function doDown(id)
 	}
 	layer.prompt({
 		formType: 2,
+		scrollbar: false,
 		value: '',
 		maxlength: 100,
 		title: '请输入下架原因'
@@ -51,7 +52,8 @@ function doDown(id)
 function doUp(id)
 {
 	layer.confirm('确认要上架吗？请确认相关数据已审核成功！', {
-		btn: ['确认','取消'] //按钮
+		btn: ['确认','取消'], //按钮
+		scrollbar: false,
 	}, function(elem){
 		$.ajax({
 			type : 'post',

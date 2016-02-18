@@ -22,7 +22,7 @@ class UploadModule extends AppModule
     /**
      * 上传文件的最大字节数(默认10M)
      */
-    public $maxSize   = 10000000;
+    //public $maxSize   = 10000000;
     
     /**
      * 存在路径
@@ -38,12 +38,12 @@ class UploadModule extends AppModule
 	 * @since     
 	 * @copyright
 	 */
-    public function upload($name, $type='all')
+    public function upload($name, $type='all',$maxSize=10000000)
     {
         if ($type == 'img') $this->type = 'jpeg|jpg|gif|png|bmp';
     	$filename    = $_FILES[$name]['name'];
         $up          = $this->com('upload');
-        $up->maxSize = $this->maxSize;
+        $up->maxSize = $maxSize;
         $up->path    = './'.StaticDir.$this->path;//包装图片
         $up->upType  = $this->type;
         $up->upload($_FILES[$name]);

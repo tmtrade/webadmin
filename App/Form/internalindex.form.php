@@ -40,52 +40,52 @@ class InternalindexForm extends AppForm
 			),
 		'page'    => array(
 			'field' => 'page',
-			'match' => array('int', '1', ''),  
+			'match' => array('int', '1', ''),
 			),
 		'dateStart'    => array(
 			'field' => 'dateStart',
-			'match' => array('', '', ''),  
+			'match' => array('', '', ''),
 			),
 		'dateEnd'    => array(
 			'field' => 'dateEnd',
-			'match' => array('', '', ''),  
+			'match' => array('', '', ''),
 			),
 		'saleType'    => array(
 			'field' => 'saleType',
 			'method' => 'fieldName',
-			),	
+			),
 		'tmGroup'    => array(
 			'field' => 'tmGroup',
 			'method' => 'fieldName',
 			),
 		'saleSource'    => array(
 			'field' => 'saleSource',
-			'match' => array('int', '', ''),  
-			),	
+			'match' => array('int', '', ''),
+			),
 		'tmNumber'    => array(
 			'field' => 'tmNumber',
-			'match' => array('fieldName', '', ''),  
-			),	
+			'match' => array('fieldName', '', ''),
+			),
 		'tmLabel'    => array(
 			'field' => 'tmLabel',
 			'method' => 'fieldName',
-			),	
+			),
 		'salePlat'    => array(
 			'field' => 'salePlat',
 			'method' => 'fieldName',
-			),	
+			),
         'offprice'    => array(
             'field' => 'offprice',
-            'match' => array('int', '', ''),  
-            ),  
+            'match' => array('int', '', ''),
+            ),
 		'isTop'    => array(
 			'field' => 'isTop',
-			'match' => array('int', '', ''),  
-			),	
+			'match' => array('int', '', ''),
+			),
         'isVerify'    => array(
             'field' => 'isVerify',
-            'match' => array('int', '', ''),  
-            ),  
+            'match' => array('int', '', ''),
+            ),
     );
 	
 	

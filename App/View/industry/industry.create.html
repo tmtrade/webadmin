@@ -1,0 +1,56 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/industry/edit.js"></script>
+
+<div class="mj-glM">
+    <span class="ms-close mj-close"></span>
+    <h5>创建分类</h5>
+    <form id="addForm">
+    <div class="mj-glC">
+        <div  class="mj-inp">
+            <input type="hidden" name="bzpic" class="bzpic" value="<?=$sale['tminfo']['embellish']?>" />
+            <label>分类标题：</label><input type="text" id="typeName" name="typeName"/>
+            </br>
+            <div class="bzform">
+            <label>分类icon：</label><img src="<?=$sale['tminfo']['embellish']?>" class="bzpic" style="width:30px;height:30px;">
+            <input type="file" id="bzfile" name="fileName" style="display: inline-block;"/>
+            </div>
+             &nbsp;&nbsp;&nbsp;&nbsp;
+            <span id="searchInfo"></span>
+            <div style="text-align:center">
+                <a class="mj-sBtn" id="addBtn" href="javascript:void(0);" style="margin:0 auto;" onclick="addindustry();" >创建分类</a></div>
+        </div>
+    </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".mj-glM").show();
+        $(".mj-close").on("click",function(){
+            parent.layer.closeAll();
+        });
+        $(".bzform").wrap("<form id='bzformupload' action='/industry/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#bzfile").on('change', function(){
+            $("#bzformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.bzpic').val(data.img);
+                        $('.bzpic').attr('src', data.img);
+                        //$('#imageurl').css('visibility', 'visible');
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
+    });
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

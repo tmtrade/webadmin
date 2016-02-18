@@ -1,0 +1,327 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/industry/edit.js"></script>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>站点管理</li>
+        <li>通栏行业菜单</li>
+    </ul>
+    <!-- <span style="float:right;margin-right:20px;color:red;">在售商标总数：<?=$total ?></span> -->
+</div>
+<div class="wrap">
+    <div class="wrap-content">
+        <p class="text-left" style="float:left;padding-top:20px;">
+            您可以在此为行业菜单设置分类、设置每个分类下的子菜单及广告等。
+            <!--共有 <b class="red"><?=$allTotal?></b> 条数据，当前筛选结果 <b class="blue"><?=$total?></b> 条数据-->
+        </p>
+
+        <div class="wrap-tittle">
+            <button class="btn btn-danger" onclick="add();" type="button">创建新分类</button>
+            <!--<button class="btn btn-danger" onclick="Import();" type="button">导入商品</button>
+            <button class="btn btn-info" onclick="download();" type="button" type="button">导出表格EXCEL</button>
+            <button type="button" class="btn btn-info" onclick="setMoreDown();">批量下架</button>
+            <button type="button" class="btn btn-info" onclick="delMoreSale();">批量删除</button>
+            <button class="btn btn-info" type="button" onclick="reloadList();">刷新</button>-->
+        </div>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                <tr class="active">
+                    <!--<th><input type="checkbox" id="chkAll"></th>-->
+                    <th>分类名称</th>
+                    <th>子分类</th>
+                    <th>包含广告条数</th>
+                    <th>操作/排序</th>
+                </tr>
+                </thead>
+                <tbody class="table-list">
+                <? foreach ($list as $k => $v) { ?>
+                <tr>
+                    <!--<td><input type="checkbox" name="chkId[]" class="chklist" value="<?=$v['id']?>"></td>
+                    -->
+                    <td>
+                        <?=$v['title']?>
+                    </td>
+                    <td>
+                        <?if($v['date1']==0){echo '-';}else{echo date("Y-m-d", $v['date1']);}?>
+                    </td>
+                    <td>
+                        <?if($v['date2']==0){echo '-';}else{echo date("Y-m-d", $v['date2']);}?>
+                    </td>
+                    <td>
+                        <span class="icon icon-editor">
+                            <a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>
+                        </span>
+                       <span class="icon icon-editor">
+                            <a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">删除</a>
+                        </span>
+                       <span>
+                            <a href="javascript:;" class="btn-info" onclick="setSort(1,<?=$v['sort']?>)">向下</a>
+                        </span>
+                       <span>
+                            <a href="javascript:;" class="btn-info" onclick="setSort(2,<?=$v['sort']?>)">向上</a>
+                        </span>
+                    </td>
+                </tr>
+                <? } ?>
+                </tbody>
+            </table>
+        </div>
+        <div id="page" align="center"><?=$pageBar?></div>
+    </div>
+</div>
+
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css"/>
+<style>
+    .check label {
+        width: 100px;
+        display: inline-block;
+        margin-bottom: 14px;
+    }
+
+    .check input {
+        margin: 0px;
+        vertical-align: top;
+    }
+</style>
+<div class="im-wrap" id="download" style="display:none;">
+    <div class="im-title borderBtmCd">
+        <em><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></em>
+
+        <h1>导出商品</h1>
+    </div>
+    <div class="loading borderBtmCd" style="height:70px;padding-top:25px;">
+        <em>当前共&nbsp;<?=$total?>&nbsp;条商品。如导出商品过多 ，请先通过筛选功能筛选后再进行导出。</em>
+    </div>
+    <br>
+
+    <p><em>请选择您需要导出的数据</em></p>
+    <br>
+
+    <div class="check borderBtmCd mb10">
+        <iframe name="excelpost" style="display:none;"></iframe>
+        <form name="saleSearchForm" action="/internal/excel/" method="post" id="excelpost" target="excelpost">
+            <?php
+		if($s){
+			foreach($s as $k => $v){
+            if($k != 'page'){
+            echo "<input type='hidden' checked name='".$k."' value='".$v."'/> ";
+            }
+            }
+            }
+            ?>
+            <input type="hidden" name="excelTable" id="excelTable" value="">
+        </form>
+        <label><input type="checkbox" checked class="excelTable" value="1">ID</label>
+        <label><input type="checkbox" checked class="excelTable" value="2" disabled>商标号</label>
+        <label><input type="checkbox" checked class="excelTable" value="3">销售状态</label>
+        <label><input type="checkbox" checked class="excelTable" value="4">出售时间</label>
+        <label><input type="checkbox" checked class="excelTable" value="5">商标名称</label>
+        <label><input type="checkbox" checked class="excelTable" value="6">交易类型</label>
+        <label><input type="checkbox" checked class="excelTable" value="7">类别</label>
+        <label><input type="checkbox" checked class="excelTable" value="8">顾问/部门</label>
+        <label><input type="checkbox" checked class="excelTable" value="9">来源渠道</label>
+        <label><input type="checkbox" checked class="excelTable" value="10">联系方式</label>
+        <label><input type="checkbox" checked class="excelTable" value="11">底价</label>
+        <label><input type="checkbox" checked class="excelTable" value="12">售价</label>
+    </div>
+
+    <p class="">
+        <a href="" class="nexta">确定</a>
+        <a href="" class="cancela">取消</a>
+    </p>
+</div>
+
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/internal/updown.js"></script>
+
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $(".mj-screening .btn").click(function () {
+            $(".mj-ddList").toggle();
+        });
+        $(".mj-sBtn").click(function () {
+            $("#saleSearchForm").submit();
+        });
+        //多选处理
+        $('input[type="checkbox"]').click(function () {
+            var strClass = '';
+            var id = $(this).attr('tname');
+            $('.' + id).each(function () {
+                if ($(this).prop('checked')) {
+                    strClass += "," + $(this).val();
+                }
+            })
+            strClass = strClass ? strClass.substr(1) : '';
+            $('#' + id).val(strClass);
+        });
+        $(".table tr td.showMore").hover(function () {
+            $(this).parent('tr').find('.more > ul').show();
+        }, function () {
+            $(this).parent('tr').find('.more > ul').hide();
+        });
+
+        $('#chkAll').click(function () {
+            $('.chklist').prop("checked", this.checked);
+        });
+
+        $(".im-title-span").on("click", function () {
+            layer.closeAll('im-wrap');
+        });
+
+        //提交导出
+        $('.nexta').click(function () {
+
+            var str = '';
+            $('.excelTable').each(function () {
+                if ($(this).prop('checked')) {
+                    str += "," + $(this).val();
+                }
+            })
+            str = str ? str.substr(1) : '';
+            $('#excelTable').val(str);
+            $('#excelpost').submit();
+            return false;
+        })
+    });
+
+    //批量下架
+    function setMoreDown() {
+        var chkId = getChecked();
+        if (chkId == '') {
+            layer.msg('请选择至少一个商品', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        layer.prompt({
+            formType: 2,
+            value: '',
+            maxlength: 100,
+            title: '请输入下架原因'
+        }, function (value, index, elem) {
+            if ($.trim(value) == '') {
+                layer.tips('请输入下架原因', elem);
+                return false;
+            } else {
+                $.ajax({
+                    type: 'post',
+                    url: '/internal/doDown/',
+                    data: {'id': chkId, 'reason': value},
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg('操作成功！', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            layer.msg('操作失败！', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            });
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg('操作失败，请稍后重试。', {
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function delMoreSale() {
+        var chkId = getChecked();
+        if (chkId == '') {
+            layer.msg('请选择至少一个商品', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        var url = '?id=' + chkId;
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['520px', '400px'],
+
+            content: '/internal/delete/' + url,
+        });
+        return false;
+    }
+
+    function getChecked() {
+        var strId = '';
+        $('.chklist').each(function () {
+            if ($(this).prop('checked')) {
+                strId += "," + $(this).val();
+            }
+        });
+        strId = strId ? strId.substr(1) : '';
+        return strId;
+    }
+
+    function add() {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['560px', '350px'],
+            content: '/industry/create/'
+        });
+    }
+
+    //批量导入商标
+    function Import() {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['650px', '420px'],
+            content: '/internal/import/'
+        });
+    }
+
+    function reloadList() {
+        window.location.reload();
+    }
+
+    //弹出群组数据
+    $('#groupes').click(function () {
+        var classes = $('#tmClass').val();
+        //var oldclasses = $('#oldclasses').val();
+        //if(oldclasses != classes){
+        //	$(this).val('');
+        //}
+        if (classes) {
+            //iframe层-父子操作
+            layer.open({
+                title: '选择群组',
+                type: 2,
+                area: ['570px', '420px'],
+                fix: false, //不固定
+                maxmin: true,
+                content: '/internal/groups/?class=' + classes
+            });
+        }
+        return false;
+    })
+
+    //导出弹出
+    function download() {
+        layer.open({
+            type: 1,
+            title: false,
+            closeBtn: false,
+            area: ['630px', '360px'],
+            content: $('#download')
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

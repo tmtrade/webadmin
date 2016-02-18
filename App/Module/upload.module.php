@@ -56,6 +56,33 @@ class UploadModule extends AppModule
     }
 	
 	
+	 /**
+	 * 图片上传 
+	 *
+	 * @return
+	 *
+	 * @author   
+	 * @since     
+	 * @copyright
+	 */
+    public function uploadAdPic($name, $size=10000000, $type='all')
+    {
+        if ($type == 'img') $this->type = 'jpeg|jpg|gif|png|bmp';
+    	$filename    = $_FILES[$name]['name'];
+        $up          = $this->com('upload');
+        $up->maxSize = $size;
+        $up->path    = './'.StaticDir.$this->path;//包装图片
+        $up->upType  = $this->type;
+        $up->upload($_FILES[$name]);
+        if ( empty($up->msg) ){
+            $up->_imgUrl_ = StaticDir.$this->path.'/'.$up->upFile;
+        }else{
+            $up->_imgUrl_ = '';
+        }        
+        return $up;
+    }
+	
+	
 	/**
 	 * excel上传 
 	 *

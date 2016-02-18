@@ -1,0 +1,107 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css" />
+	
+<div class="im-wrap" id="loadForm">
+	<div class="im-title borderBtmCd">
+		<em><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></em>
+		<h1>编辑广告图 </h1>
+	</div>
+	<form id="modulepic" >
+	<input type="hidden" name="moduleId" value="<?=$moduleId?>">
+    <input type="hidden" name="id" id="id" value="<?=$id?>">
+	<ul class="confit-list borderBtmCd">
+		<li>
+			<label>
+				<input type="hidden" name="pic" id="pic"  value="<?=$pic['pic']?>" />
+				<p><span>推广链接标题</span></p>
+				<p><img src="<?if($pic['pic']){echo $pic['pic'];}else{echo StaticDir."1.2/images/pic.png";}?>" id="showpic" width="150px" height="65px" /></p>
+				<p>
+					<div class="tjform">
+                        <input type="file" id="tjfile" name="fileName" style="display: inline-block;"/>
+                    </div>
+					<em  class="cFF6701" id="tipshow">注：图片建议尺寸为20X20，文件最大不超过50KB，当前支持PG,PNG,BMP,GIF格式文件</em>
+				</p>
+			</label>
+		</li>
+		<li>
+			<label>
+				<p><span>图片链接</span></p>
+				<p><input type="text" name="link" id="link" maxlength="100" value="<?=$pic['link']?>" /></p>
+				<p><em  class="cFF6701" >请输入该图片链接，未输入链接则广告不可点击。</em></p>
+			</label>
+		</li>
+	</ul>
+	<a href="javascript:void(0)" class="nexta" id="nextpt">确定创建</a><a href="javascript:void(0)" class="cancela">取消</a>
+	</form>
+</div>	
+
+<script type="text/javascript">
+    $(function(){
+        $(".im-title-span,.cancela,.closed").on("click",function(){
+            parent.layer.closeAll();
+        });
+		
+		$(".tjform").wrap("<form id='tjformupload' action='/module/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#tjfile").on('change', function(){
+            $("#tjformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('#pic').val(data.img);
+                        $('#showpic').attr('src', data.img);
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
+		
+		
+    });
+		
+	
+	$('#nextpt').click(function(){
+		opContact();
+	})
+	
+	function opContact()
+    {
+		if($('#title').val() == ''){
+			layer.msg('您还未上传图片', {
+                 time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+			return false;
+		}
+        var data = $("#modulepic").serialize();
+        $.ajax({
+            type : 'post',
+            url  : '/module/setPic/',
+            data : data,
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        parent.window.location.reload();
+                    });
+                }else{
+                    layer.msg(data.msg, {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

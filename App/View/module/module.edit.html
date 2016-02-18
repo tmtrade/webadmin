@@ -1,0 +1,157 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+<script charset="utf-8" src="<?=StaticDir?>/editor/kindeditor.js"></script>
+<script charset="utf-8" src="<?=StaticDir?>/editor/lang/zh_CN.js"></script>
+<script>
+        KindEditor.ready(function(K) {
+            window.editor = K.create('#intro', {
+                afterBlur: function () { this.sync(); }
+            });
+        });
+		
+</script>
+<div class="wrap">
+<input type="hidden" name="moduleId" id="moduleId" value="<?=$module['id']?>">
+    <div class="wrap-top">
+        <h4>首页模块设置 》 编辑</h4><span></span>
+    </div>
+	<p class="text-left" style="margin-top:20px;padding:0 5px 0 5px;background-color:#FFFF99;border:1px solid #dadada;">您可以在此管理首页推荐的商品模块，并为每个模块添加分类和商品。建议每个模块至少有两个分类。</p>
+	<div class="mj-ztBar f-clearfix">
+        <span class="mj-ztBr">
+            <a class="btn btn-info" href="<?=$referr?>">返回</a>
+        </span>
+		<div>
+			<ul>
+				<li>
+					<label>模块标题：</label>
+					<input type="text" name="name" id="modeluname" value="<?=$module['name']?>" />
+					<a href="javascript:void(0);"  class="btn btn-default" >确定</a>
+				</li>
+			</ul>
+		<div>
+		<hr>
+		<div class="mj-sellT">
+			<p>模块分类管理</p>
+			<table>
+				<tbody>
+				<tr>
+					<td>模块分类名称</td>
+					<td>包含商品</td>
+					<td>操作</td>
+				</tr>
+				<?foreach ($moduleClass['rows'] as $ky => $vl) { ?>
+				<tr>
+					<td><?=$vl['name']?></td>
+					<td><?=$vl['saleNum']?></td>
+					<td>
+					<?if ( $vl['isVerify'] == 1) {?>
+						<a href="javascript:void(0);" onclick="delContact(<?=$sale['id']?>, <?=$vl['id']?>, <?=count($sale['contact'])?>);">删除</a>
+						<a href="javascript:void(0);" onclick="setContact(<?=$sale['id']?>, <?=$vl['id']?>);">编辑</a>
+						<!-- <a href="">生成报价</a> -->
+					<?}else{?>
+						<a href="javascript:void(0);" onclick="setVerify(<?=$sale['id']?>, <?=$vl['id']?>);">通过</a>
+						<a href="javascript:void(0);" onclick="delVerify(<?=$sale['id']?>, <?=$vl['id']?>, <?=count($sale['contact'])?>);">驳回</a>
+					<?}?>
+					</td>
+				</tr>
+				<?}?>
+				</tbody>
+			</table>
+		</div>
+		<div class="mj-deiBlist">
+			<div class="mj-deiBtns">
+				<a href="javascript:void(0);" id="mj-deib">新增分类</a>
+			</div>
+		</div>
+    
+		<hr>
+		<div class="mj-sellT">
+			<p>广告图管理</p>
+			<table>
+				<tbody>
+				<tr>
+					<td>广告图名称</td>
+					<td>链接</td>
+					<td>操作</td>
+				</tr>
+				<?foreach ($moduleAds['rows'] as $ky => $vl) { ?>
+				<tr>
+					<td><img src="<?=$vl['pic']?>" width="100px" height="50px" /></td>
+					<td><?=$vl['link']?></td>
+					<td>
+						<a href="javascript:void(0);" onclick="delPic(<?=$module['id']?>, <?=$vl['id']?>)">删除</a>
+						<a href="javascript:void(0);" onclick="setPic(<?=$module['id']?>, <?=$vl['id']?>);">编辑</a> |
+						<a href="javascript:void(0);" onclick="setVerify(<?=$sale['id']?>, <?=$vl['id']?>);">向下</a>
+						<a href="javascript:void(0);" onclick="delVerify(<?=$sale['id']?>, <?=$vl['id']?>, <?=count($sale['contact'])?>);">向上</a>
+					</td>
+				</tr>
+				<?}?>
+				</tbody>
+			</table>
+		</div>
+		<div class="mj-deiBlist">
+			<div class="mj-deiBtns">
+				<a href="javascript:void(0);" id="addpic">新增广告图</a>
+			</div>
+		</div>
+    
+		<hr>
+		<div class="mj-sellT">
+			<p>推广链接管理</p>
+			<table>
+				<tbody>
+				<tr>
+					<td>推广链接名称</td>
+					<td>链接</td>
+					<td>是否着重显示</td>
+					<td>操作</td>
+				</tr>
+				<?foreach ($moduleLink['rows'] as $ky => $vl) { ?>
+				<tr>
+					<td><?=$vl['title']?></td>
+					<td><?=$vl['link']?></td>
+					<td><?if($vl['show'] == 0){echo "普通";}elseif($vl['show'] == 1){echo "红";}elseif($vl['show'] == 2){echo "蓝";}elseif($vl['show'] == 3){echo "黄";}?></td>
+					<td>
+						<a href="javascript:void(0);" onclick="delLink(<?=$module['id']?>, <?=$vl['id']?>);">删除</a>
+						<a href="javascript:void(0);" onclick="setLink(<?=$module['id']?>, <?=$vl['id']?>);">编辑</a> |
+						<a href="javascript:void(0);" onclick="setVerify(<?=$sale['id']?>, <?=$vl['id']?>);">向下</a>
+						<a href="javascript:void(0);" onclick="delVerify(<?=$sale['id']?>, <?=$vl['id']?>, <?=count($sale['contact'])?>);">向上</a>
+					</td>
+				</tr>
+				<?}?>
+				</tbody>
+			</table>
+		</div>
+		<div class="mj-deiBlist">
+			<div class="mj-deiBtns">
+				<?if($moduleLink['total'] < 8 ){?>
+				<a href="javascript:void(0);" id="addlink">新增推广链接</a>
+				<?}?>
+			</div>
+		</div>
+	</div>
+
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/module.js"></script>
+
+<script type="text/javascript">
+    $(function(){
+		var moduleId = $('#moduleId').val();
+		/**新增推广链接**/
+		$('#addlink').click(function(){
+			setLink(moduleId,0);
+		})	
+    })
+	
+	
+	$(function(){
+		var moduleId = $('#moduleId').val();
+		/**新增广告图**/
+		$('#addpic').click(function(){
+			setPic(moduleId,0);
+		})	
+    })
+
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

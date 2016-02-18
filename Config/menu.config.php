@@ -28,40 +28,30 @@ return $menu = array(
 		'ico'   => 'images/menu2.png',
 		'child'	=> array(
 			'1' => array(
-				'title' => '首页基本设置',
-				'url'   => '/phone/index/',
-				'auth'	=> '4',
-			),
-			'2' => array(
-				'title' => '首页模块设置',
-				'url'   => '/module/index/',
-				'auth'	=> '5',
-			),
-			'3' => array(
 				'title' => '联系电话管理',
 				'url'   => '/phone/index/',
 				'auth'	=> '4',
 			),
-			'4' => array(
+			'2' => array(
 				'title' => '黑名单列表',
-				'url'   => '/blacklist/index/',
+				'url'   => '/module/index/',
 				'auth'	=> '5',
 			),
-					'3' => array(
-						'title' => '首页基本配置',
-						'url'   => '/basic/index/',
-						'auth'	=> '6',
-					),
-					'4' => array(
-						'title' => '首页模块设置',
-						'url'   => '/module/index/',
-						'auth'	=> '7',
-					),
-					'5' => array(
-						'title' => '通栏行业菜单',
-						'url'   => '/industry/index/',
-						'auth'	=> '8',
-					),
+			'3' => array(
+				'title' => '首页基本配置',
+				'url'   => '/basic/index/',
+				'auth'	=> '6',
+			),
+			'4' => array(
+				'title' => '首页模块设置',
+				'url'   => '/module/index/',
+				'auth'	=> '7',
+			),
+			'5' => array(
+				'title' => '通栏行业菜单',
+				'url'   => '/industry/index/',
+				'auth'	=> '8',
+			),
 		),
 	),
 	// '3' => array(

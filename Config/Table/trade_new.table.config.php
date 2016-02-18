@@ -104,4 +104,10 @@ $tbl['moduleLink'] = array(
 	'dbId'		=> $dbId, 
 	'configFile'=> $configFile,
 );
+$tbl['indexBasic'] = array(
+    'name'      => $prefix.'index_basic',
+    'dbId'      => $dbId, 
+    'configFile'=> $configFile,
+);
+
 ?>

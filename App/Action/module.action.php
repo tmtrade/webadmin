@@ -37,7 +37,20 @@ class moduleAction extends AppAction
 		$this->set('total', $total);
         $this->set("pageBar",$pageBar);
 		$this->set('s', $params);
-		$this->set('saleList', $result);
+		$this->set('list', $res['rows']);
+		$this->display();
+	}
+	
+	/**
+	 * 添加首页模块设置
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-17
+	 * @access	public
+	 * @return	void
+	 */
+	public function add()
+	{	
 		$this->display();
 	}
 }

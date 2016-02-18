@@ -99,5 +99,9 @@ $tbl['modulePic'] = array(
 	'dbId'		=> $dbId, 
 	'configFile'=> $configFile,
 );
-
+$tbl['moduleLink'] = array(
+	'name'		=> $prefix.'module_link',
+	'dbId'		=> $dbId, 
+	'configFile'=> $configFile,
+);
 ?>

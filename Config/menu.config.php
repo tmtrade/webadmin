@@ -34,7 +34,7 @@ return $menu = array(
 			),
 			'2' => array(
 				'title' => '黑名单列表',
-				'url'   => '/module/index/',
+				'url'   => '/blacklist/index/',
 				'auth'	=> '5',
 			),
 			'3' => array(

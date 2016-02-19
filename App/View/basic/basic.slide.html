@@ -11,14 +11,16 @@
 
 <!--出售信息弹层-->
 <div class="mj-infoM" style="width:99%">
-<form name="setWord" id="setWord" >
+<form name="setSlide" id="setSlide" >
     <input type="hidden" name="id" value="<?=$id?>" />
+    <input type="hidden" name="pic" class="bzpic" value="<?=$info['pic']?>" />
+    <div class="bzform">
+        <img id="bzpic" src="<?=$info['pic']?>" onerror="this.src='/Static/1.2/images/u279.png'" class="info-pic" >
+        <input type="file" id="bzfile" name="fileName" style="display: inline-block;"/>
+    </div> 
     
-    <label>热门交易标题：</label>
-    <input type="input" class="form-control" maxlength="8"  name="title" value="<?=$info['desc']?>">
-    
-    <div class="alert alert-warning"style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
-    请输入交易标题，最多不可超过8个中文字符。
+    <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
+    广告图片建议尺寸为 ( xxx ) x ( xxx )，文件最大不超过500kb，当前支持jpg,bmp,png格式文件
     </div>
     <label>图片链接：</label>
     <input type="input" class="form-control" name="link" value="<?=$info['link']?>">
@@ -26,12 +28,6 @@
     <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
     请输入该广告链接，未输入链接则该图片不可点击。
     </div>
-    <label>是否着重展示:</label>
-    <select name="model">
-    <? foreach ($INDEX_WORD_STRESS as $k => $v) { ?>
-        <option value="<?=$k?>" <? if($info['other']==$k){echo 'selected';}?> ><?=$v?></option>
-    <? } ?>
-    </select>
     <div style="bottom:10px;position: fixed;">
         <a href="javascript:void(0);" class="mj-liBtns" onclick="opContact();">确定</a>
         <a href="javascript:void(0);" class="mj-liBtns mj-abgcg" onclick="closeAll();">取消</a>
@@ -70,10 +66,10 @@
     }
     function opContact()
     {
-        var data = $("#setWord").serialize();
+        var data = $("#setSlide").serialize();
         $.ajax({
             type : 'post',
-            url  : '/basic/setWord/',
+            url  : '/basic/setSlide/',
             data : data,
             dataType : 'json',
             success : function (data){

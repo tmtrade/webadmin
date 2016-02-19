@@ -14,6 +14,17 @@ class BasicModule extends AppModule
         'basic'     => 'indexBasic',
     );
 
+    //统计某个设置数据条数
+    public function countBasic($type, $isUse=0)
+    {
+        if ( empty($type) ) return false;
+
+        $r['eq'] = array('type'=>$type);
+        if ( !empty($isUse) ){
+            $r['eq']['isUse'] = $isUse;
+        }
+        return $this->import('basic')->count($r);
+    }
     //获取某个设置
     public function getBasic($id)
     {
@@ -41,7 +52,7 @@ class BasicModule extends AppModule
         if ( empty($data) || !is_array($data) ) return $data;
         $list = array();
         foreach ($data as $k => $v) {
-            if ( $v['type'] ) $list[$v['type']][$v['order']] = $v;
+            if ( $v['type'] ) $list[$v['type']][$v['sort']] = $v;
             ksort($list[$v['type']]);
         }
         return $list;
@@ -51,11 +62,11 @@ class BasicModule extends AppModule
     public function getLastOrder($type)
     {
         $r['eq']    = array('type'=>$type);
-        $r['order'] = array('order'=>'desc');
-        $r['col']   = array('order');
+        $r['order'] = array('sort'=>'desc');
+        $r['col']   = array('sort');
         
         $res    = $this->import('basic')->find($r);
-        $order  = empty($res) ? 1 : $res['order']; 
+        $order  = empty($res) ? 1 : $res['sort']; 
         return $order;
     }
 
@@ -96,26 +107,26 @@ class BasicModule extends AppModule
         if ( empty($id) ) return false;
 
         $rl['eq']   = array('id'=>$id);
-        $rl['col']  = array('order');
+        $rl['col']  = array('sort');
         $res = $this->import('basic')->find($rl);
         if ( empty($res) ) return false;
 
-        $order = $res['order'];
+        $order = $res['sort'];
 
         $r['eq'] = array(
             'type' => $type,
             );
-        $r['raw']   = $updown == 1 ? " `order` > $order " : " `order` < $order ";
+        $r['raw']   = $updown == 1 ? " `sort` > $order " : " `sort` < $order ";
         $ord        = $updown == 1 ? 'asc' : 'desc';
-        $r['order'] = array('order'=>$ord);
+        $r['order'] = array('sort'=>$ord);
         $res = $this->import('basic')->find($r);
         if ( empty($res) ) return false;
 
-        $changeOrder    = $res['order'];
+        $changeOrder    = $res['sort'];
         $changeId       = $res['id'];
 
-        $update1    = array('order'=>$changeOrder);//需要交换的
-        $update2    = array('order'=>$order);//被交换的
+        $update1    = array('sort'=>$changeOrder);//需要交换的
+        $update2    = array('sort'=>$order);//被交换的
 
         $this->begin('indexBasic');
 

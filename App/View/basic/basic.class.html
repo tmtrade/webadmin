@@ -23,9 +23,10 @@
     <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
     广告图片建议尺寸为 ( xxx ) x ( xxx )，文件最大不超过500kb，当前支持jpg,bmp,png格式文件
     </div>
+    <label>分类名称：</label>
+    <input type="input" class="form-control" name="name" value="<?=$info['link']?>"  style="margin-bottom:5px;">
     <label>包含的分类：</label>
-
-    <div style="margin-bottom:10px;margin-top:10px;">
+    <div style="margin-bottom:10px;margin-top:5px;">
         <? foreach (range(1,45) as $k => $v) { ?>
             <span style="display:inline-block;">
             <input type="checkbox" class="allClass" <?if(in_array($v, $allClass)){echo 'checked';}?> tname="allClass" value="<?=$v?>">&nbsp;<?=$v?>类

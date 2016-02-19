@@ -286,6 +286,7 @@ class BasicAction extends AppAction
 	{
 		$pic 	= $this->input('pic', 'string', '');
 		$class 	= $this->input('class', 'string', '');
+        $name   = $this->input('name', 'string', '');
 		$id 	= $this->input('id', 'int', '');
 
         if ( empty($id) ){
@@ -297,10 +298,14 @@ class BasicAction extends AppAction
         if ( empty($class) ){
             $this->returnAjax(array('code'=>2,'msg'=>'请选择至少一个分类'));
         }
+        if ( empty($name) ){
+            $this->returnAjax(array('code'=>2,'msg'=>'请填写分类名称'));
+        }
 
 		$data = array(
 			'type'   	=> 4,
 			'pic'		=> $pic,
+            'link'      => $name,
 			'desc'  	=> $class,
 		);
         $res = $this->load('basic')->setBasic($data, $id);	

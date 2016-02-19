@@ -148,7 +148,6 @@
 
     <div class="wrap-top">
         <h4>滑动广告设置<img class="info-icon" src="<?=StaticDir?>1.2/images/u253.gif"></h4><span></span>
-        <img class="info-show" src="<?=StaticDir?>1.2/images/u276.png" />
     </div>
     
     <div class="wrap-table">
@@ -194,7 +193,6 @@
 
     <div class="wrap-top">
         <h4>推荐分类设置<img class="info-icon" src="<?=StaticDir?>1.2/images/u253.gif"></h4><span></span>
-        <img class="info-show" src="<?=StaticDir?>1.2/images/u276.png" />
     </div>
 
     <div class="wrap-table">
@@ -207,46 +205,25 @@
                 </tr>
             </thead>
             <tbody class="table-list">
+            <? foreach ($list[4] as $k => $v) { ?>
                 <tr>
-                    <td style="vertical-align:middle">衣服1</td>
-                    <td style="vertical-align:middle">10</td>
+                    <td style="vertical-align:middle"><?=$v['link']?></td>
+                    <td style="vertical-align:middle"><?$c=array_filter(explode(',', $v['desc']));echo count($c);?></td>
                     <td style="vertical-align:middle">
-                        <span class="icon icon-delete">
-                            <a href="javascript:;" class="btn-warning">删除</a>
-                        </span>
                         <span class="icon icon-editor">
-                        <a href="/internal/edit/?id=76757" class="btn-info">编辑</a>
+                        <a href="javascript:void(0);" onclick="classEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
                         </span>
                         &nbsp;&nbsp;
-                        <span>
+                        <span onclick="orderBasic(<?=$v['id']?>, 1, 4)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                         &nbsp;
-                        <span class="img-flip">
+                        <span class="img-flip"  onclick="orderBasic(<?=$v['id']?>, 2, 4)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                     </td>
                 </tr>
-                <tr>
-                    <td style="vertical-align:middle">衣服2</td>
-                    <td style="vertical-align:middle">10</td>
-                    <td style="vertical-align:middle">
-                        <span class="icon icon-delete">
-                            <a href="javascript:;" class="btn-warning">删除</a>
-                        </span>
-                        <span class="icon icon-editor">
-                        <a href="/internal/edit/?id=76757" class="btn-info">编辑</a>
-                        </span>
-                        &nbsp;&nbsp;
-                        <span>
-                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
-                        </span>
-                        &nbsp;
-                        <span class="img-flip">
-                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
-                        </span>
-                    </td>
-                </tr>
+            <? } ?>
             </tbody>
         </table>
     </div>
@@ -368,6 +345,18 @@
         });
     }
 
+    function classEdit(id)
+    {
+        if ( id == '' || id == 0 ) return false;
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: '修改推荐分类',
+            area: ['650px', '450px'],
+
+            content: '/basic/editClass/?id='+id
+        });
+    }
     function cancel(id)
     {
         if ( id == '' || id == 0 ) return false;

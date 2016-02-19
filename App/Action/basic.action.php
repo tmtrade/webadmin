@@ -254,18 +254,6 @@ class BasicAction extends AppAction
         $this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
 	}
 
-
-	/**
-	 * 创建推荐分类 
-	 * 
-	 * @author	Xuni
-	 * @since	2016-02-19
-	 */
-	public function addClass()
-	{
-		$this->display('basic/basic.word.html');
-	}
-
 	/**
 	 * 编辑推荐分类 
 	 * 
@@ -280,11 +268,12 @@ class BasicAction extends AppAction
 			MessageBox::halt('参数错误');
 		}
 
-		$info = $this->load('basic')->getBasic($id);
-
+        $info   = $this->load('basic')->getBasic($id);
+        $class  = array_filter( explode(',', $info['desc']) );
+        $this->set('allClass', $class);
 		$this->set('id', $id);
 		$this->set('info', $info);
-		$this->display('basic/basic.word.html');
+		$this->display('basic/basic.class.html');
 	}
 
 	/**
@@ -296,31 +285,25 @@ class BasicAction extends AppAction
 	public function setClass()
 	{
 		$pic 	= $this->input('pic', 'string', '');
-		$link 	= $this->input('link', 'string', '');
-		$model 	= $this->input('model', 'int', '0');
+		$class 	= $this->input('class', 'string', '');
 		$id 	= $this->input('id', 'int', '');
 
-		if ( empty($title) ){
+        if ( empty($id) ){
+            $this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+        }
+		if ( empty($pic) ){
 			$this->returnAjax(array('code'=>2,'msg'=>'请上传图片'));
 		}
-		if ( $id ){
-			$data = array(
-				'type'   	=> 3,
-				'pic'		=> $pic,
-				'link'  	=> $link,
-			);
-	        $res = $this->load('basic')->setBasic($data, $id);
-		}else{
-			$order = $this->load('basic')->getLastOrder(3);
-			$order = $order + rand(2,5);
-			$data = array(
-				'type'    	=> 3,
-				'pic'    	=> $pic,
-				'link'   	=> $link,
-				'sort'    	=> $order,
-			);
-	        $res = $this->load('basic')->addBasic($data);
-		}
+        if ( empty($class) ){
+            $this->returnAjax(array('code'=>2,'msg'=>'请选择至少一个分类'));
+        }
+
+		$data = array(
+			'type'   	=> 4,
+			'pic'		=> $pic,
+			'desc'  	=> $class,
+		);
+        $res = $this->load('basic')->setBasic($data, $id);	
         if ( $res ){
             $this->returnAjax(array('code'=>1));
         }

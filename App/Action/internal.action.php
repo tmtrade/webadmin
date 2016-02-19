@@ -356,27 +356,6 @@ class internalAction extends AppAction
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
 	}
 
-	//图片上传
-	public function ajaxUploadPic()
-    {
-        $msg = array(
-            'code'  => 0,
-            'msg'   => '',
-            'img'   => '',
-            );
-        if ( empty($_FILES) || empty($_FILES['fileName']) ) {
-            $msg['msg'] = '请上传图片';
-            $this->returnAjax($msg);
-        }
-        $obj = $this->load('upload')->upload('fileName', 'img');
-        if ( $obj->_imgUrl_ ){
-            $msg['code']    = 1;
-            $msg['img']     = $obj->_imgUrl_;
-        }else{
-            $msg['msg']     = $obj->msg;
-        }
-        $this->returnAjax($msg);
-    }
 
     //检查商标是否可出售，可直接生成默认商品
     public function checkNumber()

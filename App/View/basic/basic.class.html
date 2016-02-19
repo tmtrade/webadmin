@@ -11,27 +11,27 @@
 
 <!--出售信息弹层-->
 <div class="mj-infoM" style="width:99%">
-<form name="setWord" id="setWord" >
+<form name="setClass" id="setClass" >
     <input type="hidden" name="id" value="<?=$id?>" />
+    <input type="hidden" name="pic" class="bzpic" value="<?=$info['pic']?>" />
+    <input type="hidden" name="class" id="allClass" value="<?=$info['desc']?>" />
+    <div class="bzform">
+        <img id="bzpic" src="<?=$info['pic']?>" onerror="this.src='/Static/1.2/images/u279.png'" class="info-pic" >
+        <input type="file" id="bzfile" name="fileName" style="display: inline-block;"/>
+    </div> 
     
-    <label>热门交易标题：</label>
-    <input type="input" class="form-control" maxlength="8"  name="title" value="<?=$info['desc']?>">
-    
-    <div class="alert alert-warning"style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
-    请输入交易标题，最多不可超过8个中文字符。
-    </div>
-    <label>图片链接：</label>
-    <input type="input" class="form-control" name="link" value="<?=$info['link']?>">
-
     <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
-    请输入该广告链接，未输入链接则该图片不可点击。
+    广告图片建议尺寸为 ( xxx ) x ( xxx )，文件最大不超过500kb，当前支持jpg,bmp,png格式文件
     </div>
-    <label>是否着重展示:</label>
-    <select name="model">
-    <? foreach ($INDEX_WORD_STRESS as $k => $v) { ?>
-        <option value="<?=$k?>" <? if($info['other']==$k){echo 'selected';}?> ><?=$v?></option>
-    <? } ?>
-    </select>
+    <label>包含的分类：</label>
+
+    <div style="margin-bottom:10px;margin-top:10px;">
+        <? foreach (range(1,45) as $k => $v) { ?>
+            <span style="display:inline-block;">
+            <input type="checkbox" class="allClass" <?if(in_array($v, $allClass)){echo 'checked';}?> tname="allClass" value="<?=$v?>">&nbsp;<?=$v?>类
+            </span>&nbsp;&nbsp;
+        <? } ?>
+    </div>
     <div style="bottom:10px;position: fixed;">
         <a href="javascript:void(0);" class="mj-liBtns" onclick="opContact();">确定</a>
         <a href="javascript:void(0);" class="mj-liBtns mj-abgcg" onclick="closeAll();">取消</a>
@@ -43,6 +43,19 @@
 <script type="text/javascript">
     $(function(){
         $(".mj-infoM").show();
+
+        //多选处理
+        $('input[type="checkbox"]').click(function(){
+            var strClass = '';
+            var id = $(this).attr('tname');
+            $('.'+id).each(function(){
+                if($(this).prop('checked')){
+                    strClass += ","+$(this).val();
+                }
+            })
+            strClass = strClass ? strClass.substr(1) : '';
+            $('#'+id).val(strClass);
+        });
 
         $(".bzform").wrap("<form id='bzformupload' action='/basic/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
         $("#bzfile").on('change', function(){
@@ -70,10 +83,10 @@
     }
     function opContact()
     {
-        var data = $("#setWord").serialize();
+        var data = $("#setClass").serialize();
         $.ajax({
             type : 'post',
-            url  : '/basic/setWord/',
+            url  : '/basic/setClass/',
             data : data,
             dataType : 'json',
             success : function (data){

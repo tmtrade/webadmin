@@ -112,5 +112,27 @@ abstract class AppAction extends Action
 		return true;
 	}
 
+	//图片上传
+	public function ajaxUploadPic()
+    {
+        $msg = array(
+            'code'  => 0,
+            'msg'   => '',
+            'img'   => '',
+            );
+        if ( empty($_FILES) || empty($_FILES['fileName']) ) {
+            $msg['msg'] = '请上传图片';
+            $this->returnAjax($msg);
+        }
+        $obj = $this->load('upload')->upload('fileName', 'img');
+        if ( $obj->_imgUrl_ ){
+            $msg['code']    = 1;
+            $msg['img']     = $obj->_imgUrl_;
+        }else{
+            $msg['msg']     = $obj->msg;
+        }
+        $this->returnAjax($msg);
+    }
+
 }
 ?>

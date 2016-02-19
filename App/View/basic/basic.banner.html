@@ -45,7 +45,7 @@
     $(function(){
         $(".mj-infoM").show();
 
-        $(".bzform").wrap("<form id='bzformupload' action='/internal/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $(".bzform").wrap("<form id='bzformupload' action='/basic/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
         $("#bzfile").on('change', function(){
             $("#bzformupload").ajaxSubmit({
                 dataType:  'json',

@@ -47,7 +47,7 @@
                             </select>
                         </td>
                         <td>
-                            <a href="javascript:;">删除</a>
+                            <a href="javascript:;" onclick="delthis(this)">删除</a>
                             <img class="downbtn" src="/Static/1.2/images/u85.gif" onclick="down()">
                             <img class="upbtn" style="transform: rotate(180deg);" onclick="up()" src="/Static/1.2/images/u85.gif">
                         </td>
@@ -70,7 +70,7 @@
                             </select>
                         </td>
                         <td>
-                            <a href="javascript:;" onclick="delthis()">删除</a>
+                            <a href="javascript:;" onclick="delthis(this)">删除</a>
                             <img class="downbtn" src="/Static/1.2/images/u85.gif" onclick="down()">
                             <img class="upbtn" style="transform: rotate(180deg);" onclick="up()" src="/Static/1.2/images/u85.gif">
                         </td>
@@ -121,11 +121,8 @@
         });
     });
     function addlist(){
-        var list = '<tr><td><input type="text" name="tname[]"></td><td><input type="text" name="tlink[]"></td><td><select name="isopen[]"><option value="1">新窗口</option><option value="2">跳转</option></select> </td><td><select name="isshow[]"><option value="0">普通</option><option value="1">红</option> <option value="2">绿</option></select></td> <td><a href="javascript:;" onclick="delthis()">删除</a><img class="downbtn" src="/Static/1.2/images/u85.gif"><img class="upbtn" style="transform: rotate(180deg);" src="/Static/1.2/images/u85.gif"></td></tr>'
+        var list = '<tr><td><input type="text" name="tname[]"></td><td><input type="text" name="tlink[]"></td><td><select name="isopen[]"><option value="1">新窗口</option><option value="2">跳转</option></select> </td><td><select name="isshow[]"><option value="0">普通</option><option value="1">红</option> <option value="2">绿</option></select></td> <td><a href="javascript:;" onclick="delthis(this)">删除</a><img class="downbtn" src="/Static/1.2/images/u85.gif"><img class="upbtn" style="transform: rotate(180deg);" src="/Static/1.2/images/u85.gif"></td></tr>'
         $("#newTable").append(list);
-    }
-    function delthis(){
-
     }
     function cel(){
         parent.layer.closeAll();
@@ -153,6 +150,13 @@
             });
         });
     }
+
+
+    function delthis(clickTd){
+        var tr = $(clickTd).parent().parent();
+        tr.remove();
+    }
+
 </script>
 
 <? require(ViewDir.'/footer.html'); ?>

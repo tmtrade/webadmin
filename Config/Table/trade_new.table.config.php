@@ -115,24 +115,37 @@ $tbl['industry'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
-$tbl['industry'] = array(
-	'name'		=> $prefix.'industry',
-	'dbId'		=> $dbId,
-	'configFile'=> $configFile,
-);
+
 $tbl['industryClass'] = array(
 	'name'		=> $prefix.'industry_class',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+
 $tbl['industryClassItems'] = array(
 	'name'		=> $prefix.'industry_class_items',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+
 $tbl['industryPic'] = array(
 	'name'		=> $prefix.'industry_pic',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+
+$tbl['channel'] = array(
+	'name'		=> $prefix.'channel',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
+$tbl['channelItems'] = array(
+	'name'		=> $prefix.'channel_items',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
+
+
 ?>

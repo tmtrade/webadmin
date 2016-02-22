@@ -1,0 +1,340 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/blacklist.css">
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+
+<style type="text/css">
+    .banner-show {
+        position:relative;
+        max-width: 768px;
+        max-height: 346px;
+    }
+    .info-pic {
+        max-width: 200px;
+        max-height: 100px;
+    }
+    .margin-sx-10 {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .img-flip {
+        position:absolute;
+        width:16px;
+        height:16px;
+        -webkit-transform:rotate(180deg);
+        -moz-transform:rotate(180deg);
+        -ms-transform:rotate(180deg);
+        transform:rotate(180deg);
+    }
+    .z-index2000 {
+        z-index: 2000;
+    }
+</style>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>站点管理</li>
+        <li>频道页设置</li>
+    </ul>
+    <!-- <span style="float:right;margin-right:20px;color:red;">在售商标总数：<?=$total ?></span> -->
+</div>
+
+<div class="btn-group">
+   <button type="button" class="btn btn-default dropdown-toggle btn-lg"
+      data-toggle="dropdown">
+      频道页 <span class="caret"></span>
+   </button>
+   <ul class="dropdown-menu z-index2000" role="menu">
+      <li><a href="/channel/index/?id=1">筛选页</a></li>
+      <li><a href="/channel/index/?id=2">特价页</a></li>
+   </ul>
+</div>
+<? if( !empty($info) ) { ?>
+<input type="hidden" id="cid" value="<?=$info['id']?>">
+<div class="wrap">
+    <div class="wrap-top">
+        <h4>Banner设置
+        </h4>
+        <select name="isBanner" class="input">
+            <option <?if($info['isBanner']==1){echo 'selected';}?> value="1">启用</option>
+            <option <?if($info['isBanner']==2){echo 'selected';}?> value="2">禁用</option>
+        </select>
+        <span></span>
+    </div>
+    <div>
+        <img id="bzpic" class="banner-show" src="<?=$info['banner']?>" onerror="this.src='/Static/1.2/images/u279.png'" />
+        <div class="alert alert-warning margin-sx-10" style="padding:2px;" role="alert">
+            广告图片建议尺寸为 ( 1920 ) x ( 864 )，文件最大不超过200kb，当前支持jpg,bmp,png格式文件
+        </div>
+        <button class="btn btn-danger" id="add-banner" type="button">上传背景图</button>
+    </div>
+
+    <br />
+    <div class="wrap-top">
+        <h4>广告图设置
+        </h4>
+        <select name="isAd" class="input">
+            <option <?if($info['isAd']==1){echo 'selected';}?> value="1">启用</option>
+            <option <?if($info['isAd']==2){echo 'selected';}?> value="2">禁用</option>
+        </select>
+        <span></span>
+    </div>
+    <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;" role="alert">
+        您可以在此管理频道页的广告图，最多可创建 5 条。
+    </div>
+    <div class="wrap-table">
+        <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+            <thead>
+                <tr class="active">
+                    <th width="25%">广告图</th>
+                    <th width="40%">链接</th>
+                    <th width="25%">操作</th>
+                </tr>
+            </thead>
+            <tbody class="table-list">
+            <? foreach ($list[1] as $k => $v) { ?>
+                <tr>
+                    <td align="center" style="vertical-align:middle">
+                    <img class="info-pic" src="<?=$v['pic']?>" /></td>
+                    <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
+                    <td style="vertical-align:middle">
+                        <span class="icon icon-delete">
+                            <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
+                        </span>
+                        <span class="icon icon-editor">
+                            <a href="javascript:void(0);" onclick="showEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
+                        </span>
+                        &nbsp;&nbsp;
+                        <!-- 向下  -->
+                        <span onclick="orderBasic(<?=$v['id']?>, 1, 1)">
+                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
+                        </span>
+                        &nbsp;
+                        <!-- 向上  -->
+                        <span class="img-flip"  onclick="orderBasic(<?=$v['id']?>, 2, 1)">
+                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
+                        </span>
+                      </div>
+                    </td>
+                </tr>
+            <? } ?>
+            </tbody>
+        </table>
+    </div>
+    <div class="margin-sx-10">
+        <button class="btn btn-danger" id="add-banner" type="button">创建广告图</button>
+    </div>
+
+    <div class="wrap-top">
+        <h4>置顶商品列表
+        </h4>
+        <select name="isAd" class="input">
+            <option value="1">启用</option>
+            <option value="2">禁用</option>
+        </select>
+        <span></span>
+    </div>
+    
+    <div class="wrap-table">
+        <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+            <thead>
+                <tr class="active">
+                    <th width="20%">商标号</th>
+                    <th width="15%">商品名称</th>
+                    <th width="25%">操作</th>
+                </tr>
+            </thead>
+            <tbody class="table-list">
+            <? foreach ($list[2] as $k => $v) { ?>
+                <tr>
+                    <td style="vertical-align:middle"><?=$v['desc']?></td>
+                    <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
+                    <td style="vertical-align:middle">
+                        <span class="icon icon-delete">
+                            <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
+                        </span>
+                        <span class="icon icon-editor">
+                        <a href="javascript:void(0);" onclick="wordEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
+                        </span>
+                        &nbsp;&nbsp;
+                        <span onclick="orderBasic(<?=$v['id']?>, 1, 2)">
+                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
+                        </span>
+                        &nbsp;
+                        <span class="img-flip" onclick="orderBasic(<?=$v['id']?>, 2, 2)">
+                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
+                        </span>
+                    </td>
+                </tr>
+            <? } ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="margin-sx-10">
+        <button class="btn btn-danger" id="add-word" type="button">创建新搜索词</button>
+    </div>
+    <br>
+</div>
+<? } ?>
+
+<script type="text/javascript">
+    $(function(){
+        $(".btn-group").hover(function(){
+            $(this).addClass('open');
+        },function(){
+            $(this).removeClass('open');
+        });
+
+        $("#add-banner").click(function(){
+            var id = $.trim($("#cid").val());
+            if ( id == '' ) return false;
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '上传背景图',
+                area: ['650px', '350px'],
+
+                content: '/channel/addBannber/?id='+id
+            });
+        });
+
+        $("#add-word").click(function(){
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '创建热门搜索词',
+                area: ['650px', '400px'],
+
+                content: '/basic/addWord/'
+            });
+        });
+
+        $("#add-slide").click(function(){
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '创建滑动广告图',
+                area: ['650px', '400px'],
+
+                content: '/basic/addSlide/'
+            });
+        });
+    });
+
+    function orderBasic(id, updown, type)
+    {
+        if ( id == '' || updown == '' ) return false;
+        $.ajax({
+            type : 'post',
+            url  : '/basic/orderBasic/',
+            data : {id:id,updown:updown,type:type},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg(data.msg, {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+
+    function showEdit(id)
+    {
+        if ( id == '' || id == 0 ) return false;
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: '修改广告图',
+            area: ['600px', '430px'],
+
+            content: '/basic/editBanner/?id='+id
+        });
+    }
+
+    function wordEdit(id)
+    {
+        if ( id == '' || id == 0 ) return false;
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: '修改热门搜索词',
+            area: ['600px', '430px'],
+
+            content: '/basic/editWord/?id='+id
+        });
+    }
+
+    function slideEdit(id)
+    {
+        if ( id == '' || id == 0 ) return false;
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: '修改滑动广告图',
+            area: ['600px', '430px'],
+
+            content: '/basic/editSlide/?id='+id
+        });
+    }
+
+    function classEdit(id)
+    {
+        if ( id == '' || id == 0 ) return false;
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: '修改推荐分类',
+            area: ['650px', '480px'],
+
+            content: '/basic/editClass/?id='+id
+        });
+    }
+    function cancel(id)
+    {
+        if ( id == '' || id == 0 ) return false;
+            layer.confirm('确定要删除吗？', {
+            btn: ['是的','算了'], //按钮
+            scrollbar: false,
+        }, function(){
+            $.ajax({
+                type : 'post',
+                url  : '/basic/delBasic/',
+                data : {id:id},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.reload();
+                        });
+                    }else{
+                        var msg = data.msg == undefined ? '操作失败' : data.msg;
+                        layer.msg(msg);
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。');
+                }
+            });
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

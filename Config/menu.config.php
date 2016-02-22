@@ -52,6 +52,21 @@ return $menu = array(
 				'url'   => '/industry/index/',
 				'auth'	=> '8',
 			),
+			'6' => array(
+				'title' => '频道页设置',
+				'url'   => '/channel/index/',
+				'auth'	=> '9',
+			),
+			'7' => array(
+				'title' => '专题页设置',
+				'url'   => '/topic/index/',
+				'auth'	=> '10',
+			),
+			'8' => array(
+				'title' => '商标分类设置',
+				'url'   => '/class/index/',
+				'auth'	=> '11',
+			),
 		),
 	),
 	// '3' => array(

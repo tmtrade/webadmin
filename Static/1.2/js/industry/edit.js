@@ -63,3 +63,197 @@ function setSort(t,s){
         }
     });
 }
+
+function setPicSort(t,s){
+    $.ajax({
+        type : 'post',
+        url  : '/industry/setPicSort/',
+        data : 's='+s+'&t='+t,
+        dataType : 'json',
+        success : function (data){
+            if (data.code==1){
+                layer.msg('操作成功！', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    window.location.reload();
+                });
+            }else{
+                var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+                layer.msg(msg, {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error : function (data){
+            layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
+}
+
+function setItemsSort(t,s){
+    $.ajax({
+        type : 'post',
+        url  : '/industry/setItemsSort/',
+        data : 's='+s+'&t='+t,
+        dataType : 'json',
+        success : function (data){
+            if (data.code==1){
+                layer.msg('操作成功！', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    window.location.reload();
+                });
+            }else{
+                var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+                layer.msg(msg, {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error : function (data){
+            layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
+}
+
+//添加分类 pic
+function addindustryPic()
+{
+    var data    = $("#addPicForm").serialize();
+    if ( data == "" ){
+        layer.msg('请填写添加内容');
+        return false;
+    }
+    $.ajax({
+        type : 'post',
+        url  : '/industry/addIndustryPic/',
+        data : data,
+        dataType : 'json',
+        success : function (data){
+            if (data.code==1){
+                layer.msg('操作成功！', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                   parent.location.reload();
+                });
+            }else{
+                layer.msg(data.msg, {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error : function (data){
+            layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
+}
+
+//编辑分类 pic
+function editPic(pid){
+
+}
+
+//删除分类 pic
+function delPic(pid){
+    if ( pid == "" ){
+        layer.msg('非法参数！');
+        return false;
+    }
+    $.ajax({
+        type : 'post',
+        url  : '/industry/delIndustryPic/',
+        data : "pid="+pid,
+        dataType : 'json',
+        success : function (data){
+            if (data.code==1){
+                layer.msg('操作成功！', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    window.location.reload();
+                });
+            }else{
+                layer.msg(data.msg, {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error : function (data){
+            layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
+}
+
+//删除子分类
+function delItems(iid){
+    if ( iid == "" ){
+        layer.msg('非法参数！');
+        return false;
+    }
+    $.ajax({
+        type : 'post',
+        url  : '/industry/delIndustryItems/',
+        data : "iid="+iid,
+        dataType : 'json',
+        success : function (data){
+            if (data.code==1){
+                layer.msg('操作成功！', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    window.location.reload();
+                });
+            }else{
+                layer.msg(data.msg, {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error : function (data){
+            layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
+}
+
+//添加子分类
+function addztype()
+{
+    var data    = $("#addztype").serialize();
+    if ( data == "" ){
+        layer.msg('请填写添加内容');
+        return false;
+    }
+    $.ajax({
+        type : 'post',
+        url  : '/industry/addZtype/',
+        data : data,
+        dataType : 'json',
+        success : function (data){
+            if (data.code==1){
+                layer.msg('操作成功！', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    parent.location.reload();
+                    //window.location.reload(true);
+                });
+            }else{
+                layer.msg(data.msg, {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error : function (data){
+            layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
+}

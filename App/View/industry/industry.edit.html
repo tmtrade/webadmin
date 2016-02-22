@@ -1,0 +1,217 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+<script charset="utf-8" src="<?=StaticDir?>/editor/kindeditor.js"></script>
+<script charset="utf-8" src="<?=StaticDir?>/editor/lang/zh_CN.js"></script>
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/industry/edit.js"></script>
+<script>
+        KindEditor.ready(function(K) {
+            window.editor = K.create('#intro', {
+                afterBlur: function () { this.sync(); }
+            });
+        });
+
+</script>
+<div class="wrap">
+<input type="hidden" name="saleId" id="saleId" value="<?=$sale['id']?>">
+    <div class="wrap-top">
+        <h4 style="width: 100px">行业菜单设置</h4>>编辑菜单分类<span> </span>
+    </div>
+    <div class="mj-ztBar f-clearfix">
+
+        <span class="mj-ztBr">
+            <a class="btn btn-info" href="<?=$referr?>">返回</a>
+        </span>
+    <div class="mj-deiBlist">
+    <form id="addForm">
+        <input type="hidden" name="bzpic" class="bzpic" value="<?=$indus['icon']?>" />
+        <input type="hidden" name="id"  value="<?=$indus['id']?>" />
+        <table class="mj-table">
+            <thead>
+            <tr>
+                <td>基础信息</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="f-clearfix">
+                    <div class="fl">
+                        <label for="tdi1">分类标题:</label>
+                        <input type="text" name="typeName"  value="<?=$indus['title']?>"/>
+                        <br/><p>注：模块的标题最多不可超过8个中文字符。</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="f-clearfix">
+                <div class="bzform">
+                    <label>分类icon：</label><img src="<?=$indus['icon']?>" class="bzpic" style="width:30px;height:30px;">
+                    <input type="file" id="bzfile" name="fileName" style="display: inline-block;"/>
+                    <br/><p>注：图片建议尺寸为 ( 20 ) x ( 20 )，文件最大不超过50kb</p>
+                </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+        <div class="mj-deiBtns">
+            <a href="javascript:void(0);" id="mj-deib" onclick="addindustry();">提交修改信息</a>
+        </div>
+    <form id="priceForm">
+        <div class="mj-sellT">
+            <table>
+                <thead>
+                <tr>
+                    <td colspan="3" style="text-align: left">子分类管理</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>分类名称</td>
+                    <td>包含内容</td>
+                    <td>操作</td>
+                </tr>
+                <?foreach ($cinfo['rows'] as $ky => $vl) { ?>
+                <tr>
+                    <td><?=$vl['name']?></td>
+                    <td>
+                        <?foreach($vl['items'] as $vli){
+                        echo $vli['name']."  ";
+                    }?>
+                    </td>
+                    <td>
+                        <a href="javascript:;" onclick="delItems(<?=$vl['id']?>)">删除</a>
+                        <a href="javascript:;" onclick="addztype(<?=$vl['industryId']?>,<?=$vl['id']?>)">编辑</a>
+                        <img class="img" onclick="setItemsSort(1,<?=$vl['sort']?>)" src="/Static/1.2/images/u85.gif">
+                        <img style="transform: rotate(180deg);"  onclick="setItemsSort(2,<?=$vl['sort']?>)" src="/Static/1.2/images/u85.gif">
+                    </td>
+                </tr>
+                <?}?>
+                </tbody>
+            </table>
+        </div>
+    </form>
+        <div class="mj-deiBtns">
+            <a href="javascript:void(0);" onclick="addztype(<?=$indus['id']?>,0);">创建子分类</a>
+        </div>
+    <form id="bzxxForm">
+        <div class="mj-sellT">
+
+            <table>
+                <thead>
+                <tr>
+                    <td colspan="3" style="text-align: left">广告图管理</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>广告图</td>
+                    <td>链接</td>
+                    <td>操作</td>
+                </tr>
+                <?foreach ($pinfo['rows'] as $ky => $vl) { ?>
+                <tr>
+                    <td>
+                        <img src="<?=$vl['pic']?>" class="bzpic" style="width:80px;height:80px;">
+                    </td>
+                    <td><?=$vl['link']?></td>
+                    <td>
+                        <a href="javascript:;" onclick="delPic(<?=$vl['id']?>)">删除</a>
+                        <a href="javascript:;" onclick="addgg(<?=$vl['industryId']?>,<?=$vl['id']?>)">编辑</a>
+                        <img class="img" onclick="setPicSort(1,<?=$vl['sort']?>)" src="/Static/1.2/images/u85.gif">
+                        <img style="transform: rotate(180deg);"  onclick="setPicSort(2,<?=$vl['sort']?>)" src="/Static/1.2/images/u85.gif">
+                    </td>
+                </tr>
+                <?}?>
+                </tbody>
+            </table>
+        </div>
+    </form>
+    <div class="mj-deiBtns">
+        <a href="javascript:void(0);" onclick="addgg(<?=$indus['id']?>,0);">创建广告图</a>
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#priceType").change(function(){
+            var vl = $(this).children('option:selected').val();
+            if ( vl == 1 ){
+                $(".mj-seCl").show();
+            }else{
+                $(".mj-seCl").hide();
+            }
+        });
+
+        //多选处理
+        $('input[type="checkbox"]').click(function(){
+            var strClass = '';
+            var id = $(this).attr('tname');
+            $('.ck_'+id).each(function(){
+                if($(this).prop('checked')){
+                    strClass += ","+$(this).val();
+                }
+            })
+            strClass = strClass ? strClass.substr(1) : '';
+            $('#'+id).val(strClass);
+        });
+
+        $("#priceType").change();
+
+        $(".bzform").wrap("<form id='bzformupload' action='/internal/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#bzfile").on('change', function(){
+            $("#bzformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.bzpic').val(data.img);
+                        $('.bzpic').attr('src', data.img);
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
+
+        $(".tjform").wrap("<form id='tjformupload' action='/internal/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#tjfile").on('change', function(){
+            $("#tjformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.tjpic').val(data.img);
+                        $('.tjpic').attr('src', data.img);
+                        //$('#imageurl').css('visibility', 'visible');
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
+    });
+    function addztype(industryId,id) {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['960px', '550px'],
+            content: '/industry/ztype/?industryId='+industryId+'&id='+id
+        });
+    }
+    function addgg(industryId,id) {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['560px', '350px'],
+            content: '/industry/indusPic/?industryId='+industryId+"&id="+id
+        });
+    }
+</script>
+<? require(ViewDir.'/footer.html'); ?>
+

@@ -115,6 +115,11 @@ $tbl['industry'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+$tbl['industry'] = array(
+	'name'		=> $prefix.'industry',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 $tbl['industryClass'] = array(
 	'name'		=> $prefix.'industry_class',
 	'dbId'		=> $dbId,

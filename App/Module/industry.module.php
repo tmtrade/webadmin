@@ -12,11 +12,15 @@
 class IndustryModule extends AppModule
 {
 	public $models = array(
-		'sale'     => 'sale',
-		'contact'  => 'saleContact',
-		'tminfo'   => 'saleTminfo',
-		'history'  => 'saleHistory',
-		'industry' => 'industry',
+		'sale'               => 'sale',
+		'contact'            => 'saleContact',
+		'tminfo'             => 'saleTminfo',
+		'history'            => 'saleHistory',
+		'industry'           => 'industry',
+		'industryclass'      => 'industryclass',
+		'industryclassitems' => 'industryclassitems',
+		'industrypic'        => 'industrypic',
+
 	);
 
 	//添加分类
@@ -31,6 +35,75 @@ class IndustryModule extends AppModule
 		return $res;
 	}
 
+	//添加子分类
+	public function addIndustryClass($data)
+	{
+		$res = $this->import('industryclass')->create($data);
+		if ($res) {
+			$dataNew['sort'] = $res;
+			$r['eq']         = array('id' => $res);
+			$this->import('industryclass')->modify($dataNew, $r);
+		}
+		return $res;
+	}
+
+
+	//添加子分类 edit
+	public function editIndustryClass($data,$id)
+	{
+		$rc['eq']         = array('id' => $id);
+		$res = $this->import('industryclass')->modify($data,$rc);
+		return $res;
+	}
+
+	//添加子分类 del  对应 items
+	public function delIndustryClassItems($id)
+	{
+		$rc['eq']         = array('classId' => $id);
+		$res = $this->import('industryclassitems')->remove($rc);
+		return $res;
+	}
+
+	//添加子分类 行业分类子类信息表
+	public function addIndustryClassItems($data)
+	{
+		$res = $this->import('industryclassitems')->create($data);
+		if ($res) {
+			$dataNew['sort'] = $res;
+			$r['eq']         = array('id' => $res);
+			$this->import('industryclassitems')->modify($dataNew, $r);
+		}
+		return $res;
+	}
+
+	//编辑分类
+	public function editIndustry($data, $id)
+	{
+		$r['eq'] = array('id' => $id);
+		$res     = $this->import('industry')->modify($data, $r);
+		return $res;
+	}
+
+	//添加分类 图片
+	public function addIndustryPic($data)
+	{
+		$res = $this->import('industrypic')->create($data);
+		if ($res) {
+			$dataNew['sort'] = $res;
+			$r['eq']         = array('id' => $res);
+			$res             = $this->import('industrypic')->modify($dataNew, $r);
+		}
+		return $res;
+	}
+
+	//编辑分类 图片
+	public function editIndustryPic($data, $id)
+	{
+		$r['eq'] = array('id' => $id);
+		$res     = $this->import('industrypic')->modify($data, $r);
+		return $res;
+	}
+
 	//index 列表
 	public function getList($page, $limit = 20)
 	{
@@ -42,9 +115,21 @@ class IndustryModule extends AppModule
 		return $res;
 	}
 
+	//info 单条
+	public function getInfo($id)
+	{
+		$r['eq']    = array(
+			'id' => $id
+		);
+		$r['limit'] = 1;
+		$res        = $this->import('industry')->find($r);
+		return $res;
+	}
+
 	//设置排序  t=1 降、t=2升。
 	public function setSort($sort, $t)
 	{
+		$table    = "industry";
 		$dataName = "trade_new";
 		$t == 1 ? $where = " sort <=" . $sort : $where = " sort >=" . $sort;
 		$t == 1 ? $order = " order by sort desc " : $order = " order by sort asc ";
@@ -58,17 +143,71 @@ class IndustryModule extends AppModule
 			$r            = array();
 			$data['sort'] = $res[0]['sort'];
 			$r['eq']      = array('id' => $res[1]['id']);
-			$this->update($data, $r);
+			$this->update($table, $data, $r);
 			$data         = array();
 			$r            = array();
 			$data['sort'] = $res[1]['sort'];
 			$r['eq']      = array('id' => $res[0]['id']);
-			return $this->update($data, $r);
+			return $this->update($table, $data, $r);
 		}
 	}
-	public function update($data, $r)
+
+	//设置排序 pic  t=1 降、t=2升。
+	public function setPicSort($sort, $t)
 	{
-		return $this->import('industry')->modify($data, $r);
+		$dataName = "trade_new";
+		$table    = "industrypic";
+		$t == 1 ? $where = " sort <=" . $sort : $where = " sort >=" . $sort;
+		$t == 1 ? $order = " order by sort desc " : $order = " order by sort asc ";
+		$limit = " limit 2 ";
+		$sql   = "select id,sort from t_industry_pic where" . $where . $order . $limit;
+		$res   = $this->load("industry")->fetchAll($dataName, $sql);
+		if (count($res) < 2) {
+			return "0";//已经无法在升降了。
+		} else {
+			$data         = array();
+			$r            = array();
+			$data['sort'] = $res[0]['sort'];
+			$r['eq']      = array('id' => $res[1]['id']);
+			$this->update($table, $data, $r);
+			$data         = array();
+			$r            = array();
+			$data['sort'] = $res[1]['sort'];
+			$r['eq']      = array('id' => $res[0]['id']);
+			return $this->update($table, $data, $r);
+		}
+	}
+
+	//设置排序 子分类  t=1 降、t=2升。
+	public function setItemsSort($sort, $t)
+	{
+		$dataName = "trade_new";
+		$table    = "industryclass";
+		$t == 1 ? $where = " sort <=" . $sort : $where = " sort >=" . $sort;
+		$t == 1 ? $order = " order by sort desc " : $order = " order by sort asc ";
+		$limit = " limit 2 ";
+		$sql   = "select id,sort from t_industry_class where" . $where . $order . $limit;
+		$res   = $this->load("industry")->fetchAll($dataName, $sql);
+		if (count($res) < 2) {
+			return "0";//已经无法在升降了。
+		} else {
+			$data         = array();
+			$r            = array();
+			$data['sort'] = $res[0]['sort'];
+			$r['eq']      = array('id' => $res[1]['id']);
+			$this->update($table, $data, $r);
+			$data         = array();
+			$r            = array();
+			$data['sort'] = $res[1]['sort'];
+			$r['eq']      = array('id' => $res[0]['id']);
+			return $this->update($table, $data, $r);
+		}
+	}
+
+
+	public function update($table, $data, $r)
+	{
+		return $this->import($table)->modify($data, $r);
 	}
 
 

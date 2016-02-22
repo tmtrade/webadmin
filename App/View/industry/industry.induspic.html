@@ -5,24 +5,25 @@
 
 <div class="mj-glM">
     <span class="ms-close mj-close"></span>
-    <h5>创建分类</h5>
-    <form id="addForm">
+    <h5>编辑广告图</h5>
+    <form id="addPicForm">
     <div class="mj-glC">
         <div  class="mj-inp">
-            <input type="hidden" name="bzpic" class="bzpic" value="" />
-            <input type="hidden" name="id"  value="" />
-            <label>分类标题：</label><input type="text" id="typeName" name="typeName"/>
-            <br/><p>注：模块的标题最多不可超过8个中文字符。</p>
-            </br>
+            <input type="hidden" name="bzpic" class="bzpic" value="<?=$pinfo['pic']?>" />
+            <input type="text" name="industryId"  value="<?=$industryId?>" />
+            <input type="text" name="id"  value="<?=$pinfo['id']?>" />
             <div class="bzform">
-            <label>分类icon：</label><img src="<?=$sale['tminfo']['embellish']?>" class="bzpic" style="width:30px;height:30px;">
+            <label>广告图：</label><img src="<?=$pinfo['pic']?>" class="bzpic" style="width:80px;height:80px;">
             <input type="file" id="bzfile" name="fileName" style="display: inline-block;"/>
                 <br/><p>注：图片建议尺寸为 ( 20 ) x ( 20 )，文件最大不超过50kb</p>
             </div>
+            <label>图片链接：</label><input type="text" id="link" name="link" value="<?=$pinfo['link']?>"/>
+            <br/><p>请输入该广告链接，未输入链接则该图片不可点击。</p>
+            </br>
              &nbsp;&nbsp;&nbsp;&nbsp;
             <span id="searchInfo"></span>
             <div style="text-align:center">
-                <a class="mj-sBtn" id="addBtn" href="javascript:void(0);" style="margin:0 auto;" onclick="addindustry();" >创建分类</a></div>
+                <a class="mj-sBtn" id="addBtn" href="javascript:void(0);" style="margin:0 auto;" onclick="addindustryPic();" >创建广告图</a></div>
         </div>
     </div>
     </form>

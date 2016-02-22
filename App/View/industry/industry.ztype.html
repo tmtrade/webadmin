@@ -1,0 +1,159 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/industry/edit.js"></script>
+
+<div style="">
+    <span class="ms-close mj-close"></span>
+    <h5>子分类管理</h5>
+    <form id="addztype">
+    <div class="mj-glC">
+        <div  class="mjz-inp">
+            <input type="hidden" name="id"  value="<?=$cinfo['id']?>" />
+            <input type="hidden" name="industryId"  value="<?=$industryId?>" />
+            <label>分类名称：</label>
+            <input type="text" id="ztypeName" name="ztypeName" value="<?=$cinfo['name']?>"/>
+            <div class="mj-sellT">
+                <table id="newTable">
+                    <thead>
+                    <tr>
+                        <td colspan="5" style="text-align: left">子分类管理</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>信息名称</td>
+                        <td>链接地址</td>
+                        <td>是否新窗口打开</td>
+                        <td>是否着重显示</td>
+                        <td width="200px">操作</td>
+                    </tr>
+                    <?foreach($cinfo['items'] as $val){?>
+                    <tr>
+                        <td><input type="text" name="tname[]" width="180px" value="<?=$val['name']?>"></td>
+                        <td><input type="text" name="tlink[]" value="<?=$val['link']?>"></td>
+                        <td>
+                            <select name="isopen[]">
+                                <option value="1" <?if($val['open']=='1'){echo "selected";}?>>新窗口</option>
+                                <option value="2" <?if($val['open']=='2'){echo "selected";}?>>跳转</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="isshow[]">
+                                <option value="0" <?if($val['show']=='0'){echo "selected";}?>>普通</option>
+                                <option value="1" <?if($val['show']=='1'){echo "selected";}?>>红</option>
+                                <option value="2" <?if($val['show']=='2'){echo "selected";}?>>绿</option>
+                            </select>
+                        </td>
+                        <td>
+                            <a href="javascript:;">删除</a>
+                            <img class="downbtn" src="/Static/1.2/images/u85.gif" onclick="down()">
+                            <img class="upbtn" style="transform: rotate(180deg);" onclick="up()" src="/Static/1.2/images/u85.gif">
+                        </td>
+                    </tr>
+                    <?}?>
+                    <tr>
+                        <td><input type="text" name="tname[]"></td>
+                        <td><input type="text" name="tlink[]"></td>
+                        <td>
+                            <select name="isopen[]">
+                                <option value="1">新窗口</option>
+                                <option value="2">跳转</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="isshow[]">
+                                <option value="0">普通</option>
+                                <option value="1">红</option>
+                                <option value="2">绿</option>
+                            </select>
+                        </td>
+                        <td>
+                            <a href="javascript:;" onclick="delthis()">删除</a>
+                            <img class="downbtn" src="/Static/1.2/images/u85.gif" onclick="down()">
+                            <img class="upbtn" style="transform: rotate(180deg);" onclick="up()" src="/Static/1.2/images/u85.gif">
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="float: left">
+            <div style="">
+                <a class="mj-sBtn"  href="javascript:void(0);" style="margin:0 auto;" onclick="addlist();" >新增一条记录</a></div>
+            </div>
+            <div style="float: left;margin: 0 10px 0 10px;">
+                <a class="mj-sBtn" id="addBtn" href="javascript:void(0);" style="margin:0 auto;" onclick="addztype();" >确定编辑</a>
+            </div>
+            <div style="float: left">
+            <a class="mj-sBtn" id="" href="javascript:void(0);" style="margin:0 auto;" onclick="cel();" >取消</a>
+            </div>
+            </div>
+
+    </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".mj-glM").show();
+        $(".mj-close").on("click",function(){
+            parent.layer.closeAll();
+        });
+        $(".bzform").wrap("<form id='bzformupload' action='/industry/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#bzfile").on('change', function(){
+            $("#bzformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.bzpic').val(data.img);
+                        $('.bzpic').attr('src', data.img);
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
+    });
+    function addlist(){
+        var list = '<tr><td><input type="text" name="tname[]"></td><td><input type="text" name="tlink[]"></td><td><select name="isopen[]"><option value="1">新窗口</option><option value="2">跳转</option></select> </td><td><select name="isshow[]"><option value="0">普通</option><option value="1">红</option> <option value="2">绿</option></select></td> <td><a href="javascript:;" onclick="delthis()">删除</a><img class="downbtn" src="/Static/1.2/images/u85.gif"><img class="upbtn" style="transform: rotate(180deg);" src="/Static/1.2/images/u85.gif"></td></tr>'
+        $("#newTable").append(list);
+    }
+    function delthis(){
+
+    }
+    function cel(){
+        parent.layer.closeAll();
+    }
+
+    function up(){
+        //上移
+        $(".upbtn").each(function () {
+            $(this).click(function () {
+                var $tr = $(this).parents("tr");
+                if ($tr.index() != 1) {
+                    $tr.prev().before($tr);
+                }
+            });
+        });
+    }
+    function down(){
+        var trLength = $(".downbtn").length;
+        $(".downbtn").each(function () {
+            $(this).click(function () {
+                var $tr = $(this).parents("tr");
+                if ($tr.index() != trLength - 1) {
+                    $tr.next().after($tr);
+                }
+            });
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

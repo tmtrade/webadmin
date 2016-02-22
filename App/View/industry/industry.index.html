@@ -42,7 +42,7 @@
                     <!--<td><input type="checkbox" name="chkId[]" class="chklist" value="<?=$v['id']?>"></td>
                     -->
                     <td>
-                        <?=$v['title']?>
+                        <img src="<?=$v['icon']?>" class="bzpic" style="width:20px;height:20px;"><?=$v['title']?>
                     </td>
                     <td>
                         <?if($v['date1']==0){echo '-';}else{echo date("Y-m-d", $v['date1']);}?>
@@ -52,16 +52,16 @@
                     </td>
                     <td>
                         <span class="icon icon-editor">
-                            <a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>
+                            <a href="/industry/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>
                         </span>
                        <span class="icon icon-editor">
-                            <a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">删除</a>
+                            <a href="/industry/del/?id=<?=$v['id']?>" class="btn-info">删除</a>
                         </span>
-                       <span>
-                            <a href="javascript:;" class="btn-info" onclick="setSort(1,<?=$v['sort']?>)">向下</a>
+                        <span>
+                            <img class="img" onclick="setSort(1,<?=$v['sort']?>)" src="/Static/1.2/images/u85.gif">
                         </span>
-                       <span>
-                            <a href="javascript:;" class="btn-info" onclick="setSort(2,<?=$v['sort']?>)">向上</a>
+                        <span >
+                            <img style="transform: rotate(180deg);"  onclick="setSort(2,<?=$v['sort']?>)" src="/Static/1.2/images/u85.gif">
                         </span>
                     </td>
                 </tr>
@@ -72,71 +72,7 @@
         <div id="page" align="center"><?=$pageBar?></div>
     </div>
 </div>
-
-
 <link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css"/>
-<style>
-    .check label {
-        width: 100px;
-        display: inline-block;
-        margin-bottom: 14px;
-    }
-
-    .check input {
-        margin: 0px;
-        vertical-align: top;
-    }
-</style>
-<div class="im-wrap" id="download" style="display:none;">
-    <div class="im-title borderBtmCd">
-        <em><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></em>
-
-        <h1>导出商品</h1>
-    </div>
-    <div class="loading borderBtmCd" style="height:70px;padding-top:25px;">
-        <em>当前共&nbsp;<?=$total?>&nbsp;条商品。如导出商品过多 ，请先通过筛选功能筛选后再进行导出。</em>
-    </div>
-    <br>
-
-    <p><em>请选择您需要导出的数据</em></p>
-    <br>
-
-    <div class="check borderBtmCd mb10">
-        <iframe name="excelpost" style="display:none;"></iframe>
-        <form name="saleSearchForm" action="/internal/excel/" method="post" id="excelpost" target="excelpost">
-            <?php
-		if($s){
-			foreach($s as $k => $v){
-            if($k != 'page'){
-            echo "<input type='hidden' checked name='".$k."' value='".$v."'/> ";
-            }
-            }
-            }
-            ?>
-            <input type="hidden" name="excelTable" id="excelTable" value="">
-        </form>
-        <label><input type="checkbox" checked class="excelTable" value="1">ID</label>
-        <label><input type="checkbox" checked class="excelTable" value="2" disabled>商标号</label>
-        <label><input type="checkbox" checked class="excelTable" value="3">销售状态</label>
-        <label><input type="checkbox" checked class="excelTable" value="4">出售时间</label>
-        <label><input type="checkbox" checked class="excelTable" value="5">商标名称</label>
-        <label><input type="checkbox" checked class="excelTable" value="6">交易类型</label>
-        <label><input type="checkbox" checked class="excelTable" value="7">类别</label>
-        <label><input type="checkbox" checked class="excelTable" value="8">顾问/部门</label>
-        <label><input type="checkbox" checked class="excelTable" value="9">来源渠道</label>
-        <label><input type="checkbox" checked class="excelTable" value="10">联系方式</label>
-        <label><input type="checkbox" checked class="excelTable" value="11">底价</label>
-        <label><input type="checkbox" checked class="excelTable" value="12">售价</label>
-    </div>
-
-    <p class="">
-        <a href="" class="nexta">确定</a>
-        <a href="" class="cancela">取消</a>
-    </p>
-</div>
-
-<script type="text/javascript" src="<?=StaticDir?>1.2/js/internal/updown.js"></script>
-
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     $(function () {

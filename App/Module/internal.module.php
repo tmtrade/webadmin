@@ -736,6 +736,7 @@ class InternalModule extends AppModule
 			'advisor'       => $data['advisor'],
 			'department'    => $data['department'],
 			'date'          => time(),
+			'isVerify'  	=> 1,
 		);
 		
 		//出售数据
@@ -777,7 +778,7 @@ class InternalModule extends AppModule
             'number'    => $number,
             'memo'      => $data['memo'],
 			'intro'     => '',
-			'isVerify'  => 1,
+			
         );
 	
 		$result = array(

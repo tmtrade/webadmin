@@ -22,7 +22,7 @@ class UploadModule extends AppModule
     /**
      * 上传文件的最大字节数(默认10M)
      */
-    //public $maxSize   = 10000000;
+    public $maxSize   = 10000000;
     
     /**
      * 存在路径

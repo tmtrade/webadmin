@@ -64,7 +64,6 @@ class ModuleModule extends AppModule
         return $num;
     }
 	
-	
 	//模块基础内容
     public function getModuleInfo($moduleId)
     {
@@ -74,8 +73,6 @@ class ModuleModule extends AppModule
         $res = $this->import('module')->find($r);
         return $res;
     }
-	
-	
 	
 	//首页模块子分类列表信息
     public function getModuleClassList($moduleId)
@@ -87,6 +84,18 @@ class ModuleModule extends AppModule
         $data = $this->import('moduleClass')->findAll($r);
         return $data;
     }
+	
+	//首页模块子分类列表信息
+    public function getModuleClassItemsList($classId)
+    {
+        $r = array();
+		$r['eq']['classId'] = $classId;
+		$r['limit'] = 100;
+        $r['order'] = array('date'=>'desc');
+        $data = $this->import('moduleClassItems')->findAll($r);
+        return $data;
+    }
+	
 	
 	//首页模块包含广告列表信息
     public function getModuleAdsList($moduleId)
@@ -173,6 +182,63 @@ class ModuleModule extends AppModule
         return $this->import('modulePic')->remove($r);
     }
 	
+	
+	//添加首页模块分类
+    public function addClass($name,$moduleId)
+    {    
+		$data['name'] = $name;
+        $data['moduleId'] = $moduleId;
+        return $this->import('moduleClass')->create($data);
+		
+    }
+	
+	
+	//编辑首页模块分类
+    public function updateClass($data, $id)
+    {
+        $r['eq'] = array('id'=>$id);
+        return $this->import('moduleClass')->modify($data, $r);
+    }
+	
+	//删除首页模块分类
+    public function delClass($id, $moduleId)
+    {
+		$r = array();
+        if ( empty($id) && empty($moduleId) ) return false;
+        $r['eq'] = array('id'=>$id);
+        return $this->import('moduleClass')->remove($r);
+    }
+	
+	//添加首页模块子分类
+    public function addClassItems($number,$name,$classId)
+    {    
+		$data['name'] = $name;
+		$data['number'] = $number;
+        $data['classId'] = $classId;
+        return $this->import('moduleClassItems')->create($data);
+    }
+	
+	//编辑首页模块子分类
+    public function updateClassItems($data, $id)
+    {
+        $r['eq'] = array('id'=>$id);
+        return $this->import('moduleClassItems')->modify($data, $r);
+    }
+	
+	//删除首页模块子分类
+    public function delClassItems($classId)
+    {
+		$r = array();
+        if ( empty($classId) ) return false;
+        $r['eq'] = array('classId'=>$classId);
+        return $this->import('moduleClassItems')->remove($r);
+    }
+	
+	
+	
+	
+	
+	
 	//首页模块推广链接列表信息
     public function getPicInfo($moduleId,$id)
     {
@@ -185,24 +251,17 @@ class ModuleModule extends AppModule
 	
 	
 	
-	
 	//首页模块推广链接列表信息
-	/**
-    public function remove($moduleId,$type)
+    public function getClassInfo($moduleId,$id)
     {
-		if($type == 1){//删除全部
-			
-			$r['eq']['moduleId'] = $moduleId;
-			$this->import('moduleClass')->remove($r);
-			$this->import('modulePic')->remove($r);
-			$this->import('modulelink')->remove($r);
-		}
-		$module['eq']['id'] = $moduleId;
-		$this->import('module')->remove($module);
-		
-    
+        $r = array();
+		$r['eq']['moduleId'] = $moduleId;
+		$r['eq']['id'] = $id;
+        $data = $this->import('moduleClass')->find($r);
+        return $data;
     }
-	**/
+	
+	
 	
 	
 }

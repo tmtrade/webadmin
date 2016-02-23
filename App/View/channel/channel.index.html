@@ -42,10 +42,10 @@
     <!-- <span style="float:right;margin-right:20px;color:red;">在售商标总数：<?=$total ?></span> -->
 </div>
 
-<div class="btn-group">
+<div class="btn-group" style="margin-left:30px;">
    <button type="button" class="btn btn-default dropdown-toggle btn-lg"
       data-toggle="dropdown">
-      频道页 <span class="caret"></span>
+      <?if($info['id']==1){echo '筛选页';}elseif($info['id']==2){echo '特价页';}else{echo '频道页';}?> <span class="caret"></span>
    </button>
    <ul class="dropdown-menu z-index2000" role="menu">
       <li><a href="/channel/index/?id=1">筛选页</a></li>
@@ -58,7 +58,7 @@
     <div class="wrap-top">
         <h4>Banner设置
         </h4>
-        <select name="isBanner" class="input">
+        <select name="isBanner" class="input selectChange">
             <option <?if($info['isBanner']==1){echo 'selected';}?> value="1">启用</option>
             <option <?if($info['isBanner']==2){echo 'selected';}?> value="2">禁用</option>
         </select>
@@ -76,7 +76,7 @@
     <div class="wrap-top">
         <h4>广告图设置
         </h4>
-        <select name="isAd" class="input">
+        <select name="isAd" class="input selectChange">
             <option <?if($info['isAd']==1){echo 'selected';}?> value="1">启用</option>
             <option <?if($info['isAd']==2){echo 'selected';}?> value="2">禁用</option>
         </select>
@@ -95,7 +95,7 @@
                 </tr>
             </thead>
             <tbody class="table-list">
-            <? foreach ($list[1] as $k => $v) { ?>
+            <? foreach ($info['items'][1] as $k => $v) { ?>
                 <tr>
                     <td align="center" style="vertical-align:middle">
                     <img class="info-pic" src="<?=$v['pic']?>" /></td>
@@ -105,16 +105,16 @@
                             <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
                         </span>
                         <span class="icon icon-editor">
-                            <a href="javascript:void(0);" onclick="showEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
+                            <a href="javascript:void(0);" onclick="adEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
                         </span>
                         &nbsp;&nbsp;
                         <!-- 向下  -->
-                        <span onclick="orderBasic(<?=$v['id']?>, 1, 1)">
+                        <span onclick="orderChannel(<?=$v['id']?>, 1, 1,<?=$info['id']?>)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                         &nbsp;
                         <!-- 向上  -->
-                        <span class="img-flip"  onclick="orderBasic(<?=$v['id']?>, 2, 1)">
+                        <span class="img-flip"  onclick="orderChannel(<?=$v['id']?>, 2, 1, <?=$info['id']?>)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                       </div>
@@ -125,46 +125,43 @@
         </table>
     </div>
     <div class="margin-sx-10">
-        <button class="btn btn-danger" id="add-banner" type="button">创建广告图</button>
+        <button class="btn btn-danger" id="add-ad" type="button">创建广告图</button>
     </div>
 
     <div class="wrap-top">
         <h4>置顶商品列表
         </h4>
-        <select name="isAd" class="input">
-            <option value="1">启用</option>
-            <option value="2">禁用</option>
+        <select name="isTop" class="input selectChange">
+            <option <?if($info['isTop']==1){echo 'selected';}?> value="1">启用</option>
+            <option <?if($info['isTop']==2){echo 'selected';}?> value="2">禁用</option>
         </select>
         <span></span>
     </div>
     
     <div class="wrap-table">
-        <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+        <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0;width:800px;">
             <thead>
                 <tr class="active">
-                    <th width="20%">商标号</th>
-                    <th width="15%">商品名称</th>
-                    <th width="25%">操作</th>
+                    <th width="30%">商标号</th>
+                    <th width="30%">商品名称</th>
+                    <th width="40%">操作</th>
                 </tr>
             </thead>
             <tbody class="table-list">
-            <? foreach ($list[2] as $k => $v) { ?>
+            <? foreach ($info['items'][2] as $k => $v) { ?>
                 <tr>
-                    <td style="vertical-align:middle"><?=$v['desc']?></td>
-                    <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
+                    <td style="vertical-align:middle"><?=$v['pic']?></td>
+                    <td style="vertical-align:middle"><?=$v['link']?></td>
                     <td style="vertical-align:middle">
                         <span class="icon icon-delete">
                             <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
                         </span>
-                        <span class="icon icon-editor">
-                        <a href="javascript:void(0);" onclick="wordEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
-                        </span>
                         &nbsp;&nbsp;
-                        <span onclick="orderBasic(<?=$v['id']?>, 1, 2)">
+                        <span onclick="orderChannel(<?=$v['id']?>, 1, 2, <?=$info['id']?>)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                         &nbsp;
-                        <span class="img-flip" onclick="orderBasic(<?=$v['id']?>, 2, 2)">
+                        <span class="img-flip" onclick="orderChannel(<?=$v['id']?>, 2, 2, <?=$info['id']?>)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                     </td>
@@ -175,7 +172,7 @@
     </div>
 
     <div class="margin-sx-10">
-        <button class="btn btn-danger" id="add-word" type="button">创建新搜索词</button>
+        <button class="btn btn-danger" id="add-top" type="button">创建置项商品</button>
     </div>
     <br>
 </div>
@@ -183,10 +180,42 @@
 
 <script type="text/javascript">
     $(function(){
-        $(".btn-group").hover(function(){
-            $(this).addClass('open');
-        },function(){
-            $(this).removeClass('open');
+        
+        $(".selectChange").change(function(){
+            var _this   = $(this);
+            var _model  = this.options[this.options.selectedIndex].value;
+            var _name   = _this.attr('name');
+            var id      = $.trim($("#cid").val());
+            if ( id == '' ) return false;
+            layer.confirm('确定要修改吗？<br>注意：修改后，前台显示可能会有一定延迟。', {
+                btn: ['好的','算了'], //按钮
+                scrollbar: false,
+            }, function(){
+                $.ajax({
+                    type : 'post',
+                    url  : '/channel/setUse/',
+                    data : {model:_model, name:_name, id:id},
+                    dataType : 'json',
+                    success : function (data){
+                        if (data.code==1){
+                            layer.msg('操作成功', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            layer.msg(data.msg, {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            });
+                        }
+                    },
+                    error : function (data){
+                        layer.msg('操作失败，请稍后重试。', {
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                });
+            });
         });
 
         $("#add-banner").click(function(){
@@ -202,36 +231,40 @@
             });
         });
 
-        $("#add-word").click(function(){
+        $("#add-ad").click(function(){
+            var id = $.trim($("#cid").val());
+            if ( id == '' ) return false;
             layer.open({
                 type: 2,
                 scrollbar: false,
-                title: '创建热门搜索词',
+                title: '创建广告图',
                 area: ['650px', '400px'],
 
-                content: '/basic/addWord/'
+                content: '/channel/addAd/?id='+id
             });
         });
 
-        $("#add-slide").click(function(){
+        $("#add-top").click(function(){
+            var id = $.trim($("#cid").val());
+            if ( id == '' ) return false;
             layer.open({
                 type: 2,
                 scrollbar: false,
-                title: '创建滑动广告图',
+                title: '创建置项商品',
                 area: ['650px', '400px'],
 
-                content: '/basic/addSlide/'
+                content: '/channel/addTop/?id='+id
             });
         });
     });
 
-    function orderBasic(id, updown, type)
+    function orderChannel(id, updown, type, cId)
     {
-        if ( id == '' || updown == '' ) return false;
+        if ( id == '' || updown == '' || cId == '' ) return false;
         $.ajax({
             type : 'post',
-            url  : '/basic/orderBasic/',
-            data : {id:id,updown:updown,type:type},
+            url  : '/channel/orderChannel/',
+            data : {id:id,updown:updown,type:type,cId:cId},
             dataType : 'json',
             success : function (data){
                 if (data.code==1){
@@ -254,7 +287,7 @@
         });
     }
 
-    function showEdit(id)
+    function adEdit(id)
     {
         if ( id == '' || id == 0 ) return false;
         layer.open({
@@ -263,48 +296,10 @@
             title: '修改广告图',
             area: ['600px', '430px'],
 
-            content: '/basic/editBanner/?id='+id
+            content: '/channel/editAd/?id='+id
         });
     }
 
-    function wordEdit(id)
-    {
-        if ( id == '' || id == 0 ) return false;
-        layer.open({
-            type: 2,
-            scrollbar: false,
-            title: '修改热门搜索词',
-            area: ['600px', '430px'],
-
-            content: '/basic/editWord/?id='+id
-        });
-    }
-
-    function slideEdit(id)
-    {
-        if ( id == '' || id == 0 ) return false;
-        layer.open({
-            type: 2,
-            scrollbar: false,
-            title: '修改滑动广告图',
-            area: ['600px', '430px'],
-
-            content: '/basic/editSlide/?id='+id
-        });
-    }
-
-    function classEdit(id)
-    {
-        if ( id == '' || id == 0 ) return false;
-        layer.open({
-            type: 2,
-            scrollbar: false,
-            title: '修改推荐分类',
-            area: ['650px', '480px'],
-
-            content: '/basic/editClass/?id='+id
-        });
-    }
     function cancel(id)
     {
         if ( id == '' || id == 0 ) return false;
@@ -314,7 +309,7 @@
         }, function(){
             $.ajax({
                 type : 'post',
-                url  : '/basic/delBasic/',
+                url  : '/channel/delChannel/',
                 data : {id:id},
                 dataType : 'json',
                 success : function (data){

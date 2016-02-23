@@ -11,14 +11,18 @@
 
 <!--出售信息弹层-->
 <div class="mj-infoM" style="width:99%">
-<form name="setWord" id="setWord" >
-    <input type="hidden" name="id" value="<?=$id?>" />
+<form name="setAd" id="setAd" >
+    <input type="hidden" name="id" value="<?=$info['id']?>" />
+    <input type="hidden" name="cId" value="<?=$cId?>" />
+    <input type="hidden" name="pic" class="bzpic" value="<?=$info['pic']?>" />
+    <div class="bzform">
+        <img id="bzpic" src="<?=$info['pic']?>" onerror="this.src='/Static/1.2/images/u279.png'" class="info-pic" >
+        <input type="hidden" name="size" value="500" style="display: none;"/>
+        <input type="file" id="bzfile" name="fileName" style="display: inline-block;"/>
+    </div> 
     
-    <label>热门交易标题：</label>
-    <input type="input" class="form-control" maxlength="8"  name="title" value="<?=$info['desc']?>">
-    
-    <div class="alert alert-warning"style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
-    请输入交易标题，最多不可超过8个中文字符。
+    <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
+    广告图片建议尺寸为 ( xxx ) x ( xxx )，文件最大不超过500kb，当前支持jpg,bmp,png格式文件
     </div>
     <label>图片链接：</label>
     <input type="input" class="form-control" name="link" value="<?=$info['link']?>">
@@ -26,12 +30,6 @@
     <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
     请输入该广告链接，未输入链接则该图片不可点击。
     </div>
-    <label>是否着重展示:</label>
-    <select name="model">
-    <? foreach ($INDEX_WORD_STRESS as $k => $v) { ?>
-        <option value="<?=$k?>" <? if($info['other']==$k){echo 'selected';}?> ><?=$v?></option>
-    <? } ?>
-    </select>
     <div style="bottom:10px;position: fixed;">
         <a href="javascript:void(0);" class="mj-liBtns" onclick="opContact();">确定</a>
         <a href="javascript:void(0);" class="mj-liBtns mj-abgcg" onclick="closeAll();">取消</a>
@@ -43,6 +41,25 @@
 <script type="text/javascript">
     $(function(){
         $(".mj-infoM").show();
+
+        $(".bzform").wrap("<form id='bzformupload' action='/basic/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#bzfile").on('change', function(){
+            $("#bzformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.bzpic').val(data.img);
+                        $('#bzpic').attr('src', data.img);
+                        //$('#imageurl').css('visibility', 'visible');
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
     });
 
     function closeAll()
@@ -51,10 +68,10 @@
     }
     function opContact()
     {
-        var data = $("#setWord").serialize();
+        var data = $("#setAd").serialize();
         $.ajax({
             type : 'post',
-            url  : '/basic/setWord/',
+            url  : '/channel/setAd/',
             data : data,
             dataType : 'json',
             success : function (data){

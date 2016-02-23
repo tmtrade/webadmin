@@ -115,6 +115,7 @@ abstract class AppAction extends Action
 	//图片上传
 	public function ajaxUploadPic()
     {
+    	$kb = $this->input('size', 'int', 0);
         $msg = array(
             'code'  => 0,
             'msg'   => '',
@@ -123,6 +124,10 @@ abstract class AppAction extends Action
         if ( empty($_FILES) || empty($_FILES['fileName']) ) {
             $msg['msg'] = '请上传图片';
             $this->returnAjax($msg);
+        }
+        if ( $kb > 0 && ($kb*1024 < $_FILES['fileName']['size']) ){
+        	$msg['msg'] = "文件大小超过 $kb KB限制";
+        	$this->returnAjax($msg);
         }
         $obj = $this->load('upload')->upload('fileName', 'img');
         if ( $obj->_imgUrl_ ){

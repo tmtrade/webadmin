@@ -24,7 +24,6 @@ class ChannelAction extends AppAction
 			$this->display();
 			exit;
 		}
-
 		$info = $this->load('channel')->getChannel($id);
 
         $this->set('info', $info);
@@ -49,7 +48,7 @@ class ChannelAction extends AppAction
 	}
 
 	/**
-	 * 创建或编辑广告图
+	 * 创建或编辑Banner图
 	 * 
 	 * @author	Xuni
 	 * @since	2016-02-22
@@ -78,8 +77,210 @@ class ChannelAction extends AppAction
         $this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
 	}
 
-	
+	/**
+	 * 上传banner图
+	 * 
+	 * @author	Xuni
+	 * @since	2016-02-23
+	 */
+	public function addAd()
+	{
+		$id 	= $this->input('id', 'int', '');
+		if ( empty($id) ) {
+			MessageBox::halt('参数错误');
+		}
+		$this->set('cId', $id);
+		$this->display('channel/channel.ad.html');
+	}
 
+	/**
+	 * 上传banner图
+	 * 
+	 * @author	Xuni
+	 * @since	2016-02-23
+	 */
+	public function editAd()
+	{
+		$id 	= $this->input('id', 'int', '');
+		if ( empty($id) ) {
+			MessageBox::halt('参数错误');
+		}
+		$info = $this->load('channel')->getItems($id);
+		$this->set('info', $info);
+		$this->set('cId', $info['channelId']);
+		$this->display('channel/channel.ad.html');
+	}
+
+	/**
+	 * 创建或编辑广告图
+	 * 
+	 * @author	Xuni
+	 * @since	2016-02-23
+	 */
+	public function setAd()
+	{
+		$id 	= $this->input('id', 'int', '');
+		$pic 	= $this->input('pic', 'string', '');
+		$link 	= $this->input('link', 'string', '');
+		$cId 	= $this->input('cId', 'int', '');
+		if ( $id > 0 ){
+			$info 	= $this->load('channel')->getItems($id);
+			$cId 	= $info['channelId'];
+		}
+		if ( empty($cId) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+		}
+		if ( empty($pic) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请上传图片'));
+		}
+		$count = $this->load('channel')->countChannel(1, $cId);
+		if ( empty($id) && $count >= 5 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'数量已达上限'));
+		}
+		if ( $id ){
+			$data = array(
+				'type'       => 1,
+				//'channelId'  => $cId,
+				'pic'        => $pic,
+				'link'       => $link,
+			);
+	        $res = $this->load('channel')->setItems($data, $id);
+		}else{
+			$order = $this->load('channel')->getLastOrder($cId, 1);
+			$order = $order + rand(2,5);
+			$data = array(
+				'type'      => 1,
+				'channelId' => $cId,
+				'pic'       => $pic,
+				'link'      => $link,
+				'sort'      => $order,
+			);
+	        $res = $this->load('channel')->addItems($data);
+		}
+        if ( $res ){
+            $this->returnAjax(array('code'=>1));
+        }
+        $this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
+	}
+	
+	/**
+	 * 上传banner图
+	 * 
+	 * @author	Xuni
+	 * @since	2016-02-23
+	 */
+	public function addTop()
+	{
+		$id 	= $this->input('id', 'int', '');
+		if ( empty($id) ) {
+			MessageBox::halt('参数错误');
+		}
+		$this->set('cId', $id);
+		$this->display('channel/channel.top.html');
+	}
+
+	/**
+	 * 创建或编辑广告图
+	 * 
+	 * @author	Xuni
+	 * @since	2016-02-23
+	 */
+	public function setTop()
+	{
+		$number = $this->input('number', 'string', '');
+		$cId 	= $this->input('cId', 'int', '');
+
+		if ( empty($cId) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+		}
+		if ( empty($number) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请填写商标号'));
+		}
+		$numbers = array_filter( explode(',', $number) );
+		if ( empty($numbers) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请填写正确的商标号'));
+		}
+		$ishas 	= $this->load('channel')->existSale($numbers);
+		$hasnot = array_diff($numbers, $ishas);
+		if ( !empty($hasnot) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'下列商标未出售或不在销售中：'.implode(',', $hasnot)));
+		}
+
+        $res = $this->load('channel')->addTops($numbers, $cId);
+        if ( $res ){
+            $this->returnAjax(array('code'=>1));
+        }
+        $this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
+	}
+
+	/**
+	 * 上传banner图
+	 * 
+	 * @author	Xuni
+	 * @since	2016-02-23
+	 */
+	public function setUse()
+	{
+		$id 	= $this->input('id', 'int', '');
+		$model 	= $this->input('model', 'int', '');
+		$name 	= $this->input('name', 'string', '');
+
+		if ( empty($id) || empty($model) || empty($name) ) {
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+		}
+		$data = array(
+			"$name" => $model,
+		);
+		$res = $this->load('channel')->setChannel($data, $id);
+        if ( $res ){
+            $this->returnAjax(array('code'=>1));
+        }
+		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
+	}
+
+	/**
+	 * 排序某项设置 (向上向下)
+	 * 
+	 * @author	Xuni
+	 * @since	2016-02-18
+	 */
+	public function orderChannel()
+	{
+		$id 	= $this->input('id', 'int', '');
+		$updown = $this->input('updown', 'int', '');
+		$type 	= $this->input('type', 'int', '');
+		$cId 	= $this->input('cId', 'int', '');
+		if ( empty($id) || empty($updown) || empty($type) || empty($cId) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+		}
+		//向上向下
+		$res = $this->load('channel')->orderUpDown($id, $updown, $type, $cId);
+		if ( $res ){
+            $this->returnAjax(array('code'=>1));
+        }
+        $this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
+	}
+
+	/**
+	 * 删除某项设置
+	 * 
+	 * @author	Xuni
+	 * @since	2016-02-18
+	 */
+	public function delChannel()
+	{
+		$id = $this->input('id', 'int', '');
+
+		if ( empty($id) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+		}
+
+		$res = $this->load('channel')->delItems($id);
+		if ( $res ){
+            $this->returnAjax(array('code'=>1));
+        }
+        $this->returnAjax(array('code'=>2,'msg'=>'删除失败'));
+	}
 
 }
 ?>

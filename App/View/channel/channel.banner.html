@@ -16,11 +16,12 @@
     <input type="hidden" name="banner" class="bzpic" value="<?=$info['banner']?>" />
     <div class="bzform">
         <img id="bzpic" src="<?=$info['banner']?>" onerror="this.src='/Static/1.2/images/u279.png'" class="info-pic" >
+        <input type="hidden" name="size" value="200" style="display: none;"/>
         <input type="file" id="bzfile" name="fileName" style="display: inline-block;"/>
-    </div> 
+    </div>
     
     <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
-    广告图片建议尺寸为 ( xxx ) x ( xxx )，文件最大不超过500kb，当前支持jpg,bmp,png格式文件
+    广告图片建议尺寸为 ( xxx ) x ( xxx )，文件最大不超过200kb，当前支持jpg,bmp,png格式文件
     </div>
 
     <label>是否启用：</label>

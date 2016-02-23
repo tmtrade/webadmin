@@ -13,19 +13,20 @@ class ChannelModule extends AppModule
     public $models = array(
         'channel'   => 'channel',
         'items'     => 'channelItems',
+        'sale'      => 'sale',
+
     );
 
     //统计某个设置数据条数
-    public function countBasic($type, $isUse=0)
+    public function countChannel($type, $channelId)
     {
         if ( empty($type) ) return false;
 
-        $r['eq'] = array('type'=>$type);
-        if ( !empty($isUse) ){
-            $r['eq']['isUse'] = $isUse;
-        }
-        return $this->import('basic')->count($r);
+        $r['eq'] = array('channelId'=>$channelId,'type'=>$type);
+
+        return $this->import('items')->count($r);
     }
+
     //获取某个设置
     public function getChannel($id)
     {
@@ -38,10 +39,20 @@ class ChannelModule extends AppModule
         return $res;
     }
 
+    //获取某个设置
+    public function getItems($id)
+    {
+        if ( empty($id) ) return false;
+
+        $r['eq']    = array('id'=>$id);
+        $res        = $this->import('items')->find($r);
+        return $res;
+    }
+
     //获取所有的设置
     public function getItemsList($channelId)
     {
-        if ( empty($id) ) return false;
+        if ( empty($channelId) ) return false;
 
         $r['eq']    = array('channelId'=>$channelId);
         $r['order'] = array('type'=>'asc');
@@ -68,7 +79,7 @@ class ChannelModule extends AppModule
         $r['order'] = array('sort'=>'desc');
         $r['col']   = array('sort');
         
-        $res    = $this->import('basic')->find($r);
+        $res    = $this->import('items')->find($r);
         $order  = empty($res) ? 1 : $res['sort']; 
         return $order;
     }
@@ -117,7 +128,6 @@ class ChannelModule extends AppModule
         if ( empty($id) ) return false;
 
         $r['eq'] = array('id'=>$id);
-
         return $this->import('items')->remove($r);
 
     }
@@ -161,6 +171,74 @@ class ChannelModule extends AppModule
         }
         $this->rollback('channel');
         return false;
+    }
+
+    //判断商标号是否为真的商标
+    // public function existNumber($number)
+    // {
+    //     if ( empty($number) || !is_array($number) ) return array();
+
+    //     $r['in']    = array('id'=>$number);
+    //     $r['limit'] = 10000;
+    //     $r['col']   = array('id');
+    //     $res = $this->load('trademark')->findTm($r);
+    //     $ids = array_filter( arrayColumn($res, 'id') );
+    //     return $ids;
+    // }
+
+    //判断商标号是否为真的商标
+    public function existSale($number)
+    {
+        if ( empty($number) || !is_array($number) ) return array();
+
+        $r['in']    = array('number'=>$number);
+        $r['eq']    = array('status'=>1);
+        $r['limit'] = 10000;
+        $r['col']   = array('number');
+        $res = $this->import('sale')->find($r);
+        $ids = array_filter( arrayColumn($res, 'number') );
+        return $ids;
+    }
+
+    //添加置顶商品
+    public function addTops($ids, $cid)
+    {
+        if ( empty($ids) || !is_array($ids) ) return false;
+        $order = $this->getLastOrder($cid, 2);
+        $this->begin('channel');
+        foreach ($ids as $number) {
+            if ( $this->existTop($number, $cid) ) continue;
+            
+            $info   = $this->load('trademark')->getInfo($number, array('`trademark` as `name`'));
+            $order  = $order + rand(2,5);
+            $data   = array(
+                'channelId' => $cid,
+                'type'      => 2,
+                'pic'       => $number,
+                'link'      => $info['name'],
+                'sort'      => $order,
+                'date'      => time(),
+            );
+            $res = $this->addItems($data);
+            if ( !$res ){
+                $this->rollback('channel');
+                return false;
+            }
+        }
+        return $this->commit('channel');
+    }
+
+    //判断置顶商品是否已存在
+    public function existTop($number, $cid)
+    {
+        if ( empty($number) || empty($cid) ) return false;
+
+        $r['eq'] = array(
+            'channelId' => $cid,
+            'pic'       => $number,
+        );
+        $num = $this->import('items')->count($r);
+        return $num > 0 ? true : false;
     }
 
 }

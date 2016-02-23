@@ -40,11 +40,6 @@ function setModule(moduleId){
 		});
 }
 
-
-
-
-
-
 //设置链接
 function setLink(moduleId, lId)
 {
@@ -207,13 +202,12 @@ function delClass(moduleId, id)
 	});
 }
 
-//向上
-function orderBasic(id, updown, type)
+function sortChaneg(id, type, updown)
 {
 	if ( id == '' || updown == '' ) return false;
 	$.ajax({
 		type : 'post',
-		url  : '/basic/orderBasic/',
+		url  : '/module/sortChaneg/',
 		data : {id:id,updown:updown,type:type},
 		dataType : 'json',
 		success : function (data){
@@ -236,7 +230,6 @@ function orderBasic(id, updown, type)
 		}
 	});
 }
-
 
 
 function checkModule(moduleId){

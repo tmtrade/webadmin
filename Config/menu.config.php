@@ -64,7 +64,7 @@ return $menu = array(
 			),
 			'8' => array(
 				'title' => '商标分类设置',
-				'url'   => '/class/index/',
+				'url'   => '/tmclass/index/',
 				'auth'	=> '11',
 			),
 		),

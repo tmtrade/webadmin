@@ -1,7 +1,17 @@
 <? require(ViewDir.'/header.html');?>
 
 <link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
-
+<style>
+.img-flip {
+        position:absolute;
+        width:16px;
+        height:16px;
+        -webkit-transform:rotate(180deg);
+        -moz-transform:rotate(180deg);
+        -ms-transform:rotate(180deg);
+        transform:rotate(180deg);
+    }
+</style>
 <div class="place">
     <span>位置：</span>
     <ul class="placeul">
@@ -35,10 +45,10 @@
 					<td><?=$v['adsNum']?></td>
 					<td><?=$v['linkNum']?></td>
                     <td>
-						<a href="/module/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>
-						<a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">删除</a> | 
-						<a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">向下</a>
-						<a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">向上</a>
+						<a href="javascript:void(0);" onclick="delModule(<?=$v['id']?>);">删除</a>
+						<a href="/module/edit/?id=<?=$v['id']?>">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
+						<span onclick="sortChaneg(<?=$v['id']?>, 1 , 1)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
+						<span class="img-flip" onclick="sortChaneg(<?=$v['id']?>, 1, 2)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
                     </td>
                 </tr>
                 <? } ?>
@@ -52,195 +62,79 @@
 		
     </div>
 </div>
-
-<script type="text/javascript" src="<?=StaticDir?>1.2/js/internal/updown.js"></script>
-
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-    $(function(){
-        $(".mj-screening .btn").click(function(){
-            $(".mj-ddList").toggle();
-        });
-        $(".mj-sBtn").click(function(){
-            $("#saleSearchForm").submit();
-        });
-        //多选处理
-        $('input[type="checkbox"]').click(function(){
-            var strClass = '';
-            var id = $(this).attr('tname');
-            $('.'+id).each(function(){
-                if($(this).prop('checked')){
-                    strClass += ","+$(this).val();
-                }
-            })
-            strClass = strClass ? strClass.substr(1) : '';
-            $('#'+id).val(strClass);
-        });
-        $(".table tr td.showMore").hover(function(){
-            $(this).parent('tr').find('.more > ul').show();
-        },function(){
-            $(this).parent('tr').find('.more > ul').hide();
-        });
 
-        $('#chkAll').click(function(){ 
-            $('.chklist').prop("checked",this.checked);
-        });
+//删除链接
+function delModule(moduleId)
+{	
+	if ( moduleId <= 0 || moduleId == '' ) return false;
 
-		$(".im-title-span").on("click",function(){
-            layer.closeAll('im-wrap');
-        });
-		
-		//提交导出
-		$('.nexta').click(function(){
-		
-			var str = '';
-			$('.excelTable').each(function(){
-				if($(this).prop('checked')){
-					str += ","+$(this).val();
+	layer.confirm('确认要删除此模块吗？<br>', {
+		btn: ['删了','算了'] //按钮
+	}, function(){
+		$.ajax({
+			type : 'post',
+			url  : '/module/delModule/',
+			data : {'id':moduleId},
+			dataType : 'json',
+			success : function (data){
+				if (data.code==1){
+					layer.msg('操作成功', {
+						time: 1000 //2秒关闭（如果不配置，默认是3秒）
+					}, function(){
+						window.location.reload();
+					});
+				}else{
+					var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+					layer.msg(msg, {
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
 				}
-			})
-			str = str ? str.substr(1) : '';
-			$('#excelTable').val(str);
-			$('#excelpost').submit();
-			return false;
-		})
-    });
-
-    //批量下架
-    function setMoreDown()
-    {
-        var chkId = getChecked();
-        if ( chkId == '' ) {
-            layer.msg('请选择至少一个商品', {
-                time: 2000 //2秒关闭（如果不配置，默认是3秒）
-            });
-            return false;
-        }
-        layer.prompt({
-            formType: 2,
-            value: '',
-            maxlength: 100,
-            title: '请输入下架原因'
-        }, function(value, index, elem){
-            if ( $.trim(value) == ''){
-                layer.tips('请输入下架原因',elem);
-                return false;
-            }else{
-                $.ajax({
-                    type : 'post',
-                    url  : '/internal/doDown/',
-                    data : {'id':chkId, 'reason':value},
-                    dataType : 'json',
-                    success : function (data){
-                        if (data.code==1){
-                            layer.msg('操作成功！', {
-                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                            }, function(){
-                                window.location.reload();
-                            });
-                        }else{
-                            layer.msg('操作失败！', {
-                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                            });
-                        }
-                    },
-                    error : function (data){
-                        layer.msg('操作失败，请稍后重试。', {
-                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                        });
-                    }
-                });
-            }
-        });
-    }
-
-    function delMoreSale()
-    {
-        var chkId = getChecked();
-        if ( chkId == '' ) {
-            layer.msg('请选择至少一个商品', {
-                time: 2000 //2秒关闭（如果不配置，默认是3秒）
-            });
-            return false;
-        }
-        var url = '?id='+chkId;
-        layer.open({
-            type: 2,
-            title: false,
-            closeBtn: false,
-            area: ['520px', '400px'],
-
-            content: '/internal/delete/'+url,
-        });
-        return false;
-    }
-
-    function getChecked()
-    {
-        var strId = '';
-        $('.chklist').each(function(){
-            if($(this).prop('checked')){
-                strId += ","+$(this).val();
-            }
-        });
-        strId = strId ? strId.substr(1) : '';
-        return strId;
-    }
-
-    function add()
-    {
-        window.location.href="/module/add/";
-    }
-	
-	//批量导入商标
-	function Import()
-    {
-        layer.open({
-            type: 2,
-            title: false,
-            closeBtn: false,
-            area: ['650px', '420px'],
-            content: '/internal/import/'
-        });
-    }
-
-    function reloadList()
-    {
-        window.location.reload();
-    }
-	
-	//弹出群组数据
-	$('#groupes').click(function(){
-		var classes = $('#tmClass').val();
-		//var oldclasses = $('#oldclasses').val();
-		//if(oldclasses != classes){
-		//	$(this).val('');
-		//}
-		if(classes){
-			//iframe层-父子操作
-			layer.open({
-				title: '选择群组',
-				type: 2,
-				area: ['570px', '420px'],
-				fix: false, //不固定
-				maxmin: true,
-				content: '/internal/groups/?class='+classes
+			},
+			error : function (data){
+				layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
+					time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				});
+			}
+		});
+	});
+}
+ 
+ 
+function add(){
+	window.location.href="/module/edit/";
+}
+ 
+function sortChaneg(id, type, updown)
+{
+	if ( id == '' || updown == '' ) return false;
+	$.ajax({
+		type : 'post',
+		url  : '/module/sortChaneg/',
+		data : {id:id,updown:updown,type:type},
+		dataType : 'json',
+		success : function (data){
+			if (data.code==1){
+				layer.msg('操作成功', {
+					time: 1000 //2秒关闭（如果不配置，默认是3秒）
+				}, function(){
+					window.location.reload();
+				});
+			}else{
+				layer.msg(data.msg, {
+					time: 1000 //2秒关闭（如果不配置，默认是3秒）
+				});
+			}
+		},
+		error : function (data){
+			layer.msg('操作失败，请稍后重试。', {
+				time: 2000 //2秒关闭（如果不配置，默认是3秒）
 			});
 		}
-		return false;
-	})
-	
-	//导出弹出
-	function download()
-    {
-		 layer.open({
-            type: 1,
-            title: false,
-            closeBtn: false,
-            area: ['630px', '360px'],
-            content: $('#download')
-        });
-    }
+	});
+}
+
 </script>
 
 <? require(ViewDir.'/footer.html'); ?>

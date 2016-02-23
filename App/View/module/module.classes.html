@@ -1,0 +1,187 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css" />
+<style>
+.img-flip {
+        position:absolute;
+        width:16px;
+        height:16px;
+        -webkit-transform:rotate(180deg);
+        -moz-transform:rotate(180deg);
+        -ms-transform:rotate(180deg);
+        transform:rotate(180deg);
+    }
+</style>
+<div class="im-wrap" id="loadForm">
+	<div class="im-title borderBtmCd">
+		<em><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></em>
+		<h1>子分类管理 </h1>
+	</div>
+	<br>
+	<form id="moduleclass" >
+	<input type="hidden" name="moduleId" value="<?=$moduleId?>">
+    <input type="hidden" name="id" id="id" value="<?=$id?>">
+	<ul class="confit-list borderBtmCd">
+		<li>
+			<label>
+				<span>分类名称</span>
+				<input type="text" name="name" id="classname" maxlength="8" value="<?=$classes['name']?>"  class="inputbig" />
+			</label>
+		</li>
+	</ul>
+	<table class="importable" id="classItems">
+		<tr>
+			<td width="40%" >对应商品</td>
+			<td width="20%">商标号</td>
+			<td width="40%">操作</td>
+		</tr>
+		<?foreach ($classesItem['rows'] as $ky => $vl) { ?>
+		<input type='hidden' value='<?=$vl['number']?>===<?=$vl['name']?>' name='numbers[]' id="item-<?=$ky?>" >
+		<tr id="ClassItem-<?=$ky?>" class="ClassItem">
+			<td class="ClassItemName" ><?=$vl['name']?></td>
+			<td class="ClassItemNumber" ><?=$vl['number']?></td>
+			<td>
+				<a href="javascript:void(0);" onclick="delClassItem(<?=$ky?>)">删除</a>
+				<a href="javascript:void(0);" onclick="editClassItem(<?=$vl['number']?>,<?=$ky?>);">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
+				<span onclick="orderBasic(<?=$v['id']?>, 1, 3)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
+				<span class="img-flip" onclick="orderBasic(<?=$v['id']?>, 2, 3)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>	
+			</td>
+		</tr>
+		<?}?>
+	</table>
+	<table class="importable">
+		<tr id="newclassitem" style="display:none;">
+			<input type="hidden" id="sbclassitem" />
+			<td><input type="text" id="sbnumber" maxlength="20"  class="inputbig" placeholder="请输入商标号" /></td>
+			<td><em id="tradetip"></em></td>
+			<td><a href="javascript:void(0)" class="nextanext" id="addsb">确定</a><a href="javascript:void(0)" class="cancelanext" id="cancelaclassitem">取消</a></td>
+		</tr>
+	</table>
+	<br>
+	<a href="javascript:void(0)" class="nexta" id="addclassitem">+ 新增商品</a>
+	<br>
+	<div class="thistip" ><em  class="cFF6701" >每条分类最多可添加8条展示商品</em><div>
+	<br>
+	<a href="javascript:void(0)" class="nexta" id="adddata">确定创建</a><a href="javascript:void(0)" class="cancela">取消</a>
+	</form>
+</div>	
+
+<script type="text/javascript">
+    $(function(){
+		//添加商品界面显示
+		$('#addclassitem').click(function(){
+			if(!$('#newclassitem').is(':visible')){
+				$('#newclassitem').show();
+			}else{
+				$('#newclassitem').hide();
+			}
+		})
+		
+		//取消添加
+		$('#cancelaclassitem').click(function(){
+			$('#newclassitem').hide();	
+		})
+		//添加商标
+		$('#addsb').click(function(){
+			var number = $('#sbnumber').val();
+			if(!number || number == '请输入商标号'){
+				$('#tradetip').html('请输入商标号');
+				return false;
+			}
+			$('#tradetip').hide();
+			
+			var ClassItemNum = $('.ClassItem').length;
+			$.ajax({
+				type : 'post',
+				url  : '/module/gettrade/',
+				data : {number:number},
+				dataType : 'json',
+				success : function (data){
+					if (data.code==1){
+						
+						$('#sbnumber').val('');
+						var itemId = $('#sbclassitem').val();
+						if(itemId !== ''){
+							$('#ClassItem-'+itemId).find('.ClassItemName').html(data.name);
+							$('#ClassItem-'+itemId).find('.ClassItemNumber').html(number);
+							$('#item-'+itemId).val(number+"==="+data.name);
+						}else{
+							var str="<tr><td class=\"ClassItemName\" >"+data.name+"</td><td class=\"ClassItemNumber\" >"+number+"</td><td>";
+							str += "<a href=\"javascript:void(0);\" onclick=\"delPic("+ClassItemNum+")\">删除</a><a href=\"javascript:void(0);\" onclick=\"setPic();\">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;";
+							str += "<a href=\"javascript:void(0);\" onclick=\"delPic("+data.id+")\">删除</a><a href=\"javascript:void(0);\" onclick=\"setPic();\">编辑</a> |";
+							str += "</td></tr>";
+							$('#classItems').append(str);
+							var inputs = "<input type='hidden' value='"+number+"==="+data.name+"' name='numbers[]' id='item-"+ClassItemNum+"' >";
+							$('#moduleclass').append(inputs);
+						}
+						$('#sbclassitem').val('');
+						
+					}else{
+						$('#tradetip').html('错误。无该商标信息，请验证后输入');
+					}
+				},
+				error : function (data){
+					layer.msg('操作失败，请稍后重试。', {
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+				}
+			});
+		})
+		
+		//添加分类数据
+		$('#adddata').click(function(){
+			var classname = $('#classname').val();
+			if(!classname){
+				layer.msg('请填写分类名称', {
+					time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				});
+				return false;
+			}
+			var data = $("#moduleclass").serialize();
+			$.ajax({
+				type : 'post',
+				url  : '/module/setClass/',
+				data : data,
+				dataType : 'json',
+				success : function (data){
+					if (data.code==1){
+						layer.msg('操作成功！', {
+							time: 1000 //2秒关闭（如果不配置，默认是3秒）
+						}, function(){
+							parent.window.location.reload();
+						});
+					}else{
+						layer.msg(data.msg, {
+							time: 1000 //2秒关闭（如果不配置，默认是3秒）
+						});
+					}
+				},
+				error : function (data){
+					layer.msg('操作失败，请稍后重试。', {
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+				}
+			});
+		})
+		
+		 $(".im-title-span,.cancela,.closed").on("click",function(){
+            parent.layer.closeAll();
+        });
+	})
+	
+	//编辑显示框
+	function editClassItem(number,itemId){
+		$('#sbclassitem').val(itemId);
+		$('#sbnumber').val(number);
+		$('#newclassitem').show();
+	}
+	
+	//删除
+	function delClassItem(itemId)
+    {
+		$('#ClassItem-'+itemId).remove();
+		$('#item-'+itemId).remove();
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

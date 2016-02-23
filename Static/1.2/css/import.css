@@ -112,12 +112,48 @@ a{color:inherit;font-size:inherit;}
 	font-size:16px;
 	color:#fff;
 	text-decoration:none;
-
 }
 .nexta{
 	background: #FF9999;
 }
 .cancela{
+	margin-left:5px;
+	background: #C9C9C9;
+}
+
+
+.nextanext,.cancelanext{
+	display:inline-block;
+	width: 80px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	font-size:14px;
+	color:#fff;
+	text-decoration:none;
+	border-radius: 3px;
+}
+
+.inputbig{
+	width:200px;
+	height:28px;
+}
+
+
+.thistip{
+	width:210px;
+	height:30px;
+	border:1px solid #E5EAF1;
+	margin-top:10px;
+	padding:5px 0 5px 5px;
+	background-color:#FFFF99;
+}
+
+
+.nextanext{
+	background: #FF9999;
+}
+.cancelanext{
 	margin-left:5px;
 	background: #C9C9C9;
 }
@@ -149,4 +185,18 @@ a{color:inherit;font-size:inherit;}
 .check input{
 	margin:0px;
 	vertical-align:top;
+}
+
+.importable{
+	border:1px solid #E5EAF1;
+	width:100%;
+}
+
+.importable tr{
+	border:1px solid #E5EAF1;
+	height:40px;
+}
+
+.importable td{
+	padding-left:10px;
 }

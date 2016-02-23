@@ -40,17 +40,220 @@ class moduleAction extends AppAction
 		$this->display();
 	}
 	
+	
 	/**
-	 * 添加首页模块设置
+	 * 添加/编辑首页模块设置
 	 * 
 	 * @author	Jeany
 	 * @since	2016-02-17
 	 * @access	public
 	 * @return	void
 	 */
-	public function add()
+	public function edit()
 	{	
+		$moduleId 	= $this->input('id', 'int', '0');
+		$module = $moduleClass = $moduleAds = $moduleLink = array();
+		if($moduleId){
+			$module 	= $this->load('module')->getModuleInfo($moduleId);
+			$moduleClass = $this->load('module')->getModuleClassList($moduleId);
+			
+			if($moduleClass['rows']){
+				foreach($moduleClass['rows'] as $k => $v){
+					$moduleClass['rows'][$k]['itemNum'] = $this->load('module')->getModuleClassItemNum($v['id']);
+				}
+			}
+			$moduleAds  = $this->load('module')->getModuleAdsList($moduleId);
+			$moduleLink  = $this->load('module')->getModuleLinkList($moduleId);
+		}
+		
+		
+		$referr = Session::get('edit_referr');
+		$this->set('module', $module);
+		$this->set('moduleClass', $moduleClass);
+		$this->set('moduleAds', $moduleAds);
+		$this->set('moduleLink', $moduleLink);
+		$this->set('referr', $referr);
 		$this->display();
+	}
+	
+	
+	/**
+	 * 删除
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-18
+	 * @access	public
+	 * @return	void
+	 */
+	public function delModule()
+	{	
+		$moduleId 	= $this->input('id', 'int', '0');
+		
+		$res  = $this->load('module')->delModule($moduleId);
+		$moduleClass = $this->load('module')->getModuleClassList($moduleId);
+		if($moduleClass['rows']){
+			
+			foreach($moduleClass['rows'] as $k => $v){
+				$this->load('module')->delClass($v['id'],$moduleId);
+				$this->load('module')->delClassItems($v['id']);
+			}
+		}
+		$this->load('module')->delLink(0,$moduleId);
+		$this->load('module')->delPic(0,$moduleId);
+		
+		if ( $res ){
+			$this->returnAjax(array('code'=>1));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'删除错误'));
+		
+	}
+	
+	
+	/**
+	 * 添加/编辑模块链接
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-17
+	 * @access	public
+	 * @return	void
+	 */
+	public function setModule()
+	{	
+		//参数
+		$id 	= $this->input('id','int','0');
+		$isUse  = $this->input('isUse','int','0');
+		$name = $this->input('name','text','');
+		
+		if ( $name == '' ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请输入名称'));
+		}
+		
+		if ( $id <= 0 ){
+			$res = $this->load('module')->addModule($name,$isUse);
+			$id = $res;
+		}else{
+			$res = $this->load('module')->updateModule($name, $isUse, $id);
+		}
+		if ( $res ){
+			$this->returnAjax(array('code'=>1,'msg'=>'成功','moduleId'=>$id));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
+	}
+	
+	/**
+	 * 木块分类
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-17
+	 * @access	public
+	 * @return	void
+	 */
+	public function classes()
+	{	
+		$moduleId = $this->input('moduleId', 'int', 0);
+		$id = $this->input('id', 'int', 0);
+		$classes = $classesItem = array();
+		if ( $id > 0 ){
+			$classes = $this->load('module')->getClassInfo($moduleId, $id);
+			$classesItem = $this->load('module')->getModuleClassItemsList($id);
+		}
+		$this->set('id', $id);
+		$this->set('moduleId', $moduleId);
+		$this->set('classes', $classes);
+		$this->set('classesItem', $classesItem);
+		$this->display();
+	}
+	
+	
+	/**
+	 * 添加推广链接
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-17
+	 * @access	public
+	 * @return	void
+	 */
+	public function gettrade()
+	{	
+		$number = $this->input('number', 'int', 0);
+		$trade  = array();
+		if ( $number > 0 ){
+			$data = $this->load('internal')->getSaleByNumber($number);
+			if($data){		
+				$res['name'] = $data['name'];
+				$res['code'] = 1;
+			}else{
+				$res['code'] = 0;
+			}
+		}
+		$this->returnAjax($res);
+	}
+
+	/**
+	 * 添加、编辑分类
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-17
+	 * @access	public
+	 * @return	void
+	 */
+	public function setClass()
+	{	
+		//参数
+		$params = $this->getFormData();
+		if ( $params['moduleId'] <= 0 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+		}
+		if ( $params['name'] == '' ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请填写分类名称'));
+		}
+		$classId = $params['id'];
+		unset($params['id']);
+		
+		if ( $classId <= 0 ){
+			$params['date'] = time();
+			$classId = $this->load('module')->addClass($params['name'], $params['moduleId']);
+		}else{
+			$this->load('module')->updateClass($params['name'], $classId);
+			$this->load('module')->delClassItems($classId);
+		}
+		
+		if($params['numbers']){
+			foreach($params['numbers'] as $k => $v){
+				$arr = explode("===",$v);
+				$this->load('module')->addClassItems($arr[0],$arr[1], $classId);
+			}
+		}
+			
+		if ( $classId ){
+			$this->returnAjax(array('code'=>1,'msg'=>'成功'));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
+	}
+	
+	/**
+	 * 删除推广链接
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-17
+	 * @access	public
+	 * @return	void
+	 */
+	public function delClass()
+	{	
+		$moduleId = $this->input('moduleId', 'int', 0);
+		$id 	= $this->input('id', 'int', 0);
+		if ( $moduleId <= 0 || $id <= 0 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
+		}
+		
+		$class = $this->load('module')->getClassInfo($moduleId, $id);
+		$res = $this->load('module')->delClass($id, $moduleId);
+		$this->load('module')->delClassItems($id);
+		if ( $res ){
+			$this->returnAjax(array('code'=>1));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'删除错误'));
 	}
 	
 	
@@ -226,6 +429,9 @@ class moduleAction extends AppAction
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
 	}
 	
+	
+	
+	
 	/**
 	 * 删除推广链接
 	 * 
@@ -250,47 +456,34 @@ class moduleAction extends AppAction
 	
 	
 	/**
-	 * 添加首页模块设置
+	 * 删除推广链接
 	 * 
 	 * @author	Jeany
 	 * @since	2016-02-17
 	 * @access	public
 	 * @return	void
 	 */
-	public function edit()
+	public function sortChaneg()
 	{	
-		$moduleId 	= $this->input('id', 'int', '0');
-		$module 	= $this->load('module')->getModuleInfo($moduleId);
-		$moduleClass = $this->load('module')->getModuleClassList($moduleId);
-		$moduleAds  = $this->load('module')->getModuleAdsList($moduleId);
-		$moduleLink  = $this->load('module')->getModuleLinkList($moduleId);
+		$id = $this->input('id', 'int', 0);
+		$type = $this->input('type', 'int', 0);
+		$updown = $this->input('updown', 'int', 0); //1上，2下
 		
-		$referr = Session::get('edit_referr');
-		$this->set('module', $module);
-		$this->set('moduleClass', $moduleClass);
-		$this->set('moduleAds', $moduleAds);
-		$this->set('moduleLink', $moduleLink);
-		$this->set('referr', $referr);
-		$this->display();
+		if ( $id <= 0 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
+		}
+		
+		$res = this->load('module')->sortUpDown($id, $updown, $type);
+		
+		if ( $res ){
+			$this->returnAjax(array('code'=>1));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'删除错误'));
 	}
 	
 	
-	/**
-	 * 删除
-	 * 
-	 * @author	Jeany
-	 * @since	2016-02-18
-	 * @access	public
-	 * @return	void
-	 */
-	public function delete()
-	{	
-		$moduleId 	= $this->input('id', 'int', '0');
-		$this->import('module')->remove($role);
-		$module 	= $this->load('module')->getModuleInfo($moduleId);
-		$moduleClass = $this->load('module')->getModuleClassList($moduleId);
-		$moduleAds  = $this->load('module')->getModuleAdsList($moduleId);
-		$moduleLink  = $this->load('module')->getModuleLinkList($moduleId);
-	}
+	
+	
+	
 }
 ?>

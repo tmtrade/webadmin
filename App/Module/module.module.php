@@ -224,7 +224,7 @@ class ModuleModule extends AppModule
 		$flag2 = $this->import($import)->modify($update2, $rOC);
 
         if ( $flag1 && $flag2 ) {
-            return 
+            return true;
         }
 
         return false;

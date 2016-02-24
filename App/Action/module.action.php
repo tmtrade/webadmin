@@ -473,7 +473,7 @@ class moduleAction extends AppAction
 			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
 		}
 		
-		$res = this->load('module')->sortUpDown($id, $updown, $type);
+		$res = $this->load('module')->sortUpDown($id, $updown, $type);
 		
 		if ( $res ){
 			$this->returnAjax(array('code'=>1));

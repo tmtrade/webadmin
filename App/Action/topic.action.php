@@ -65,6 +65,35 @@ class topicAction extends AppAction
 		$this->display();
 	}
 	
+	
+	
+	/**
+	 * 添加/编辑首页模块设置
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-17
+	 * @access	public
+	 * @return	void
+	 */
+	public function setTopic()
+	{	
+		//参数
+		$params = $this->getFormData();
+		if ( $params['id'] <= 0 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+		}
+		if ( $params['title'] == '' ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请填写专题标题'));
+		}
+		$id = $params['id'];
+		unset($params['id']);
+		$res = $this->load('topic')->updateTopic($params, $id);
+		if ( $res ){
+			$this->returnAjax(array('code'=>1,'msg'=>'成功'));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
+	}
+	
 	public function add()
 	{
 		if ( !$this->isPost() ){
@@ -88,6 +117,119 @@ class topicAction extends AppAction
 	}
 	
 	/**
+	 * 弹出添加商标的界面
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-24
+	 * @access	public
+	 * @return	void
+	 */
+	public function items()
+	{
+		
+		$topicId =  $this->input('topicId', 'int', '0');
+		$id =  $this->input('id', 'int', '0');
+		$items = array();
+		if($id > 0){
+			$items = $this->load('topic')->getTopicClassInfo($id);
+		}
+		$this->set('items', $items);
+		$this->set('topicId', $topicId);
+		$this->display();
+		exit;
+		
+	}
+	
+	/**
+	 * 弹出添加商标的界面
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-24
+	 * @access	public
+	 * @return	void
+	 */
+	public function setitems()
+	{
+		
+		$number   = $this->input('number', 'string', '');
+		$topicId = $this->input('topicId', 'int', '');
+		$id = $this->input('id', 'int', '');
+        if ( empty($number) ){
+            $this->returnAjax(array('code'=>2,'msg'=>'请填写商标号'));
+        }
+		
+		$dataN = $this->load('internal')->getSaleByNumber($number);
+		if(!$dataN){		
+			$this->returnAjax(array('code'=>2,'msg'=>'不存在该商标'));
+		}
+				
+        $data = array(
+            'name'     => $dataN['name'],
+            'number'    => $number,
+            'topicId'  	=> $topicId,
+        );
+		if($id > 0){
+			$res = $this->load('topic')->updateTopicClass($data,$id);
+		}else{
+			$data['date'] = time();
+			$res = $this->load('topic')->addTopicClass($data,$topicId);
+		}
+        
+        if ( $res ){
+            $this->returnAjax(array('code'=>1,'id'=>$res));
+        }
+        $this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
+	}
+	
+	
+	/**
+	 * 获取商标
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-17
+	 * @access	public
+	 * @return	void
+	 */
+	public function gettrade()
+	{	
+		$number = $this->input('number', 'int', 0);
+		$trade  = array();
+		if ( $number > 0 ){
+			$data = $this->load('internal')->getSaleByNumber($number);
+			if($data){		
+				$res['name'] = $data['name'];
+				$res['code'] = 1;
+			}else{
+				$res['code'] = 0;
+			}
+		}
+		$this->returnAjax($res);
+	}
+	
+	
+	//图片上传
+	public function ajaxUploadPic()
+    {
+        $msg = array(
+            'code'  => 0,
+            'msg'   => '',
+            'img'   => '',
+            );
+        if ( empty($_FILES) || empty($_FILES['fileName']) ) {
+            $msg['msg'] = '请上传图片';
+            $this->returnAjax($msg);
+        }
+        $obj = $this->load('upload')->uploadAdPic('fileName', 204800, 'img');
+        if ( $obj->_imgUrl_ ){
+            $msg['code']    = 1;
+            $msg['img']     = $obj->_imgUrl_;
+        }else{
+            $msg['msg']     = $obj->msg;
+        }
+        $this->returnAjax($msg);
+    }
+	
+	/**
 	 * 删除
 	 * 
 	 * @author	Jeany
@@ -99,13 +241,10 @@ class topicAction extends AppAction
 	{	
 		$id   = $this->input('id', 'int', '0');
 		
-		$res  = $this->load('topic')->delTopic($moduleId);
+		$res  = $this->load('topic')->delTopic($id);
 		$topicClass = $this->load('topic')->getTopicClassList($id);
 		if($topicClass['rows']){
-			
-			foreach($topicClass['rows'] as $k => $v){
-				$this->load('topic')->delTopicClass($v['id'],$id);
-			}
+			$res  = $this->load('topic')->delTopicClass(0,$id);
 		}
 		if ( $res ){
 			$this->returnAjax(array('code'=>1));
@@ -114,5 +253,25 @@ class topicAction extends AppAction
 		
 	}
 	
+
+	/**
+	 * 删除
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-18
+	 * @access	public
+	 * @return	void
+	 */
+	public function delItems()
+	{	
+		$id   	  = $this->input('id', 'int', '0');
+		$topicId  = $this->input('topicId', 'int', '0');
+		
+		$res  = $this->load('topic')->delTopicClass($id,$topicId);
+		if ( $res ){
+			$this->returnAjax(array('code'=>1));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'删除错误'));
+	}
 }
 ?>

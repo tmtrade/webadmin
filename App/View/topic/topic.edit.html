@@ -14,15 +14,19 @@
     }
 </style>
 <div class="wrap">
-<form id="moduleclass" >
-	<input type="hidden" name="moduleId" id="moduleId" value="<?=$module['id']?>">
+	
     <div class="wrap-top">
         <h4>专题设置 》 创建专题</h4><span></span>
     </div>
 	<div class="mj-ztBar f-clearfix">
         <span class="mj-ztBr">
-            <a class="btn btn-info" href="<?=$referr?>">返回</a>
+            <a class="btn btn-info" href="/topic/index/">返回</a>
         </span>
+		<form id="topics" >
+		<input type="hidden" name="id" id="topicId" value="<?=$topic['id']?>">
+		<input type="hidden" name="pic" id="pic" value="<?=$topic['pic']?>">
+		<input type="hidden" name="banner" id="banner" value="<?=$topic['banner']?>">
+		<input type="hidden" name="bgImg" id="bgImg" value="<?=$topic['bgImg']?>">
 		<div>
 			<ul>
 				<li>
@@ -30,15 +34,15 @@
 				</li>
 				<li>
 					<label>专题标题：</label>
-					<input type="text" name="name" id="modulename" value="<?=$module['name']?>" maxlength="8" />
+					<input type="text" name="title" id="title" value="<?=$topic['title']?>" maxlength="8" />
 					<p style="margin:20px 0;padding:0 5px 0 5px;background-color:#FFFF99;border:1px solid #dadada;width:260px;">模块标题最多不可超过8个中文字符。</p>
 				</li>
 				<li>
 					<label>专题图片：</label>
-					<p><img src="<?if($pic['pic']){echo $pic['pic'];}else{echo StaticDir."1.2/images/ztpic.png";}?>" id="showpic" width="355px" height="100px" /></p>
+					<img src="<?if($topic['pic']){echo $topic['pic'];}else{echo StaticDir."1.2/images/ztpic.png";}?>" id="showpic" width="355px" height="100px" />
 					<p>
-						<div class="ztlist">
-							<input type="file" id="tjfile" name="fileName" style="display: inline-block;"/>
+						<div class="ztpicdiv">
+							<input type="file" id="ztpic" name="fileName" style="display: inline-block;"/>
 						</div>
 						<em  class="cFF6701" id="tipshow">注：图片建议尺寸为560X155，文件最大不超过200KB，当前支持PG,PNG,BMP,GIF格式文件</em>
 					</p>
@@ -46,10 +50,10 @@
 				<li><br><hr><br></li>
 				<li>
 					<label>banner图：</label>
-					<p><img src="<?if($pic['pic']){echo $pic['pic'];}else{echo StaticDir."1.2/images/ztbanner.png";}?>" id="showpic" width="930px" height="130px" /></p>
+					<img src="<?if($topic['banner']){echo $topic['banner'];}else{echo StaticDir."1.2/images/ztbanner.png";}?>" id="showbanner" width="930px" height="130px" />
 					<p>
-						<div class="ztbanner">
-							<input type="file" id="tjfile" name="fileName" style="display: inline-block;"/>
+						<div class="ztbannerdiv">
+							<input type="file" id="ztbanner" name="fileName" style="display: inline-block;"/>
 						</div>
 						<em  class="cFF6701" id="tipshow">注： 广告图片建议尺寸为 ( 1920 ) x ( 864 )，文件最大不超过200kb，当前支持jpg,bmp,png格式文件</em>
 					</p>
@@ -57,42 +61,51 @@
 				<li><br><hr><br></li>
 				<li>
 					<label>背景设置：</label>
-					<input type="text" name="bgColor" id="bgColor" value="<?=$module['name']?>" maxlength="8" />
-					<a href="javascript:void(0);"  class="btn btn-default" id="cp5" >选色</a>
+					<input type="text" name="bgColor" id="bgColor" value="<?=$topic['bgColor']?>" maxlength="8" /><a href="javascript:void(0);"  class="btn btn-default" id="cp5" >选色</a>
 					<p style="margin:20px 0;padding:0 5px 0 5px;">请输入色码或选择颜色</p>
 				</li>
 				<li><br><hr><br></li>
 				<li>
 					<label>背景图片：</label>
-					<p><img src="<?if($pic['pic']){echo $pic['pic'];}else{echo StaticDir."1.2/images/ztbanner.png";}?>" id="showpic" width="930px" height="130px" /></p>
+					<img src="<?if($topic['bgImg']){echo $topic['bgImg'];}else{echo StaticDir."1.2/images/ztbg.png";}?>" id="showbg" width="200px" height="130px"  />
 					<p>
-						<div class="ztbanner">
-							<input type="file" id="tjfile" name="fileName" style="display: inline-block;"/>
+						<div class="ztbgdiv">
+							<input type="file" id="ztbg" name="fileName" style="display: inline-block;"/>
 						</div>
-						<em  class="cFF6701" id="tipshow">注： 广告图片建议尺寸为 ( 1920 ) x ( 864 )，文件最大不超过200kb，当前支持jpg,bmp,png格式文件</em>
+						<em  class="cFF6701" id="tipshow">注： 背景图片最大不超过200kb，当前支持jpg,bmp,png格式文件</em>
+						
 					</p>
+					<select name="bgImgShow" >
+							<option value="1" <?if($topic['bgImgShow'] == 1)echo "selected"; ?>>展示一次</option>
+							<option value="2" <?if($topic['bgImgShow'] == 2)echo "selected"; ?>>平铺</option>
+						</select>
 				</li>
 			</ul>
 		</div>
-		<hr>    
+		</form>
+		<hr>   
+		<div class="mj-deiBlist">
+			<div class="mj-deiBtns">
+				<a href="javascript:void(0);" id="addtopic">确定</a>
+			</div>
+		</div>		
 		<hr>
 		<div class="mj-sellT">
 			<p>对应商品</p>
 			<table>
-				<tbody>
+				<tbody id="classItems">
 				<tr>
 					<td>商品名称</td>
 					<td>商标号</td>
 					<td>操作</td>
 				</tr>
 				<?foreach ($topicItems['rows'] as $ky => $vl) { ?>
-				<input type='hidden' value='<?=$vl['number']?>===<?=$vl['name']?>' name='numbers[]' id="item-<?=$ky?>" >
-				<tr>
-					<td><?=$vl['name']?></td>
-					<td><?=$vl['number']?></td>
+				<tr id="ClassItem-<?=$ky?>" class="ClassItem">
+					<td class="ClassItemName" ><?=$vl['name']?></td>
+					<td class="ClassItemNumber" ><?=$vl['number']?></td>
 					<td>
-						<a href="javascript:void(0);" onclick="delClassItem(<?=$ky?>)">删除</a>
-						<a href="javascript:void(0);" onclick="editClassItem(<?=$vl['number']?>,<?=$ky?>);">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
+						<a href="javascript:void(0);" onclick="delItems(<?=$vl['id']?>)">删除</a>
+						<a href="javascript:void(0);" onclick="setitems(<?=$vl['id']?>);">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
 						<span onclick="sortChaneg(<?=$v['id']?>, 2, 1)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
 						<span class="img-flip" onclick="sortChaneg(<?=$v['id']?>, 2, 2)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
 					</td>
@@ -100,105 +113,38 @@
 				<?}?>
 				</tbody>
 			</table>
-			<table class="importable">
-				<tr id="newclassitem" style="display:none;">
-					<input type="hidden" id="sbclassitem" />
-					<td><input type="text" id="sbnumber" maxlength="20"  class="inputbig" placeholder="请输入商标号" /></td>
-					<td><em id="tradetip"></em></td>
-					<td><a href="javascript:void(0)" class="nextanext" id="addsb">确定</a><a href="javascript:void(0)" class="cancelanext" id="cancelaclassitem">取消</a></td>
-				</tr>
-			</table>
 			<br>
-			<a href="javascript:void(0)" class="nexta" id="addclassitem">+ 新增商品</a>
+			<?if($ky < 8){ ?>
+			<a href="javascript:void(0)" class="nexta" id="additems">+ 新增商品</a>
+			<?php } ?>
 			<br>
 			<div class="thistip" ><em  class="cFF6701" >每条分类最多可添加8条展示商品</em></div>
 			<br>
 		</div>
-		<div class="mj-deiBlist">
-			<div class="mj-deiBtns">
-				<?if($moduleLink['total'] < 8 ){?>
-				<a href="javascript:void(0);" id="addlink">新增推广链接</a>
-				<?}?>
-			</div>
-		</div>
+		
 	</div>
 
 
 <script type="text/javascript">
     $(function(){
 		//添加商品界面显示
-		$('#addclassitem').click(function(){
-			if(!$('#newclassitem').is(':visible')){
-				$('#newclassitem').show();
-			}else{
-				$('#newclassitem').hide();
-			}
+		$('#additems').click(function(){
+			setitems(0);
 		})
 		
-		//取消添加
-		$('#cancelaclassitem').click(function(){
-			$('#newclassitem').hide();	
-		})
-		//添加商标
-		$('#addsb').click(function(){
-			var number = $('#sbnumber').val();
-			if(!number || number == '请输入商标号'){
-				$('#tradetip').html('请输入商标号');
-				return false;
-			}
-			$('#tradetip').hide();
-			
-			var ClassItemNum = $('.ClassItem').length;
-			$.ajax({
-				type : 'post',
-				url  : '/module/gettrade/',
-				data : {number:number},
-				dataType : 'json',
-				success : function (data){
-					if (data.code==1){
-						
-						$('#sbnumber').val('');
-						var itemId = $('#sbclassitem').val();
-						if(itemId !== ''){
-							$('#ClassItem-'+itemId).find('.ClassItemName').html(data.name);
-							$('#ClassItem-'+itemId).find('.ClassItemNumber').html(number);
-							$('#item-'+itemId).val(number+"==="+data.name);
-						}else{
-							var str="<tr><td class=\"ClassItemName\" >"+data.name+"</td><td class=\"ClassItemNumber\" >"+number+"</td><td>";
-							str += "<a href=\"javascript:void(0);\" onclick=\"delPic("+ClassItemNum+")\">删除</a><a href=\"javascript:void(0);\" onclick=\"setPic();\">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;";
-							str += "<a href=\"javascript:void(0);\" onclick=\"delPic("+data.id+")\">删除</a><a href=\"javascript:void(0);\" onclick=\"setPic();\">编辑</a> |";
-							str += "</td></tr>";
-							$('#classItems').append(str);
-							var inputs = "<input type='hidden' value='"+number+"==="+data.name+"' name='numbers[]' id='item-"+ClassItemNum+"' >";
-							$('#moduleclass').append(inputs);
-						}
-						$('#sbclassitem').val('');
-						
-					}else{
-						$('#tradetip').html('错误。无该商标信息，请验证后输入');
-					}
-				},
-				error : function (data){
-					layer.msg('操作失败，请稍后重试。', {
-						time: 2000 //2秒关闭（如果不配置，默认是3秒）
-					});
-				}
-			});
-		})
-		
-		//添加分类数据
-		$('#adddata').click(function(){
-			var classname = $('#classname').val();
-			if(!classname){
-				layer.msg('请填写分类名称', {
+		//确认编辑
+		$('#addtopic').click(function(){
+			var title = $('#title').val();
+			if(!title){
+				layer.msg('请填写专题标题', {
 					time: 2000 //2秒关闭（如果不配置，默认是3秒）
 				});
 				return false;
 			}
-			var data = $("#moduleclass").serialize();
+			var data = $("#topics").serialize();
 			$.ajax({
 				type : 'post',
-				url  : '/module/setClass/',
+				url  : '/topic/setTopic/',
 				data : data,
 				dataType : 'json',
 				success : function (data){
@@ -206,7 +152,7 @@
 						layer.msg('操作成功！', {
 							time: 1000 //2秒关闭（如果不配置，默认是3秒）
 						}, function(){
-							parent.window.location.reload();
+							window.location.reload();
 						});
 					}else{
 						layer.msg(data.msg, {
@@ -222,64 +168,103 @@
 			});
 		})
 		
-		$(".tjform").wrap("<form id='tjformupload' action='/module/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
-        $("#tjfile").on('change', function(){
-            $("#tjformupload").ajaxSubmit({
-                dataType:  'json',
-                success: function(data) {
-                    if (data.code == 1){
-                        $('#pic').val(data.img);
-                        $('#showpic').attr('src', data.img);
-                    }else{
-                        alert(data.msg);
-                    }
-                },
-                error:function(xhr){
-                    alert('图片格式不正确或图片过大，请重新上传！');
-                }
-            });
+		//上传图片
+		$(".ztpicdiv").wrap("<form id='tjformuploadpic' action='/topic/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#ztpic").change(function(){
+            upImg($("#tjformuploadpic"),$('#showpic'),$('#pic'));
+        });
+		
+		//上传图片
+		$(".ztbannerdiv").wrap("<form id='tjformuploadbanner' action='/topic/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#ztbanner").change(function(){
+            upImg($("#tjformuploadbanner"),$('#showbanner'),$('#banner'));
+        });
+		
+		//上传图片
+		$(".ztbgdiv").wrap("<form id='tjformuploadbg' action='/topic/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#ztbg").change(function(){
+            upImg($("#tjformuploadbg"),$('#showbg'),$('#bgImg'));
         });
 	})
 	
-	//编辑显示框
-	function editClassItem(number,itemId){
-		$('#sbclassitem').val(itemId);
-		$('#sbnumber').val(number);
-		$('#newclassitem').show();
+	function setitems(id)
+	{
+		var topicId = $('#topicId').val();
+		if ( topicId <= 0) return false;
+		var url = '?topicId='+topicId+'&id='+id;
+		layer.open({
+			type: 2,
+			scrollbar: false,
+			title: '对应商品',
+			area: ['400px', '200px'],
+			content: '/topic/items/'+url,
+		});
 	}
-	
-	//删除
-	function delClassItem(itemId)
-    {
-		$('#ClassItem-'+itemId).remove();
-		$('#item-'+itemId).remove();
-    }
+
+
+	//上传图片
+	function upImg(form,srcobj,picval){
+		form.ajaxSubmit({
+			dataType:  'json',
+			success: function(data) {
+				if (data.code == 1){
+					picval.val(data.img);
+					srcobj.attr('src', data.img);
+				}else{
+					alert(data.msg);
+				}
+			},
+			error:function(xhr){
+				alert('图片格式不正确或图片过大，请重新上传！');
+			}
+		});
+	}
 </script>
-<script type="text/javascript" src="<?=StaticDir?>1.2/js/jquery.js"></script> 
+
 <script type="text/javascript" src="<?=StaticDir?>1.2/js/jquery.colorpicker.js"></script> 
 <script type="text/javascript">
     $(function(){
-		var moduleId = $('#moduleId').val();
-		/**新增推广链接**/
-		$('#addlink').click(function(){
-			setLink(moduleId,0);
-		})
-		/**新增广告图**/
-		$('#addpic').click(function(){
-			setPic(moduleId,0);
-		})			
-		
-		/**新增分类**/
-		$('#addclass').click(function(){
-			setClass(moduleId,0);
-		})
-		
 		$("#cp5").colorpicker({
             fillcolor:true,
             event:'mouseover',
             target:$("#bgColor")
         });
     })
+
+//删除分类
+function delItems(id)
+{	var topicId = $('#topicId').val();
+	if ( id <= 0 || id == '' ) return false;
+	layer.confirm('确认要删除此分类吗？<br>', {
+		btn: ['删了','算了'] //按钮
+	}, function(){
+		$.ajax({
+			type : 'post',
+			url  : '/topic/delItems/',
+			data : {'id':id,'topicId':topicId},
+			dataType : 'json',
+			success : function (data){
+				if (data.code==1){
+					layer.msg('操作成功', {
+						time: 1000 //2秒关闭（如果不配置，默认是3秒）
+					}, function(){
+						window.location.reload();
+					});
+				}else{
+					var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+					layer.msg(msg, {
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+				}
+			},
+			error : function (data){
+				layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
+					time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				});
+			}
+		});
+	});
+}
 </script>
 <? require(ViewDir.'/footer.html'); ?>
 

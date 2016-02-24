@@ -1,0 +1,67 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+
+<div class="mj-infoM" style="width:99%">
+<form name="addTopic" id="addTopic" >
+<input type="hidden" value="<?=$topicId?>" name="topicId" id="topicId">
+<input type="hidden" value="<?=$items['id']?>" name="id" id="id">
+    <label>商标号：</label>
+    <input type="text" class="form-control" value="<?=$items['number']?>" name="number" id="sbnumber">
+    <div style="bottom:10px;position: fixed;">
+        <a href="javascript:void(0);" class="mj-liBtns" onclick="opContact();">确定</a>
+        <a href="javascript:void(0);" class="mj-liBtns mj-abgcg" onclick="closeAll();">取消</a>
+    </div>
+</form>
+</div>
+
+<script type="text/javascript">
+	$(function(){
+		$(".mj-infoM").show();
+	});
+
+    function closeAll()
+    {
+        parent.layer.closeAll();
+    }
+		
+    function opContact()
+    {
+        var number = $('#sbnumber').val();
+		var topicId = $('#topicId').val();
+		var id = $('#id').val();
+		if(!number){
+			layer.msg('请输入商标号', {
+				time: 2000 //2秒关闭（如果不配置，默认是3秒）
+			});
+			$('#sbnumber').focus();
+		}
+		$.ajax({
+			type : 'post',
+			url  : '/topic/setitems/',
+			data : {number:number,topicId:topicId,id:id},
+			dataType : 'json',
+			success : function (data){
+				if (data.code==1){
+					layer.msg('操作成功！', {
+						time: 1000 //2秒关闭（如果不配置，默认是3秒）
+					}, function(){
+						parent.window.location = '/topic/edit/?id='+topicId;
+					});
+				}else{
+					layer.msg(data.msg, {
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+				}
+			},
+			error : function (data){
+				layer.msg('操作失败，请稍后重试。', {
+					time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				});
+			}
+		});
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

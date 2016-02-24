@@ -76,10 +76,10 @@ class TopicModule extends AppModule
     }
 	
 	//首页模块子分类列表信息
-    public function getTopicClassInfo($classId)
+    public function getTopicClassInfo($id)
     {
         $r = array();
-        $r['eq']['id']  = $moduleId;
+        $r['eq']['id']  = $id;
         $r['limit'] = 1;
         $res = $this->import('topicitems')->find($r);
         return $res;
@@ -167,11 +167,9 @@ class TopicModule extends AppModule
     }
 	
 	//编辑首页模块推广链接
-    public function updateTopic($name,$isUse, $id)
+    public function updateTopic($data, $id)
     {
         $r['eq'] = array('id'=>$id);
-		$data['name'] = $name;
-		$data['isUse'] = $isUse;
         return $this->import('topic')->modify($data, $r);
     }
 	

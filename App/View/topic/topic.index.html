@@ -82,7 +82,6 @@
 function delTopic(id)
 {	
 	if ( id <= 0 || id == '' ) return false;
-
 	layer.confirm('确认要删除此模块吗？<br>', {
 		btn: ['删了','算了'] //按钮
 	}, function(){
@@ -117,9 +116,6 @@ function delTopic(id)
 function edit(id){
 	window.location.href="/topic/edit/?id="+id;
 }
- 
-
-
 </script>
 
 <? require(ViewDir.'/footer.html'); ?>

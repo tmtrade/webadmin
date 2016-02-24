@@ -90,6 +90,12 @@
 			$('#tradetip').hide();
 			
 			var ClassItemNum = $('.ClassItem').length;
+			if(ClassItemNum >= 8){
+				layer.msg('最多只能添加8条商品', {
+					time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				});
+			}
+			
 			$.ajax({
 				type : 'post',
 				url  : '/module/gettrade/',
@@ -105,6 +111,9 @@
 							$('#ClassItem-'+itemId).find('.ClassItemNumber').html(number);
 							$('#item-'+itemId).val(number+"==="+data.name);
 						}else{
+							if((ClassItemNum+1) >= 8){
+								$('#addclassitem').hide();
+							}
 							var str="<tr><td class=\"ClassItemName\" >"+data.name+"</td><td class=\"ClassItemNumber\" >"+number+"</td><td>";
 							str += "<a href=\"javascript:void(0);\" onclick=\"delPic("+ClassItemNum+")\">删除</a><a href=\"javascript:void(0);\" onclick=\"setPic();\">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;";
 							str += "<a href=\"javascript:void(0);\" onclick=\"delPic("+data.id+")\">删除</a><a href=\"javascript:void(0);\" onclick=\"setPic();\">编辑</a> |";

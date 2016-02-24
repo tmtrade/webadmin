@@ -81,7 +81,7 @@
             +'<table id="CT" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse" bordercolor="000000"  style="cursor:pointer;">'
             +colorTable+'</table>';
             $("#colorpanel").html(colorTable);
-            $("#_cclose").live('click',function(){
+            $("#_cclose").click(function(){
                 $("#colorpanel").hide();
                 return false;
             }).css({

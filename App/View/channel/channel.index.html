@@ -187,10 +187,9 @@
             var _name   = _this.attr('name');
             var id      = $.trim($("#cid").val());
             if ( id == '' ) return false;
-            layer.confirm('确定要修改吗？<br>注意：修改后，前台显示可能会有一定延迟。', {
-                btn: ['好的','算了'], //按钮
-                scrollbar: false,
-            }, function(){
+            layer.confirm('确定要修改吗？<br>注意：修改后，前台显示可能会有一定延迟。',
+            {btn: ['好的','算了'],  scrollbar: false}, 
+            function(index){
                 $.ajax({
                     type : 'post',
                     url  : '/channel/setUse/',
@@ -215,6 +214,9 @@
                         });
                     }
                 });
+            }, 
+            function(index){
+                window.location.reload();
             });
         });
 

@@ -22,7 +22,7 @@ class TopicModule extends AppModule
         $r = array();
         $r['page']  = $page;
         $r['limit'] = $limit;
-        $r['order'] = array('sort'=>'desc');
+        $r['order'] = array('sort'=>'asc');
         $res = $this->import('topic')->findAll($r);
 		if($res){
 			foreach($res['rows'] as $k => $v){
@@ -40,7 +40,7 @@ class TopicModule extends AppModule
         $r['eq']['id']  = $memberId;
         $r['limit'] = 1;
 		$r['col'] = array('name');
-        $res = $this->import('topic')->find($r);
+        $res = $this->import('member')->find($r);
         return $res['name'];
     }
 	
@@ -48,7 +48,7 @@ class TopicModule extends AppModule
     public function getTopicClassNum($moduleId)
     {
         $r = array();
-		$r['eq']['moduleId'] = $moduleId;
+		$r['eq']['topicId'] = $moduleId;
         $num = $this->import('topicitems')->count($r);
         return $num;
     }

@@ -65,6 +65,27 @@ class topicAction extends AppAction
 		$this->display();
 	}
 	
+	public function add()
+	{
+		if ( !$this->isPost() ){
+			$this->display();
+			exit;
+		}
+		$title = $this->input('title', 'string', '');
+        if ( empty($title) ){
+            $this->returnAjax(array('code'=>2,'msg'=>'请填写标题'));
+        }
+        $data = array(
+            'title'     => $title,
+            'date'      => time(),
+            'memberId'  => $this->userId,
+        );
+        $res = $this->load('topic')->addTopic($data);
+        if ( $res ){
+            $this->returnAjax(array('code'=>1,'id'=>$res));
+        }
+        $this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
+	}
 	
 	/**
 	 * 删除
@@ -76,7 +97,7 @@ class topicAction extends AppAction
 	 */
 	public function delTopic()
 	{	
-		$id 	= $this->input('id', 'int', '0');
+		$id   = $this->input('id', 'int', '0');
 		
 		$res  = $this->load('topic')->delTopic($moduleId);
 		$topicClass = $this->load('topic')->getTopicClassList($id);

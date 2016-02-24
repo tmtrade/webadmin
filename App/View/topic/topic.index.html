@@ -33,7 +33,6 @@
                         <th>专题标题</th>
                         <th>发布时间</th>
                         <th>创建者</th>
-                        <th>专题类型</th>
 						<th>包含商品</th>
                         <th>操作</th>
                     </tr>
@@ -41,11 +40,10 @@
                 <tbody class="table-list">
                 <? foreach ($list as $k => $v) {  ?>
                 <tr>
-					<td><?=$k?></td>
+					<td><?=$v['id']?></td>
                     <td><?=$v['title']?></td>
-					<td><?=$v['date']?></td>
+					<td><?=date('Y-m-d', $v['date'])?></td>
 					<td><?=$v['member']?></td>
-					<td>默认专题</td>
 					<td><?=$v['classNum']?></td>
                     <td>
 						<a href="javascript:void(0);" onclick="delTopic(<?=$v['id']?>);">删除</a>
@@ -60,14 +58,26 @@
         </div>   
 		<br>
 		<div class="btn-group">
-            <button class="btn btn-danger" onclick="add();"    type="button">+ 创建一个模块</button>
+            <button class="btn btn-danger add-topic" type="button">+ 创建一个模块</button>
         </div>
 		
     </div>
 </div>
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+    $(function (){
 
+        $(".add-topic").click(function(){
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '创建专题',
+                area: ['400px', '200px'],
+
+                content: '/topic/add/'
+            });
+        });
+    });
 //删除链接
 function delTopic(id)
 {	
@@ -103,8 +113,9 @@ function delTopic(id)
 		});
 	});
 }
-function add(){
-	window.location.href="/topic/edit/";
+
+function edit(id){
+	window.location.href="/topic/edit/?id="+id;
 }
  
 

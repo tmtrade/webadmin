@@ -9,34 +9,35 @@
 	<form id="modulelink" >
 	<input type="hidden" name="moduleId" value="<?=$moduleId?>">
     <input type="hidden" name="lId" id="cId" value="<?=$lId?>">
-	<ul class="confit-list borderBtmCd">
-		<li>
-			<label>
-				<p><span>推广链接标题</span></p>
-				<p><input type="text" name="title" id="title" value="<?=$link['title']?>" maxlength="8" /></p>
-				<p><em  class="cFF6701" id="tipshow">请输入推广链接标题最多不超过8个字符</em></p>
-			</label>
-		</li>
-		<li>
-			<label>
-				<p><span>链接</span></p>
-				<p><input type="text" name="link" id="link" maxlength="100" value="<?=$link['link']?>" /></p>
-				<p><em  class="cFF6701" >请输入该广告链接，未输入链接则广告不可点击。</em></p>
-			</label>
-		</li>
-		<li>
-			<label>
-				<p><span>是否着重显示</span></p>
-				<p><select name="show">
-					<option value='0' <?if($link['show'] == 0){echo "selected";}?>>普通</option>
-					<option value='1' <?if($link['show'] == 1){echo "selected";}?>>红色</option>
-					<option value='2' <?if($link['show'] == 2){echo "selected";}?>>蓝色</option>
-					<option value='3' <?if($link['show'] == 3){echo "selected";}?>>黄色</option>
-				</select></p>
-			</label>
-		</li>
-	</ul>
-	<a href="javascript:void(0)" class="nexta" id="nextpt">确定创建</a><a href="javascript:void(0)" class="cancela">取消</a>
+    <br>
+    <label>推广链接标题：</label>
+    <input type="text" name="title" class="inpu form-control" id="title" value="<?=$link['title']?>" maxlength="8" />
+    
+    <div class="alert alert-warning" style="padding:4px;margin-bottom:10px;margin-top:10px;" role="alert">
+    请输入推广链接标题最多不超过8个字符
+    </div>
+
+    <label>链接：</label>
+    <input type="text" name="link" class="inpu form-control"  id="link" maxlength="100" value="<?=$link['link']?>" />
+    
+    <div class="alert alert-warning" style="padding:4px;margin-bottom:10px;margin-top:10px;" role="alert">
+    请输入该广告链接，未输入链接则广告不可点击。
+    </div>
+
+    <label>是否着重显示：</label>
+    <div>
+        <select name="show" class="input">
+            <option value='0' <?if($link['show'] == 0){echo "selected";}?>>普通</option>
+            <option value='1' <?if($link['show'] == 1){echo "selected";}?>>红色</option>
+            <option value='2' <?if($link['show'] == 2){echo "selected";}?>>蓝色</option>
+            <option value='3' <?if($link['show'] == 3){echo "selected";}?>>黄色</option>
+        </select>
+    </div>
+
+    <div style="bottom:10px;position: fixed;">
+        <a href="javascript:void(0)" class="nexta" id="nextpt">确定创建</a>
+        <a href="javascript:void(0)" class="cancela">取消</a>
+    </div>
 	</form>
 </div>
 
@@ -54,11 +55,10 @@
 	function opContact()
     {
 		if($('#title').val() == ''){
-			$('#tipshow').html('您还未输入标题');
+			layer.msg('您还未输入标题');
 			return false;
-		}else{
-			$('#tipshow').html('请输入推广链接标题最多不超过8个字符');
 		}
+
         var data = $("#modulelink").serialize();
         $.ajax({
             type : 'post',

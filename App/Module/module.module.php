@@ -89,7 +89,7 @@ class ModuleModule extends AppModule
         $r = array();
 		$r['eq']['moduleId'] = $moduleId;
 		$r['limit'] = 100;
-        $r['order'] = array('sort'=>'desc');
+        $r['order'] = array('sort'=>'asc');
         $data = $this->import('moduleClass')->findAll($r);
         return $data;
     }
@@ -100,7 +100,7 @@ class ModuleModule extends AppModule
         $r = array();
 		$r['eq']['classId'] = $classId;
 		$r['limit'] = 100;
-        $r['order'] = array('sort'=>'desc');
+        $r['order'] = array('sort'=>'asc');
         $data = $this->import('moduleClassItems')->findAll($r);
         return $data;
     }
@@ -112,7 +112,7 @@ class ModuleModule extends AppModule
         $r = array();
 		$r['eq']['moduleId'] = $moduleId;
 		$r['limit'] = 100;
-		$r['order'] = array('sort'=>'desc');
+		$r['order'] = array('sort'=>'asc');
         $data = $this->import('modulePic')->findAll($r);
         return $data;
     }
@@ -123,7 +123,7 @@ class ModuleModule extends AppModule
         $r = array();
 		$r['eq']['moduleId'] = $moduleId;
 		$r['limit'] = 100;
-		$r['order'] = array('sort'=>'desc');
+		$r['order'] = array('sort'=>'asc');
         $data = $this->import('modulelink')->findAll($r);
         return $data;
     }

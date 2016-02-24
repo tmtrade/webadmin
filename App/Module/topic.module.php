@@ -70,7 +70,7 @@ class TopicModule extends AppModule
         $r = array();
 		$r['eq']['topicId'] = $topicId;
 		$r['limit'] = 100;
-        $r['order'] = array('sort'=>'desc');
+        $r['order'] = array('sort'=>'asc');
         $data = $this->import('topicitems')->findAll($r);
         return $data;
     }
@@ -122,21 +122,17 @@ class TopicModule extends AppModule
 				break;
 		}
 		
-		if($where){
-				 $r['eq']    = $where;
-		}
-		
         $rl['eq']   = array('id'=>$id);
         $rl['col']  = array('sort');
         $res = $this->import($import)->find($rl);
         if ( empty($res) ) return false;
 
         $order = $res['sort'];
-
         $r['raw']   = $updown == 1 ? " `sort` > $order " : " `sort` < $order ";
         $ord        = $updown == 1 ? 'asc' : 'desc';
         $r['order'] = array('sort'=>$ord);
         $res = $this->import($import)->find($r);
+		
         if ( empty($res) ) return false;
 
         $changeOrder    = $res['sort'];
@@ -144,7 +140,6 @@ class TopicModule extends AppModule
 
         $update1    = array('sort'=>$changeOrder);//需要交换的
         $update2    = array('sort'=>$order);//被交换的
-
 
 		$rO['eq'] = array('id'=>$id);
 		$rOC['eq'] = array('id'=>$changeId);

@@ -273,5 +273,33 @@ class topicAction extends AppAction
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'删除错误'));
 	}
+	
+	
+	/**
+	 * 删除推广链接
+	 * 
+	 * @author	Jeany
+	 * @since	2016-02-17
+	 * @access	public
+	 * @return	void
+	 */
+	public function sortChaneg()
+	{	
+		$id = $this->input('id', 'int', 0);
+		$type = $this->input('type', 'int', 0);
+		$updown = $this->input('updown', 'int', 0); //1上，2下
+		
+		if ( $id <= 0 ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
+		}
+		
+		$res = $this->load('topic')->sortUpDown($id, $updown, $type);
+		
+		if ( $res ){
+			$this->returnAjax(array('code'=>1));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'排序失败'));
+	}
+	
 }
 ?>

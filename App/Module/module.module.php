@@ -226,7 +226,6 @@ class ModuleModule extends AppModule
         if ( $flag1 && $flag2 ) {
             return true;
         }
-
         return false;
     }
 	

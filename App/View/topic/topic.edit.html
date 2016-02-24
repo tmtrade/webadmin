@@ -106,8 +106,8 @@
 					<td>
 						<a href="javascript:void(0);" onclick="delItems(<?=$vl['id']?>)">删除</a>
 						<a href="javascript:void(0);" onclick="setitems(<?=$vl['id']?>);">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
-						<span onclick="sortChaneg(<?=$v['id']?>, 2, 1)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
-						<span class="img-flip" onclick="sortChaneg(<?=$v['id']?>, 2, 2)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
+						<span onclick="sortChaneg(<?=$vl['id']?>, 2 , 1)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
+						<span class="img-flip" onclick="sortChaneg(<?=$vl['id']?>, 2, 2)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
 					</td>
 				</tr>
 				<?}?>
@@ -201,7 +201,6 @@
 		});
 	}
 
-
 	//上传图片
 	function upImg(form,srcobj,picval){
 		form.ajaxSubmit({
@@ -264,6 +263,36 @@ function delItems(id)
 			}
 		});
 	});
+}
+
+
+function sortChaneg(id, type, updown)
+{
+    if ( id == '' || updown == '' || type == '') return false;
+    $.ajax({
+        type : 'post',
+        url  : '/topic/sortChaneg/',
+        data : {id:id,updown:updown,type:type},
+        dataType : 'json',
+        success : function (data){
+            if (data.code==1){
+                layer.msg('操作成功', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    window.location.reload();
+                });
+            }else{
+                layer.msg(data.msg, {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error : function (data){
+            layer.msg('操作失败，请稍后重试。', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
 }
 </script>
 <? require(ViewDir.'/footer.html'); ?>

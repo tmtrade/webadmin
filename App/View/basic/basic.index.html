@@ -64,7 +64,7 @@
             <? foreach ($list[1] as $k => $v) { ?>
                 <tr>
                     <td align="center" style="vertical-align:middle">
-                    <img class="info-pic" src="<?=$v['pic']?>" /></td>
+                    <img class="info-pic" src="<?=$v['pic']?>" onerror="this.src='/Static/1.2/images/u143.png'" /></td>
                     <td align="center" style="vertical-align:middle">
                     <?=$v['other']==1?'购买模块':'无'?></td>
                     <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
@@ -163,7 +163,7 @@
             <? foreach ($list[3] as $k => $v) { ?>
                 <tr>
                     <td align="center" style="vertical-align:middle">
-                    <img class="info-pic" src="<?=$v['pic']?>" /></td>
+                    <img class="info-pic" src="<?=$v['pic']?>" onerror="this.src='/Static/1.2/images/u143.png'" /></td>
                     <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
                     <td style="vertical-align:middle">
                         <span class="icon icon-delete">
@@ -207,7 +207,7 @@
             <tbody class="table-list">
             <? foreach ($list[4] as $k => $v) { ?>
                 <tr>
-                    <td style="vertical-align:middle"><?=$v['link']?></td>
+                    <td style="vertical-align:middle" class="td-pic"><?=$v['link']?><img class="info-show info-pic" src="<?=$v['pic']?>" onerror="this.src='/Static/1.2/images/u143.png'" /></td>
                     <td style="vertical-align:middle"><?$c=array_filter(explode(',', $v['desc']));echo count($c);?></td>
                     <td style="vertical-align:middle">
                         <span class="icon icon-editor">
@@ -241,6 +241,11 @@
             $(this).parent().parent().children('.info-show').css('display', 'inline-block');
         },function(){
             $(this).parent().parent().children('.info-show').hide();
+        });
+        $(".td-pic").hover(function(){
+            $(this).children('.info-show').css('display', 'inline-block');
+        },function(){
+            $(this).children('.info-show').hide();
         });
 
         $("#add-banner").click(function(){

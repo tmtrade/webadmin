@@ -24,7 +24,7 @@ class ModuleModule extends AppModule
         $r = array();
         $r['page']  = $page;
         $r['limit'] = $limit;
-        $r['order'] = array('sort'=>'desc');
+        $r['order'] = array('sort'=>'asc');
         $res = $this->import('module')->findAll($r);
 		if($res){
 			foreach($res['rows'] as $k => $v){

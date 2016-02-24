@@ -478,7 +478,7 @@ class moduleAction extends AppAction
 		if ( $res ){
 			$this->returnAjax(array('code'=>1));
 		}
-		$this->returnAjax(array('code'=>2,'msg'=>'删除错误'));
+		$this->returnAjax(array('code'=>2,'msg'=>'排序失败'));
 	}
 	
 	

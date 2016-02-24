@@ -57,7 +57,7 @@
         </div>   
 		<br>
 		<div class="btn-group">
-            <button class="btn btn-danger" onclick="add();"    type="button">+ 创建一个模块</button>
+            <button class="btn btn-danger" onclick="add();" type="button">+ 创建一个模块</button>
         </div>
 		
     </div>
@@ -101,6 +101,35 @@ function delModule(moduleId)
 	});
 }
  
+
+function sortChaneg(id, type, updown)
+{
+    if ( id == '' || updown == '' || type == '') return false;
+    $.ajax({
+        type : 'post',
+        url  : '/module/sortChaneg/',
+        data : {id:id,updown:updown,type:type},
+        dataType : 'json',
+        success : function (data){
+            if (data.code==1){
+                layer.msg('操作成功', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    window.location.reload();
+                });
+            }else{
+                layer.msg(data.msg, {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error : function (data){
+            layer.msg('操作失败，请稍后重试。', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
+}
  
 function add(){
 	window.location.href="/module/edit/";

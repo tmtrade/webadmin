@@ -14,21 +14,20 @@
 <div class="wrap">
 <input type="hidden" name="saleId" id="saleId" value="<?=$sale['id']?>">
     <div class="wrap-top">
-        <h4 style="width: 100px">行业菜单设置</h4>>编辑菜单分类<span> </span>
+        <h4 style="width: 100px">分类群组设置</h4>>编辑分类<span> </span>
     </div>
     <div class="mj-ztBar f-clearfix">
 
         <span class="mj-ztBr">
-            <a class="btn btn-info" href="/industry/index/">返回</a>
+            <a class="btn btn-info" href="/tmclass/index/">返回</a>
         </span>
     <div class="mj-deiBlist">
     <form id="addForm">
-        <input type="hidden" name="bzpic" class="bzpic" value="<?=$indus['icon']?>" />
-        <input type="hidden" name="id"  value="<?=$indus['id']?>" />
+        <input type="hidden" name="id" id="tcid" value="<?=$tmclass['id']?>" />
         <table class="mj-table">
             <thead>
             <tr>
-                <td>基础信息</td>
+                <td><?=$tmclass['number']?>类 - <?=$tmclass['name']?></td>
             </tr>
             </thead>
             <tbody>
@@ -36,53 +35,52 @@
                 <td class="f-clearfix">
                     <div class="fl">
                         <label for="tdi1">分类标题:</label>
-                        <input type="text" name="typeName"  value="<?=$indus['title']?>"/>
-                        <br/><p>注：模块的标题最多不可超过8个中文字符。</p>
+                        <input type="text" name="typeName" id="typeName"  value="<?=$tmclass['title']?>"/>
+                        <a href="javascript:void(0);" onclick="editLabel(<?=$tmclass['id']?>,1);">修改标题</a>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td class="f-clearfix">
                 <div class="bzform">
-                    <label>分类icon：</label><img src="<?=$indus['icon']?>" class="bzpic" style="width:30px;height:30px;">
-                    <input type="file" id="bzfile" name="fileName" style="display: inline-block;"/>
-                    <br/><p>注：图片建议尺寸为 ( 20 ) x ( 20 )，文件最大不超过50kb</p>
+                    <label>分类标签：</label>
+                    <?foreach($tmclass['labelArr'] as $vl){?>
+                        <span><?=$vl?> <a href="javascript:;" onclick="removeLabel(<?=$tmclass['id']?>,'<?=$vl?>',1)"> 移除</a></span>
+                    <?}?>
+                    <br/>
+                    <input type="text" id="label" name="label" style="display: inline-block;"/>
+                    <a href="javascript:void(0);" id="mj-deib" onclick="addLabel(1);">新增标签</a>
                 </div>
                 </td>
             </tr>
             </tbody>
         </table>
     </form>
-        <div class="mj-deiBtns">
-            <a href="javascript:void(0);" id="mj-deib" onclick="addindustry();">提交修改信息</a>
-        </div>
+
     <form id="priceForm">
         <div class="mj-sellT">
             <table>
                 <thead>
                 <tr>
-                    <td colspan="3" style="text-align: left">子分类管理</td>
+                    <td colspan="4" style="text-align: left">该分类下的群组列表</td>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td>分类名称</td>
-                    <td>包含内容</td>
+                    <td>群组名称</td>
+                    <td>群组展示描述</td>
+                    <td>标签</td>
                     <td>操作</td>
                 </tr>
-                <?foreach ($cinfo['rows'] as $ky => $vl) { ?>
+                <?foreach ($ginfo['rows'] as $ky => $vl) { ?>
                 <tr>
                     <td><?=$vl['name']?></td>
+                    <td><?=$vl['title']?></td>
+                    <td><?=$vl['label']?></td>
                     <td>
-                        <?foreach($vl['items'] as $vli){
-                        echo $vli['name']."  ";
-                    }?>
-                    </td>
-                    <td>
-                        <a href="javascript:;" onclick="delItems(<?=$vl['id']?>)">删除</a>
-                        <a href="javascript:;" onclick="addztype(<?=$vl['industryId']?>,<?=$vl['id']?>)">编辑</a>
-                        <img class="img" onclick="setItemsSort(1,<?=$vl['sort']?>)" src="/Static/1.2/images/u85.gif">
-                        <img style="transform: rotate(180deg);"  onclick="setItemsSort(2,<?=$vl['sort']?>)" src="/Static/1.2/images/u85.gif">
+                        <a href="javascript:;" onclick="editGroup(<?=$vl['id']?>)">编辑</a>
+                        <img class="img" onclick="setClassSort(2,<?=$vl['sort']?>,<?=$vl['parent']?>)" src="/Static/1.2/images/u85.gif">
+                        <img style="transform: rotate(180deg);"  onclick="setClassSort(1,<?=$vl['sort']?>,<?=$vl['parent']?>)" src="/Static/1.2/images/u85.gif">
                     </td>
                 </tr>
                 <?}?>
@@ -90,45 +88,9 @@
             </table>
         </div>
     </form>
-        <div class="mj-deiBtns">
+        <!--<div class="mj-deiBtns">
             <a href="javascript:void(0);" onclick="addztype(<?=$indus['id']?>,0);">创建子分类</a>
-        </div>
-    <form id="bzxxForm">
-        <div class="mj-sellT">
-
-            <table>
-                <thead>
-                <tr>
-                    <td colspan="3" style="text-align: left">广告图管理</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>广告图</td>
-                    <td>链接</td>
-                    <td>操作</td>
-                </tr>
-                <?foreach ($pinfo['rows'] as $ky => $vl) { ?>
-                <tr>
-                    <td>
-                        <img src="<?=$vl['pic']?>" class="bzpic" style="width:80px;height:80px;">
-                    </td>
-                    <td><?=$vl['link']?></td>
-                    <td>
-                        <a href="javascript:;" onclick="delPic(<?=$vl['id']?>)">删除</a>
-                        <a href="javascript:;" onclick="addgg(<?=$vl['industryId']?>,<?=$vl['id']?>)">编辑</a>
-                        <img class="img" onclick="setPicSort(1,<?=$vl['sort']?>)" src="/Static/1.2/images/u85.gif">
-                        <img style="transform: rotate(180deg);"  onclick="setPicSort(2,<?=$vl['sort']?>)" src="/Static/1.2/images/u85.gif">
-                    </td>
-                </tr>
-                <?}?>
-                </tbody>
-            </table>
-        </div>
-    </form>
-    <div class="mj-deiBtns">
-        <a href="javascript:void(0);" onclick="addgg(<?=$indus['id']?>,0);">创建广告图</a>
-    </div>
+        </div>-->
     </div>
 </div>
 <script type="text/javascript">
@@ -194,22 +156,13 @@
             });
         });
     });
-    function addztype(industryId,id) {
-        layer.open({
-            type: 2,
-            title: false,
-            closeBtn: false,
-            area: ['960px', '550px'],
-            content: '/industry/ztype/?industryId='+industryId+'&id='+id
-        });
-    }
-    function addgg(industryId,id) {
+    function editGroup(id) {
         layer.open({
             type: 2,
             title: false,
             closeBtn: false,
             area: ['560px', '350px'],
-            content: '/industry/indusPic/?industryId='+industryId+"&id="+id
+            content: '/tmclass/editGroup/?id='+id
         });
     }
 </script>

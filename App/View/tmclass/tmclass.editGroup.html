@@ -1,0 +1,135 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+<script charset="utf-8" src="<?=StaticDir?>/editor/kindeditor.js"></script>
+<script charset="utf-8" src="<?=StaticDir?>/editor/lang/zh_CN.js"></script>
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/industry/edit.js"></script>
+<script>
+        KindEditor.ready(function(K) {
+            window.editor = K.create('#intro', {
+                afterBlur: function () { this.sync(); }
+            });
+        });
+
+</script>
+<div class="wrap">
+<input type="hidden" name="saleId" id="saleId" value="<?=$sale['id']?>">
+    <span class="ms-close mj-close"></span>
+    <div class="wrap-top">
+        <h4 style="width: 100px">分类群组设置</h4>>编辑分类<span> </span>
+    </div>
+    <div class="mj-ztBar f-clearfix">
+    <div class="mj-deiBlist">
+    <form id="addForm">
+        <input type="hidden" name="id" id="tcid" value="<?=$tmclass['id']?>" />
+        <table class="mj-table">
+            <thead>
+            <tr>
+                <td><?=$tmclass['number']?>类 - <?=$tmclass['name']?></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="f-clearfix">
+                    <div class="fl">
+                        <label for="tdi1">展示描述:</label>
+                        <input type="text" name="typeName" id="typeName"  value="<?=$tmclass['title']?>"/>
+                        <a href="javascript:void(0);" onclick="editLabel(<?=$tmclass['id']?>,2);">修改展示描述</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="f-clearfix">
+                <div class="bzform">
+                    <label>标签：</label>
+                    <?foreach($tmclass['labelArr'] as $vl){?>
+                        <span><?=$vl?> <a href="javascript:;" onclick="removeLabel(<?=$tmclass['id']?>,'<?=$vl?>',2)"> 移除</a></span>
+                    <?}?>
+                    <br/>
+                    <input type="text" id="label" name="label" style="display: inline-block;"/>
+                    <a href="javascript:void(0);" id="mj-deib" onclick="addLabel(2);">新增标签</a>
+                </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $(".mj-close").on("click",function(){
+            parent.layer.closeAll();
+        });
+        $("#priceType").change(function(){
+            var vl = $(this).children('option:selected').val();
+            if ( vl == 1 ){
+                $(".mj-seCl").show();
+            }else{
+                $(".mj-seCl").hide();
+            }
+        });
+
+        //多选处理
+        $('input[type="checkbox"]').click(function(){
+            var strClass = '';
+            var id = $(this).attr('tname');
+            $('.ck_'+id).each(function(){
+                if($(this).prop('checked')){
+                    strClass += ","+$(this).val();
+                }
+            })
+            strClass = strClass ? strClass.substr(1) : '';
+            $('#'+id).val(strClass);
+        });
+
+        $("#priceType").change();
+
+        $(".bzform").wrap("<form id='bzformupload' action='/internal/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#bzfile").on('change', function(){
+            $("#bzformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.bzpic').val(data.img);
+                        $('.bzpic').attr('src', data.img);
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
+
+        $(".tjform").wrap("<form id='tjformupload' action='/internal/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#tjfile").on('change', function(){
+            $("#tjformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.tjpic').val(data.img);
+                        $('.tjpic').attr('src', data.img);
+                        //$('#imageurl').css('visibility', 'visible');
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
+    });
+    function editGroup(id) {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['960px', '550px'],
+            content: '/tmclass/editGroup/?id='+id
+        });
+    }
+</script>
+<? require(ViewDir.'/footer.html'); ?>
+

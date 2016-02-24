@@ -35,6 +35,29 @@ class IndustryModule extends AppModule
 		return $res;
 	}
 
+	//删除所有
+	public function delAll($id)
+	{
+		$cids        = array();
+		$r['eq']     = array('id' => $id);
+		$rc['eq']    = array('industryId' => $id);
+		$rc['limit'] = 100;
+		$resc        = $this->import('industryclass')->findAll($rc);
+		if ($resc['total'] != 0) {
+			foreach ($resc['rows'] as $cl) {
+				$cids[] = $cl['id'];
+			}
+			$ri['in'] = array('classId' => $cids);
+			$this->import('industryclassitems')->remove($ri);
+		}
+		$this->import('industryclass')->remove($rc);
+		$this->import('industrypic')->remove($rc);
+		$res = $this->import('industry')->remove($r);
+		return $res;
+
+	}
+
+
 	//添加子分类
 	public function addIndustryClass($data)
 	{
@@ -49,18 +72,18 @@ class IndustryModule extends AppModule
 
 
 	//添加子分类 edit
-	public function editIndustryClass($data,$id)
+	public function editIndustryClass($data, $id)
 	{
-		$rc['eq']         = array('id' => $id);
-		$res = $this->import('industryclass')->modify($data,$rc);
+		$rc['eq'] = array('id' => $id);
+		$res      = $this->import('industryclass')->modify($data, $rc);
 		return $res;
 	}
 
 	//添加子分类 del  对应 items
 	public function delIndustryClassItems($id)
 	{
-		$rc['eq']         = array('classId' => $id);
-		$res = $this->import('industryclassitems')->remove($rc);
+		$rc['eq'] = array('classId' => $id);
+		$res      = $this->import('industryclassitems')->remove($rc);
 		return $res;
 	}
 
@@ -112,6 +135,16 @@ class IndustryModule extends AppModule
 		$r['limit'] = $limit;
 		$r['order'] = array('sort' => 'desc');
 		$res        = $this->import('industry')->findAll($r);
+		foreach ($res['rows'] as $k => $val) {
+			//子分类个数
+			$rc['eq']                       = array('industryId' => $val['id']);
+			$resc                           = $this->import('industryclass')->findAll($rc);
+			$res['rows'][$k]['classCounts'] = $resc['total'];
+			//广告个数
+			$rp['eq']                     = array('industryId' => $val['id']);
+			$resp                         = $this->import('industrypic')->findAll($rp);
+			$res['rows'][$k]['picCounts'] = $resp['total'];
+		}
 		return $res;
 	}
 

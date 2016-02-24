@@ -145,6 +145,11 @@ $tbl['channelItems'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+$tbl['classGroup'] = array(
+	'name'		=> $prefix.'class_group',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 
 
 $tbl['topic'] = array(

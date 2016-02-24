@@ -10,7 +10,7 @@ header("Content-type: text/html; charset=utf-8");
  */
 class industryAction extends AppAction
 {
-	//public $debug = true;
+	public $debug = true;
 
 	/**
 	 * 通栏行业
@@ -23,28 +23,40 @@ class industryAction extends AppAction
 	public function index()
 	{
 		$this->getSetting();
-		//参数
-		//$params = $this->getFormData();
 		$page    = $this->input('page', 'int', '1');
 		$res     = $this->load('industry')->getList($page, $this->rowNum);
 		$total   = empty($res['total']) ? 0 : $res['total'];
 		$list    = empty($res['rows']) ? array() : $res['rows'];
 		$pager   = $this->pager($total, $this->rowNum);
 		$pageBar = empty($list) ? '' : getPageBar($pager);
-
-		//$result = array();
-		//获取所有联系人
-		/*foreach ($list as $k => $v) {
-			$result[$k] = $this->load('internal')->getSaleInfo($v['id']);
-		}*/
-		//$this->set("allTotal", $this->load('internal')->countSale());
 		$this->set('total', $total);
 		$this->set("pageBar", $pageBar);
-		//$this->set('s', $params);
 		$this->set('list', $list);
 		$this->display();
 	}
 
+	/**
+	 * 删除
+	 *
+	 * @author    Alexey
+	 * @since     2016年2月18日16:37:15
+	 *
+	 * @access    public
+	 * @return    void
+	 */
+	public function del()
+	{
+		$id = trim($this->input("id"));
+		if ($id == "") {
+			$this->returnAjax(array('code' => 0, 'msg' => '参数错误！'));
+		}
+		$res  = $this->load("industry")->delAll($id);
+		if ($res == 0) {
+			$this->returnAjax(array('code' => 0, 'msg' => '删除失败。'));
+		} else {
+			$this->returnAjax(array('code' => 1, 'msg' => '操作成功.'));
+		}
+	}
 	/**
 	 * 设置排序
 	 *
@@ -54,7 +66,6 @@ class industryAction extends AppAction
 	 * @access    public
 	 * @return    void
 	 */
-	//
 	public function setSort()
 	{
 		$sort = trim($this->input("s"));
@@ -189,9 +200,6 @@ class industryAction extends AppAction
 		$bzpic      = $this->input('bzpic', 'text', '');
 		$industryId = $this->input('industryId', 'int', '0');
 		$id         = $this->input('id', 'int', '0');
-		if ($id == "0") {
-			$this->returnAjax(array('code' => 2, 'msg' => '参数错误，非法操作！'));
-		}
 		if ($industryId == "0") {
 			$this->returnAjax(array('code' => 2, 'msg' => '参数错误，非法操作！'));
 		}
@@ -207,7 +215,7 @@ class industryAction extends AppAction
 			'pic'        => $bzpic,
 			'date'       => time(),
 		);
-		if ($id == "") {
+		if ($id == "0") {
 			$res  = $this->load('industry')->addIndustryPic($data);
 		} else {
 			$res  = $this->load('industry')->editIndustryPic($data,$id);
@@ -351,7 +359,6 @@ class industryAction extends AppAction
 		$salePlat   = C("SALE_PLATFORM");
 		$tmPrice    = C("SEARCH_PRICE");
 		$tmClass    = range(1, 45);
-
 		$this->set('tmType', $tmType);
 		$this->set('tmNums', $tmNums);
 		$this->set('tmClass', $tmClass);
@@ -362,17 +369,6 @@ class industryAction extends AppAction
 		$this->set('saleStatus', $saleStatus);
 		$this->set('salePlat', $salePlat);
 	}
-
-
-	//导入数据弹出界面
-	public function import()
-	{
-		$source = C('SOURCE');
-		$this->set('source', $source);
-		$this->display();
-	}
-
-
 }
 
 ?>

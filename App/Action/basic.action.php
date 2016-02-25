@@ -154,7 +154,7 @@ class BasicAction extends AppAction
 			$this->returnAjax(array('code'=>2,'msg'=>'请填写标题'));
 		}
 		$count = $this->load('basic')->countBasic(2);
-		if ( $count >= 10 ){
+		if ( empty($id) && $count >= 10 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'数量已达上限'));
 		}
 		if ( $id ){

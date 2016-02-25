@@ -93,7 +93,7 @@
         </table>
     </div>
     <div class="margin-sx-10">
-        <button class="btn btn-danger" id="add-banner" type="button">创建banner图</button>
+        <button class="btn btn-danger" id="add-banner" type="button" <?if(count($list[1])>=5){echo 'disabled="disabled"';}?> >创建banner图</button>
     </div>
     
     <div class="wrap-top">
@@ -143,7 +143,7 @@
     </div>
 
     <div class="margin-sx-10">
-        <button class="btn btn-danger" id="add-word" type="button">创建新搜索词</button>
+        <button class="btn btn-danger" id="add-word" type="button" <?if(count($list[2])>=10){echo 'disabled="disabled"';}?>>创建新搜索词</button>
     </div>
 
     <div class="wrap-top">

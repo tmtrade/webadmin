@@ -34,9 +34,10 @@
             </span>&nbsp;&nbsp;
         <? } ?>
     </div>
-    <div style="bottom:10px;position: fixed;">
-        <a href="javascript:void(0);" class="mj-liBtns" onclick="opContact();">确定</a>
-        <a href="javascript:void(0);" class="mj-liBtns mj-abgcg" onclick="closeAll();">取消</a>
+
+    <div style="bottom:15px;position: fixed;">
+        <button type="button" id="myButton" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;确定&nbsp;&nbsp;&nbsp;&nbsp;</button>
+        <button type="button" onclick="closeAll();" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;取消&nbsp;&nbsp;&nbsp;&nbsp;</button>
     </div>
     
 </form>
@@ -45,6 +46,36 @@
 <script type="text/javascript">
     $(function(){
         $(".mj-infoM").show();
+
+        $("#myButton").on('click', function (){
+            var _this = $(this);
+            var data = $("#setClass").serialize();
+            _this.attr('disabled', true)
+            $.ajax({
+                type : 'post',
+                url  : '/basic/setClass/',
+                data : data,
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            parent.window.location.reload();
+                        });
+                    }else{
+                        layer.msg(data.msg, {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        },function(){ _this.attr('disabled', false) });
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    },function(){ _this.attr('disabled', false) });
+                }
+            });
+        });
 
         //多选处理
         $('input[type="checkbox"]').click(function(){
@@ -83,34 +114,7 @@
     {
         parent.layer.closeAll();
     }
-    function opContact()
-    {
-        var data = $("#setClass").serialize();
-        $.ajax({
-            type : 'post',
-            url  : '/basic/setClass/',
-            data : data,
-            dataType : 'json',
-            success : function (data){
-                if (data.code==1){
-                    layer.msg('操作成功！', {
-                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                    }, function(){
-                        parent.window.location.reload();
-                    });
-                }else{
-                    layer.msg(data.msg, {
-                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                    });
-                }
-            },
-            error : function (data){
-                layer.msg('操作失败，请稍后重试。', {
-                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                });
-            }
-        });
-    }
+    
 
 </script>
 

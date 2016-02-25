@@ -579,16 +579,16 @@ class internalAction extends AppAction
 	public function excel()
 	{
 		$params = $this->getFormData();
-		
 		$list = $this->load('internal')->getExcelList($params);
-
+		
 		$result = array();
 		
 		//获取所有联系人
 		foreach ($list['rows'] as $k => $v) {
 			$result[$k] = $this->load('internal')->getSaleInfo($v['id']);
 		}
-		$excelTable = $this->input('excelurl', 'text', '');
+		
+		$excelTable = $params['excelTable'];
 		$data['filepath'] = $this->load('excel')->downloadExcel($result,$excelTable);
 	}		
 }

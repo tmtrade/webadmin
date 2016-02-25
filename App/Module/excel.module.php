@@ -384,6 +384,34 @@ class ExcelModule extends AppModule
 			)
 		);
 		$style_obj->applyFromArray($style_array);
+		$b = array('a','b','c','d','e','f','g','h','i','j','k','l');
+		$title = array(
+			'1' => 'ID',
+			'2' => '商标号',
+			'3' => '销售状态',
+			'4' => '出售时间',
+			'5' => '商标名称',
+			'6' => '交易类型',
+			'7' => '类别',
+			'8' => '顾问/部门',
+			'9' => '来源渠道',
+			'10' => '联系方式',
+			'11' => '底价',
+			'12' => '售价',
+			'13' => '商标名称',
+		);
+		$a = explode(',',$excelTable);
+		sort($a);
+		foreach($a as $k => $v)
+		{
+			if($v){
+				$tab = $b[$k]."2";
+				$t   = $title[$v]; 
+				$PHPExcel->getActiveSheet()->setCellValue($tab,$t);
+			}
+			
+		}
+		/**
 		$PHPExcel->getActiveSheet()->setCellValue('A2', "ID");
 		$PHPExcel->getActiveSheet()->setCellValue('B2', "商标号");
 		$PHPExcel->getActiveSheet()->setCellValue('C2', "销售状态");
@@ -396,21 +424,16 @@ class ExcelModule extends AppModule
 		$PHPExcel->getActiveSheet()->setCellValue('J2', "联系方式");
 		$PHPExcel->getActiveSheet()->setCellValue('K2', "底价");
 		$PHPExcel->getActiveSheet()->setCellValue('L2', "售价");
+		**/
 		//第三行--------------------------------------------------------
 		$num = 3 ;
 		if($data){
-			
 			$saleStatus = C("SALE_STATUS");
 			$saleType 	= C("SALE_TYPE");
 			$saleSource = C("SOURCE");
-			foreach($data as $k => $item ){
-				
-				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['id']);
-				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['number']);
-				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $saleStatus[$item['status']]);
+			foreach($data as $key => $item ){
 				if($item['date']==0){$saletime = '-';}else{$saletime = date("Y-m-d", $item['date']);}
-				$PHPExcel->getActiveSheet()->setCellValue('D'.$num, $saletime);
-				$PHPExcel->getActiveSheet()->setCellValue('E'.$num, $item['name']);
+				if($item['date']==0){$saletime = '-';}else{$saletime = date("Y-m-d", $item['date']);}
 				if ($item['isSale'] == 1 && $item['isLicense'] == 1) {
 					$saleTypeStr =  $saleType[3];
 				}elseif($item['isSale'] == 1){
@@ -418,27 +441,58 @@ class ExcelModule extends AppModule
 				}elseif($item['isLicense'] == 1){
 					$saleTypeStr =  $saleType[2];
 				}
-				$PHPExcel->getActiveSheet()->setCellValue('F'.$num, $saleTypeStr);	
-				$PHPExcel->getActiveSheet()->setCellValue('G'.$num, $item['class']);
-				
 				if(count($item['contact']) > 1){
-					$ct=current($item['contact']);
-					$contact = '';
-					$advisor = $ct['advisor'].'-'.$ct['department'];
-					$source  = $saleSource[$ct['source']];
-					$price = $ct['price'];
-				}else{
 					$advisor = '多顾问';
 					$contact = '多联系方式';
 					$source  = '多渠道';
 					$price = '多底价';
+				}else{
+					$ct=current($item['contact']);
+					$contact = $ct['name'].'-'.$ct['phone'];
+					$advisor = $ct['advisor'].'-'.$ct['department'];
+					$source  = $saleSource[$ct['source']];
+					$price = $ct['price'];
 				}		
+				if($item['priceType']==2){$priceSale =  "议价";}else{$priceSale =  $item['price'];}
+				$tableVal = array(
+					'1' => $item['id'],
+					'2' => $item['number'],
+					'3' => $saleStatus[$item['status']],
+					'4' => $saletime,
+					'5' => $item['name'],
+					'6' => $saleTypeStr,
+					'7' => $item['class'],
+					'8' => $advisor,
+					'9' => $source,
+					'10' => $contact,
+					'11' => $price,
+					'12' => $priceSale,
+ 				);
+				
+				
+				foreach($a as $kl => $vl)
+				{
+					if($v){
+						$tabv = $b[$kl].$num;
+						$tv   = $tableVal[$vl]; 
+						$PHPExcel->getActiveSheet()->setCellValue($tabv,$tv);
+					}
+				}
+				
+				/**
+				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['id']);
+				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['number']);
+				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $saleStatus[$item['status']]);
+				$PHPExcel->getActiveSheet()->setCellValue('D'.$num, $saletime);
+				$PHPExcel->getActiveSheet()->setCellValue('E'.$num, $item['name']);
+				$PHPExcel->getActiveSheet()->setCellValue('F'.$num, $saleTypeStr);	
+				$PHPExcel->getActiveSheet()->setCellValue('G'.$num, $item['class']);
 				$PHPExcel->getActiveSheet()->setCellValue('H'.$num, $advisor);
 				$PHPExcel->getActiveSheet()->setCellValue('I'.$num, $source);
 				$PHPExcel->getActiveSheet()->setCellValue('J'.$num, $contact);	
 				$PHPExcel->getActiveSheet()->setCellValue('K'.$num, $price);
-				if($item['priceType']==2){$priceSale =  "议价";}else{$priceSale =  $item['price'];}
 				$PHPExcel->getActiveSheet()->setCellValue('L'.$num, $priceSale);
+				**/
 				$num ++;
 			}
 		}

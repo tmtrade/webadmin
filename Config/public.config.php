@@ -161,6 +161,9 @@ $define = array(
 				'13' => array(
 					'label' => '角色管理',
 				),
+				'14' => array(
+					'label' => '缓存管理',
+				),
 			),
 		),
 		// '4' => array(
@@ -241,18 +244,14 @@ $define = array(
 			'up'	=> '3',
 			'label' => '角色管理',
 		),
-		// '14' => array(
-		// 	'id'	=> '14',
-		// 	'up'	=> '4',
-		// 	'label' => '提醒列表',
-		// ),
-		// '15' => array(
-		// 	'id'	=> '15',
-		// 	'up'	=> '4',
-		// 	'label' => '临时求购',
-		// ),
+		'14' => array(
+			'id'	=> '14',
+			'up'	=> '3',
+			'label' => '缓存管理',
+		),
 	),
 	'ROLE_LIST' => array(
+		'cache/index' 			=> '14',
 		'role/index' 			=> '13',
 		'role/add' 				=> '13',
 		'role/edit' 			=> '13',

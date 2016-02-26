@@ -101,6 +101,11 @@ return $menu = array(
 						'url'   => '/role/index/',
 						'auth'	=> '13',
 					),
+					'3' => array(
+						'title' => '缓存管理',
+						'url'   => '/cache/index/',
+						'auth'	=> '14',
+					),
 		),
 	),
 );

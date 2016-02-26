@@ -1,0 +1,96 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/blacklist.css">
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<style type="text/css">
+    .margin-sx-10 {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>系统配置</li>
+        <li>缓存管理</li>
+    </ul>
+    <!-- <span style="float:right;margin-right:20px;color:red;">在售商标总数：<?=$total ?></span> -->
+</div>
+<div class="wrap">
+    <div class="wrap-top">
+        <h4>缓存管理</h4><span></span>
+    </div>
+
+    <div>
+        <button type="button" id="myButton" class="btn btn-danger btn-lg" onclick="window.location.reload();">
+        &nbsp;&nbsp;&nbsp;&nbsp;刷新&nbsp;&nbsp;&nbsp;&nbsp;</button>
+    </div>
+
+    <div class="alert alert-warning margin-sx-10" style="padding:2px;" role="alert">
+        针对下列缓存类型，进行分别清除。可根据大小判断缓存使用情况。注意：请勿频繁清除缓存。
+    </div>
+
+    <div class="margin-sx-10">
+        <label>首页缓存(页面级)：<?=$indexSize>0?$indexSize:0?>(量)
+        </label>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-info" id="cls-index" type="button" <?if($indexSize<=0){echo 'disabled="disabled"';}?>>清除</button>
+    </div>
+    
+    <div class="margin-sx-10">
+        <label>列表及详情缓存(entity类型)：<?=$otherSize>0?$otherSize:0?>(量)
+        </label>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-info" id="cls-other" type="button" <?if($otherSize<=0){echo 'disabled="disabled"';}?>>清除</button>
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+    $(function(){
+
+        $("#cls-index").click(function(){
+            cancel(5);
+        });
+
+        $("#cls-other").click(function(){
+            cancel(6);
+        });
+
+    });
+
+    function cancel(id)
+    {
+        if ( id == '' || id == 0 ) return false;
+            layer.confirm('确定要清除吗？', {
+            btn: ['是的','算了'], //按钮
+            scrollbar: false,
+        }, function(){
+            $.ajax({
+                type : 'post',
+                url  : '/cache/clear/',
+                data : {cid:id},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.reload();
+                        });
+                    }else{
+                        var msg = data.msg == undefined ? '操作失败' : data.msg;
+                        layer.msg(msg);
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。');
+                }
+            });
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

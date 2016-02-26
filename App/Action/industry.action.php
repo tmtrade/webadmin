@@ -10,7 +10,7 @@ header("Content-type: text/html; charset=utf-8");
  */
 class industryAction extends AppAction
 {
-	public $debug = true;
+	//public $debug = true;
 
 	/**
 	 * 通栏行业
@@ -50,13 +50,14 @@ class industryAction extends AppAction
 		if ($id == "") {
 			$this->returnAjax(array('code' => 0, 'msg' => '参数错误！'));
 		}
-		$res  = $this->load("industry")->delAll($id);
+		$res = $this->load("industry")->delAll($id);
 		if ($res == 0) {
 			$this->returnAjax(array('code' => 0, 'msg' => '删除失败。'));
 		} else {
 			$this->returnAjax(array('code' => 1, 'msg' => '操作成功.'));
 		}
 	}
+
 	/**
 	 * 设置排序
 	 *
@@ -93,7 +94,8 @@ class industryAction extends AppAction
 	{
 		$sort = trim($this->input("s"));
 		$t    = trim($this->input("t"));
-		$res  = $this->load("industry")->setPicSort($sort, $t);
+		$industryId    = trim($this->input("i"));
+		$res  = $this->load("industry")->setPicSort($sort, $t,$industryId);
 		if ($res == 0) {
 			$this->returnAjax(array('code' => 0, 'msg' => '已经无法升降了。'));
 		} else {
@@ -114,9 +116,10 @@ class industryAction extends AppAction
 	//
 	public function setItemsSort()
 	{
-		$sort = trim($this->input("s"));
-		$t    = trim($this->input("t"));
-		$res  = $this->load("industry")->setItemsSort($sort, $t);
+		$sort       = trim($this->input("s"));
+		$t          = trim($this->input("t"));
+		$industryId = trim($this->input("i"));
+		$res        = $this->load("industry")->setItemsSort($sort, $t, $industryId);
 		if ($res == 0) {
 			$this->returnAjax(array('code' => 0, 'msg' => '已经无法升降了。'));
 		} else {
@@ -124,6 +127,7 @@ class industryAction extends AppAction
 		}
 
 	}
+
 	//添加主分类
 	public function create()
 	{
@@ -216,15 +220,16 @@ class industryAction extends AppAction
 			'date'       => time(),
 		);
 		if ($id == "0") {
-			$res  = $this->load('industry')->addIndustryPic($data);
+			$res = $this->load('industry')->addIndustryPic($data);
 		} else {
-			$res  = $this->load('industry')->editIndustryPic($data,$id);
+			$res = $this->load('industry')->editIndustryPic($data, $id);
 		}
 		if ($res) {
 			$this->returnAjax(array('code' => 1, 'msg' => '操作成功'));
 		}
 		$this->returnAjax(array('code' => 2, 'msg' => '操作失败'));
 	}
+
 	//删除分类广告图
 	public function delIndustryPic()
 	{
@@ -239,6 +244,7 @@ class industryAction extends AppAction
 			$this->returnAjax(array('code' => 2, 'msg' => '删除失败'));
 		}
 	}
+
 	//删除子分类
 	public function delIndustryItems()
 	{
@@ -258,20 +264,20 @@ class industryAction extends AppAction
 	//添加子分类
 	public function addZtype()
 	{
-		$id      = $this->input('id', 'int', '0');
-		$industryId        = $this->input('industryId', 'text', '');
-		$ztypeName = $this->input('ztypeName', 'text', '');
-		$tname     = $this->input('tname', 'text', '');
-		$tlink     = $this->input('tlink', 'text', '');
-		$isopen    = $this->input('isopen', 'text', '');
-		$isshow    = $this->input('isshow', 'text', '');
+		$id         = $this->input('id', 'int', '0');
+		$industryId = $this->input('industryId', 'text', '');
+		$ztypeName  = $this->input('ztypeName', 'text', '');
+		$tname      = $this->input('tname', 'text', '');
+		$tlink      = $this->input('tlink', 'text', '');
+		$isopen     = $this->input('isopen', 'text', '');
+		$isshow     = $this->input('isshow', 'text', '');
 		if (empty($ztypeName)) {
 			$this->returnAjax(array('code' => 2, 'msg' => '请填写分类。'));
 		}
-		if ($tname[0]=="") {
+		if ($tname[0] == "") {
 			$this->returnAjax(array('code' => 2, 'msg' => '请至少填写一列分类名称。'));
 		}
-		if ($tlink[0]=="") {
+		if ($tlink[0] == "") {
 			$this->returnAjax(array('code' => 2, 'msg' => '请至少填写一列链接。'));
 		}
 		$zType = array(
@@ -279,17 +285,17 @@ class industryAction extends AppAction
 			'name'       => $ztypeName,
 			'date'       => time(),
 		);
-		if($id==0){
+		if ($id == 0) {
 			//add
-			$resc  = $this->load('industry')->addIndustryClass($zType);
-		}else{
+			$resc = $this->load('industry')->addIndustryClass($zType);
+		} else {
 			//edit
-			$this->load('industry')->editIndustryClass($zType,$id);
+			$this->load('industry')->editIndustryClass($zType, $id);
 			$this->load('industry')->delIndustryClassItems($id);
 			$resc = $id;
 		}
 		foreach ($tname as $k => $val) {
-			if($val!=""){
+			if ($val != "") {
 				$zItems = array(
 					'classId' => $resc,
 					'name'    => $val,
@@ -299,7 +305,7 @@ class industryAction extends AppAction
 					'date'    => time(),
 				);
 				//print_r($zItems);
-				$res    = $this->load('industry')->addIndustryClassItems($zItems);
+				$res = $this->load('industry')->addIndustryClassItems($zItems);
 			}
 		}
 		if ($res) {

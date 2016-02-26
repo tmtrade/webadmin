@@ -92,11 +92,11 @@ function setClassSort(t, s, p) {
 }
 
 
-function setPicSort(t, s) {
+function setPicSort(t, s ,i) {
     $.ajax({
         type: 'post',
         url: '/industry/setPicSort/',
-        data: 's=' + s + '&t=' + t,
+        data: 's=' + s + '&t=' + t + '&i=' + i,
         dataType: 'json',
         success: function (data) {
             if (data.code == 1) {
@@ -120,11 +120,11 @@ function setPicSort(t, s) {
     });
 }
 
-function setItemsSort(t, s) {
+function setItemsSort(t, s, i) {
     $.ajax({
         type: 'post',
         url: '/industry/setItemsSort/',
-        data: 's=' + s + '&t=' + t,
+        data: 's=' + s + '&t=' + t + '&i=' + i,
         dataType: 'json',
         success: function (data) {
             if (data.code == 1) {

@@ -186,13 +186,14 @@ class IndustryModule extends AppModule
 	}
 
 	//设置排序 pic  t=1 降、t=2升。
-	public function setPicSort($sort, $t)
+	public function setPicSort($sort, $t ,$industryId)
 	{
 		$dataName = "trade_new";
 		$table    = "industrypic";
 		$t == 1 ? $where = " sort <=" . $sort : $where = " sort >=" . $sort;
 		$t == 1 ? $order = " order by sort desc " : $order = " order by sort asc ";
 		$limit = " limit 2 ";
+		$where .= " and  industryId = ".$industryId;
 		$sql   = "select id,sort from t_industry_pic where" . $where . $order . $limit;
 		$res   = $this->load("industry")->fetchAll($dataName, $sql);
 		if (count($res) < 2) {
@@ -212,13 +213,14 @@ class IndustryModule extends AppModule
 	}
 
 	//设置排序 子分类  t=1 降、t=2升。
-	public function setItemsSort($sort, $t)
+	public function setItemsSort($sort, $t,$industryId)
 	{
 		$dataName = "trade_new";
 		$table    = "industryclass";
 		$t == 1 ? $where = " sort <=" . $sort : $where = " sort >=" . $sort;
 		$t == 1 ? $order = " order by sort desc " : $order = " order by sort asc ";
 		$limit = " limit 2 ";
+		$where .= " and  industryId = ".$industryId;
 		$sql   = "select id,sort from t_industry_class where" . $where . $order . $limit;
 		$res   = $this->load("industry")->fetchAll($dataName, $sql);
 		if (count($res) < 2) {

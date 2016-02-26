@@ -91,7 +91,6 @@ function setClassSort(t, s, p) {
     });
 }
 
-
 function setPicSort(t, s ,i) {
     $.ajax({
         type: 'post',

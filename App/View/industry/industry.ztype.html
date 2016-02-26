@@ -48,8 +48,8 @@
                         </td>
                         <td>
                             <a href="javascript:;" onclick="delthis(this)">删除</a>
-                            <img class="downbtn" src="/Static/1.2/images/u85.gif" onclick="down()">
-                            <img class="upbtn" style="transform: rotate(180deg);" onclick="up()" src="/Static/1.2/images/u85.gif">
+                            <img class="downbtn" src="/Static/1.2/images/u85.gif">
+                            <img class="upbtn" style="transform: rotate(180deg);" src="/Static/1.2/images/u85.gif">
                         </td>
                     </tr>
                     <?}?>
@@ -71,15 +71,14 @@
                         </td>
                         <td>
                             <a href="javascript:;" onclick="delthis(this)">删除</a>
-                            <img class="downbtn" src="/Static/1.2/images/u85.gif" onclick="down()">
-                            <img class="upbtn" style="transform: rotate(180deg);" onclick="up()" src="/Static/1.2/images/u85.gif">
+                            <img class="downbtn" src="/Static/1.2/images/u85.gif">
+                            <img class="upbtn" style="transform: rotate(180deg);"  src="/Static/1.2/images/u85.gif">
                         </td>
                     </tr>
 
                     </tbody>
                 </table>
             </div>
-
             <div style="float: left">
             <div style="">
                 <a class="mj-sBtn"  href="javascript:void(0);" style="margin:0 auto;" onclick="addlist();" >新增一条记录</a></div>
@@ -98,6 +97,32 @@
 
 <script type="text/javascript">
     $(function(){
+        //上移
+        $(".upbtn").each(function () {
+            $(this).on('click',function(){
+                var $tr = $(this).parents("tr");
+                if ($tr.index() != 1) {
+                    $tr.prev().before($tr);
+                }else{
+                    layer.msg('已经在最上面了');
+                    return false;
+                }
+            });
+        });
+        var trLength = $(".downbtn").length;
+        $(".downbtn").each(function () {
+            $(this).on('click',function(){
+                var $tr = $(this).parents("tr");
+                if ($tr.index() != trLength) {
+                    $tr.next().after($tr);
+                }else{
+                    layer.msg('已经在最下面了');
+                    return false;
+                }
+            });
+        });
+
+
         $(".mj-glM").show();
         $(".mj-close").on("click",function(){
             parent.layer.closeAll();
@@ -121,37 +146,14 @@
         });
     });
     function addlist(){
-        var list = '<tr><td><input type="text" name="tname[]"></td><td><input type="text" name="tlink[]"></td><td><select name="isopen[]"><option value="1">新窗口</option><option value="2">跳转</option></select> </td><td><select name="isshow[]"><option value="0">普通</option><option value="1">红</option> <option value="2">绿</option></select></td> <td><a href="javascript:;" onclick="delthis(this)">删除</a><img class="downbtn" src="/Static/1.2/images/u85.gif"><img class="upbtn" style="transform: rotate(180deg);" src="/Static/1.2/images/u85.gif"></td></tr>'
+        var list = '<tr><td><input type="text" name="tname[]"></td><td><input type="text" name="tlink[]"></td><td><select name="isopen[]"><option value="1">新窗口</option><option value="2">跳转</option></select> </td><td><select name="isshow[]"><option value="0">普通</option><option value="1">红</option> <option value="2">绿</option></select></td> <td><a href="javascript:;" onclick="delthis(this)">删除</a><img class="downbtn" src="/Static/1.2/images/u85.gif"><img class="upbtn" style="transform: rotate(180deg);" src="/Static/1.2/images/u85.gif"></td></tr>';
         $("#newTable").append(list);
     }
+
+
     function cel(){
         parent.layer.closeAll();
     }
-
-    function up(){
-        //上移
-        $(".upbtn").each(function () {
-            $(this).click(function () {
-                var $tr = $(this).parents("tr");
-                if ($tr.index() != 1) {
-                    $tr.prev().before($tr);
-                }
-            });
-        });
-    }
-    function down(){
-        var trLength = $(".downbtn").length;
-        $(".downbtn").each(function () {
-            $(this).click(function () {
-                var $tr = $(this).parents("tr");
-                if ($tr.index() != trLength - 1) {
-                    $tr.next().after($tr);
-                }
-            });
-        });
-    }
-
-
     function delthis(clickTd){
         var tr = $(clickTd).parent().parent();
         tr.remove();

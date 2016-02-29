@@ -202,13 +202,20 @@ function delClass(moduleId, id)
 	});
 }
 
-function sortChaneg(id, type, updown)
+function sortChaneg(id, type, updown, secondCondition)
 {
 	if ( id == '' || updown == '' ) return false;
+	if(secondCondition){
+		var data = {id:id,updown:updown,type:type};
+		//设置动态属性
+		data[secondCondition[0]] = secondCondition[1];
+	}else{
+		var data = {id:id,updown:updown,type:type};
+	}
 	$.ajax({
 		type : 'post',
 		url  : '/module/sortChaneg/',
-		data : {id:id,updown:updown,type:type},
+		data : data,
 		dataType : 'json',
 		success : function (data){
 			if (data.code==1){

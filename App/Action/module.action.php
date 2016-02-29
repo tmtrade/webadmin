@@ -65,9 +65,14 @@ class moduleAction extends AppAction
 			$moduleAds  = $this->load('module')->getModuleAdsList($moduleId);
 			$moduleLink  = $this->load('module')->getModuleLinkList($moduleId);
 		}
-		
-		
+
+		//设置返回的地址,判断请求地址是否包含module/edit,包含则不设置
+		$ori_uri = $_SERVER['HTTP_REFERER'];
+		if(strpos($ori_uri,'module/edit')===false){
+			Session::set('edit_referr',$ori_uri);
+		}
 		$referr = Session::get('edit_referr');
+
 		$this->set('module', $module);
 		$this->set('moduleClass', $moduleClass);
 		$this->set('moduleAds', $moduleAds);
@@ -163,8 +168,88 @@ class moduleAction extends AppAction
 		$this->set('classesItem', $classesItem);
 		$this->display();
 	}
-	
-	
+
+	/**
+	 * 添加模块分类
+	 *
+	 * @author	Dower
+	 * @since	2016-02-29
+	 * @access	public
+	 * @return	void
+	 */
+	public function addClass(){
+		$moduleId = $this->input('moduleId','int',0);
+		$name = $this->input('name','string','');
+		if(!$moduleId){
+			$result['code'] = 1;
+			$this->returnAjax($result);
+		}
+		if(!$name){
+			$result['code'] = 2;
+			$this->returnAjax($result);
+		}
+		$classId = $this->load('module')->addClass($name, $moduleId);
+		$result['code'] = 0;
+		$result['classId'] = $classId;
+		//code: 0 成功; 1 非法参数,无module id ;2 分类名不能为空
+		$this->returnAjax($result);
+	}
+	/**
+	 * 添加/修改模块分类的商标
+	 *
+	 * @author	Dower
+	 * @since	2016-02-29
+	 * @access	public
+	 * @return	void
+	 */
+	public function addClassItem(){
+		//获取参数
+		$number = $this->input('number', 'int', 0);
+		$classId = $this->input('classId', 'int', 0);
+		$opt = $this->input('opt', 'string', '');
+		$id = $this->input('id', 'int', '0');
+		//参数合法性
+		if($number && $classId){
+			//检测商标是否存在
+			$data = $this->load('internal')->getSaleByNumber($number);
+			if($data){
+				$name = $data['name'];
+				//判断是添加还是编辑操作
+				if($opt=='edit'){
+					//编辑
+					$rst['number'] = $number;
+					$rst['name'] = $name;
+					$data = $this->load('module')->updateClassItems($rst, $id);
+					if($data){
+						$res['code'] = 10;
+						$res['name'] = $name;
+						$res['number'] = $number;
+						$res['id'] = $id;
+					}else{
+						$res['code'] = 4;
+					}
+				}else {
+					//添加
+					$data = $this->load('module')->addClassItems($number,$name,$classId);
+					if($data){
+						$res['code'] = 0;
+						$res['name'] = $name;
+						$res['number'] = $number;
+						$res['id'] = $data;
+					}else{
+						$res['code'] = 3;
+					}
+				}
+			}else{
+				$res['code'] = 2;
+			}
+		}else{
+			$res['code'] = 1;
+
+		}
+		// code: 0,10 正常;1 非法参数;2 无商标信息;3 添加数据出错;4 编辑数据出错
+		$this->returnAjax($res);
+	}
 	/**
 	 * 添加推广链接
 	 * 
@@ -179,7 +264,7 @@ class moduleAction extends AppAction
 		$trade  = array();
 		if ( $number > 0 ){
 			$data = $this->load('internal')->getSaleByNumber($number);
-			if($data){		
+			if($data){
 				$res['name'] = $data['name'];
 				$res['code'] = 1;
 			}else{
@@ -467,13 +552,14 @@ class moduleAction extends AppAction
 	{	
 		$id = $this->input('id', 'int', 0);
 		$type = $this->input('type', 'int', 0);
+		$classId = $this->input('classId', 'int', 0);
 		$updown = $this->input('updown', 'int', 0); //1上，2下
 		
 		if ( $id <= 0 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
 		}
 		
-		$res = $this->load('module')->sortUpDown($id, $updown, $type);
+		$res = $this->load('module')->sortUpDown($id, $updown, $type, array('classId'=>$classId));
 		
 		if ( $res ){
 			$this->returnAjax(array('code'=>1));

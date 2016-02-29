@@ -173,7 +173,7 @@ class ModuleModule extends AppModule
 	
 	//对某类别中某项进行上下排序
     //$updown 1：向上，2：向下
-    public function sortUpDown($id, $updown, $type)
+    public function sortUpDown($id, $updown, $type, $secondCondition='')
     {
         if ( empty($id) ) return false;
 		
@@ -194,8 +194,8 @@ class ModuleModule extends AppModule
 				$import = 'moduleClassItems';
 				break;
 		}
-		if($where){
-				 $r['eq']    = $where;
+		if($secondCondition){
+				 $r['eq']    = $secondCondition;
 		}
 		
         $rl['eq']   = array('id'=>$id);
@@ -220,12 +220,14 @@ class ModuleModule extends AppModule
 
 		$rO['eq'] = array('id'=>$id);
 		$rOC['eq'] = array('id'=>$changeId);
+        $this->begin($import);
 		$flag1 = $this->import($import)->modify($update1, $rO);
 		$flag2 = $this->import($import)->modify($update2, $rOC);
-
         if ( $flag1 && $flag2 ) {
+            $this->commit($import);
             return true;
         }
+        $this->rollBack($import);
         return false;
     }
 	
@@ -337,6 +339,7 @@ class ModuleModule extends AppModule
 		
 		$data['name'] = $name;
         $data['moduleId'] = $moduleId;
+        $data['date'] = time();
         return $this->import('moduleClass')->create($data);
 		
     }

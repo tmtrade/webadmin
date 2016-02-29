@@ -34,6 +34,7 @@
                         <th>子分类</th>
                         <th>包含广告条数</th>
                         <th>推广链接条数</th>
+                        <th>状态</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -44,6 +45,7 @@
 					<td><?=$v['classNum']?></td>
 					<td><?=$v['adsNum']?></td>
 					<td><?=$v['linkNum']?></td>
+					<td><? echo $v['isUse']==1?'显示':'隐藏' ?></td>
                     <td>
 						<a href="javascript:void(0);" onclick="delModule(<?=$v['id']?>);">删除</a>
 						<a href="/module/edit/?id=<?=$v['id']?>">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;

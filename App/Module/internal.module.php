@@ -365,6 +365,7 @@ class InternalModule extends AppModule
         $class      = implode(',', $info['class']);
         $platform   = implode(',', $other['platform']);
         $viewPhone  = $this->load('phone')->getRandPhone();
+        $regDate    = strtotime($info['reg_date']) > 0 ? strtotime($info['reg_date']) : 0;
         $sale = array(
             'tid'           => intval($info['tid']),
             'number'        => $number,
@@ -385,6 +386,7 @@ class InternalModule extends AppModule
             'platform'      => $platform,
             'label'         => '',
             'length'        => $other['length'],
+            'regData'       => $regDate,
             'date'          => time(),
             'viewPhone'     => $viewPhone,
             'hits'          => 0,
@@ -748,6 +750,7 @@ class InternalModule extends AppModule
 		$length	    = $other['length'];
 		$type	    = $other['type'];
 		$viewPhone  = $this->load('phone')->getRandPhone();
+        $regDate    = strtotime($info['reg_date']) > 0 ? strtotime($info['reg_date']) : 0;
 		$sale = array(
 			'tid'           => intval($info['tid']),
 			'number'        => $number,
@@ -768,6 +771,7 @@ class InternalModule extends AppModule
 			'platform'      => $platform,
 			'label'         => '',
 			'length'        => $length,
+            'regData'       => $regDate,
 			'date'          => $date,
 			'viewPhone'     => $viewPhone,
 			'hits'          => intval($hits),

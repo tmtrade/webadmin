@@ -14,18 +14,26 @@ class TaskAction extends QueueCommonAction
     
     public function index()
     {
-        $page = $this->input('p','int','1');
+        //$page = $this->input('p','int','1');
 
-        $this->load('run')->run($page);
-
+        //$this->load('run')->run($page);
+        exit('function closed');
     }
 
     public function one()
     {
-        $number = $this->input('n', 'string', '');
-        $debug  = $this->input('d', 'int', 0);
-        if ( empty($number) ) exit('no data.');
-        $this->load('run')->runSale($number, $debug);
+        //$number = $this->input('n', 'string', '');
+        //$debug  = $this->input('d', 'int', 0);
+        //if ( empty($number) ) exit('no data.');
+        //$this->load('run')->runSale($number, $debug);
+        exit('function closed');
+    }
+
+    public function update()
+    {
+        $page = $this->input('p','int','1');
+
+        $this->load('run')->update($page);
     }
 
 }

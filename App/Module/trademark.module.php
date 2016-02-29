@@ -19,7 +19,7 @@ class TrademarkModule extends AppModule
 
     protected $col = array(
         'auto as `tid`', 'id as `number`',
-        'trademark as `name`','class',
+        'trademark as `name`','class','reg_date',
         'pid','valid_end','group_concat(distinct `goods`) as `goods`',
         'group_concat(distinct `group`) as `group`',
         'group_concat(distinct `class`) as `strclass`'

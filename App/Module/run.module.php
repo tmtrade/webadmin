@@ -3,13 +3,70 @@ class RunModule extends AppModule
 {
     public $models = array(
         'ts'    => 'tsale',
-        'tst'   => 'tsaleTrademark'
+        'tst'   => 'tsaleTrademark',
+        'sale'  => 'sale',
     );
 
-    function msectime() {
-         list($usec, $sec) = explode(" ", microtime());
-         return ((float)$usec + (float)$sec);
-        return time();
+    private function msectime() {
+        list($usec, $sec) = explode(" ", microtime());
+        return ((float)$usec + (float)$sec);
+    }
+
+    public function update($page)
+    {
+        $start = $this->msectime();
+        $res = $this->getNewSale($page);
+        if ( $res['total'] <= 0 ){
+            exit('no data to update');
+        }
+        $succ = $faild = 0;
+        $list = $res['rows'];
+        $succList = $faildList = array();
+        $this->begin('sale');
+        foreach ($list as $k => $v) {
+            $number = $v['number'];
+            $info   = $this->load('trademark')->getTmInfo($number);
+            if ( empty($info) ){
+                exit("<number is not a trademark>");
+            }
+            $regDate = strtotime($info['reg_date']) > 0 ? strtotime($info['reg_date']) : 0;
+            $data = array(
+                'regDate' => $regDate,
+            );
+
+            $r['eq'] = array('id'=>$v['id']);
+            $flag = $this->import('sale')->modify($data, $r);
+
+            if ( $flag ) {
+                //$this->commit('sale');
+                $succ++;
+                $succList[] = $number;
+            }else{
+                //$this->rollBack('sale');
+                $faild++;
+                $faildList[] = $number;
+            }
+        }
+        $this->commit('sale');
+        $end = $this->msectime() - $start;
+        $log = array(
+            'useTime'   => $end,
+            );
+        if ( count($succList) > 0 ){
+            $_log = $log;
+            $_log['succ']       = count($succList);
+            $_log['succList']   = $succList;
+            $name = 'update'.date("Y-m-d").'-p'.$page.'-----success.log';
+            Log::write(print_r($_log,1), $name);
+        }
+        if ( count($faildList) > 0 ){
+            $_log = $log;
+            $_log['faild']       = count($faildList);
+            $_log['faildList']   = $faildList;
+            $name = 'update'.date("Y-m-d").'-p'.$page.'-----faild.log';
+            Log::write(print_r($_log,1), $name);
+        }
+        echo "finish!!!";
     }
 
     public function run($page)
@@ -190,6 +247,14 @@ class RunModule extends AppModule
             echo "</pre>";
         }
         return $res;
+    }
+
+    public function getNewSale($page=1, $limit=1000)
+    {
+        $r['page']  = $page;
+        $r['limit'] = $limit;
+        $r['col']   = array('number','id');
+        return $this->import('sale')->findAll($r);
     }
 
     public function getSaleNumber($page=1, $limit=500)

@@ -112,12 +112,12 @@ class TmclassModule extends AppModule
 		$r['limit'] = 1;
 		$res        = $this->import('tmclass')->find($r);
 		if (!empty($res['label'])) {
-			$res['labelArr'] = explode(";", $res['label']);
+			$res['labelArr'] = explode(",", $res['label']);
 			if (in_array($label, $res['labelArr'])) {
 				$mres = 2; //有重复的了。
 			} else {
 				$res['labelArr'][] = $label;
-				$data['label']     = implode(";", $res['labelArr']);
+				$data['label']     = implode(",", $res['labelArr']);
 				$rm['eq']          = array('id' => $res['id']);
 				$this->import('tmclass')->modify($data, $rm);
 				$mres = 1;

@@ -95,6 +95,13 @@
                     <input type="checkbox" <?if($s['isConfer'] == 1){echo 'checked';} ?> value="1" name="isConfer"/>
                     <label for="rad0>">面议</label>
                 </div>
+
+                <label>注册日期：</label>
+                <div class="mj-radio">
+                    <input type="text" maxlength="10" size="15"class="input input-sm" value="<?=$s['regDate']==0?'':$s['regDate']?>" name="regDate" onclick="laydate({format: 'YYYY-MM-01',min:'2000-01-01',max:laydate.now()})"/>
+                    <div class="alert alert-warning" style="padding:2px;display:inline-block;" role="alert">(默认为当月1号，日期在当月内)</div>
+                    
+                </div>
             </dd>
             <dd>
                 <label>商标标签：</label>

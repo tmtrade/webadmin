@@ -6,75 +6,75 @@ class InternalindexForm extends AppForm
      * 字段映射(建立表单字段与程序字段或数据表字段的关联)
      */
     protected $map = array(
-        'tmNums'    => array(
+        'tmNums' => array(
 				'field' => 'tmNums',
 				'method' => 'fieldName', 
 				),
-		'tmName'    => array(
-			'field' => 'tmName',
+		'tmName' => array(
+			'field'  => 'tmName',
 			'method' => 'fieldName',
 			),
-		'saleStatus'    => array(
+		'saleStatus' => array(
 			'field' => 'saleStatus',
 			'method' => 'fieldName',
 			),
-		'startPrice'    => array(
+		'startPrice' => array(
 			'field' => 'startPrice',
 			'match' => array('int', '0', ''),
 			),
-        'endPrice'    => array(
+        'endPrice' => array(
             'field' => 'endPrice',
             'match' => array('int', '0', ''),
             ),
-        'isConfer'    => array(
+        'isConfer' => array(
             'field' => 'isConfer',
             'match' => array('int', '0', ''),
             ),
-		'tmType'    => array(
-			'field' => 'tmType',
+		'tmType' => array(
+			'field'  => 'tmType',
 			'method' => 'fieldName',
 			),
-		'tmClass'    => array(
-			'field' => 'tmClass',
+		'tmClass' => array(
+			'field'  => 'tmClass',
 			'method' => 'fieldName',
 			),
-		'page'    => array(
+		'page' => array(
 			'field' => 'page',
 			'match' => array('int', '1', ''),
 			),
-		'dateStart'    => array(
+		'dateStart' => array(
 			'field' => 'dateStart',
 			'match' => array('', '', ''),
 			),
-		'dateEnd'    => array(
+		'dateEnd' => array(
 			'field' => 'dateEnd',
 			'match' => array('', '', ''),
 			),
-		'saleType'    => array(
-			'field' => 'saleType',
+		'saleType' => array(
+			'field'  => 'saleType',
 			'method' => 'fieldName',
 			),
-		'tmGroup'    => array(
-			'field' => 'tmGroup',
+		'tmGroup' => array(
+			'field'  => 'tmGroup',
 			'method' => 'fieldName',
 			),
-		'saleSource'    => array(
+		'saleSource' => array(
 			'field' => 'saleSource',
 			'match' => array('int', '', ''),
 			),
-		'tmNumber'    => array(
+		'tmNumber' => array(
 			'field' => 'tmNumber',
 			'match' => array('fieldName', '', ''),
 			),
-		'tmLabel'    => array(
-			'field' => 'tmLabel',
+		'tmLabel' => array(
+			'field'  => 'tmLabel',
 			'method' => 'fieldName',
 			),
-		'salePlat'    => array(
-			'field' => 'salePlat',
+		'salePlat' => array(
+			'field'  => 'salePlat',
 			'method' => 'fieldName',
 			),
-        'offprice'    => array(
+        'offprice' => array(
             'field' => 'offprice',
             'match' => array('int', '', ''),
             ),
@@ -82,9 +82,13 @@ class InternalindexForm extends AppForm
 			'field' => 'isTop',
 			'match' => array('int', '', ''),
 			),
-        'isVerify'    => array(
+        'isVerify' => array(
             'field' => 'isVerify',
             'match' => array('int', '', ''),
+            ),
+        'regDate' => array(
+            'field'  => 'regDate',
+            'method' => 'fieldName',
             ),
     );
 	

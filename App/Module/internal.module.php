@@ -84,6 +84,11 @@ class InternalModule extends AppModule
             $list = empty($list) ? array(0) : $list;
             $r['in'] = array('id'=>$list);
         }
+        if ( !empty($params['regDate']) && strtotime($params['regDate']) > 0 ){//处理子表来源
+            $startDate  = strtotime($params['regDate']);
+            $endDate    = strtotime('first day of next month', $startDate);            
+            $r['raw']  .= " AND (regDate >= $startDate AND regDate < $endDate)";
+        }
 
         $_child =  '';
         if ( !empty($params['saleSource']) ){//处理子表来源

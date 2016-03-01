@@ -139,5 +139,31 @@ abstract class AppAction extends Action
         $this->returnAjax($msg);
     }
 
+
+	//获取来源页面地址并保存
+	protected function getReferrUrl($action)
+	{
+		//配置项
+		$referrArr 	= array(
+			'internal_edit' => '/internal/index/',
+			); 
+		if ( empty($referrArr[$action]) ) return '/index/main/';
+
+		$_referr 	= Session::get($action);
+		if ( empty($_referr) ){
+			if ( strpos($_SERVER['HTTP_REFERER'], $referrArr[$action]) !== false ){
+				Session::set($action, $_SERVER['HTTP_REFERER']);
+			}else{
+				Session::set($action, $referrArr[$action]);
+			}
+		}else{
+			if ( strpos($_SERVER['HTTP_REFERER'], $referrArr[$action]) !== false ){
+				Session::set($action, $_SERVER['HTTP_REFERER']);
+			}
+		}
+		return Session::get($action);
+	}
+
+
 }
 ?>

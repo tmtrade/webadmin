@@ -65,6 +65,12 @@ class moduleAction extends AppAction
 			$moduleAds  = $this->load('module')->getModuleAdsList($moduleId);
 			$moduleLink  = $this->load('module')->getModuleLinkList($moduleId);
 		}
+
+		//设置返回的地址,判断请求地址是否包含module/edit,包含则不设置
+		$ori_uri = $_SERVER['HTTP_REFERER'];
+		if(strpos($ori_uri,'module/edit')===false){
+			Session::set('edit_referr',$ori_uri);
+		}
 		$referr = Session::get('edit_referr');
 
 		$this->set('module', $module);

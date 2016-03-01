@@ -288,12 +288,16 @@ class topicAction extends AppAction
 		$id = $this->input('id', 'int', 0);
 		$type = $this->input('type', 'int', 0);
 		$updown = $this->input('updown', 'int', 0); //1上，2下
-		
+		$topicId = $this->input('topicId', 'int', 0);
+		$where = '';
+		if($topicId){
+			$where = array('topicId'=>$topicId);
+		}
 		if ( $id <= 0 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
 		}
 		
-		$res = $this->load('topic')->sortUpDown($id, $updown, $type);
+		$res = $this->load('topic')->sortUpDown($id, $updown, $type,$where);
 		
 		if ( $res ){
 			$this->returnAjax(array('code'=>1));

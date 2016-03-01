@@ -96,7 +96,15 @@
 				<?foreach ($moduleAds['rows'] as $ky => $vl) { ?>
 				<tr>
 					<td><img src="<?=$vl['pic']?>" width="100px" height="50px" /></td>
-					<td><?=$vl['link']?></td>
+					<td>
+						<a target="_blank" href="<?=$vl['link']?>" title="<?=$vl['link']?>"><?php
+							if(strlen($vl['link'])>20){
+								echo mb_substr($vl['link'],0,20,'utf-8').'...';
+							}else{
+								echo $vl['link'];
+							}
+						?></a>
+					</td>
 					<td>
 						<a href="javascript:void(0);" onclick="delPic(<?=$module['id']?>, <?=$vl['id']?>)">删除</a>
 						<a href="javascript:void(0);" onclick="setPic(<?=$module['id']?>, <?=$vl['id']?>);">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
@@ -128,7 +136,15 @@
 				<?foreach ($moduleLink['rows'] as $ky => $vl) { ?>
 				<tr>
 					<td><?=$vl['title']?></td>
-					<td><?=$vl['link']?></td>
+					<td>
+						<a target="_blank" href="<?=$vl['link']?>" title="<?=$vl['link']?>"><?php
+							if(strlen($vl['link'])>15){
+						echo mb_substr($vl['link'],0,15,'utf-8').'...';
+						}else{
+						echo $vl['link'];
+						}
+						?></a>
+					</td>
 					<td><?if($vl['show'] == 0){echo "普通";}elseif($vl['show'] == 1){echo "红";}elseif($vl['show'] == 2){echo "蓝";}elseif($vl['show'] == 3){echo "黄";}?></td>
 					<td>
 						<a href="javascript:void(0);" onclick="delLink(<?=$module['id']?>, <?=$vl['id']?>);">删除</a>

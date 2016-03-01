@@ -16,8 +16,7 @@
 <div class="wrap">
 	
     <div class="wrap-top">
-        <h4>专题设置 >></h4><br/>
-        <h4>  创建专题</h4><span></span>
+        <h4>专题设置 >>创建专题</h4><span></span>
     </div>
 	<div class="mj-ztBar f-clearfix">
         <span class="mj-ztBr">
@@ -107,17 +106,15 @@
 					<td>
 						<a href="javascript:void(0);" onclick="delItems(<?=$vl['id']?>)">删除</a>
 						<a href="javascript:void(0);" onclick="setitems(<?=$vl['id']?>);">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
-						<span onclick="sortChaneg(<?=$vl['id']?>, 2 , 1)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
-						<span class="img-flip" onclick="sortChaneg(<?=$vl['id']?>, 2, 2)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
+						<span onclick="sortChaneg(<?=$vl['id']?>, 2 , 1,['topicId',<?=$topic['id']?>])"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
+						<span class="img-flip" onclick="sortChaneg(<?=$vl['id']?>, 2, 2,['topicId',<?=$topic['id']?>])"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
 					</td>
 				</tr>
 				<?}?>
 				</tbody>
 			</table>
 			<br>
-			<?if($ky < 8){ ?>
 			<a href="javascript:void(0)" class="nexta" id="additems">+ 新增商品</a>
-			<?php } ?>
 			<br>
 		</div>
 		
@@ -265,13 +262,17 @@ function delItems(id)
 }
 
 
-function sortChaneg(id, type, updown)
+function sortChaneg(id, type, updown,where)
 {
     if ( id == '' || updown == '' || type == '') return false;
+	var data = {id:id,updown:updown,type:type};
+	if(where){
+		data[where[0]] = where[1];
+	}
     $.ajax({
         type : 'post',
         url  : '/topic/sortChaneg/',
-        data : {id:id,updown:updown,type:type},
+        data : data,
         dataType : 'json',
         success : function (data){
             if (data.code==1){

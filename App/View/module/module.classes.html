@@ -59,11 +59,10 @@
 		</tr>
 	</table>
 	<br>
-	<a href="javascript:void(0)" class="nexta" id="addclassitem">+ 新增商品</a>
-	<br>
+	<span class="addSpan"><a href="javascript:void(0)" class="nexta" id="addclassitem">+ 新增商品</a><br></span>
 	<div class="thistip" ><em  class="cFF6701" >每条分类最多可添加8条展示商品</em></div>
 	<br>
-	<a href="javascript:void(0)" class="nexta aaaa" id="adddata">确定编辑</a><a href="javascript:void(0)" class="cancela cancel_create aaaa">取消</a>
+	<a href="javascript:void(0)" class="nexta aaaa" id="adddata">确定编辑</a><a href="javascript:void(0)" class="cancela cancel_create  aaaa">取消</a>
 	</form>
 </div>
 <script type="text/javascript" src="<?=StaticDir?>1.2/js/module.js"></script>
@@ -72,6 +71,7 @@
 		<? if(!$id): ?>
 		$('#classname').focus();
 		<? endif; ?>
+		checkItemslen();
 		//添加商品界面显示
 		$('#addclassitem').click(function(){
 			if(!$('#newclassitem').is(':visible')){
@@ -126,6 +126,13 @@
 						$('#classItems').append(str);
 						$('#sbnumber').val('');
 						$('#sbclassitem').val('');
+						//检测此时的商标数
+						var ClassItemNum = $('.ClassItem').length;
+						if(ClassItemNum >= 8){
+							$('#newclassitem').hide();
+							$('.addSpan').hide();
+							return false;
+						}
 					}else if(data.code==10) {
 						//编辑结果
 						var hiddenEle = '#item-'+data.id;
@@ -168,6 +175,7 @@
 				layer.msg('请填写分类名称', {
 					time: 2000 //2秒关闭（如果不配置，默认是3秒）
 				});
+				$('#classname').focus();
 				return false;
 			}
 			var data = $("#moduleclass").serialize();
@@ -197,7 +205,7 @@
 			});
 		})
         //取消/添加 失去焦点事件
-		$(".aaaa").mouseenter(function(){
+		$(".aaaa").mouseover(function(){
 			$('#classname').unbind('blur');
 		});
 		$(".aaaa").mouseout(function(){
@@ -210,6 +218,14 @@
 		//分类框失去焦点时ajax请求, 添加分类
 		$('#classname').blur(classNameFn);
 	});
+	//检测商标数
+	function checkItemslen(){
+		var ClassItemNum = $('.ClassItem').length;
+		if(ClassItemNum >= 8){
+			$('.addSpan').hide();
+			return false;
+		}
+	}
     //添加分类函数
 	function classNameFn(){
         var id = $('#id').val();
@@ -219,6 +235,7 @@
                 layer.msg('请输入分类名', {
                     time: 1500 //2秒关闭（如果不配置，默认是3秒）
                 });
+				$('#classname').focus();
                 return;
             }
             $.ajax({

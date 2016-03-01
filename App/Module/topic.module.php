@@ -109,7 +109,7 @@ class TopicModule extends AppModule
 	
 	//对某类别中某项进行上下排序
     //$updown 1：向上，2：向下
-    public function sortUpDown($id, $updown, $type)
+    public function sortUpDown($id, $updown, $type, $where='')
     {
         if ( empty($id) ) return false;
 		
@@ -131,6 +131,9 @@ class TopicModule extends AppModule
         $r['raw']   = $updown == 1 ? " `sort` > $order " : " `sort` < $order ";
         $ord        = $updown == 1 ? 'asc' : 'desc';
         $r['order'] = array('sort'=>$ord);
+        if($where){
+            $r['eq'] = $where;
+        }
         $res = $this->import($import)->find($r);
 		
         if ( empty($res) ) return false;

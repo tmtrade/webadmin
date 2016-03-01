@@ -568,7 +568,7 @@ class internalAction extends AppAction
 	{
 		$params = $this->getFormData();
 		$list = $this->load('internal')->getExcelList($params);
-		
+
 		$result = array();
 		
 		//获取所有联系人

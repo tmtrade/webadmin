@@ -46,7 +46,8 @@
 					layer.msg('操作成功！', {
 						time: 1000 //2秒关闭（如果不配置，默认是3秒）
 					}, function(){
-						parent.window.location = '/topic/edit/?id='+topicId;
+						//parent.window.location = '/topic/edit/?id='+topicId;
+						parent.window.location.reload();
 					});
 				}else{
 					layer.msg(data.msg, {

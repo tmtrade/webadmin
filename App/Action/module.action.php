@@ -65,15 +65,10 @@ class moduleAction extends AppAction
 			$moduleAds  = $this->load('module')->getModuleAdsList($moduleId);
 			$moduleLink  = $this->load('module')->getModuleLinkList($moduleId);
 		}
-
-		//设置返回的地址,判断请求地址是否包含module/edit,包含则不设置
-		$ori_uri = $_SERVER['HTTP_REFERER'];
-		if(strpos($ori_uri,'module/edit')===false){
-			Session::set('edit_referr',$ori_uri);
-		}
 		$referr = Session::get('edit_referr');
 
 		$this->set('module', $module);
+		$this->set('moduleId', $moduleId);
 		$this->set('moduleClass', $moduleClass);
 		$this->set('moduleAds', $moduleAds);
 		$this->set('moduleLink', $moduleLink);
@@ -552,24 +547,27 @@ class moduleAction extends AppAction
 	{	
 		$id = $this->input('id', 'int', 0);
 		$type = $this->input('type', 'int', 0);
-		$classId = $this->input('classId', 'int', 0);
+		//设置条件
+		$where = '';
+		if(isset($_POST['classId'])){
+			$classId = $this->input('classId', 'int', 0);
+			$where = array('classId'=>$classId);
+		}elseif(isset($_POST['moduleId'])){
+			$moduleId = $this->input('moduleId', 'int', 0);
+			$where = array('moduleId'=>$moduleId);
+		}
 		$updown = $this->input('updown', 'int', 0); //1上，2下
 		
 		if ( $id <= 0 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
 		}
 		
-		$res = $this->load('module')->sortUpDown($id, $updown, $type, array('classId'=>$classId));
+		$res = $this->load('module')->sortUpDown($id, $updown, $type, $where);
 		
 		if ( $res ){
 			$this->returnAjax(array('code'=>1));
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'排序失败'));
 	}
-	
-	
-	
-	
-	
 }
 ?>

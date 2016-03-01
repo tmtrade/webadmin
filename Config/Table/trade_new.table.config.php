@@ -164,5 +164,11 @@ $tbl['topicItems'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['apiLog'] = array(
+	'name'		=> $prefix.'api_log',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
 
 ?>

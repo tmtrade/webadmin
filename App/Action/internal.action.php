@@ -418,7 +418,7 @@ class internalAction extends AppAction
 		}
 		$res = $this->load('internal')->delVerify($id, $saleId, $reason);
 		if ( $res ){
-			$this->load('log')->addSaleLog($saleId, 15, "联系人ID：$id 被驳回并删除了");//联系人审核通过
+			$this->load('log')->addSaleLog($saleId, 15, "联系人ID：$id 被驳回并删除了(原因：$reason)");//联系人审核通过
 			$this->returnAjax(array('code'=>1));
 		}
 		$this->returnAjax(array('code'=>2, 'msg'=>'驳回失败了'));

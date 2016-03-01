@@ -3,6 +3,12 @@
  * 定义应用所需常量
  */
 $define = array(
+
+    'SYS_API_KEY' => 'JyZyZcXmChOfN2016ZxWlQkF',//api 加密 key
+    'API_USERS' => array(
+        'UserCenter' => 'api1010',//用户中心
+    ),
+
 	'INDEX_WORD_STRESS' => array(
 		'0' 	=> '无',
 		'1' 	=> '红色',
@@ -21,6 +27,7 @@ $define = array(
 		'3'  => '其他',
 		'9'  => '同行',
 		'10'  => '一只蝉',
+		'11'  => '用户中心',
     ),
 	//出售商标状态
     'SALE_STATUS' => array(

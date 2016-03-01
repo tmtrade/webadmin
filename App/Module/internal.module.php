@@ -356,7 +356,7 @@ class InternalModule extends AppModule
     }
 
     //创建默认的商品信息
-    public function addDefault($number)
+    public function addDefault($number, $memo='后台创建默认商品')
     {
         if ( empty($number) ) return false;
         if ( $this->existSale($number) ) return false;
@@ -395,11 +395,11 @@ class InternalModule extends AppModule
             'date'          => time(),
             'viewPhone'     => $viewPhone,
             'hits'          => 0,
-            'memo'          => '后台创建默认商品',
+            'memo'          => $memo,
         );
         $tminfo = array(
             'number'    => $number,
-            'memo'      => '后台创建默认商品',
+            'memo'      => $memo,
             'intro'     => '',
         );
         $this->begin('sale');
@@ -407,7 +407,7 @@ class InternalModule extends AppModule
         $tmId   = $this->addTminfo($tminfo, $saleId);//创建商品包装信息
         $black  = $this->load('blacklist')->setBlack($number);
         if ( $saleId && $tmId && $black ){
-            $this->load('log')->addSaleLog($saleId, 3, '后台创建默认商品');//创建商品日志
+            $this->load('log')->addSaleLog($saleId, 3, $memo);//创建商品日志
             $this->commit('sale');
             return $saleId;
         }
@@ -625,14 +625,23 @@ class InternalModule extends AppModule
         return true;
     }
 
-
-    //判断是否商标基础信息是否存在
-    public function existContact($phone, $source)
+    //判断联系人信息是否存在
+    public function existContact($number, $phone='', $uid=0, $userId=0)
     {
-        $r['eq'] = array('phone'=>$phone,'source'=>$source);
-        $res = $this->import('contact')->find($r);
-        if ( $res ) return true;
-        return false;
+        if ( empty($number) ) return false;
+
+        $r['eq'] = array('number'=>$number);
+        if ( $userId > 0 ){
+            $r['eq']['userId'] = $userId;
+        }
+        if ( $uid > 0 ){
+            $r['eq']['uid'] = $uid;
+        }
+        if ( !empty($phone) ){
+            $r['eq']['phone'] = $phone;
+        }
+        $count = $this->import('contact')->count($r);
+        return ($count > 0) ? true : false;
     }
 
     //通过商品ID判断是否在黑名单中

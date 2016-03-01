@@ -11,7 +11,8 @@
 class LogModule extends AppModule
 {
     public $models = array(
-        'saleLog'		=> 'saleLog',
+        'saleLog'   => 'saleLog',
+        'api'       => 'apiLog',
     );
 
     //添加国内商标出售日志
@@ -21,6 +22,7 @@ class LogModule extends AppModule
         if ( empty($this->userId) ) $this->userId = 0;
 
         $member = $this->load('member')->getMemberById($this->userId);
+        $desc   = serialize( $this->load('member')->getSaleInfo($saleId) );
         $_data = array(
             'saleId'    => $saleId,
             'roleId'    => $member['roleId'],
@@ -28,6 +30,7 @@ class LogModule extends AppModule
             'name'      => $member['name'],
             'date'      => time(),
             'memo'      => $memo,
+            'data'      => '',
             );
 
         return $this->import('saleLog')->create($_data);
@@ -51,6 +54,63 @@ class LogModule extends AppModule
             $list[$k]['typeName']   = $opType[$v['type']];
         }
         return $list;
+    }
+
+    /**
+     * 添加API日志
+     * @author      Xuni
+     * @since       2016-03-01
+     * 
+     * @access      public
+     * @param       array     $params     数据包
+     * @return      void
+     */
+    public function addApiLog($param, $type, $status, $desc='', $memo='')
+    {
+        $data = array(
+            'user'      => $param['user'],
+            'type'      => $type,
+            'status'    => $status,
+            'data'      => $param['data'],
+            'desc'      => $desc,
+            'memo'      => $memo,
+            );
+
+        return $this->_addApiLog($data);
+    }
+
+    /**
+     * 获取用户信息
+     * @author      Xuni
+     * @since       2016-03-01
+     *
+     * @access      public
+     * @param       array     $params     数据包
+     * @return      void
+     */
+    protected function _addApiLog($params)
+    {
+        $user       = empty($params['user']) ? 0 : $params['user'];
+        $msg        = empty($params['desc']) ? '' : $params['desc'];
+        $memo       = empty($params['memo']) ? '' : $params['memo'];
+        $type       = empty($params['type']) ? 0 : $params['type'];
+        $status     = empty($params['status']) ? 0 : $params['status'];
+        $data       = empty($params['data']) ? 0 : $params['data'];
+
+        if ( is_array($data) ) $data = serialize($data);
+        if ( is_array($memo) ) $memo = serialize($memo);
+
+        $log = array(
+            'user'      => $user,
+            'type'      => $type,
+            'status'    => $status,
+            'data'      => $data,
+            'created'   => time(),
+            'desc'      => $msg,
+            'memo'      => $memo,
+            );
+
+        return $this->import('api')->create($log);
     }
 
 }

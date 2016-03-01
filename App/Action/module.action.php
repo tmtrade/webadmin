@@ -215,6 +215,11 @@ class moduleAction extends AppAction
 			$data = $this->load('internal')->getSaleByNumber($number);
 			if($data){
 				$name = $data['name'];
+				//商标是否在售状态
+				if($data['status']!=1){
+					$res['code'] = 5;
+					$this->returnAjax($res);
+				}
 				//判断是添加还是编辑操作
 				if($opt=='edit'){
 					//编辑
@@ -248,7 +253,7 @@ class moduleAction extends AppAction
 			$res['code'] = 1;
 
 		}
-		// code: 0,10 正常;1 非法参数;2 无商标信息;3 添加数据出错;4 编辑数据出错
+		// code: 0,10 正常;1 非法参数;2 无商标信息;3 添加数据出错;4 编辑数据出错; 5 商标已下架或审核中
 		$this->returnAjax($res);
 	}
 	/**

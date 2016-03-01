@@ -44,20 +44,20 @@
 			success : function (data){
 				if (data.code==1){
 					layer.msg('操作成功！', {
-						time: 1000 //2秒关闭（如果不配置，默认是3秒）
+						time: 1000
 					}, function(){
-						//parent.window.location = '/topic/edit/?id='+topicId;
 						parent.window.location.reload();
 					});
 				}else{
 					layer.msg(data.msg, {
-						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						time: 1500
 					});
+					$('#sbnumber').val('');
 				}
 			},
 			error : function (data){
 				layer.msg('操作失败，请稍后重试。', {
-					time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					time: 1500
 				});
 			}
 		});

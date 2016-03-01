@@ -157,12 +157,14 @@ class topicAction extends AppAction
         if ( empty($number) ){
             $this->returnAjax(array('code'=>2,'msg'=>'请填写商标号'));
         }
-		
+
 		$dataN = $this->load('internal')->getSaleByNumber($number);
 		if(!$dataN){		
 			$this->returnAjax(array('code'=>2,'msg'=>'不存在该商标'));
 		}
-				
+		if($dataN['status']!=1){
+			$this->returnAjax(array('code'=>2,'msg'=>'商标已下架或审核中'));
+		}
         $data = array(
             'name'     => $dataN['name'],
             'number'    => $number,

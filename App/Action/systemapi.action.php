@@ -65,6 +65,37 @@ class SystemApiAction extends RpcServer
         return $this->getMsg($flag, $params, $type);
     }
 
+    /**
+     * 修改联系人价格
+     *
+     * @author      xuni
+     * @since       2016-03-02
+     *
+     * @access      public
+     * @param       array   $params     接口参数（参考接口文档）
+     * @return      array
+     */
+    public function updateContactPrice($params)
+    {
+        $type   = 2;
+        $check  = $this->checkout($params, $type);
+        if ( $check !== true ) return $check;
+
+        $data = $this->formattData($params['data'], $type);
+
+        //ID不能小于0
+        if ( $data['cid'] <= 0 ){
+            return $this->getMsg('201', $params, $type);
+        }
+        //参数不能小于0
+        if ( $data['price'] < 0 ){
+            return $this->getMsg('202', $params, $type);
+        }
+
+        $flag = $this->load('api')->updateContactPrice($data);
+        return $this->getMsg($flag, $params, $type);
+    }
+
 	/**
      * 判断数据的正确性
      *
@@ -109,7 +140,7 @@ class SystemApiAction extends RpcServer
      * @param       int     $type       数据类型（1添加出售信息、2修改出售价格）
      * @return      array
      */
-    protected function formattData($data, $type)
+    protected function formattData($data, $_type)
     {
         $this->input    = $data;
         $cid            = $this->getParam('cid', 'int');//cid，联系人信息ID
@@ -122,7 +153,7 @@ class SystemApiAction extends RpcServer
         $type           = $this->getParam('type', 'int');//出售类型（1：出售，2：许可，3：出售+许可）
 
         $array = array();
-        if ($type == 1){
+        if ($_type == 1){
             $array = array(
                 'uid'           => $uid,
                 'number'        => $number,
@@ -132,7 +163,7 @@ class SystemApiAction extends RpcServer
                 'type'          => $type,
                 'source'        => $source,
                 );
-        }elseif ($type == 2){
+        }elseif($_type == 2){
             $array = array(
                 'cid'           => $cid,
                 'price'         => $price,
@@ -252,7 +283,7 @@ class SystemApiAction extends RpcServer
 
             '201' => array(
                         'code'  => '201',
-                        'msg'   => 'cid is null',
+                        'msg'   => 'cid error',
                         ),
             '202' => array(
                         'code'  => '202',
@@ -260,7 +291,7 @@ class SystemApiAction extends RpcServer
                         ),
             '203' => array(
                         'code'  => '203',
-                        'msg'   => 'cid error',
+                        'msg'   => 'cid exist',
                         ),
         );
         return $list;

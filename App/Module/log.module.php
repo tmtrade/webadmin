@@ -16,13 +16,21 @@ class LogModule extends AppModule
     );
 
     //添加国内商标出售日志
-    public function addSaleLog($saleId, $type=0, $memo='')
+    public function addSaleLog($saleId, $type=0, $memo='', $desc='')
     {
         if ( empty($saleId) ) return false;
-        if ( empty($this->userId) ) $this->userId = 0;
 
-        $member = $this->load('member')->getMemberById($this->userId);
-        $desc   = serialize( $this->load('member')->getSaleInfo($saleId) );
+        if ( empty($this->userId) ){
+            $member = array(
+                'roleId'    => 0,
+                'name'      => '系统（接口）',
+                );
+        }else{
+            $member = $this->load('member')->getMemberById($this->userId);
+        }
+        if ( empty($desc) ){
+            $desc  = serialize( $this->load('internal')->getSaleInfo($saleId) );
+        }
         $_data = array(
             'saleId'    => $saleId,
             'roleId'    => $member['roleId'],
@@ -30,12 +38,21 @@ class LogModule extends AppModule
             'name'      => $member['name'],
             'date'      => time(),
             'memo'      => $memo,
-            'data'      => '',
+            'data'      => $desc,
             );
 
         return $this->import('saleLog')->create($_data);
     }
 
+    /**
+     * 获取出售信息日志列表
+     * @author      Xuni
+     * @since       2016-03-01
+     * 
+     * @access      public
+     * @param       int     $saleId     出售信息ID
+     * @return      array
+     */
     public function getSaleLog($saleId)
     {
         if ( empty($saleId) ) return false;
@@ -46,12 +63,10 @@ class LogModule extends AppModule
         if ( empty($list) ) array();
         $opType = C("OP_TYPE");
         foreach ($list as $k => $v) {
-            if ( $v['roleId'] == 0 ) continue;
-            $member = $this->load('member')->getMemberById($this->userId);
-            $role   = $this->load('role')->getRoleById($member['roleId']);
-            $list[$k]['memberName'] = $member['name'];
-            $list[$k]['roleName']   = $role['name'];
             $list[$k]['typeName']   = $opType[$v['type']];
+            if ( $v['roleId'] == 0 ) continue;
+            $role   = $this->load('role')->getRoleById($v['roleId']);
+            $list[$k]['roleName']   = $role['name'];
         }
         return $list;
     }

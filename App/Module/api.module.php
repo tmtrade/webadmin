@@ -72,6 +72,38 @@ class ApiModule extends AppModule
         return '904';//添加失败
 	}
 
+    /**
+     * 修正联系人价格
+     * @author  Xuni
+     * @since   2016-03-01
+     * @param   array       $param      接口数据包
+     * @return  boolean
+     */
+    public function updateContactPrice($params)
+    {
+        $cid    = $params['cid'];
+        $price  = $params['price'];
+
+        $r['eq'] = array('id'=>$cid);
+        $contact = $this->load('internal')->findContact($r);
+        if ( empty($contact) ){
+            return '203';
+        }
+        if ( $contact['price'] == $price ){
+            return '999';
+        }
+
+        $data = array(
+            'price'     => $price,
+            'isVerify'  => 2,
+            );        
+        $res = $this->load('internal')->updateContact($data, $cid);
+        if ( $res ){
+            $this->load('log')->addSaleLog($contact['saleId'], 9, "来自用户中心，联系人ID:$cid(修改价格)", serialize($contact));//记录日志
+            return '999';
+        }
+        return '904';
+    }
 
 
 }

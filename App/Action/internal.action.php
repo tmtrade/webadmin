@@ -277,7 +277,7 @@ class internalAction extends AppAction
 		}
 		$res = $this->load('internal')->update($data, $saleId);
 		if ( $res ){
-			$this->load('log')->addSaleLog($saleId, 10, serialize($data));//修改价格信息
+			$this->load('log')->addSaleLog($saleId, 10, '商品价格已修改', serialize($data));//修改价格信息
 			$this->returnAjax(array('code'=>1,'msg'=>'操作成功'));
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
@@ -299,7 +299,7 @@ class internalAction extends AppAction
 		);
 		$res = $this->load('internal')->update($data, $saleId);
 		if ( $res ){
-			$this->load('log')->addSaleLog($saleId, 11);//修改备注信息
+			$this->load('log')->addSaleLog($saleId, 11, "修改备注为：$memo", 'test');//修改备注信息
 			$this->returnAjax(array('code'=>1,'msg'=>'操作成功'));
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
@@ -380,9 +380,14 @@ class internalAction extends AppAction
 		if ( $saleId <= 0 || $id <= 0 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
 		}
+		$r['eq'] = array('id'=>$id);
+        $contact = $this->load('internal')->findContact($r);
+        if ( empty($contact) ){
+        	$this->returnAjax(array('code'=>2,'msg'=>'联系人不存在')); 
+        }
 		$res = $this->load('internal')->delContact($id, $saleId);
 		if ( $res ){
-			$this->load('log')->addSaleLog($saleId, 13, "联系人ID：$id 被删除了");//删除联系人
+			$this->load('log')->addSaleLog($saleId, 13, "联系人ID：$id 被删除了", serialize($contact));//删除联系人
 			$this->returnAjax(array('code'=>1));
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'请联系人必须至少保留一个！如商品为上架状态，要保留一个审核过的联系人！'));
@@ -396,9 +401,14 @@ class internalAction extends AppAction
 		if ( $saleId <= 0 || $id <= 0 ){
 			$this->returnAjax(array('code'=>2)); 
 		}
+		$r['eq'] = array('id'=>$id);
+        $contact = $this->load('internal')->findContact($r);
+        if ( empty($contact) ){
+        	$this->returnAjax(array('code'=>2,'msg'=>'联系人不存在')); 
+        }
 		$res = $this->load('internal')->setVerify($id, $saleId);
 		if ( $res ){
-			$this->load('log')->addSaleLog($saleId, 14, "联系人ID：$id 审核通过");//联系人审核通过
+			$this->load('log')->addSaleLog($saleId, 14, "联系人ID：$id 审核通过", serialize($contact));//联系人审核通过
 			$this->returnAjax(array('code'=>1));
 		}
 		$this->returnAjax(array('code'=>2));
@@ -416,9 +426,14 @@ class internalAction extends AppAction
 		if ( $reason == '' ){
 			$this->returnAjax(array('code'=>2,'msg'=>'请填写原因')); 
 		}
+		$r['eq'] = array('id'=>$id);
+        $contact = $this->load('internal')->findContact($r);
+        if ( empty($contact) ){
+        	$this->returnAjax(array('code'=>2,'msg'=>'联系人不存在')); 
+        }
 		$res = $this->load('internal')->delVerify($id, $saleId, $reason);
 		if ( $res ){
-			$this->load('log')->addSaleLog($saleId, 15, "联系人ID：$id 被驳回并删除了(原因：$reason)");//联系人审核通过
+			$this->load('log')->addSaleLog($saleId, 15, "联系人ID：$id 被驳回并删除了(原因：$reason)", serialize($contact));//联系人审核通过
 			$this->returnAjax(array('code'=>1));
 		}
 		$this->returnAjax(array('code'=>2, 'msg'=>'驳回失败了'));

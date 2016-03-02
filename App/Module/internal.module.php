@@ -509,8 +509,10 @@ class InternalModule extends AppModule
         foreach ($ids as $id) {
             $sale = $this->getSaleInfo($id);
             if ( empty($sale) ) continue;
+            $number = $sale['number'];
+            $saleId = $sale['id'];
             $data = array(
-                'number'    => $sale['number'],
+                'number'    => $number,
                 'type'      => $type,
                 'memberId'  => $this->userId,
                 'data'      => serialize($sale),
@@ -520,20 +522,21 @@ class InternalModule extends AppModule
             );
             $hisId = $this->import('history')->create($data);//创建商品历史记录
             if ( $black == 1 ) {
-                $isBlack = $this->load('blacklist')->outBlack($sale['number']);//剔除黑名单
+                $isBlack = $this->load('blacklist')->outBlack($number);//剔除黑名单
             }else{
                 $isBlack = true;
             }
-            $r['eq']    = array('id'=>$sale['id']);
+            $r['eq']    = array('id'=>$saleId);
             $delSale    = $this->import('sale')->remove($r);//删除商品
 
-            $rl['eq']   = array('saleId'=>$sale['id']);
+            $rl['eq']   = array('saleId'=>$saleId);
             $delContact = $this->import('contact')->remove($rl);//删除联系人
             $delTminfo  = $this->import('tminfo')->remove($rl);//删除包装信息
             if ( $hisId <= 0 || !$isBlack || !$delSale || !$delContact || !$delTminfo ){
                 $this->rollBack('sale');
                 return false;
             }
+            $this->load('log')->addSaleLog($saleId, 16, "商品：$number,商品ID：$saleId 已删除", serialize($sale));//记录日志
         }
         return $this->commit('sale');
     }
@@ -808,5 +811,9 @@ class InternalModule extends AppModule
 		return $res;
     }
 
+    public function findContact($r)
+    {
+        return $this->import('contact')->find($r);
+    }
 }
 ?>

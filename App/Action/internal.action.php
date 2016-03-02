@@ -275,9 +275,14 @@ class internalAction extends AppAction
 		}else{
 			$this->returnAjax(array('code'=>2,'msg'=>'至少选择 出售与许可 中一项')); 
 		}
+		$sale = $this->load('internal')->getSaleInfo($saleId);
+		if ( empty($sale) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'出售信息不存在')); 
+		}
 		$res = $this->load('internal')->update($data, $saleId);
 		if ( $res ){
 			$this->load('log')->addSaleLog($saleId, 10, '商品价格已修改', serialize($data));//修改价格信息
+			$this->load('usercenter')->pushTmPrice($sale['number'], $sale, $data);//推送到用户
 			$this->returnAjax(array('code'=>1,'msg'=>'操作成功'));
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
@@ -385,7 +390,7 @@ class internalAction extends AppAction
         if ( empty($contact) ){
         	$this->returnAjax(array('code'=>2,'msg'=>'联系人不存在')); 
         }
-		$res = $this->load('internal')->delContact($id, $saleId);
+		$res = $this->load('internal')->delContact($id, $saleId, 2);
 		if ( $res ){
 			$this->load('log')->addSaleLog($saleId, 13, "联系人ID：$id 被删除了", serialize($contact));//删除联系人
 			$this->returnAjax(array('code'=>1));
@@ -418,9 +423,9 @@ class internalAction extends AppAction
     public function delVerify()
     {
 		$id 	= $this->input('id', 'int', 0);
-		$saleId = $this->input('saleId', 'int', 0);
+		//$saleId = $this->input('saleId', 'int', 0);
     	$reason = $this->input('reason', 'text', '');
-		if ( $saleId <= 0 || $id <= 0 ){
+		if ( $id <= 0 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
 		}
 		if ( $reason == '' ){
@@ -431,9 +436,9 @@ class internalAction extends AppAction
         if ( empty($contact) ){
         	$this->returnAjax(array('code'=>2,'msg'=>'联系人不存在')); 
         }
-		$res = $this->load('internal')->delVerify($id, $saleId, $reason);
+		$res = $this->load('internal')->delVerify($id, $contact['saleId']);
 		if ( $res ){
-			$this->load('log')->addSaleLog($saleId, 15, "联系人ID：$id 被驳回并删除了(原因：$reason)", serialize($contact));//联系人审核通过
+			$this->load('log')->addSaleLog($contact['saleId'], 15, "联系人ID：$id 被驳回并删除了(原因：$reason)", serialize($contact));//联系人审核通过
 			$this->returnAjax(array('code'=>1));
 		}
 		$this->returnAjax(array('code'=>2, 'msg'=>'驳回失败了'));

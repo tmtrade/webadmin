@@ -38,7 +38,7 @@ class ApiModule extends AppModule
         //判断是否出售
         $saleId = $this->load('internal')->existSale($number);
         if ( $saleId ){
-            $sale = $this->load('internal')->getSaleInfo($saleId);
+            //$sale = $this->load('internal')->getSaleInfo($saleId);
         }else{
             $saleId = $this->load('internal')->addDefault($number, $memo);
         }
@@ -67,6 +67,7 @@ class ApiModule extends AppModule
 
         $flag = $this->load('internal')->addContact($contact, $saleId);
         if ( $flag ){
+            $this->load('log')->addSaleLog($saleId, 8, "来自用户中心，联系人ID:$flag(新增)", serialize($contact));//记录日志
             return '999';//成功
         }
         return '904';//添加失败

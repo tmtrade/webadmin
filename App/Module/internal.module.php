@@ -11,10 +11,11 @@
 class InternalModule extends AppModule
 {
     public $models = array(
-        'sale'		=> 'sale',
-        'contact'	=> 'saleContact',
-        'tminfo'    => 'saleTminfo',
-        'history'   => 'saleHistory',
+        'sale'		        => 'sale',
+        'contact'           => 'saleContact',
+        'tminfo'            => 'saleTminfo',
+        'history'           => 'saleHistory',
+        'userSaleHistory'   => 'userSaleHistory',
     );
     
     public function getList($params, $page, $limit=20)
@@ -512,6 +513,7 @@ class InternalModule extends AppModule
             $number = $sale['number'];
             $saleId = $sale['id'];
             $data = array(
+                'saleId'    => $id,
                 'number'    => $number,
                 'type'      => $type,
                 'memberId'  => $this->userId,
@@ -526,6 +528,15 @@ class InternalModule extends AppModule
             }else{
                 $isBlack = true;
             }
+            //处理用户出售信息历史记录
+            foreach ($sale['contact'] as $k => $v) {
+                $addUserHistory = $this->addUserHistory($v, $sale, $type);
+                if ( !$addUserHistory ){
+                    $this->rollBack('sale');
+                    return false;
+                }
+            }
+
             $r['eq']    = array('id'=>$saleId);
             $delSale    = $this->import('sale')->remove($r);//删除商品
 
@@ -542,26 +553,54 @@ class InternalModule extends AppModule
     }
 
     //删除联系人
-    public function delContact($id, $saleId, $type='one')
+    public function delContact($id, $saleId, $type)
     {
-        $r = array();
-        if ( empty($id) && empty($saleId) ) return false;
+        if ( empty($id) || empty($saleId) ) return false;
 
-        $r['eq'] = array('saleId'=>$saleId);
-        if ( $type == 'all' ){
-            return $this->import('contact')->remove($r);
+        //要判断联系人是否至少有一个
+        if ( $this->isSaleUp($saleId) ){
+            $r['eq']['isVerify']    = 1;
         }
-        //如果有商品ID，要判断联系人是否至少有一个
-        if ( $saleId ){
-            if ( $this->isSaleUp($saleId) ){
-                $r['eq']['isVerify']    = 1;
-            }
-            $r['raw'] = " id != $id ";
-            $total = $this->import('contact')->count($r);
-            if ( $total < 1 ) return false;
-        }
+        $r['raw'] = " id != $id ";
+        $total = $this->import('contact')->count($r);
+        if ( $total < 1 ) return false;
+        ////////////////////////////////
+        $this->begin('sale');
         $role['eq'] = array('id'=>$id);
-        return $this->import('contact')->remove($role);
+        $contact = $this->findContact($role);
+
+        //处理联系人为前台提交的数据，保存相应日志记录
+        $res    = $this->addUserHistory($contact, '', $type);
+        $res2   = $this->import('contact')->remove($role);
+        if ( !$res || !$res2 ){
+            $this->rollBack('sale');
+            return false;
+        }
+        return $this->commit('sale');
+    }
+
+    //记录用户商品历史数据
+    public function addUserHistory($contact, $saleInfo='', $type)
+    {
+        if ( empty($contact) || empty($type) ) return false;
+        //不需要保存的数据，直接返回正确
+        if ( $contact['uid'] <= 0 && $contact['userId'] <=0 ) return true;
+
+        if ( empty($saleInfo) ){
+            $saleInfo = $this->getSaleInfo($contact['saleId']);
+        }
+        $data = array(
+            'uid'       => $contact['uid'],
+            'userId'    => $contact['userId'],
+            'saleId'    => $contact['saleId'],
+            'number'    => $contact['number'],
+            'type'      => $type,
+            'saleDate'  => $contact['date'],
+            'price'     => $contact['price'],
+            'data'      => serialize($saleInfo),
+            'date'      => time(),
+            );
+        return $this->import('userSaleHistory')->create($data);
     }
 
     //审核联系人
@@ -570,7 +609,7 @@ class InternalModule extends AppModule
         if ( empty($id) && empty($saleId) ) return false;
 
         $r['eq']    = array('id'=>$id);
-        $data       = array('isVerify'=>1);
+        $data       = array('isVerify'=>1,'updated'=>time());
         $res = $this->import('contact')->modify($data, $r);
         if ( !$res ) return false;
         if ( $this->isSaleUp($saleId) )  return true;
@@ -580,11 +619,11 @@ class InternalModule extends AppModule
     }
 
     //驳回联系人
-    public function delVerify($id, $saleId, $reason)
+    public function delVerify($id, $saleId)
     {
-        if ( empty($id) && empty($reason) && empty($saleId) ) return false;
+        if ( empty($id) || empty($saleId) ) return false;
         
-        return $this->delContact($id, $saleId, $reason);
+        return $this->delContact($id, $saleId, 3);
     }
 
     //判断商品是否上架

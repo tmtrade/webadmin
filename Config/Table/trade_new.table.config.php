@@ -170,5 +170,10 @@ $tbl['apiLog'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['userSaleHistory'] = array(
+	'name'		=> $prefix.'user_sale_history',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 
 ?>

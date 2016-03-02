@@ -432,7 +432,7 @@ class ExcelModule extends AppModule
 			$saleType 	= C("SALE_TYPE");
 			$saleSource = C("SOURCE");
 			foreach($data as $key => $item ){
-				if($item['date']==0){$saletime = '-';}else{$saletime = date("Y-m-d", $item['date']);}
+				//if($item['date']==0){$saletime = '-';}else{$saletime = date("Y-m-d", $item['date']);}
 				if($item['date']==0){$saletime = '-';}else{$saletime = date("Y-m-d", $item['date']);}
 				if ($item['isSale'] == 1 && $item['isLicense'] == 1) {
 					$saleTypeStr =  $saleType[3];

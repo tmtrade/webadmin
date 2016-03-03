@@ -52,7 +52,7 @@ class ApiModule extends AppModule
         if ( $isHas ) return '109';//如果已经存在，直接返回正确
 
         $contact = array(
-            'source'        => $params['source'],
+            'source'        => $source,
             'uid'           => $params['uid'],
             'tid'           => $info['tid'],
             'number'        => $number,

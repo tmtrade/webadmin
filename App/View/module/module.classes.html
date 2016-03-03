@@ -88,6 +88,15 @@
 		//添加商标
 		$('#addsb').click(function(){
 			var number = $('#sbnumber').val();
+			number = number.replace(/(^\s*)|(\s*$)/g, "");//去空
+			//验证只能为数字
+			var reg = /^\d*$/g;
+			if(reg.test(number)==false){
+				layer.msg('商标号只能为数字', {
+					time: 1500
+				});
+				return false;
+			}
 			//判断是否是编辑商标
 			var isEdit = $('#sbnumber').attr('isedit');
 			$('#sbnumber').attr('isedit','');
@@ -157,7 +166,7 @@
 							case 1:
 								msg='非法参数';break;
 							case 2:
-								msg='无商标信息';break;
+								msg='该商标未出售';break;
 							case 3:
 								msg='添加数据出错';break;
 							case 5:

@@ -40,7 +40,7 @@
                 <tbody class="table-list">
                 <? foreach ($list as $k => $v) {  ?>
                 <tr>
-					<td><?=$v['id']?></td>
+					<td><?=($k+1)?></td>
                     <td><?=$v['title']?></td>
 					<td><?=date('Y-m-d', $v['date'])?></td>
 					<td><?=$v['member']?></td>

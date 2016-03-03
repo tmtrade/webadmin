@@ -267,12 +267,16 @@ class industryAction extends AppAction
 		$id         = $this->input('id', 'int', '0');
 		$industryId = $this->input('industryId', 'text', '');
 		$ztypeName  = $this->input('ztypeName', 'text', '');
+		$ztypeLink  = $this->input('ztypeLink', 'text', '');
 		$tname      = $this->input('tname', 'text', '');
 		$tlink      = $this->input('tlink', 'text', '');
 		$isopen     = $this->input('isopen', 'text', '');
 		$isshow     = $this->input('isshow', 'text', '');
 		if (empty($ztypeName)) {
 			$this->returnAjax(array('code' => 2, 'msg' => '请填写分类。'));
+		}
+		if (empty($ztypeLink)) {
+			$this->returnAjax(array('code' => 2, 'msg' => '请填写分类链接。'));
 		}
 		if ($tname[0] == "") {
 			$this->returnAjax(array('code' => 2, 'msg' => '请至少填写一列分类名称。'));
@@ -283,6 +287,7 @@ class industryAction extends AppAction
 		$zType = array(
 			'industryId' => $industryId,
 			'name'       => $ztypeName,
+			'link'       => $ztypeLink,
 			'date'       => time(),
 		);
 		if ($id == 0) {

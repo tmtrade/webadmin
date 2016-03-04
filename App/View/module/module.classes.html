@@ -89,14 +89,6 @@
 		$('#addsb').click(function(){
 			var number = $('#sbnumber').val();
 			number = number.replace(/(^\s*)|(\s*$)/g, "");//去空
-			//验证只能为数字
-			var reg = /^\d*$/g;
-			if(reg.test(number)==false){
-				layer.msg('商标号只能为数字', {
-					time: 1500
-				});
-				return false;
-			}
 			//判断是否是编辑商标
 			var isEdit = $('#sbnumber').attr('isedit');
 			$('#sbnumber').attr('isedit','');

@@ -205,7 +205,7 @@ class moduleAction extends AppAction
 	 */
 	public function addClassItem(){
 		//获取参数
-		$number = $this->input('number', 'int', 0);
+		$number = $this->input('number', 'string', '');
 		$classId = $this->input('classId', 'int', 0);
 		$opt = $this->input('opt', 'string', '');
 		$id = $this->input('id', 'int', '0');

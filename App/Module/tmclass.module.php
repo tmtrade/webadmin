@@ -15,23 +15,6 @@ class TmclassModule extends AppModule
 		'tmclass'            => 'tmclass',
 		'group'            => 'group',
 	);
-    //添加分类数据
-	/*public  function test(){
-		$r['limit'] = 1000;
-		$res        = $this->import('group')->findAll($r);
-		foreach($res['rows'] as $k=>$val){
-			$rg['eq'] = array("class"=>$val['id']);
-			$rg['limit'] = 1000;
-			$resg        = $this->import('group')->findAll($rg);
-			foreach($resg['rows'] as $kg=>$gv){
-				$data['parent'] = $val['id'];
-				$data['number'] = $gv['group'];
-				$data['name'] = $gv['cn_name'];
-				//$rm['eq']      = array('id' =>$k);
-				$res          = $this->import('tmclass')->create($data);
-			}
-		}
-	}*/
 	//index 列表
 	public function getList()
 	{

@@ -31,6 +31,8 @@ class ucClient
         }
         $url 	= NAV_SSO_HOST.$type.'/?'.http_build_query($param);
         $result = file_get_contents($url);
+		print_r($result);
+
         return $result;
     }
     /**

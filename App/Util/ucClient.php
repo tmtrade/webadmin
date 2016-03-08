@@ -30,7 +30,9 @@ class ucClient
             $param = array_merge($extra, $param);
         }
         $url 	= NAV_SSO_HOST.$type.'/?'.http_build_query($param);
+		echo $url;
         $result = file_get_contents($url);
+		print_r($result);exit;
         return $result;
     }
     /**

@@ -67,6 +67,9 @@ class ucClient
      */
     public static function userInfo($key)
     {
+		echo $key."<br/>";
+		echo self::ucRequest('getUserInfo', array('key' => $key);
+		exit;
         return json_decode(self::ucRequest('getUserInfo', array('key' => $key)), true);
     }
 }

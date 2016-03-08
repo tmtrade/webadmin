@@ -22,7 +22,6 @@ class LoginAction extends AppAction
 	 */
 	public function synlogin()
 	{
-		echo '1';
 		if(isset($_GET['key']) && empty($_GET['key'])) exit('error');
 		$userinfo = ucClient::userInfo($_GET['key']);
 		

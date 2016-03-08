@@ -97,7 +97,7 @@
 				<tr>
 					<td><img src="<?=$vl['pic']?>" width="100px" height="50px" /></td>
 					<td>
-						<a target="_blank" href="<?=$vl['link']?>" title="<?=$vl['link']?>"><?php
+						<a target="_blank" href="http://<?=$vl['link']?>" title="<?=$vl['link']?>"><?php
 							if(strlen($vl['link'])>20){
 								echo mb_substr($vl['link'],0,20,'utf-8').'...';
 							}else{
@@ -137,7 +137,7 @@
 				<tr>
 					<td><?=$vl['title']?></td>
 					<td>
-						<a target="_blank" href="<?=$vl['link']?>" title="<?=$vl['link']?>"><?php
+						<a target="_blank" href="http://<?=$vl['link']?>" title="<?=$vl['link']?>"><?php
 							if(strlen($vl['link'])>15){
 						echo mb_substr($vl['link'],0,15,'utf-8').'...';
 						}else{

@@ -17,15 +17,15 @@ class TopicSetTopicForm extends AppForm
 		'pic'    => array(
 			'field' => 'pic',
 			'method' => 'fieldName',
-			),
-        'banner'    => array(
-			'field' => 'banner',
-			'method' => 'fieldName',
-			),
-        'bgImg'    => array(
-			'field' => 'bgImg',
-			'method' => 'fieldName',
-			),
+                        ),
+                'banner'    => array(
+                                'field' => 'banner',
+                                'method' => 'fieldName',
+                        ),
+                'bgImg'    => array(
+                                'field' => 'bgImg',
+                                'method' => 'fieldName',
+                        ),
 		'bgColor'    => array(
 			'field' => 'bgColor',
 			'method' => 'fieldName',
@@ -34,6 +34,14 @@ class TopicSetTopicForm extends AppForm
 			'field' => 'bgImgShow',
 			'match' => array('int', '1', ''),
 			),
+                'isUse'    => array(
+                                'field' => 'isUse',
+                                'match' => array('int', '1', ''),
+                        ),
+                'isMore'    => array(
+                                'field' => 'isMore',
+                                'match' => array('int', '2', ''),
+                        ),
     );
 	
 	

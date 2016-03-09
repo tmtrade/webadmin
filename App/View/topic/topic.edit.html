@@ -58,6 +58,18 @@
 						<em  class="cFF6701" id="tipshow">注： 广告图片建议尺寸为 ( 1920 ) x ( 864 )，文件最大不超过200kb，当前支持jpg,bmp,png格式文件</em>
 					</p>
 				</li>
+                                <li><br><hr><br></li>
+				<li>
+					<label>是否上架：</label>
+                                        <input type="radio"  name="isUse" value="1" <?if($topic['isUse']==1) echo "checked='checked'";?> />上架
+                                        <input type="radio"  name="isUse" value="2" <?if($topic['isUse']==2) echo "checked='checked'";?> />下架
+				</li>
+                                <li><br><hr><br></li>
+				<li>
+					<label>是否置顶详情页面排序：</label>
+					<input type="radio"  name="isMore" value="1" <?if($topic['isMore']==1) echo "checked='checked'";?> />是
+                                        <input type="radio"  name="isMore" value="2" <?if($topic['isMore']==2) echo "checked='checked'";?> />否
+				</li>
 				<li><br><hr><br></li>
 				<li>
 					<label>背景设置：</label>

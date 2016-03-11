@@ -122,6 +122,7 @@ class ChannelAction extends AppAction
 		$id 	= $this->input('id', 'int', '');
 		$pic 	= $this->input('pic', 'string', '');
 		$link 	= $this->input('link', 'string', '');
+		$desc 	= $this->input('desc', 'string', '');
 		$cId 	= $this->input('cId', 'int', '');
 		if ( $id > 0 ){
 			$info 	= $this->load('channel')->getItems($id);
@@ -143,6 +144,7 @@ class ChannelAction extends AppAction
 				//'channelId'  => $cId,
 				'pic'        => $pic,
 				'link'       => $link,
+				'desc'       => $desc,
 			);
 	        $res = $this->load('channel')->setItems($data, $id);
 		}else{
@@ -153,6 +155,7 @@ class ChannelAction extends AppAction
 				'channelId' => $cId,
 				'pic'       => $pic,
 				'link'      => $link,
+				'desc'       => $desc,
 				'sort'      => $order,
 			);
 	        $res = $this->load('channel')->addItems($data);

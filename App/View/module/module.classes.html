@@ -77,6 +77,9 @@
 			}else{
 				$('#newclassitem').hide();
 			}
+                        $('#sbclassitem').val("");
+                        $('#sbnumber').val("");
+                        $("#newclassitem").insertAfter($("#classItems").last());//移动到最后面
 		})
 		//取消添加
 		$('#cancelaclassitem').click(function(){
@@ -278,6 +281,8 @@
 		$('#sbnumber').val(number);
 		$('#sbnumber').attr('isedit','true');
 		$('#newclassitem').show();
+                //移动到当前tr后面
+                $("#newclassitem").insertAfter($("#ClassItem-"+itemId).last());
 	}
 
 	//删除

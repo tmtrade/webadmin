@@ -178,11 +178,13 @@ class internalAction extends AppAction
 		$allphone 	= $this->load('phone')->getAllPhone();
 		$gjUrl 		= SEARCH_URL.'search/stateQuery/?t=1&n='.$sale['number'];
 		$referr 	= $this->getReferrUrl('internal_edit');
+
 		$this->getSetting();
 		$this->set('log', $log);
 		$this->set('sale', $sale);
 		$this->set('gjUrl', $gjUrl);
 		$this->set('tminfo', $tminfo);
+		$this->set('tmTop', C('ISTOP_LIST'));
 		$this->set('allphone', $allphone);
 		$this->set('referr', $referr);
 		$this->display();
@@ -278,6 +280,10 @@ class internalAction extends AppAction
 		$sale = $this->load('internal')->getSaleInfo($saleId);
 		if ( empty($sale) ){
 			$this->returnAjax(array('code'=>2,'msg'=>'出售信息不存在')); 
+		}else{
+			if ( $sale['isTop'] < 3 && $data['isOffprice'] == 1 ){
+				$data['isTop'] = 3;//特价自动修改置项值
+			}
 		}
 		$res = $this->load('internal')->update($data, $saleId);
 		if ( $res ){
@@ -321,7 +327,7 @@ class internalAction extends AppAction
 		$label 	= $this->input('label', 'text', '');
 		$length = $this->input('length', 'text', '');
 		$plat 	= $this->input('platform', 'text', '');
-		$isTop 	= $this->input('isTop', 'int', 2);
+		$isTop 	= $this->input('isTop', 'int', 0);
 		$phone 	= $this->input('viewPhone', 'text', '');
 
 		$sale = array(
@@ -342,6 +348,9 @@ class internalAction extends AppAction
 			'value' 		=> $value,
 			'intro' 		=> $intro,
 		);
+		if ( $isTop < 2 && !empty($tminfo['embellish']) ){
+			$sale['isTop'] = 2;//有包装图片的置项值
+		}
 		$res = $this->load('internal')->setEmbellish($saleId, $sale, $tminfo);
 		if ( $res ){
 			$this->returnAjax(array('code'=>1,'msg'=>'操作成功'));

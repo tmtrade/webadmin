@@ -78,7 +78,7 @@ class InternalModule extends AppModule
             $r['raw'] .= " AND (salePriceDate = 0 OR salePriceDate >= unix_timestamp(now())) ";
         }
         if ( !empty($params['isTop']) ){
-            $r['eq']['isTop'] = 1;
+            $r['raw'] .= " AND `isTop` > 0 ";
         }
         if ( $params['isVerify'] == 2 ){
             $list = $this->getNoVerifySale();

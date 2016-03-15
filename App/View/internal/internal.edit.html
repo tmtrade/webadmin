@@ -219,8 +219,14 @@
                 </div>
                 <? } ?>
                 <div class="mj-checkbox">
-                    <input type="checkbox" name="isTop" <?if($sale['isTop']==1){echo 'checked';}?> value="1" id="bq9"/>
-                    <label for="bq9">置项</label>
+                    <label for="bq9">置项：</label>
+                    <select name="isTop">
+                    <? foreach ($tmTop as $k => $v) { ?>
+                        <option value="<?=$k?>" <?if($sale['isTop']==$k){echo 'selected';}?>>
+                        <?=$v?></option>
+                    <? } ?>
+                    </select>
+                    
                 </div>
                 </dd>
                 <dd>

@@ -186,29 +186,33 @@ function delAll(id) {
         layer.msg('非法参数！');
         return false;
     }
-    $.ajax({
-        type: 'post',
-        url: '/industry/del/',
-        data: "id=" + id,
-        dataType: 'json',
-        success: function (data) {
-            if (data.code == 1) {
-                layer.msg('操作成功！', {
-                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                }, function () {
-                    window.location.reload();
-                });
-            } else {
-                layer.msg(data.msg, {
-                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+    layer.confirm('确认要删除此分类吗？<br>', {
+        btn: ['删了','算了'] //按钮
+    }, function(){
+        $.ajax({
+            type: 'post',
+            url: '/industry/del/',
+            data: "id=" + id,
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        window.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error: function (data) {
+                layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
                 });
             }
-        },
-        error: function (data) {
-            layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
-                time: 2000 //2秒关闭（如果不配置，默认是3秒）
-            });
-        }
+        });
     });
 }
 

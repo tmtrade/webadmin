@@ -176,9 +176,9 @@ class industryAction extends AppAction
 		if (length($typeName) > 12) {
 			$this->returnAjax(array('code' => 2, 'msg' => '分类的名称最多不超过12个中文字符。'));
 		}
-		if ($bzpic == "") {
-			$this->returnAjax(array('code' => 2, 'msg' => '请上传图标。'));
-		}
+//		if ($bzpic == "") {
+//			$this->returnAjax(array('code' => 2, 'msg' => '请上传图标。'));
+//		}
 		$data = array(
 			'title' => $typeName,
 			'icon'  => $bzpic,

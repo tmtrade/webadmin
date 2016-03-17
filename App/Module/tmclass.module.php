@@ -39,7 +39,7 @@ class TmclassModule extends AppModule
 		$r['limit'] = 1;
 		$res        = $this->import('tmclass')->find($r);
 		if (!empty($res['label'])) {
-			$res['labelArr'] = explode(";", $res['label']);
+			$res['labelArr'] = explode(",", $res['label']);
 		}
 		return $res;
 	}
@@ -53,7 +53,7 @@ class TmclassModule extends AppModule
 		$r['limit'] = 100;
 		$res        = $this->import('tmclass')->findAll($r);
 		if (!empty($res['label'])) {
-			$res['labelArr'] = explode(";", $res['label']);
+			$res['labelArr'] = explode(",", $res['label']);
 		}
 		return $res;
 	}
@@ -67,9 +67,10 @@ class TmclassModule extends AppModule
 		$r['limit'] = 1;
 		$res        = $this->import('tmclass')->find($r);
 		if (!empty($res['label'])) {
-			$res['labelArr'] = explode(";", $res['label']);
-			unset($res['labelArr'][array_search($label, $res['labelArr'])]);
-			$data['label'] = implode(";", $res['labelArr']);
+			$labelArr 	= explode(",", $res['label']);
+			$_key 		= array_search($label, $labelArr);
+			if ($_key !== false) unset($labelArr[$_key]);
+			$data['label'] = implode(",", $labelArr);
 			$rm['eq']      = array('id' => $res['id']);
 			$mres          = $this->import('tmclass')->modify($data, $rm);
 		}

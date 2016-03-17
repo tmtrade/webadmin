@@ -43,11 +43,11 @@ class tmclassAction extends AppAction
 	public function removeLabel()
 	{
 		$id    = $this->input('id', 'int', 0);
-		$lalel = $this->input('lalel', 'text', '');
+		$label = $this->input('label', 'text', '');
 		if ($id <= 0) {
 			MessageBox::halt('参数错误');
 		}
-		$res = $this->load('tmclass')->removeLabel($id, $lalel);
+		$res = $this->load('tmclass')->removeLabel($id, $label);
 		if ($res == 0) {
 			$this->returnAjax(array('code' => 0, 'msg' => '移除失败。'));
 		} else {

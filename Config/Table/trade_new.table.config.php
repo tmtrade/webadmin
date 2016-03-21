@@ -176,4 +176,10 @@ $tbl['userSaleHistory'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['case'] = array(
+	'name'		=> $prefix.'case',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
 ?>

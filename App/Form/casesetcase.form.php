@@ -1,6 +1,6 @@
 <?php
 
-class TopicSetTopicForm extends AppForm
+class CaseSetcaseForm extends AppForm
 {
     /**
      * 字段映射(建立表单字段与程序字段或数据表字段的关联)
@@ -14,34 +14,38 @@ class TopicSetTopicForm extends AppForm
 			'field' => 'title',
 			'method' => 'fieldName',
 			),
-		'pic'    => array(
-			'field' => 'pic',
+		'name'    => array(
+			'field' => 'name',
 			'method' => 'fieldName',
                         ),
-		'banner'    => array(
-						'field' => 'banner',
+		'goods'    => array(
+						'field' => 'goods',
 						'method' => 'fieldName',
 				),
-		'bgImg'    => array(
-						'field' => 'bgImg',
+		'adviser'    => array(
+						'field' => 'adviser',
 						'method' => 'fieldName',
 				),
-		'bgColor'    => array(
-			'field' => 'bgColor',
+		'buyer'    => array(
+			'field' => 'buyer',
 			'method' => 'fieldName',
 			),
-		'bgImgShow'    => array(
-			'field' => 'bgImgShow',
+		'desc'    => array(
+			'field' => 'desc',
+			'method' => 'fieldName',
+		),
+		'pic1'    => array(
+			'field' => 'pic1',
+			'method' => 'fieldName',
+		),
+		'pic2'    => array(
+			'field' => 'pic2',
+			'method' => 'fieldName',
+		),
+		'date'    => array(
+			'field' => 'date',
 			'match' => array('int', '1', ''),
 			),
-		'isUse'    => array(
-						'field' => 'isUse',
-						'match' => array('int', '1', ''),
-				),
-		'isMore'    => array(
-						'field' => 'isMore',
-						'match' => array('int', '2', ''),
-				),
     );
 	
 	

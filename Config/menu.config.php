@@ -67,6 +67,11 @@ return $menu = array(
 				'url'   => '/tmclass/index/',
 				'auth'	=> '11',
 			),
+			'9' => array(
+				'title' => '成功案例设置',
+				'url'   => '/case/index/',
+				'auth'	=> '12',
+			),
 		),
 	),
 	// '3' => array(

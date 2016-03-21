@@ -1,0 +1,164 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css"/>
+<style>
+    .img-flip {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+</style>
+<div class="wrap">
+
+    <div class="wrap-top">
+        <h4>成功案例设置</h4><span></span>
+    </div>
+    <div class="mj-ztBar f-clearfix">
+        <span class="mj-ztBr">
+            <a class="btn btn-info" href="/case/index/">返回</a>
+        </span>
+        <form id="case">
+            <input type="hidden" name="id" id="topicId" value="<?=$case['id']?>">
+            <input type="hidden" name="pic1" id="pic1" value="<?=$topic['pic1']?>">
+            <input type="hidden" name="pic2" id="pic2" value="<?=$topic['pic2']?>">
+            <div>
+                <ul>
+                    <li>
+                        <label>成功案例标题：</label>
+                        <input type="text" name="title" id="title" value="<?=$case['title']?>"/>
+                    </li>
+                    <li>
+                        <label>出售商标名字与类型：</label>
+                        <input type="text" name="name" value="<?=$case['name']?>"/>
+                    </li>
+                    <li>
+                        <label>适用服务(包含商品)：</label>
+                        <input type="text" name="goods" value="<?=$case['goods']?>"/>
+                    </li>
+                    <li>
+                        <label>服务顾问：</label>
+                        <input type="text" name="adviser" value="<?=$case['adviser']?>"/>
+                    </li>
+                    <li>
+                        <label>购买人：</label>
+                        <input type="text" name="buyer" value="<?=$case['buyer']?>"/>
+                    </li>
+                    <li>
+                        <label>案例成功日期：</label>
+                        <input type="text" name="date" value="<?=$case['date']?>" class="input input-sm" readonly onclick="laydate()" />
+                    </li>
+                    <li>
+                        <label>成交描述：</label>
+                        <input type="text" name="desc" value="<?=$case['desc']?>"/>
+                    </li>
+                    <li><br>
+                        <hr>
+                        <br></li>
+                    <li>
+                        <label>图片一：</label>
+                        <img src="<?if($case['pic1']){echo $case['pic1'];}else{echo StaticDir."1.2/images/ztpic.png";}?>"
+                        id="showpic1" width="355px" height="100px" />
+                        <p>
+                        <div class="ztpic1div">
+                            <input type="file" name="fileName" id="case_pic1" style="display: inline-block;"/>
+                        </div>
+                        </p>
+                    </li>
+                    <li><br>
+                        <hr>
+                        <br></li>
+                    <li>
+                        <label>图片二：</label>
+                        <img src="<?if($case['pic2']){echo $case['pic2'];}else{echo StaticDir."1.2/images/ztpic.png";}?>"
+                        id="showpic2" width="355px" height="100px" />
+                        <p>
+                        <div class="ztpic2div">
+                            <input type="file" id="case_pic2" name="fileName" style="display: inline-block;"/>
+                        </div>
+                        </p>
+                    </li>
+                    <li><br>
+                        <hr>
+                        <br></li>
+                </ul>
+            </div>
+        </form>
+        <hr>
+        <div class="mj-deiBlist">
+            <div class="mj-deiBtns">
+                <a href="javascript:void(0);" id="addCase">确定</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            //确认编辑
+            $('#addCase').click(function () {
+                var data = $("#case").serialize();
+                $.ajax({
+                    type: 'post',
+                    url: '/case/setCase/',
+                    data: data,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg('操作成功！', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            layer.msg(data.msg, {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            });
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg('操作失败，请稍后重试。', {
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                });
+            });
+
+            //上传图片1
+            $(".ztpic1div").wrap("<form id='tjformuploadpic1' action='/case/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+            $("#case_pic1").change(function () {
+                upImg($("#tjformuploadpic1"), $('#showpic1'), $('#pic1'));
+            });
+
+            //上传图片2
+            $(".ztpic2div").wrap("<form id='tjformuploadpic2' action='/case/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+            $("#case_pic2").change(function () {
+                upImg($("#tjformuploadpic2"), $('#showpic2'), $('#pic2'));
+            });
+        })
+        //上传图片
+        function upImg(form, srcobj, picval) {
+            form.ajaxSubmit({
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 1) {
+                        picval.val(data.img);
+                        srcobj.attr('src', data.img);
+                    } else {
+                        layer.msg(data.msg, {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    layer.msg('图片格式不正确或图片过大，请重新上传', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            });
+        }
+    </script>
+    <? require(ViewDir.'/footer.html'); ?>
+

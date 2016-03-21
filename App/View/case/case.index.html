@@ -1,0 +1,142 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<style>
+    .img-flip {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+</style>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>成功案例设置</li>
+        <li>成功案例设置列表</li>
+    </ul>
+</div>
+<div class="wrap">
+    <div class="wrap-content">
+        <p class="text-left"
+           style="float:left;margin-top:20px;padding:0 5px 0 5px;background-color:#FFFF99;border:1px solid #dadada;">
+            您可以在此添加成功案例信息及权重排序。共有 <b class="red"><?=$total?></b> 条数据</p>
+        <br>
+        <br>
+        <br>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                <tr class="active">
+                    <th>序号</th>
+                    <th>案例标题</th>
+                    <th>发布时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody class="table-list">
+                <? foreach ($list as $k => $v) { ?>
+                <tr>
+                    <td><?=($k+1)?></td>
+                    <td><?=$v['title']?></td>
+                    <td><?=date('Y-m-d', $v['date'])?></td>
+                    <td>
+                        <a href="javascript:void(0);" onclick="delCase(<?=$v['id']?>);">删除</a>
+                        <a href="/case/edit/?id=<?=$v['id']?>">编辑</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+                        <span onclick="sortChaneg(<?=$v['id']?>, 1)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
+                        <span class="img-flip" onclick="sortChaneg(<?=$v['id']?>, 2)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
+                    </td>
+                </tr>
+                <? } ?>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div class="btn-group">
+            <button class="btn btn-danger add-case" type="button">添加一个成功案例</button>
+        </div>
+    </div>
+</div>
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //添加窗口
+        $(".add-case").click(function () {
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '添加成功案例',
+                area: ['400px', '200px'],
+
+                content: '/case/add/'
+            });
+        });
+    });
+    //删除链接
+    function delCase(id) {
+        if (id <= 0 || id == '') return false;
+        layer.confirm('确认要删除此项？<br>', {
+            btn: ['删了', '算了'] //按钮
+        }, function () {
+            $.ajax({
+                type: 'post',
+                url: '/case/delCase/',
+                data: {'id': id},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 1) {
+                        layer.msg('操作成功', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+                        layer.msg(msg, {
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                },
+                error: function (data) {
+                    layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            });
+        });
+    }
+
+    //排序功能
+    function sortChaneg(id, updown) {
+        if (id == '' || updown == '') return false;
+        $.ajax({
+            type: 'post',
+            url: '/case/sortChaneg/',
+            data: {id: id, updown: updown},
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg('操作成功', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        window.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error: function (data) {
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

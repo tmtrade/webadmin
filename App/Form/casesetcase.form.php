@@ -66,6 +66,7 @@ class CaseSetcaseForm extends AppForm
 	 */
 	public function handleTime($value){
 		if($value){
+			$value .= ' 8:00';//上海市区与格林威治时间差
 			return strtotime($value);
 		}
 		return 0;

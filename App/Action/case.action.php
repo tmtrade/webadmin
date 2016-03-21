@@ -52,8 +52,9 @@ class caseAction extends AppAction
 		}
 		$data = array(
 			'title'     => $title,
-			'created'      => time(),
-			'desc'      => ''
+			'created'   => time(),
+			'desc'      => '',
+			'date'      => time(),
 		);
 		$res = $this->load('case')->addCase($data);
 		if ( $res ){

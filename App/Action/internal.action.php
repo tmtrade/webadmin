@@ -554,7 +554,7 @@ class internalAction extends AppAction
 								$dataContat['source']  = $param['source'];
 								$dataContat['saleType'] = 1;
 								$dataContat['tid'] = $tmInfo['tid'];
-								$dataContat['userId'] = $this->userId;
+								$dataContat['userId'] = 0;
 								$dataContat['saleId'] = $saleB;
 								$result = $this->load('internal')->addContact($dataContat,$saleB);
 							}

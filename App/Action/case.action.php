@@ -10,7 +10,7 @@ header("Content-type: text/html; charset=utf-8");
 class caseAction extends AppAction
 {
 	//	public $debug = true;
-
+	public $rowNum  = 10;
 	/**
 	 * 成功案例列表
 	 * @throws SpringException

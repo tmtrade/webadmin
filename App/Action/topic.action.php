@@ -10,7 +10,7 @@ header("Content-type: text/html; charset=utf-8");
 class topicAction extends AppAction
 {
 //	public $debug = true;
-	
+	public $rowNum  = 10;
 	/**
 	 * 首页模块设置列表
 	 * 

@@ -30,27 +30,6 @@ class CaseModule extends AppModule
         $res = $this->import('case')->findAll($r);
         return $res;
     }
-	
-	//模块基础内容
-    public function getMember($memberId)
-    {
-        $r = array();
-        $r['eq']['id']  = $memberId;
-        $r['limit'] = 1;
-		$r['col'] = array('name');
-        $res = $this->import('member')->find($r);
-        return $res['name'];
-    }
-	
-	//专题商标数量
-    public function getTopicClassNum($moduleId)
-    {
-        $r = array();
-		$r['eq']['topicId'] = $moduleId;
-        $num = $this->import('topicitems')->count($r);
-        return $num;
-    }
-
 
     /**
      * 得到成功案例信息
@@ -63,27 +42,6 @@ class CaseModule extends AppModule
         $r['eq']['id']  = $id;
         $r['limit'] = 1;
         $res = $this->import('case')->find($r);
-        return $res;
-    }
-	
-	//首页模块子分类列表信息
-    public function getTopicClassList($topicId)
-    {
-        $r = array();
-		$r['eq']['topicId'] = $topicId;
-		$r['limit'] = 100;
-        $r['order'] = array('sort'=>'asc');
-        $data = $this->import('topicitems')->findAll($r);
-        return $data;
-    }
-	
-	//首页模块子分类列表信息
-    public function getTopicClassInfo($id)
-    {
-        $r = array();
-        $r['eq']['id']  = $id;
-        $r['limit'] = 1;
-        $res = $this->import('topicitems')->find($r);
         return $res;
     }
 
@@ -183,38 +141,6 @@ class CaseModule extends AppModule
         if ( empty($id) ) return false;
         $r['eq'] = array('id'=>$id);
         return $this->import('case')->remove($r);
-    }
-	
-	
-	
-	//添加首页模块推广链接
-    public function addTopicClass($data,$topicId)
-    {    
-		$sort = $this->getLastSort(2,array('topicId'=>$topicId));
-		$data['sort'] = $sort + rand(2,5);
-        return $this->import('topicitems')->create($data);
-		
-    }
-	
-	
-	//编辑首页模块推广链接
-    public function updateTopicClass($data, $id)
-    {
-        $r['eq'] = array('id'=>$id);
-        return $this->import('topicitems')->modify($data, $r);
-    }
-	
-	//删除首页模块推广链接
-    public function delTopicClass($id, $topicId)
-    {
-		$r = array();
-        if ( empty($id) && empty($topicId) ) return false;
-		if($id > 0){
-			$r['eq'] = array('id'=>$id);
-		}else{
-			$r['eq'] = array('topicId'=>$topicId);
-		}
-        return $this->import('topicitems')->remove($r);
     }
 }
 ?>

@@ -25,7 +25,12 @@
             <input type="hidden" name="id" id="topicId" value="<?=$case['id']?>">
             <input type="hidden" name="pic1" id="pic1" value="<?=$case['pic1']?>">
             <input type="hidden" name="pic2" id="pic2" value="<?=$case['pic2']?>">
-            <div>
+            <style type="text/css">
+                .success_case_div label{
+                    width: 180px;
+                }
+            </style>
+            <div class="success_case_div">
                 <ul>
                     <li>
                         <label>成功案例标题：</label>
@@ -42,15 +47,27 @@
                     <li>
                         <label>案例成功日期：</label>
                         <input type="text" name="date" value="<?=date('Y-m-d',$case['date'])?>" class="input input-sm" readonly onclick="laydate()" />
-                    </li><br>
+                    </li>
+                    <li><br>
+                        <hr>
+                        <br></li>
+                    <li>
                     <li>
                         <label>出售商标名字与类型：</label>
                         <textarea name="name" cols="40" rows="3"><?=$case['name']?></textarea>
                     </li>
+                    <li><br>
+                        <hr>
+                        <br></li>
+                    <li>
                     <li>
                         <label>适用服务(包含商品)：</label>
                         <textarea name="goods" cols="60" rows="5"><?=$case['goods']?></textarea>
                     </li>
+                    <li><br>
+                        <hr>
+                        <br></li>
+                    <li>
                     <li>
                         <label>成交描述：</label>
                         <textarea name="desc" cols="80" rows="6"><?=$case['desc']?></textarea>

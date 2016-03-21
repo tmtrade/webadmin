@@ -49,7 +49,7 @@
                     </li>
                     <li>
                         <label>案例成功日期：</label>
-                        <input type="text" name="date" value="<?=$case['date']?>" class="input input-sm" readonly onclick="laydate()" />
+                        <input type="text" name="date" value="<?=date('Y-m-d',$case['date'])?>" class="input input-sm" readonly onclick="laydate()" />
                     </li>
                     <li>
                         <label>成交描述：</label>
@@ -161,4 +161,3 @@
         }
     </script>
     <? require(ViewDir.'/footer.html'); ?>
-

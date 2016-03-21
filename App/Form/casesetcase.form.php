@@ -44,23 +44,30 @@ class CaseSetcaseForm extends AppForm
 		),
 		'date'    => array(
 			'field' => 'date',
-			'match' => array('int', '1', ''),
+			'method' => 'handleTime',
 			),
     );
-	
-	
-    /**
-     * 处理字符串
-     * @author	martin
-     * @since	2015-07-23
-     *
-     * @access	public
-     * @param	array	$value	字符串
-     * @return	string
-     */
+
+
+	/**
+	 * 处理字符串
+	 * @param $value
+	 * @return string
+	 */
     public function fieldName($value)
     {
         return trim($value);
     }
 
+	/**
+	 * 处理时间
+	 * @param $value
+	 * @return int
+	 */
+	public function handleTime($value){
+		if($value){
+			return strtotime($value);
+		}
+		return 0;
+	}
 }

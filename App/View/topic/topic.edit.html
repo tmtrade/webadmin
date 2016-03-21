@@ -47,7 +47,37 @@
 						<em  class="cFF6701" id="tipshow">注：图片建议尺寸为560X155，文件最大不超过200KB，当前支持PG,PNG,BMP,GIF格式文件</em>
 					</p>
 				</li>
+                                <li><br><hr><br></li>
+                <li>
+                    <label>是否上架：</label>
+                                        <input type="radio"  name="isUse" value="1" <?if($topic['isUse']==1) echo "checked='checked'";?> />上架
+                                        <input type="radio"  name="isUse" value="2" <?if($topic['isUse']==2) echo "checked='checked'";?> />下架
+                </li>
+                                <li><br><hr><br></li>
+                <li>
+                    <label>是否置顶详情页面排序：</label>
+                    <input type="radio"  name="isMore" value="1" <?if($topic['isMore']==1) echo "checked='checked'";?> />是
+                                        <input type="radio"  name="isMore" value="2" <?if($topic['isMore']==2) echo "checked='checked'";?> />否
+                </li>
+                                <li><br><hr><br></li>
+                <li>
+                    <label>专题类型选择：</label>
+                    <select name="type" id="changeType">
+                        <option value="1" <?if($topic['type']==1){echo "selected";}?> >普通专题</option>
+                        <option value="2" <?if($topic['type']==2){echo "selected";}?> >静态链接专题</option>
+                    </select>
+                    <p style="margin:20px 0;padding:0 5px 0 5px;background-color:#FFFF99;border:1px solid #dadada;width:400px;">注意！！！选择专题类型，会出现不同的显示效果。</p>
+                </li>
 				<li><br><hr><br></li>
+            <div class="staticTopic">
+
+                <li>
+                    <label>专题静态链接地址：</label>
+                    <input type="input" class="form-control" name="link" value="<?=$topic['link']?>">
+                </li>
+                <li><br><hr><br></li>
+            </div>
+            <div class="normalTopic">
 				<li>
 					<label>banner图：</label>
 					<img src="<?if($topic['banner']){echo $topic['banner'];}else{echo StaticDir."1.2/images/ztbanner.png";}?>" id="showbanner" width="930px" height="130px" />
@@ -57,18 +87,6 @@
 						</div>
 						<em  class="cFF6701" id="tipshow">注： 广告图片建议尺寸为 ( 1920 ) x ( 864 )，文件最大不超过200kb，当前支持jpg,bmp,png格式文件</em>
 					</p>
-				</li>
-                                <li><br><hr><br></li>
-				<li>
-					<label>是否上架：</label>
-                                        <input type="radio"  name="isUse" value="1" <?if($topic['isUse']==1) echo "checked='checked'";?> />上架
-                                        <input type="radio"  name="isUse" value="2" <?if($topic['isUse']==2) echo "checked='checked'";?> />下架
-				</li>
-                                <li><br><hr><br></li>
-				<li>
-					<label>是否置顶详情页面排序：</label>
-					<input type="radio"  name="isMore" value="1" <?if($topic['isMore']==1) echo "checked='checked'";?> />是
-                                        <input type="radio"  name="isMore" value="2" <?if($topic['isMore']==2) echo "checked='checked'";?> />否
 				</li>
 				<li><br><hr><br></li>
 				<li>
@@ -92,9 +110,10 @@
 							<option value="2" <?if($topic['bgImgShow'] == 2)echo "selected"; ?>>平铺</option>
 						</select>
 				</li>
+        </div>
 			</ul>
-		</div>
 		</form>
+        </div>
 		<hr>   
 		<div class="mj-deiBlist">
 			<div class="mj-deiBtns">
@@ -102,6 +121,7 @@
 			</div>
 		</div>		
 		<hr>
+    <div class="normalTopic">
 		<div class="mj-sellT">
 			<p>对应商品</p>
 			<table>
@@ -129,9 +149,9 @@
 			<a href="javascript:void(0)" class="nexta" id="additems">+ 新增商品</a>
 			<br>
 		</div>
-		
 	</div>
 
+    </div>
 
 <script type="text/javascript">
     $(function(){
@@ -139,7 +159,20 @@
 		$('#additems').click(function(){
 			setitems(0);
 		})
-		
+
+        $("#changeType").change(function(){
+            var _this   = $(this);
+            var _model  = this.options[this.options.selectedIndex].value;
+            if ( _model == 1 ){//普通专题
+                $(".normalTopic").show();
+                $(".staticTopic").hide();
+            }else{//静态链接专题
+                $(".staticTopic").show();
+                $(".normalTopic").hide();
+            }
+        });
+		$("#changeType").change();
+
 		//确认编辑
 		$('#addtopic').click(function(){
 			var title = $('#title').val();

@@ -14,18 +14,26 @@ class TopicSetTopicForm extends AppForm
 			'field' => 'title',
 			'method' => 'fieldName',
 			),
+        'type'    => array(
+            'field' => 'type',
+            'match' => array('int', '1', ''),
+            ),
+        'link'    => array(
+            'field' => 'link',
+            'method' => 'fieldName',
+            ),
 		'pic'    => array(
 			'field' => 'pic',
 			'method' => 'fieldName',
-                        ),
-                'banner'    => array(
-                                'field' => 'banner',
-                                'method' => 'fieldName',
-                        ),
-                'bgImg'    => array(
-                                'field' => 'bgImg',
-                                'method' => 'fieldName',
-                        ),
+            ),
+        'banner'    => array(
+            'field' => 'banner',
+            'method' => 'fieldName',
+            ),
+        'bgImg'    => array(
+            'field' => 'bgImg',
+            'method' => 'fieldName',
+            ),
 		'bgColor'    => array(
 			'field' => 'bgColor',
 			'method' => 'fieldName',
@@ -34,14 +42,14 @@ class TopicSetTopicForm extends AppForm
 			'field' => 'bgImgShow',
 			'match' => array('int', '1', ''),
 			),
-                'isUse'    => array(
-                                'field' => 'isUse',
-                                'match' => array('int', '1', ''),
-                        ),
-                'isMore'    => array(
-                                'field' => 'isMore',
-                                'match' => array('int', '2', ''),
-                        ),
+        'isUse'    => array(
+            'field' => 'isUse',
+            'match' => array('int', '1', ''),
+            ),
+        'isMore'    => array(
+            'field' => 'isMore',
+            'match' => array('int', '2', ''),
+            ),
     );
 	
 	

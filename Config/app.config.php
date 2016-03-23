@@ -2,7 +2,7 @@
 //定义应用所需常量
 
 //CRM终端登录
-define('NAV_LOGIN', 'http://nav.chofn.net:81/user/login/');
+define('NAV_LOGIN', 'http://nav.chofn.net/user/login/');
 //define('NAV_LOGIN', 'http://nav.chofn.com/user/login/');
 
 //define('GUANJIA_URL', 'http://g.chaofan.wang/');

@@ -548,14 +548,15 @@ class internalAction extends AppAction
 							//如果没有这个联系人，就写入这个联系人信息
 							if(!$saleBContact){
 								$dataContat = $item;
-								$dataContat['date']    = time();
-								$dataContat['phone']   = $param['phone'] ? $param['phone'] : $item['phone'];
-								$dataContat['name']	   = $param['name'] ? $param['name'] : $item['name'];
-								$dataContat['source']  = $param['source'];
+								$dataContat['date']    	= time();
+								$dataContat['phone']   	= $param['phone'] ? $param['phone'] : $item['phone'];
+								$dataContat['name']	   	= $param['name'] ? $param['name'] : $item['name'];
+								$dataContat['source']  	= $param['source'];
 								$dataContat['saleType'] = 1;
 								$dataContat['tid'] = $tmInfo['tid'];
-								$dataContat['userId'] = 0;
-								$dataContat['saleId'] = $saleB;
+								$dataContat['userId'] 	= 0;
+								$dataContat['isVerify'] = 1;
+								$dataContat['saleId'] 	= $saleB;
 								$result = $this->load('internal')->addContact($dataContat,$saleB);
 							}
 							continue;

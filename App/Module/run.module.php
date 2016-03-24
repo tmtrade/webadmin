@@ -253,7 +253,7 @@ class RunModule extends AppModule
     {
         $r['page']  = $page;
         $r['limit'] = $limit;
-        $r['raw']   = ' regDate != 0 ';
+        $r['raw']   = ' regDate == 0 ';
         $r['col']   = array('number','id');
         return $this->import('sale')->findAll($r);
     }

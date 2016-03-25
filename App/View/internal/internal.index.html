@@ -123,6 +123,11 @@
                     <input type="checkbox" name="isTop" <?if($s['isTop']==1){echo 'checked';}?> value="1" id="bq9"/>
                     <label for="bq9">置项</label>
                 </div>
+
+                <label>编号(tid)：</label>
+                <div class="mj-radio">
+                    <input type="text" maxlength="20" size="20"class="input input-sm" value="<?=$s['tid']==0?'':$s['tid']?>" name="tid" />
+                </div>
             </dd>
             <dd>
                 <label>平台入驻：</label>

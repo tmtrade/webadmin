@@ -108,6 +108,17 @@ class InternalModule extends AppModule
         if ( !empty($_child) ){
             $r['raw'] .= " AND `id` IN (select distinct(`saleId`) from t_sale_contact where 1 $_child) ";
         }
+        //商标Tid查询
+        if ( !empty($params['tid']) ){
+            $_r['eq']   = array('auto'=>$params['tid']); 
+            $_r['col']  = array('id');//商标号
+            $_info = $this->load('trademark')->findTm($_r);
+            if ( !empty($_info['id']) ){
+                $r['eq']['number'] = $_info['id'];
+            }elseif( empty($r['eq']['number']) ){
+                return array('rows'=>array(),'total'=>0);
+            }
+        }
 
         $r['order'] = array('date'=>'desc');
         $res = $this->import('sale')->findAll($r);

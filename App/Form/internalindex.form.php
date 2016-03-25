@@ -82,6 +82,10 @@ class InternalindexForm extends AppForm
 			'field' => 'isTop',
 			'match' => array('int', '', ''),
 			),
+        'tid'    => array(
+            'field' => 'tid',
+            'match' => array('int', '', ''),
+            ),
         'isVerify' => array(
             'field' => 'isVerify',
             'match' => array('int', '', ''),

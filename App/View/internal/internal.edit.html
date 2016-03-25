@@ -5,7 +5,6 @@
 <script>
         KindEditor.ready(function(K) {
             window.editor = K.create('#intro', {
-                urlType:'domain',
                 afterBlur: function () { this.sync(); }
             });
         });

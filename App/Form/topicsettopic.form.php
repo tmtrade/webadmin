@@ -18,10 +18,18 @@ class TopicSetTopicForm extends AppForm
 			'field' => 'pic',
 			'method' => 'fieldName',
                         ),
+        'type'    => array(
+            'field' => 'type',
+            'match' => array('int', '1', ''),
+            ),
 		'banner'    => array(
 						'field' => 'banner',
 						'method' => 'fieldName',
 				),
+        'link'    => array(
+                        'field' => 'link',
+                        'method' => 'fieldName',
+                ),
 		'bgImg'    => array(
 						'field' => 'bgImg',
 						'method' => 'fieldName',

@@ -176,7 +176,7 @@ class internalAction extends AppAction
 		$tminfo 	= $this->load('trademark')->getTminfo($sale['number']);
 		$log 		= $this->load('log')->getSaleLog($id);
 		$allphone 	= $this->load('phone')->getAllPhone();
-		$gjUrl 		= SEARCH_URL.'search/stateQuery/?t=1&n='.$sale['number'];
+		$gjUrl 		= SEARCH_URL.'trademark/detail/?id='.$sale['tid'];
 		$referr 	= $this->getReferrUrl('internal_edit');
 
 		$this->getSetting();

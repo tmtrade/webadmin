@@ -8,7 +8,7 @@ define('NAV_LOGIN', 'http://nav.chofn.net/user/login/');
 //define('GUANJIA_URL', 'http://g.chaofan.wang/');
 define('GUANJIA_URL', 'http://192.168.0.156/');
 //新查询
-define('SEARCH_URL', 'http://s.chofn.net/');
+define('SEARCH_URL', 'http://shansoo.com/');
 //define('SEARCH_URL', 'http://tuotu.chaofan.wang/');
 
 

@@ -119,6 +119,10 @@ class InternalModule extends AppModule
                 return array('rows'=>array(),'total'=>0);
             }
         }
+        //列表排序
+        if ( !empty($params['listSort']) ){
+            $r['raw'] .= " AND `listSort` > 0 ";
+        }
 
         $r['order'] = array('date'=>'desc');
         $res = $this->import('sale')->findAll($r);

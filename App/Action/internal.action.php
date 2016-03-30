@@ -323,12 +323,13 @@ class internalAction extends AppAction
 		if ( $saleId <= 0 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'参数错误')); 
 		}
-		$type 	= $this->input('type', 'text', '');
-		$label 	= $this->input('label', 'text', '');
-		$length = $this->input('length', 'text', '');
-		$plat 	= $this->input('platform', 'text', '');
-		$isTop 	= $this->input('isTop', 'int', 0);
-		$phone 	= $this->input('viewPhone', 'text', '');
+		$type 		= $this->input('type', 'text', '');
+		$label 		= $this->input('label', 'text', '');
+		$length 	= $this->input('length', 'text', '');
+		$plat 		= $this->input('platform', 'text', '');
+		$isTop 		= $this->input('isTop', 'int', 0);
+		$listSort 	= $this->input('listSort', 'int', 0);
+		$phone 		= $this->input('viewPhone', 'text', '');
 
 		$sale = array(
 			'type' 		=> $type,
@@ -336,6 +337,7 @@ class internalAction extends AppAction
 			'length' 	=> $length,
 			'platform' 	=> $plat,
 			'isTop' 	=> $isTop,
+			'listSort' 	=> $listSort,
 			'viewPhone' => $phone,
 		);
 		$bzpic 	= $this->input('bzpic', 'text', '');
@@ -350,6 +352,10 @@ class internalAction extends AppAction
 		);
 		if ( $isTop < 2 && !empty($tminfo['embellish']) ){
 			$sale['isTop'] = 2;//有包装图片的置项值
+		}
+		//列表排序处理
+		if ( $listSort > 0 && $listSort < 222 ){
+			$sale['isTop'] = 0;//有列表排序就不用置顶排序
 		}
 		$res = $this->load('internal')->setEmbellish($saleId, $sale, $tminfo);
 		if ( $res ){

@@ -225,6 +225,15 @@
                         <option value="<?=$k?>" <?if($sale['isTop']==$k){echo 'selected';}?>>
                         <?=$v?></option>
                     <? } ?>
+                    </select>                    
+                </div>
+                <div class="mj-checkbox">
+                    <label for="bq9">列表排序(前台客户订制)：</label>
+                    <select name="listSort">
+                    <? foreach (range(0, 9) as $v) { ?>
+                        <option value="<?=$v?>" <?if($sale['listSort']==$v){echo 'selected';}?>>
+                        <?=$v?>-排序值</option>
+                    <? } ?>
                     </select>
                     
                 </div>

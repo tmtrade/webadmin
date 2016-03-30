@@ -94,6 +94,10 @@ class InternalindexForm extends AppForm
             'field'  => 'regDate',
             'method' => 'fieldName',
             ),
+        'listSort' => array(
+            'field'  => 'listSort',
+            'match' => array('int', '', ''),
+            ),
     );
 	
 	

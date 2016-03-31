@@ -12,7 +12,107 @@ class RunModule extends AppModule
         return ((float)$usec + (float)$sec);
     }
 
-    public function update($page)
+    public function runRegDate()
+    {
+        $id     = 0;
+        $num    = 0;
+        $succList   = $faildList = array();
+        $start      = $this->msectime();
+        $this->begin('sale');
+        $rand = randCode(6);
+        while ( true ) {
+            $num++;
+            $sale   = $this->getRegDate($id);
+
+            if ( empty($sale['id']) ){
+                $p      = intval($num/1000) > 0 ? intval($num/1000) + 1 : 1;
+                $end    = $this->msectime() - $start;
+                if ( empty($succList) && empty($faildList) ){
+                    exit('no data to update');
+                }
+                $this->commit('sale');
+
+                $log = array(
+                    'useTime'   => $end,
+                    );
+                if ( count($succList) > 0 ){
+                    $_log = $log;
+                    $_log['succ']       = count($succList);
+                    $_log['succList']   = $succList;
+                    $name = 'update'.date("Y-m-d")."($rand)-list$p-----success.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                if ( count($faildList) > 0 ){
+                    $_log = $log;
+                    $_log['faild']       = count($faildList);
+                    $_log['faildList']   = $faildList;
+                    $name = 'update'.date("Y-m-d")."($rand)-list$p-----faild.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                exit('no data to update');
+            }
+
+            $id         = $sale['id'];
+            $number     = $sale['number'];
+            $info       = $this->load('trademark')->getTmInfo($number);
+            $regDate    = strtotime($info['reg_date']) > 0 ? strtotime($info['reg_date']) : 0;
+
+            if ( $regDate == 0 ){
+                $faildList[] = $number;
+            }else{
+                $data       = array('regDate' => $regDate);
+                $r['eq']    = array('id'=>$id);
+                $flag       = $this->import('sale')->modify($data, $r);
+
+                if ( $flag ) {
+                    $succList[] = $number;
+                }else{
+                    $faildList[] = $number;
+                }
+            }  
+
+            if ( $num % 1000 == 0 ){
+                $this->commit('sale');
+                $end    = $this->msectime() - $start;
+                $start  = $this->msectime();
+                $p      = intval($num/1000) > 0 ? intval($num/1000) : 1;
+
+                $log = array(
+                    'useTime'   => $end,
+                    );
+                if ( count($succList) > 0 ){
+                    $_log = $log;
+                    $_log['succ']       = count($succList);
+                    $_log['succList']   = $succList;
+                    $name = 'update'.date("Y-m-d")."($rand)-list$p-----success.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                if ( count($faildList) > 0 ){
+                    $_log = $log;
+                    $_log['faild']       = count($faildList);
+                    $_log['faildList']   = $faildList;
+                    $name = 'update'.date("Y-m-d")."($rand)-list$p-----faild.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                echo "list-$p finish...\n";
+                $succList   = $faildList = array();
+                $this->begin('sale');
+            }
+        }
+    }
+
+    private function getRegDate($id=0)
+    {
+        $r['limit'] = 1;
+        $r['order'] = array('id'=>'asc');
+        $r['eq']    = array('regDate'=>0);
+        $r['raw']   = " id > $id ";
+        $r['col']   = array('number','id');
+        return $this->import('sale')->find($r);
+    }
+
+
+    private function update($page)
     {
         $start = $this->msectime();
         $res = $this->getNewSale($page);
@@ -22,7 +122,7 @@ class RunModule extends AppModule
         $succ = $faild = 0;
         $list = $res['rows'];
         $succList = $faildList = array();
-        $this->begin('sale');
+        //$this->begin('sale');
         foreach ($list as $k => $v) {
             $number = $v['number'];
             $info   = $this->load('trademark')->getTmInfo($number);
@@ -35,7 +135,7 @@ class RunModule extends AppModule
                 $faildList[] = $number;
                 continue;
             }
-            
+
             $data = array(
                 'regDate' => $regDate,
             );
@@ -75,7 +175,7 @@ class RunModule extends AppModule
         echo "finish!!!";
     }
 
-    public function run($page)
+    private function run($page)
     {
         $start = $this->msectime();
         $res = $this->load('run')->getSaleNumber($page);
@@ -118,8 +218,8 @@ class RunModule extends AppModule
         echo "finish!!!";
     }
 
-    //单条执行
-    public function runSale($number, $debug=0)
+    //单条执行（已关闭）
+    private function runSale($number, $debug=0)
     {
         $number = trim( $number );
         $resTm  = $this->load('run')->getTminfo($number);
@@ -255,7 +355,7 @@ class RunModule extends AppModule
         return $res;
     }
 
-    public function getNewSale($page=1, $limit=1000)
+    private function getNewSale($page=1, $limit=1000)
     {
         $r['page']  = $page;
         $r['limit'] = $limit;
@@ -264,7 +364,7 @@ class RunModule extends AppModule
         return $this->import('sale')->findAll($r);
     }
 
-    public function getSaleNumber($page=1, $limit=500)
+    private function getSaleNumber($page=1, $limit=500)
     {
         $r['page']  = $page;
         $r['limit'] = $limit;
@@ -275,7 +375,7 @@ class RunModule extends AppModule
         return $this->import('ts')->findAll($r);
     }
 
-    public function getSale($number)
+    private function getSale($number)
     {
         $r['eq']    = array('number'=>$number);
         $r['limit'] = 1000;
@@ -283,7 +383,7 @@ class RunModule extends AppModule
         return $this->import('ts')->find($r);
     }
 
-    public function getTminfo($number)
+    private function getTminfo($number)
     {
         $r['eq']    = array('number'=>$number);
         //$r['limit'] = 1000;

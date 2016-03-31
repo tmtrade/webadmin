@@ -31,9 +31,10 @@ class TaskAction extends QueueCommonAction
 
     public function update()
     {
-        $page = $this->input('p','int','1');
+        //$page = $this->input('p','int','1');
 
-        $this->load('run')->update($page);
+        //$this->load('run')->update($page);
+        $this->load('run')->runRegDate();
     }
 
 }

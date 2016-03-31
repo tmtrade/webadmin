@@ -16,7 +16,7 @@ class RunModule extends AppModule
     {
         $start = $this->msectime();
         $res = $this->getNewSale($page);
-        if ( $res['total'] <= 0 ){
+        if ( count($res['rows']) <= 0 ){
             exit('no data to update');
         }
         $succ = $faild = 0;
@@ -30,6 +30,12 @@ class RunModule extends AppModule
                 exit("<number is not a trademark>");
             }
             $regDate = strtotime($info['reg_date']) > 0 ? strtotime($info['reg_date']) : 0;
+            if ( $regDate == 0 ){
+                $faild++;
+                $faildList[] = $number;
+                continue;
+            }
+            
             $data = array(
                 'regDate' => $regDate,
             );
@@ -253,7 +259,7 @@ class RunModule extends AppModule
     {
         $r['page']  = $page;
         $r['limit'] = $limit;
-        $r['raw']   = ' regDate == 0 ';
+        $r['raw']   = ' regDate = 0 ';
         $r['col']   = array('number','id');
         return $this->import('sale')->findAll($r);
     }

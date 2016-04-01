@@ -576,7 +576,8 @@ class InternalModule extends AppModule
         if ( $this->isSaleUp($saleId) ){
             $r['eq']['isVerify']    = 1;
         }
-        $r['raw'] = " id != $id ";
+        $r['eq']['saleId']  = $saleId;
+        $r['raw']           = " id != $id ";
         $total = $this->import('contact')->count($r);
         if ( $total < 1 ) return false;
         ////////////////////////////////
@@ -868,6 +869,22 @@ class InternalModule extends AppModule
     public function findContact($r)
     {
         return $this->import('contact')->find($r);
+    }
+
+    //无条件删除联系人，慎用！！！
+    public function _delContact($id, $contact, $type)
+    {
+        if ( empty($id) ) return false;
+
+        $this->begin('sale');
+        $r['eq'] = array('id'=>$id);
+        $res = $this->import('contact')->remove($r);        
+        $flag = $this->addUserHistory($contact, '', $type);
+        if ( $res && $flag ){
+            return $this->commit('sale');
+        }
+        $this->rollBack('sale');
+        return false;
     }
 }
 ?>

@@ -85,14 +85,45 @@ class SystemApiAction extends RpcServer
 
         //ID不能小于0
         if ( $data['cid'] <= 0 ){
-            return $this->getMsg('201', $params, $type);
+            return $this->getMsg('110', $params, $type);
         }
         //参数不能小于0
         if ( $data['price'] < 0 ){
-            return $this->getMsg('202', $params, $type);
+            return $this->getMsg('111', $params, $type);
         }
 
         $flag = $this->load('api')->updateContactPrice($data);
+        return $this->getMsg($flag, $params, $type);
+    }
+
+    /**
+     * 取消联系人出售信息
+     *
+     * @author      xuni
+     * @since       2016-04-01
+     *
+     * @access      public
+     * @param       array   $params     接口参数（参考接口文档）
+     * @return      array
+     */
+    public function cancelContact($params)
+    {
+        $type   = 3;
+        $check  = $this->checkout($params, $type);
+        if ( $check !== true ) return $check;
+
+        $data = $this->formattData($params['data'], $type);
+
+        //ID不能小于0
+        if ( $data['uid'] <= 0 ){
+            return $this->getMsg('108', $params, $type);
+        }
+        //商标号不能为空
+        if ( empty($data['number']) ){
+            return $this->getMsg('101', $params, $type);
+        }
+
+        $flag = $this->load('api')->cancelContact($data);
         return $this->getMsg($flag, $params, $type);
     }
 
@@ -119,10 +150,10 @@ class SystemApiAction extends RpcServer
 
         //判断用户是否正确
     	if ( empty($user) ) return $this->getMsg('901', $params, $type);
-    	if ( !in_array($user, $this->users) )  return $this->getMsg('201', $params, $type);
+    	if ( !in_array($user, $this->users) )  return $this->getMsg('110', $params, $type);
         //判断签名是否正确
         if ( empty($sign) ) return $this->getMsg('902', $params, $type);
-        if ( $sign != $this->sign($data) ) return $this->getMsg('202', $params, $type);
+        if ( $sign != $this->sign($data) ) return $this->getMsg('111', $params, $type);
         //判断数据是否正确
         if ( empty($data) ) return $this->getMsg('903', $params, $type);
 
@@ -168,6 +199,11 @@ class SystemApiAction extends RpcServer
                 'cid'           => $cid,
                 'price'         => $price,
                 );
+        }elseif($_type == 3){
+            $array = array(
+                'uid'           => $uid,
+                'number'        => $number,
+                );
         }
 
         return $array;
@@ -188,7 +224,7 @@ class SystemApiAction extends RpcServer
     protected function getMsg($msgNo, $param, $type)
     {
     	$msg = $this->msg[$msgNo];
-    	$status = $msgNo == '101' ? 1 : 2;
+    	$status = $msgNo == '999' ? 1 : 2;
     	//添加日志记录
     	$this->load('log')->addApiLog($param, $type, $status, $msg['msg'], $msg);
     	return $msg;
@@ -274,24 +310,24 @@ class SystemApiAction extends RpcServer
                         ),
             '108' => array(
                         'code'  => '108',
-                        'msg'   => 'uid is null',
+                        'msg'   => 'uid error',
                         ),
             '109' => array(
                         'code'  => '109',
                         'msg'   => 'contact info exist', 
                         ),
 
-            '201' => array(
-                        'code'  => '201',
+            '110' => array(
+                        'code'  => '110',
                         'msg'   => 'cid error',
                         ),
-            '202' => array(
-                        'code'  => '202',
+            '111' => array(
+                        'code'  => '111',
                         'msg'   => 'price error',
                         ),
-            '203' => array(
-                        'code'  => '203',
-                        'msg'   => 'cid exist',
+            '112' => array(
+                        'code'  => '112',
+                        'msg'   => 'contact info not exist',
                         ),
         );
         return $list;

@@ -88,7 +88,7 @@ class ApiModule extends AppModule
         $r['eq'] = array('id'=>$cid);
         $contact = $this->load('internal')->findContact($r);
         if ( empty($contact) ){
-            return '203';
+            return '112';
         }
         if ( $contact['price'] == $price ){
             return '999';
@@ -101,6 +101,55 @@ class ApiModule extends AppModule
         $res = $this->load('internal')->updateContact($data, $cid);
         if ( $res ){
             $this->load('log')->addSaleLog($contact['saleId'], 9, "来自用户中心，联系人ID:$cid(修改价格)", serialize($contact));//记录日志
+            return '999';
+        }
+        return '904';
+    }
+
+    /**
+     * 取消联系人出售信息
+     * @author  Xuni
+     * @since   2016-04-01
+     * @param   array       $param      接口数据包
+     * @return  boolean
+     */
+    public function cancelContact($params)
+    {
+        $uid    = $params['uid'];
+        $number = $params['number'];
+
+        $r['eq'] = array('uid'=>$uid,'number'=>$number);
+        $contact = $this->load('internal')->findContact($r);
+
+        if ( empty($contact) ){
+            return '112';
+        }
+
+        $id     = $contact['id'];
+        $saleId = $contact['saleId'];
+
+        if ( $this->load('internal')->isSaleUp($saleId) ){
+            $r['eq']['isVerify']    = 1;
+        }
+        $r['eq']['saleId']  = $saleId;
+        $r['raw']           = " id != $id ";
+        $r['col']           = array('id');
+        $r['limit']         = 100;
+        $list = $this->load('internal')->findContact($r);
+        if ( count($list) < 1 ) {
+            //只有一个联系人时，先下架，再删除
+            $reason = '前台用户取消出售，下架商品并删除联系人';
+            $flag   = $this->load('internal')->saleDown($saleId, $reason);
+            if ( !$flag ) return '904';
+
+            $res = $this->load('internal')->_delContact($id, $contact, 4);
+        }else{
+            //用户中心用户自行取消
+            $res = $this->load('internal')->delContact($id, $saleId, 4);
+        }
+
+        if ( $res ){
+            $this->load('log')->addSaleLog($saleId, 13, "联系人ID：$id 被删除了（ 来自用户中心接口uid:$uid ）", serialize($contact));//删除联系人
             return '999';
         }
         return '904';

@@ -27,6 +27,8 @@
 		<input type="hidden" name="pic" id="pic" value="<?=$topic['pic']?>">
 		<input type="hidden" name="banner" id="banner" value="<?=$topic['banner']?>">
 		<input type="hidden" name="bgImg" id="bgImg" value="<?=$topic['bgImg']?>">
+        <input type="hidden" name="listClass" id="allClass" value="<?=$topic['listClass']?>" />
+        <input type="hidden" name="listPic" class="bzpic" value="<?=$info['listPic']?>" />
 		<div>
 			<ul>
 				<li>
@@ -69,6 +71,31 @@
                     <p style="margin:20px 0;padding:0 5px 0 5px;background-color:#FFFF99;border:1px solid #dadada;width:400px;">注意！！！选择专题类型，会出现不同的显示效果。</p>
                 </li>
 				<li><br><hr><br></li>
+                <li>
+                    <label>列表页显示图片：</label>
+                    <div class="bzform">
+                        <img id="bzpic" class="info-pic" onerror="this.src='/Static/1.2/images/u143.png'" onclick="bzfile.click();" title="点击修改" src="<?=$topic['listPic']?$topic['listPic']:'error'?>" >
+                        <input type="hidden" name="size" value="200" style="display: none;"/>
+                        <input type="file" id="bzfile" name="fileName" style="display: none;"/>
+                    </div> 
+                    <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
+                    列表广告图片建议尺寸为 ( xxx ) x ( xxx )，文件最大不超过200kb，当前支持jpg,bmp,png格式文件
+                    </div>
+                </li>
+                <li>
+                    <label>列表页显示分类：</label>
+                    <div class="list-class">
+                        <? $allClass = array_filter(explode(',', $topic['listPic']));
+                        foreach (range(1,45) as $k => $v) { ?>
+                            <span style="display:inline-block;">
+                            <input type="checkbox" class="allClass" <?if(in_array($v, $allClass)){echo 'checked';}?> tname="allClass" value="<?=$v?>">&nbsp;<?=$v?>类
+                            </span>&nbsp;&nbsp;
+                            <?if($v % 9 == 0){echo "<br>";}?>
+                        <? } ?>
+                    </div>
+                    <br><hr><br>
+                </li>
+
             <div class="staticTopic">
 
                 <li>
@@ -155,6 +182,38 @@
 
 <script type="text/javascript">
     $(function(){
+        //多选处理
+        $('.list-class input[type="checkbox"]').click(function(){
+            var strClass = '';
+            var id = $(this).attr('tname');
+            $('.'+id).each(function(){
+                if($(this).prop('checked')){
+                    strClass += ","+$(this).val();
+                }
+            })
+            strClass = strClass ? strClass.substr(1) : '';
+            $('#'+id).val(strClass);
+        });
+
+        $(".bzform").wrap("<form id='bzformupload' action='/basic/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#bzfile").on('change', function(){
+            $("#bzformupload").ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.bzpic').val(data.img);
+                        $('#bzpic').attr('src', data.img);
+                        //$('#imageurl').css('visibility', 'visible');
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        });
+
 		//添加商品界面显示
 		$('#additems').click(function(){
 			setitems(0);

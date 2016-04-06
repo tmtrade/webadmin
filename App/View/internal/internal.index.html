@@ -152,11 +152,19 @@
     <div class="wrap-content">
         <p class="text-left" style="float:left;padding-top:20px;">共有 <b class="red"><?=$allTotal?></b> 条数据，当前筛选结果 <b class="blue"><?=$total?></b> 条数据</p>
         <div class="wrap-tittle">
+            <? if( in_array('15', $_role_) ){ ?>
             <button class="btn btn-danger" onclick="add();"    type="button">创建商品</button>
+            <? } ?>
+            <? if( in_array('16', $_role_) ){ ?>
             <button class="btn btn-danger" onclick="Import();" type="button">导入商品</button>
+            <? } ?>
             <button class="btn btn-info" onclick="download();" type="button" type="button">导出表格EXCEL</button>
+            <? if( in_array('2', $_role_) ){ ?>
             <button type="button" class="btn btn-info" onclick="setMoreDown();">批量下架</button>
+            <? } ?>
+            <? if( in_array('3', $_role_) ){ ?>
             <button type="button" class="btn btn-info" onclick="delMoreSale();">批量删除</button>
+            <? } ?>
             <button class="btn btn-info" type="button" onclick="reloadList();">刷新</button>
         </div>
         <div class="wrap-table">
@@ -242,9 +250,11 @@
                     <td>
                         <span class="icon icon-delete">
                         <?if($v['status']==1){?>
-                        <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$v['id']?>);">下架</a>
+                            <? if( in_array('2', $_role_) ){ ?>
+                            <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$v['id']?>);">下架</a>
+                            <? } ?>
                         <?}elseif($v['status']==2 && count($v['contact']) > 0){?>
-                        <a href="javascript:;" class="btn-success" onclick="doUp(<?=$v['id']?>);">上架</a>
+                            <a href="javascript:;" class="btn-success" onclick="doUp(<?=$v['id']?>);">上架</a>
                         <?}?></span>
                         <span class="icon icon-editor">
                         <a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>

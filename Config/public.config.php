@@ -136,12 +136,27 @@ $define = array(
 				'1' => array(
 					'label' => '国内商标列表',
 				),
-				// '2' => array(
-				// 	'label' => '专利列表',
-				// ),
-				// '3' => array(
-				// 	'label' => '国际商标列表',
-				// ),
+				'2' => array(
+					'label' => '下架商品',
+				),
+				'3' => array(
+					'label' => '删除商品',
+				),
+				'15' => array(
+					'label' => '创建商品',
+				),
+				'16' => array(
+					'label' => '导入商品',
+				),
+				'17' => array(
+					'label' => '修改商品价格',
+				),
+				'18' => array(
+					'label' => '修改包装信息',
+				),
+				'19' => array(
+					'label' => '删除联系人',
+				),
 			),
 		),
 		'2' => array(
@@ -187,17 +202,6 @@ $define = array(
 				),
 			),
 		),
-		// '4' => array(
-		// 	'label' => '任务管理',
-		// 	'child' => array(
-		// 		'14' => array(
-		// 			'label' => '提醒列表',
-		// 		),
-		// 		// '15' => array(
-		// 		// 	'label' => '临时求购',
-		// 		// ),
-		// 	),
-		// ),
 	),
 	'ALL_AUTH' => array(
 		'1' => array(
@@ -270,28 +274,64 @@ $define = array(
 			'up'	=> '3',
 			'label' => '缓存管理',
 		),
+		'15' => array(
+			'id'	=> '15',
+			'up'	=> '1',
+			'label' => '创建商品',
+		),
+		'16' => array(
+			'id'	=> '16',
+			'up'	=> '1',
+			'label' => '导入商品',
+		),
+		'17' => array(
+			'id'	=> '17',
+			'up'	=> '1',
+			'label' => '修改商品价格',
+		),
+		'18' => array(
+			'id'	=> '18',
+			'up'	=> '1',
+			'label' => '修改包装信息',
+		),
+		'18' => array(
+			'id'	=> '19',
+			'up'	=> '1',
+			'label' => '删除联系人',
+		),
 	),
 	'ROLE_LIST' => array(
-		'cache/index' 			=> '14',
 		'role/index' 			=> '13',
 		'role/add' 				=> '13',
 		'role/edit' 			=> '13',
+		
 		'user/index' 			=> '12',
 		'user/add' 				=> '12',
 		'user/role' 			=> '12',
+
 		'internal/index'		=> '1',
-		'internal/create'		=> '1',
 		'internal/edit'			=> '1',
-		'internal/delete' 		=> '1',
-		'internal/deleteSale' 	=> '1',
-		'internal/doDown' 		=> '1',
 		'internal/doUp' 		=> '1',
-		//'patent/index'			=> '2',
-		//'international/index' 	=> '3',
+		'internal/doDown' 		=> '2',
+		'internal/delete' 		=> '3',
+		'internal/deleteSale' 	=> '3',
+		'internal/create' 		=> '15',
+		'internal/checkNumber'	=> '15',
+		'internal/import'		=> '16',
+		'internal/importForm'	=> '16',
+		'internal/setPrice' 	=> '17',
+		'internal/setEmbellish' => '18',
+		'internal/delContact' 	=> '19',
+		
+		'cache/index' 			=> '14',
 		'phone/index' 			=> '4',
 		'blacklist/index' 		=> '5',
-		// 'remind/index'			=> '14',
-		// 'temp/index'			=> '15',
+		'module/index' 			=> '6',
+		'industry/index' 		=> '7',
+		'channel/index' 		=> '8',
+		'topic/index' 			=> '9',
+		'tmclass/index' 		=> '10',
+		'case/index' 			=> '11',
 	),
 
 

@@ -21,7 +21,9 @@
             <em class="blue"><?=$saleStatus[$sale['status']]?></em>
             <?if(!$isBlack){?>
                 <?if($sale['status']==1){?>
-                <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$sale['id']?>);">下架</a>
+                    <? if( in_array('2', $_role_) ){ ?>
+                    <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$sale['id']?>);">下架</a>
+                    <? } ?>
                 <?}else{?>
                 <a href="javascript:;" class="btn-success" onclick="doUp(<?=$sale['id']?>);">上架</a>
                 <?}?>
@@ -98,7 +100,9 @@
                 <td><?=$vl['advisor'].'-'.$vl['department']?></td>
                 <td>
                 <?if ( $vl['isVerify'] == 1) {?>
+                    <? if( in_array('19', $_role_) ){ ?>
                     <a href="javascript:void(0);" onclick="delContact(<?=$sale['id']?>, <?=$vl['id']?>, <?=count($sale['contact'])?>);">删除</a>
+                    <? } ?>
                     <a href="javascript:void(0);" onclick="setContact(<?=$sale['id']?>, <?=$vl['id']?>);">编辑</a>
                     <!-- <a href="">生成报价</a> -->
                 <?}else{?>
@@ -175,7 +179,9 @@
         </table>
     </form>
         <div class="mj-deiBtns">
+            <? if( in_array('17', $_role_) ){ ?>
             <a href="javascript:void(0);" onclick="setPrice();">确定价格信息</a>
+            <? } ?>
         </div>
         <div class="mj-thBar">
             <div class="mj-thbT">
@@ -278,7 +284,9 @@
             </dl>
         </div>
     <div class="mj-deiBtns">
+        <? if( in_array('18', $_role_) ){ ?>
         <a href="javascript:void(0);" onclick="setBzxx();">提交包装信息</a>
+        <? } ?>
     </div>
         <div class="mj-becen">
             <p>备注</p>

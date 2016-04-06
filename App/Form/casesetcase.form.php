@@ -42,6 +42,14 @@ class CaseSetcaseForm extends AppForm
 			'field' => 'pic2',
 			'method' => 'fieldName',
 		),
+		'alt1'    => array(
+			'field' => 'alt1',
+			'method' => 'fieldName',
+		),
+		'alt2'    => array(
+			'field' => 'alt2',
+			'method' => 'fieldName',
+		),
 		'date'    => array(
 			'field' => 'date',
 			'method' => 'handleTime',

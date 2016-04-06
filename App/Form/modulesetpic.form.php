@@ -22,6 +22,10 @@ class ModulesetpicForm extends AppForm
 			'field' => 'link',
 			'method' => 'fieldName',  
 			),
+		'alt'    => array(
+			'field' => 'alt',
+			'method' => 'fieldName',
+		),
     );
 	
 	

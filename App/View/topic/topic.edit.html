@@ -37,7 +37,6 @@
 				<li>
 					<label>专题标题：</label>
 					<input type="text" name="title" id="title" value="<?=$topic['title']?>"/>
-					<!--<p style="margin:20px 0;padding:0 5px 0 5px;background-color:#FFFF99;border:1px solid #dadada;width:260px;">模块标题最多不可超过8个中文字符。</p>-->
 				</li>
 				<li>
 					<label>专题图片：</label>
@@ -48,6 +47,7 @@
 						</div>
 						<em  class="cFF6701" id="tipshow">注：图片建议尺寸为560X155，文件最大不超过200KB，当前支持PG,PNG,BMP,GIF格式文件</em>
 					</p>
+					<span ><label>ALT描述: </label><input type="text" name="alt1" value="<?=$topic['alt1']?>"></span><br/>
 				</li>
                                 <li><br><hr><br></li>
                 <li>
@@ -114,6 +114,7 @@
 						</div>
 						<em  class="cFF6701" id="tipshow">注： 广告图片建议尺寸为 ( 1920 ) x ( 864 )，文件最大不超过200kb，当前支持jpg,bmp,png格式文件</em>
 					</p>
+					<span ><label>ALT描述: </label><input type="text" name="alt2" value="<?=$topic['alt2']?>"></span><br/>
 				</li>
 				<li><br><hr><br></li>
 				<li>
@@ -132,6 +133,7 @@
 						<em  class="cFF6701" id="tipshow">注： 背景图片最大不超过200kb，当前支持jpg,bmp,png格式文件</em>
 						
 					</p>
+					<span ><label>ALT描述: </label><input type="text" name="alt3" value="<?=$topic['alt3']?>"></span><br/>
 					<select name="bgImgShow" >
 							<option value="1" <?if($topic['bgImgShow'] == 1)echo "selected"; ?>>展示一次</option>
 							<option value="2" <?if($topic['bgImgShow'] == 2)echo "selected"; ?>>平铺</option>

@@ -103,7 +103,7 @@ function setPic(moduleId, id)
 		type: 2,
 		title: false,
 		closeBtn: false,
-		area: ['640px', '400px'],
+		area: ['640px', '500px'],
 		content: '/module/pic/'+url,
 	});
 }

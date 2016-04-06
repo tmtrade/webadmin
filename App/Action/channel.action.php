@@ -57,6 +57,7 @@ class ChannelAction extends AppAction
 	{
 		$id 	= $this->input('id', 'int', '');
 		$banner = $this->input('banner', 'string', '');
+		$alt    = $this->input('alt', 'string', '');
 		$model 	= $this->input('isBanner', 'int', '2');
 
 		if ( empty($id) ){
@@ -69,6 +70,7 @@ class ChannelAction extends AppAction
 		$data = array(
 			'banner'  	=> $banner,
 			'isBanner'	=> $model,
+			'alt'	    => $alt,
 		);
         $res = $this->load('channel')->setChannel($data, $id);
         if ( $res ){
@@ -123,6 +125,7 @@ class ChannelAction extends AppAction
 		$pic 	= $this->input('pic', 'string', '');
 		$link 	= $this->input('link', 'string', '');
 		$desc 	= $this->input('desc', 'string', '');
+		$alt 	= $this->input('alt', 'string', '');
 		$cId 	= $this->input('cId', 'int', '');
 		if ( $id > 0 ){
 			$info 	= $this->load('channel')->getItems($id);
@@ -145,6 +148,7 @@ class ChannelAction extends AppAction
 				'pic'        => $pic,
 				'link'       => $link,
 				'desc'       => $desc,
+				'alt'       => $alt,
 			);
 	        $res = $this->load('channel')->setItems($data, $id);
 		}else{
@@ -155,7 +159,8 @@ class ChannelAction extends AppAction
 				'channelId' => $cId,
 				'pic'       => $pic,
 				'link'      => $link,
-				'desc'       => $desc,
+				'desc'      => $desc,
+				'alt'       => $alt,
 				'sort'      => $order,
 			);
 	        $res = $this->load('channel')->addItems($data);

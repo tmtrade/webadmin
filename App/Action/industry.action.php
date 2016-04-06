@@ -201,6 +201,7 @@ class industryAction extends AppAction
 	public function addIndustryPic()
 	{
 		$link       = $this->input('link', 'text', '');
+		$alt        = $this->input('alt', 'text', '');
 		$bzpic      = $this->input('bzpic', 'text', '');
 		$industryId = $this->input('industryId', 'int', '0');
 		$id         = $this->input('id', 'int', '0');
@@ -217,6 +218,7 @@ class industryAction extends AppAction
 			'industryId' => $industryId,
 			'link'       => $link,
 			'pic'        => $bzpic,
+			'alt'        => $alt,
 			'date'       => time(),
 		);
 		if ($id == "0") {

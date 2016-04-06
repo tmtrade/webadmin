@@ -28,8 +28,8 @@
     <select name="isBanner">
         <option value="1" <? if($info['isBanner']==1){echo 'selected';}?> >是</option>
         <option value="2" <? if($info['isBanner']==2){echo 'selected';}?> >否</option>
-    </select>
-    
+    </select><br/>
+    <label>ALT描述:</label> <input type="text" name="alt" value="<?=$info['alt']?>"><br/>
     <div style="bottom:15px;position: fixed;">
         <button type="button" id="myButton" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;确定&nbsp;&nbsp;&nbsp;&nbsp;</button>
         <button type="button" onclick="closeAll();" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;取消&nbsp;&nbsp;&nbsp;&nbsp;</button>

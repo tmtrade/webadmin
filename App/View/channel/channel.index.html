@@ -69,6 +69,7 @@
         <div class="alert alert-warning margin-sx-10" style="padding:2px;" role="alert">
             广告图片建议尺寸为 ( 1920 ) x ( 864 )，文件最大不超过200kb，当前支持jpg,bmp,png格式文件
         </div>
+        <span><label>ALT描述:</label> <input type="text" value="<?=$info['alt']?>" size="40"></span><br/>
         <button class="btn btn-danger" id="add-banner" type="button">上传背景图</button>
     </div>
 
@@ -101,7 +102,7 @@
                     <td align="center" style="vertical-align:middle">
                     <img class="info-pic" src="<?=$v['pic']?>" /></td>
                     <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
-                    <td style="vertical-align:middle"><?=empty($v['desc'])?'-':$v['desc']?></td>
+                    <td style="vertical-align:middle"><?=empty($v['desc'])?'无':$v['desc']?></td>
                     <td style="vertical-align:middle">
                         <span class="icon icon-delete">
                             <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>

@@ -50,6 +50,18 @@ class TopicSetTopicForm extends AppForm
 						'field' => 'isMore',
 						'match' => array('int', '2', ''),
 				),
+		'alt1'    => array(
+			'field' => 'alt1',
+			'method' => 'fieldName',
+		),
+		'alt2'    => array(
+			'field' => 'alt2',
+			'method' => 'fieldName',
+		),
+		'alt3'    => array(
+			'field' => 'alt3',
+			'method' => 'fieldName',
+		),
         'listPic'    => array(
             'field' => 'listPic',
             'method' => 'fieldName',

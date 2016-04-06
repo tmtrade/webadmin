@@ -67,6 +67,7 @@ class BasicAction extends AppAction
 	{
 		$pic 	= $this->input('pic', 'string', '');
 		$link 	= $this->input('link', 'string', '');
+		$alt 	= $this->input('alt', 'string', '');
 		$model 	= $this->input('model', 'int', '2');
 		$id 	= $this->input('id', 'int', '');
 
@@ -82,6 +83,7 @@ class BasicAction extends AppAction
 				'type'       => 1,
 				'pic'        => $pic,
 				'link'       => $link,
+				'alt'        => $alt,
 				'other'      => $model,
 			);
 	        $res = $this->load('basic')->setBasic($data, $id);
@@ -92,6 +94,7 @@ class BasicAction extends AppAction
 				'type'      => 1,
 				'pic'       => $pic,
 				'link'      => $link,
+				'alt'       => $alt,
 				'sort'      => $order,
 				'other'     => $model,
 			);
@@ -225,6 +228,7 @@ class BasicAction extends AppAction
 	{
 		$pic 	= $this->input('pic', 'string', '');
 		$link 	= $this->input('link', 'string', '');
+		$alt 	= $this->input('alt', 'string', '');
 		$id 	= $this->input('id', 'int', '');
 
 		if ( empty($pic) ){
@@ -235,6 +239,7 @@ class BasicAction extends AppAction
 				'type'   	=> 3,
 				'pic'		=> $pic,
 				'link'  	=> $link,
+				'alt'  	    => $alt,
 			);
 	        $res = $this->load('basic')->setBasic($data, $id);
 		}else{
@@ -244,6 +249,7 @@ class BasicAction extends AppAction
 				'type'    	=> 3,
 				'pic'    	=> $pic,
 				'link'   	=> $link,
+				'alt'   	=> $alt,
 				'sort'    	=> $order,
 			);
 	        $res = $this->load('basic')->addBasic($data);
@@ -285,6 +291,7 @@ class BasicAction extends AppAction
 	public function setClass()
 	{
 		$pic 	= $this->input('pic', 'string', '');
+		$alt 	= $this->input('alt', 'string', '');
 		$class 	= $this->input('class', 'string', '');
         $name   = $this->input('name', 'string', '');
 		$id 	= $this->input('id', 'int', '');
@@ -305,6 +312,7 @@ class BasicAction extends AppAction
 		$data = array(
 			'type'   	=> 4,
 			'pic'		=> $pic,
+			'alt'		=> $alt,
             'link'      => $name,
 			'desc'  	=> $class,
 		);

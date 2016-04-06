@@ -54,10 +54,11 @@
         <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
             <thead>
                 <tr class="active">
-                    <th width="25%">广告图</th>
-                    <th width="10%">内嵌模块</th>
-                    <th width="40%">链接</th>
-                    <th width="25%">操作</th>
+                    <th width="20%">广告图</th>
+                    <!--<th width="10%">内嵌模块</th>-->
+                    <th width="30%">ALT描述</th>
+                    <th width="30%">链接</th>
+                    <th width="20%">操作</th>
                 </tr>
             </thead>
             <tbody class="table-list">
@@ -66,7 +67,7 @@
                     <td align="center" style="vertical-align:middle">
                     <img class="info-pic" src="<?=empty($v['pic'])?'error':$v['pic']?>" onerror="this.src='/Static/1.2/images/u143.png'" /></td>
                     <td align="center" style="vertical-align:middle">
-                    <?=$v['other']==1?'购买模块':'无'?></td>
+                    <?=($v['alt'])?$v['alt']:'无'?></td>
                     <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
                     <td style="vertical-align:middle">
                         <span class="icon icon-delete">
@@ -155,8 +156,9 @@
             <thead>
                 <tr class="active">
                     <th width="20%">广告图</th>
-                    <th width="40%">链接</th>
-                    <th width="25%">操作</th>
+                    <th width="30%">ALT描述</th>
+                    <th width="30%">链接</th>
+                    <th width="20%">操作</th>
                 </tr>
             </thead>
             <tbody class="table-list">
@@ -164,6 +166,7 @@
                 <tr>
                     <td align="center" style="vertical-align:middle">
                     <img class="info-pic" src="<?=empty($v['pic'])?'error':$v['pic']?>" onerror="this.src='/Static/1.2/images/u143.png'" /></td>
+                    <td style="vertical-align:middle"><?=empty($v['alt'])?'无':$v['alt']?></td>
                     <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
                     <td style="vertical-align:middle">
                         <span class="icon icon-delete">
@@ -253,7 +256,7 @@
                 type: 2,
                 scrollbar: false,
                 title: '创建广告图',
-                area: ['650px', '430px'],
+                area: ['650px', '500px'],
 
                 content: '/basic/addBannber/'
             });
@@ -275,7 +278,7 @@
                 type: 2,
                 scrollbar: false,
                 title: '创建滑动广告图',
-                area: ['650px', '400px'],
+                area: ['650px', '500px'],
 
                 content: '/basic/addSlide/'
             });
@@ -318,7 +321,7 @@
             type: 2,
             scrollbar: false,
             title: '修改广告图',
-            area: ['600px', '430px'],
+            area: ['600px', '500px'],
 
             content: '/basic/editBanner/?id='+id
         });
@@ -344,7 +347,7 @@
             type: 2,
             scrollbar: false,
             title: '修改滑动广告图',
-            area: ['600px', '430px'],
+            area: ['600px', '500px'],
 
             content: '/basic/editSlide/?id='+id
         });
@@ -357,7 +360,7 @@
             type: 2,
             scrollbar: false,
             title: '修改推荐分类',
-            area: ['650px', '480px'],
+            area: ['650px', '500px'],
 
             content: '/basic/editClass/?id='+id
         });

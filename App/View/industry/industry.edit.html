@@ -105,6 +105,7 @@
                 <tbody>
                 <tr>
                     <td>广告图</td>
+                    <td>ALT描述</td>
                     <td>链接</td>
                     <td>操作</td>
                 </tr>
@@ -112,6 +113,9 @@
                 <tr>
                     <td>
                         <img src="<?=$vl['pic']?>" class="bzpic" style="width:80px;height:80px;">
+                    </td>
+                    <td>
+                        <?=($vl['alt']?$vl['alt']:'无')?>
                     </td>
                     <td><?=$vl['link']?></td>
                     <td>
@@ -208,7 +212,7 @@
             type: 2,
             title: false,
             closeBtn: false,
-            area: ['560px', '350px'],
+            area: ['600px', '450px'],
             content: '/industry/indusPic/?industryId='+industryId+"&id="+id
         });
     }

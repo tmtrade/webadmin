@@ -1,0 +1,111 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/industry/edit.js"></script>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>SEO设置</li>
+    </ul>
+</div>
+<div class="wrap">
+    <div class="wrap-content">
+        <p class="text-left" style="float:left;padding-top:20px;">
+            您可以在此为各个频道页，详情页设置title 关键字 描述
+        </p>
+
+        <div class="wrap-tittle">
+            <button class="btn btn-danger" onclick="add();" type="button">创建新SEO</button>
+        </div>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                <tr class="active">
+                    <th>ID</th>
+                    <th>页面URl</th>
+                    <th>SEO标题</th>
+                    <th>标签</th>
+                    <th>是否启用</th>
+                    <th>操作/排序</th>
+                </tr>
+                </thead>
+                <tbody class="table-list">
+                <? foreach ($list as $k => $v) { ?>
+                <tr>
+                    <td>
+                        <?=$v['id']?>
+                    </td>
+                    <td>
+                        <?=$v['index']?>
+                    </td>
+                    <td>
+                        <?=$v['title']?>
+                    </td>
+                    <td>
+                        <?=$v['label']?>
+                    </td>
+                    <td>
+                        <?=($v['isUse']==1)?"是":"否"; ?>
+                    </td>
+                    <td>
+                        <span class="icon icon-editor">
+                            <a href="/seo/edit/?id=<?=$v['id']?>" >编辑</a>
+                        </span>
+                         <span class="icon icon-delete">
+                            <a href="javascript:void(0);" onclick="delSeo(<?=$v['id']?>);" >删除</a>
+                        </span>
+                    </td>
+                </tr>
+                <? } ?>
+                </tbody>
+            </table>
+        </div>
+        <div id="page" align="center"><?=$pageBar?></div>
+    </div>
+</div>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css"/>
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    function add() {
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: false,
+            area: ['400px', '200px'],
+            content: '/seo/add/'
+        });
+    }
+    //删除链接
+    function delSeo(id) {
+        if (id <= 0 || id == '') return false;
+        layer.confirm('确认要删除此项？<br>', {
+            btn: ['删了', '算了'] //按钮
+        }, function () {
+            $.ajax({
+                type: 'post',
+                url: '/seo/delSeo/',
+                data: {'id': id},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 1) {
+                        layer.msg('操作成功', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+                        layer.msg(msg, {
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                },
+                error: function (data) {
+                    layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            });
+        });
+    }
+</script>
+<? require(ViewDir.'/footer.html'); ?>

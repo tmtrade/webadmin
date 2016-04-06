@@ -88,7 +88,7 @@
             <dd>
                 <label>底&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：</label>
                 <div class="mj-radio">
-                    <input type="text" maxlength="10" size="15"class="input input-sm" value="<?=$s['startPrice']==0?'':$s['startPrice']?>" name="startPrice"/>&nbsp;-&nbsp;
+                    <input type="text" maxlength="10" size="15" class="input input-sm" value="<?=$s['startPrice']==0?'':$s['startPrice']?>" name="startPrice"/>&nbsp;-&nbsp;
                     <input type="text" maxlength="10" size="15" class="input input-sm" value="<?=$s['endPrice']==0?'':$s['endPrice']?>" name="endPrice"/>
                 </div>
                 <div class="mj-radio">
@@ -96,11 +96,9 @@
                     <label for="rad0>">面议</label>
                 </div>
 
-                <label>注册日期：</label>
-                <div class="mj-radio">
-                    <input type="text" maxlength="10" size="15"class="input input-sm" value="<?=$s['regDate']==0?'':$s['regDate']?>" name="regDate" onclick="laydate({format: 'YYYY-MM-01',min:'2000-01-01',max:laydate.now()})"/>
-                    <div class="alert alert-warning" style="padding:2px;display:inline-block;" role="alert">(默认为当月1号，日期在当月内)</div>
-                    
+                <label><input type="checkbox" id="show_rd">只查找该时间段前商品 </label>
+                <div class="mj-radio" id="reDate" style="display:none;">
+                    <input type="text" style="border:1px solid #ccc;" value="<?=$s['regDate']==0?'':$s['regDate']?>" class="input input-sm" name="regDate" onclick="laydate({format: 'YYYY-MM-DD',min:'2000-01-01',max:laydate.now()})"/>
                 </div>
             </dd>
             <dd>
@@ -145,8 +143,12 @@
                 </div>
                 <? } ?>
             </dd>
+            <dd>
+                <a href="javascript:void(0);" style="margin: 10px;float: left;" class="mj-sBtn" id="mj-sBtn">搜索</a>
+                <a href="javascript:void(0);" style="margin: 10px;float: left; <? if($s['jname']!=1){?>display: none;<? } ?>" class="mj-sBtn" id="jq_search">精确搜索</a>
+            </dd>
         </dl>
-        <a href="javascript:void(0);" class="mj-sBtn">搜索</a>
+            <input type="hidden"  name="jname" value="">
         </form>
     </div>
     <div class="wrap-content">
@@ -336,8 +338,19 @@
         $(".mj-screening .btn").click(function(){
             $(".mj-ddList").toggle();
         });
-        $(".mj-sBtn").click(function(){
+        $("#mj-sBtn").click(function(){
             $("#saleSearchForm").submit();
+        });
+        
+        //精确搜索
+        $("#jq_search").click(function(){
+            $("input[name='jname']").val(1);
+            $("#saleSearchForm").submit();
+        });
+        //注册时间选择切换效果
+        $("#show_rd").click(function(){
+            $("input[name='regDate']").val("");
+            $("#reDate").toggle();
         });
         //多选处理
         $('input[type="checkbox"]').click(function(){
@@ -350,6 +363,11 @@
             })
             strClass = strClass ? strClass.substr(1) : '';
             $('#'+id).val(strClass);
+            if(strClass){
+                $("#jq_search").show();
+            }else{
+                $("#jq_search").hide();
+            }
         });
         $(".table tr td.showMore").hover(function(){
             $(this).parent('tr').find('.more > ul').show();

@@ -1,0 +1,202 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css" />
+<div class="wrap">
+<input type="hidden" name="saleId" id="saleId" value="<?=$sale['id']?>">
+    <div class="wrap-top">
+        <h4 style="width: 60px">seo设置</h4>>编辑seo<span> </span>
+    </div>
+    <div class="mj-ztBar f-clearfix">
+
+        <span class="mj-ztBr">
+            <a class="btn btn-info" href="/seo/index/">返回</a>
+        </span>
+    <div class="mj-deiBlist">
+    <form id="addForm">
+        <input type="hidden" name="id" id="tcid" value="<?=$seo['id']?>" />
+        <table class="mj-table">
+            <tbody>
+            <tr>
+                <td class="f-clearfix">
+                    <div class="fl">
+                        <label for="tdi1">页面URl&nbsp;:</label>
+                        <input type="text" name="index"  style="width:450px;" value="<?=$seo['index']?>"/>
+                        <br/><p style="background-color:#FFFF99;margin-left: 54px;">注：程序访问的不带参数的页面URL。</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="f-clearfix">
+                    <div class="fl">
+                        <label for="tdi1">页面标题:</label>
+                        <input type="text" name="title"  style="width:450px;" value="<?=$seo['title']?>"/>
+                        <br/><p style="background-color:#FFFF99;margin-left: 54px;">注：请尽量简洁明了，建议控制在20个中文，最多不可超过30个中文。</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="f-clearfix">
+                    <div class="fl">
+                        <label for="tdi1">关&nbsp;&nbsp;键&nbsp;&nbsp;字:</label>
+                        <input type="text" name="keyword"  style="width:450px;" value="<?=$seo['keyword']?>"/>
+                        <br/><p style="background-color:#FFFF99;margin-left: 54px;">注：多个关键字之间以空格符区别</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="f-clearfix">
+                    <div class="fl">
+                        <label for="tdi1" style="margin-top: -145px;">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述:</label>
+                        <textarea name="description" cols="72" rows="5"><?=$seo['description']?></textarea>
+                        <br/><p style="background-color:#FFFF99;margin-left: 54px;">注：建议描述文字不宜太长，最多不可超过100个中文。</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="f-clearfix">
+                <div class="bzform">
+                    <label for="tdi1">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;签：</label>
+                    <?foreach($seo['labelArr'] as $vl){?>
+                    <span style="padding: 0px 5px;border: 1px solid  #DDDDDD;"><?=$vl?> <a href="javascript:;" onclick="removeLabel(<?=$seo['id']?>,'<?=$vl?>',1)"> ×</a></span>
+                    <?}?>
+                    <br/>
+                        
+                        <div class="mj-deiBtns">
+                            <input type="text" id="label" name="label" style="display: inline-block; margin: 6px 5px 0px 64px;width: 80px"/>
+                            <a href="javascript:void(0);" id="mj-deib" onclick="addLabel(1);" style="width: 40px;height: 25px;line-height:25px; background: #FF6633; ">添加</a>
+                        </div>
+                        </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="f-clearfix">
+                    <div class="fl">
+                        <label for="tdi1">是否启用：</label>
+                            <input type="radio"  name="isUse" value="1" <?if($seo['isUse']==1) echo "checked='checked'";?> />是
+                            <input type="radio"  name="isUse" value="2" <?if($seo['isUse']==2) echo "checked='checked'";?> />否
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    </form>
+        <hr>
+        <div class="mj-deiBlist">
+            <div class="mj-deiBtns">
+                <a href="javascript:void(0);" id="addSeo">确定</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function (){
+//确认编辑
+$('#addSeo').click(function () {
+    var data = $("#addForm").serialize();
+    $.ajax({
+        type: 'post',
+        url: '/seo/setSeo/',
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+            if (data.code == 1) {
+                layer.msg('操作成功！', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    window.location.reload();
+                });
+            } else {
+                layer.msg(data.msg, {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error: function (data) {
+            layer.msg('操作失败，请稍后重试。', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
+});
+
+});
+//tmclass  移除标签
+function removeLabel(id, label, t) {
+    if (id == "") {
+        layer.msg('非法参数！');
+        return false;
+    }
+    $.ajax({
+        type: 'post',
+        url: '/seo/removeLabel/',
+        data: "id=" + id + "&label=" + label,
+        dataType: 'json',
+        success: function (data) {
+            if (data.code == 1) {
+                layer.msg('操作成功！', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    if (t == 1) {
+                        window.location.reload();
+                    } else {
+                        parent.location.reload();
+                    }
+
+                });
+            } else {
+                layer.msg(data.msg, {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error: function (data) {
+            layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
+}
+//tmclass  添加标签
+function addLabel(t) {
+    var id = $.trim($("#tcid").val());
+    var label = $.trim($("#label").val());
+    if (id == "") {
+        layer.msg('非法参数！');
+        return false;
+    }
+    if (label == "") {
+        layer.msg('请填写添加标签！');
+        return false;
+    }
+    $.ajax({
+        type: 'post',
+        url: '/seo/addLabel/',
+        data: "id=" + id + "&label=" + label,
+        dataType: 'json',
+        success: function (data) {
+            if (data.code == 1) {
+                layer.msg('操作成功！', {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    if (t == 1) {
+                        window.location.reload();
+                    } else {
+                        parent.location.reload();
+                    }
+                });
+            } else {
+                layer.msg(data.msg, {
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        },
+        error: function (data) {
+            layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+        }
+    });
+}
+</script>
+<? require(ViewDir.'/footer.html'); ?>
+

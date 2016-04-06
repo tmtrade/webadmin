@@ -98,6 +98,10 @@ class InternalindexForm extends AppForm
             'field'  => 'listSort',
             'match' => array('int', '', ''),
             ),
+        'jname' => array(
+            'field'  => 'jname',
+            'match' => array('int', '', ''),
+            ),
     );
 	
 	

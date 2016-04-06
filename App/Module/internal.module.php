@@ -36,8 +36,13 @@ class InternalModule extends AppModule
             $r['ft']['type'] = $params['tmType'];
         }
         if ( !empty($params['tmClass']) ){
-            $r['ft']['class'] = $params['tmClass'];
+            if($params['jname']==1){
+                $r['ft']['class'] = explode(",", $params['tmClass']);
+            }else{
+                 $r['ft']['class'] = $params['tmClass'];
+            }
         }
+        
         if ( !empty($params['tmLabel']) ){
             $r['ft']['label'] = $params['tmLabel'];
         }
@@ -70,7 +75,12 @@ class InternalModule extends AppModule
             $r['eq']['isSale']      = 1;
         }
         if ( !empty($params['tmGroup']) ){
-            $r['ft']['group'] = $params['tmGroup'];
+            
+            if($params['jname']==1){
+                 $r['ft']['group'] = explode(",", $params['tmGroup']);
+            }else{
+                 $r['ft']['group'] = $params['tmGroup'];
+            }
         }
         if ( !empty($params['offprice']) ){
             $r['eq']['priceType']   = 1;
@@ -86,9 +96,8 @@ class InternalModule extends AppModule
             $r['in'] = array('id'=>$list);
         }
         if ( !empty($params['regDate']) && strtotime($params['regDate']) > 0 ){//处理子表来源
-            $startDate  = strtotime($params['regDate']);
-            $endDate    = strtotime('first day of next month', $startDate);            
-            $r['raw']  .= " AND (regDate >= $startDate AND regDate < $endDate)";
+            $startDate  = strtotime($params['regDate']);       
+            $r['raw']  .= " AND (regDate <= $startDate )";
         }
 
         $_child =  '';

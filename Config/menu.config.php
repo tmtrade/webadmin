@@ -72,6 +72,11 @@ return $menu = array(
 				'url'   => '/case/index/',
 				'auth'	=> '12',
 			),
+                        '10' => array(
+				'title' => 'SEO设置',
+				'url'   => '/seo/index/',
+				'auth'	=> '13',
+			),
 		),
 	),
 	'3' => array(

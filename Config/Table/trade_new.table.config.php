@@ -58,6 +58,12 @@ $tbl['saleTminfo'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['seo'] = array(
+	'name'		=> $prefix.'seo',
+	'dbId'		=> $dbId, 
+	'configFile'=> $configFile,
+);
+
 $tbl['tempBuy'] = array(
 	'name'		=> $prefix.'temp_buy',
 	'dbId'		=> $dbId, 

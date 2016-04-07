@@ -157,6 +157,15 @@ $define = array(
 				'19' => array(
 					'label' => '删除联系人',
 				),
+				'20' => array(
+					'label' => '添加/编辑联系人',
+				),
+				'21' => array(
+					'label' => '审核联系人',
+				),
+				'22' => array(
+					'label' => '修改备注信息',
+				),
 			),
 		),
 		'2' => array(
@@ -185,6 +194,12 @@ $define = array(
 				),
 				'11' => array(
 					'label' => '商标分类设置',
+				),
+				'23' => array(
+					'label' => '成功案例设置',
+				),
+				'24' => array(
+					'label' => 'SEO设置',
 				),
 			),
 		),
@@ -294,10 +309,35 @@ $define = array(
 			'up'	=> '1',
 			'label' => '修改包装信息',
 		),
-		'18' => array(
+		'19' => array(
 			'id'	=> '19',
 			'up'	=> '1',
 			'label' => '删除联系人',
+		),
+		'20' => array(
+			'id'	=> '20',
+			'up'	=> '1',
+			'label' => '添加/编辑联系人',
+		),
+		'21' => array(
+			'id'	=> '21',
+			'up'	=> '1',
+			'label' => '审核联系人',
+		),
+		'22' => array(
+			'id'	=> '22',
+			'up'	=> '1',
+			'label' => '修改备注信息',
+		),
+		'23' => array(
+			'id'	=> '23',
+			'up'	=> '2',
+			'label' => '成功案例设置',
+		),
+		'24' => array(
+			'id'	=> '24',
+			'up'	=> '2',
+			'label' => 'SEO设置',
 		),
 	),
 	'ROLE_LIST' => array(
@@ -322,16 +362,23 @@ $define = array(
 		'internal/setPrice' 	=> '17',
 		'internal/setEmbellish' => '18',
 		'internal/delContact' 	=> '19',
+		'internal/contact' 		=> '20',
+		'internal/setContact' 	=> '20',
+		'internal/setVerify' 	=> '21',
+		'internal/delVerify' 	=> '21',
+		'internal/setMemo' 		=> '22',
 		
 		'cache/index' 			=> '14',
 		'phone/index' 			=> '4',
 		'blacklist/index' 		=> '5',
-		'module/index' 			=> '6',
-		'industry/index' 		=> '7',
-		'channel/index' 		=> '8',
-		'topic/index' 			=> '9',
-		'tmclass/index' 		=> '10',
-		'case/index' 			=> '11',
+		'basic/index'			=> '6',
+		'module/index' 			=> '7',
+		'industry/index' 		=> '8',
+		'channel/index' 		=> '9',
+		'topic/index' 			=> '10',
+		'tmclass/index' 		=> '11',
+		'case/index' 			=> '23',
+		'seo/index' 			=> '24',
 	),
 
 

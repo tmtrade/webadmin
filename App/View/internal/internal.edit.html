@@ -30,6 +30,7 @@
             <?}?>
         </div>
         <span class="mj-ztBr">
+            <a class="btn btn-info" href="javacript:void(0);" onclick="window.location.href=window.location.href;return false;">刷新</a>
             <a class="btn btn-info" href="<?=$referr?>">返回</a>
         </span>
     <div class="mj-detaImg">
@@ -103,11 +104,14 @@
                     <? if( in_array('19', $_role_) ){ ?>
                     <a href="javascript:void(0);" onclick="delContact(<?=$sale['id']?>, <?=$vl['id']?>, <?=count($sale['contact'])?>);">删除</a>
                     <? } ?>
+                    <? if( in_array('20', $_role_) ){ ?>
                     <a href="javascript:void(0);" onclick="setContact(<?=$sale['id']?>, <?=$vl['id']?>);">编辑</a>
-                    <!-- <a href="">生成报价</a> -->
+                    <? } ?>
                 <?}else{?>
+                    <? if( in_array('21', $_role_) ){ ?>
                     <a href="javascript:void(0);" onclick="setVerify(<?=$sale['id']?>, <?=$vl['id']?>);">通过</a>
                     <a href="javascript:void(0);" onclick="delVerify(<?=$sale['id']?>, <?=$vl['id']?>, <?=count($sale['contact'])?>);">驳回</a>
+                    <? } ?>
                 <?}?>
                 </td>
             </tr>
@@ -117,7 +121,9 @@
     </div>
     <div class="mj-deiBlist">
         <div class="mj-deiBtns">
+            <? if( in_array('20', $_role_) ){ ?>
             <a href="javascript:void(0);" id="mj-deib">新增出售信息</a>
+            <? } ?>
         </div>
     <form id="priceForm">
         <table class="mj-table">
@@ -296,7 +302,9 @@
         </div>
     </div>
     <div class="mj-deiBtns">
+        <? if( in_array('20', $_role_) ){ ?>
         <a href="javascript:void(0);" onclick="setMemo();">提交备注</a>
+        <? } ?>
     </div>
     <table class="mj-tables">
         <tbody>

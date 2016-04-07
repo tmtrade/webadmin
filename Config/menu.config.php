@@ -10,16 +10,6 @@ return $menu = array(
 						'url'   => '/internal/index/',
 						'auth'	=> '1',
 					),
-					// '2' => array(
-					// 	'title' => '专利列表',
-					// 	'url'   => '/patent/index/',
-					// 	'auth'	=> '2',
-					// ),
-					// '3' => array(
-					// 	'title' => '国际商标列表',
-					// 	'url'   => '/international/index/',
-					// 	'auth'	=> '3',
-					// ),
 		),
 	),
 	'2' => array(
@@ -70,12 +60,12 @@ return $menu = array(
 			'9' => array(
 				'title' => '成功案例设置',
 				'url'   => '/case/index/',
-				'auth'	=> '12',
+				'auth'	=> '23',
 			),
-                        '10' => array(
+			'10' => array(
 				'title' => 'SEO设置',
 				'url'   => '/seo/index/',
-				'auth'	=> '13',
+				'auth'	=> '24',
 			),
 		),
 	),

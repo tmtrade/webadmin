@@ -269,10 +269,18 @@
                     <div class="bzform">
                         <label>美化图片：</label><img src="<?=$sale['tminfo']['embellish']?>" class="bzpic" style="width:30px;height:30px;">
                         <input type="file" id="bzfile" name="fileName" style="display: inline-block;"/>
-                    </div> &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div> &nbsp;&nbsp;&nbsp;&nbsp;<br/>
+                    <div class="">
+                        <label>ALT描述1：</label>
+                        <input type="text" size="40" name="alt1" value="<?=$sale['tminfo']['alt1']?>"/>
+                    </div><br/>
                     <div class="tjform">
                         <label>特价图片：</label><img src="<?=$sale['tminfo']['indexPic']?>" class="tjpic" style="width:30px;height:30px;">
                         <input type="file" id="tjfile" name="fileName" style="display: inline-block;"/>
+                    </div><br/>
+                    <div class="">
+                        <label>ALT描述2：</label>
+                        <input type="text" size="40" name="alt2" value="<?=$sale['tminfo']['alt2']?>"/>
                     </div>
                 </dd>
                 <dd><label>商标介绍：</label>

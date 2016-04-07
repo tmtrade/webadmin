@@ -341,6 +341,8 @@ class internalAction extends AppAction
 			'viewPhone' => $phone,
 		);
 		$bzpic 	= $this->input('bzpic', 'text', '');
+		$alt1 	= $this->input('alt1', 'text', '');
+		$alt2 	= $this->input('alt2', 'text', '');
 		$tjpic 	= $this->input('tjpic', 'text', '');
 		$value 	= $this->input('value', 'text', '');
 		$intro 	= $this->input('intro', 'text', '');
@@ -349,6 +351,8 @@ class internalAction extends AppAction
 			'indexPic' 		=> $tjpic,
 			'value' 		=> $value,
 			'intro' 		=> $intro,
+			'alt1' 		    => $alt1,
+			'alt2' 		    => $alt2,
 		);
 		if ( $isTop < 2 && !empty($tminfo['embellish']) ){
 			$sale['isTop'] = 2;//有包装图片的置项值

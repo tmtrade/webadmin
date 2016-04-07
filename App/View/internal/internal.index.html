@@ -143,7 +143,7 @@
                 </div>
                 <? } ?>
             </dd>
-            <dd>
+            <dd style="height: 35px;">
                 <a href="javascript:void(0);" style="margin: 10px;float: left;" class="mj-sBtn" id="mj-sBtn">搜索</a>
                 <a href="javascript:void(0);" style="margin: 10px;float: left; <? if($s['jname']!=1){?>display: none;<? } ?>" class="mj-sBtn" id="jq_search">精确搜索</a>
             </dd>
@@ -363,10 +363,12 @@
             })
             strClass = strClass ? strClass.substr(1) : '';
             $('#'+id).val(strClass);
-            if(strClass){
-                $("#jq_search").show();
-            }else{
-                $("#jq_search").hide();
+            if(id=="tmClass"){
+                if(strClass){
+                    $("#jq_search").show();
+                }else{
+                    $("#jq_search").hide();
+                }
             }
         });
         $(".table tr td.showMore").hover(function(){

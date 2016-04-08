@@ -105,7 +105,8 @@ class seoAction extends AppAction
 		if ($res == 0) {
 			$this->returnAjax(array('code' => 0, 'msg' => '移除失败。'));
 		} else {
-			$this->returnAjax(array('code' => 1, 'msg' => '操作成功。'));
+			$seo = $this->load('seo')->getInfo($id);
+			$this->returnAjax(array('code' => 1, 'msg' => '操作成功。','data'=>$seo['labelArr']));
 		}
 	}
 	//添加标签
@@ -123,7 +124,8 @@ class seoAction extends AppAction
 		if ($res == 0) {
 			$this->returnAjax(array('code' => 0, 'msg' => '操作失败。'));
 		} elseif ($res == 1) {
-			$this->returnAjax(array('code' => 1, 'msg' => '操作成功。'));
+			$seo = $this->load('seo')->getInfo($id);
+			$this->returnAjax(array('code' => 1, 'msg' => '操作成功。','data'=>$seo['labelArr']));
 		} elseif ($res == 2) {
 			$this->returnAjax(array('code' => 0, 'msg' => '不能添加重复标签。'));
 		}

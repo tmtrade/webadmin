@@ -12,6 +12,96 @@ class RunModule extends AppModule
         return ((float)$usec + (float)$sec);
     }
 
+    //更新没有商品名称的数据
+    public function runName()
+    {
+        $id     = 0;
+        $num    = 0;
+        $succList   = $faildList = array();
+        $start      = $this->msectime();
+        $this->begin('sale');
+        $rand = randCode(6);
+        while ( true ) {
+            $num++;
+            $sale   = $this->getEmptyName($id);
+
+            if ( empty($sale['id']) ){
+                $p      = intval($num/1000) > 0 ? intval($num/1000) + 1 : 1;
+                $end    = $this->msectime() - $start;
+                if ( empty($succList) && empty($faildList) ){
+                    exit('no data to update');
+                }
+                $this->commit('sale');
+
+                $log = array(
+                    'useTime'   => $end,
+                    );
+                if ( count($succList) > 0 ){
+                    $_log = $log;
+                    $_log['succ']       = count($succList);
+                    $_log['succList']   = $succList;
+                    $name = 'updateName'.date("Y-m-d")."($rand)-list$p-----success.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                if ( count($faildList) > 0 ){
+                    $_log = $log;
+                    $_log['faild']       = count($faildList);
+                    $_log['faildList']   = $faildList;
+                    $name = 'updateName'.date("Y-m-d")."($rand)-list$p-----faild.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                exit('no data to update');
+            }
+
+            $id         = $sale['id'];
+            $number     = $sale['number'];
+            $info       = $this->load('trademark')->getInfo($number, array('trademark as name'));
+            //$regDate    = strtotime($info['reg_date']) > 0 ? strtotime($info['reg_date']) : 0;
+
+            if ( empty($info['name']) ){
+                $faildList[] = $number;
+            }else{
+                $data       = array('name' => $info['name']);
+                $r['eq']    = array('id'=>$id);
+                $flag       = $this->import('sale')->modify($data, $r);
+
+                if ( $flag ) {
+                    $succList[] = $number;
+                }else{
+                    $faildList[] = $number;
+                }
+            }  
+
+            if ( $num % 1000 == 0 ){
+                $this->commit('sale');
+                $end    = $this->msectime() - $start;
+                $start  = $this->msectime();
+                $p      = intval($num/1000) > 0 ? intval($num/1000) : 1;
+
+                $log = array(
+                    'useTime'   => $end,
+                    );
+                if ( count($succList) > 0 ){
+                    $_log = $log;
+                    $_log['succ']       = count($succList);
+                    $_log['succList']   = $succList;
+                    $name = 'updateName'.date("Y-m-d")."($rand)-list$p-----success.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                if ( count($faildList) > 0 ){
+                    $_log = $log;
+                    $_log['faild']       = count($faildList);
+                    $_log['faildList']   = $faildList;
+                    $name = 'updateName'.date("Y-m-d")."($rand)-list$p-----faild.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                echo "list-$p finish...\n";
+                $succList   = $faildList = array();
+                $this->begin('sale');
+            }
+        }
+    }
+
     public function runRegDate()
     {
         $id     = 0;
@@ -111,6 +201,15 @@ class RunModule extends AppModule
         return $this->import('sale')->find($r);
     }
 
+    private function getEmptyName($id=0)
+    {
+        $r['limit'] = 1;
+        $r['order'] = array('id'=>'asc');
+        $r['eq']    = array('name'=>'');
+        $r['raw']   = " id > $id ";
+        $r['col']   = array('number','id');
+        return $this->import('sale')->find($r);
+    }
 
     private function update($page)
     {

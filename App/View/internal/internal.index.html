@@ -96,8 +96,8 @@
                     <label for="rad0>">面议</label>
                 </div>
 
-                <label><input type="checkbox" id="show_rd">只查找该时间段前商品 </label>
-                <div class="mj-radio" id="reDate" style="display:none;">
+                <label><input type="checkbox" id="show_rd" <? if(!empty($s['regDate'])) echo 'checked';?>>只查找该时间段前商品 </label>
+                <div class="mj-radio" id="reDate" style="<? if(empty($s['regDate'])){?>display:none;<? } ?>">
                     <input type="text" style="border:1px solid #ccc;" value="<?=$s['regDate']==0?'':$s['regDate']?>" class="input input-sm" name="regDate" onclick="laydate({format: 'YYYY-MM-DD',min:'2000-01-01',max:laydate.now()})"/>
                 </div>
             </dd>
@@ -145,7 +145,7 @@
             </dd>
             <dd style="height: 35px;">
                 <a href="javascript:void(0);" style="margin: 10px;float: left;" class="mj-sBtn" id="mj-sBtn">搜索</a>
-                <a href="javascript:void(0);" style="margin: 10px;float: left; <? if($s['jname']!=1){?>display: none;<? } ?>" class="mj-sBtn" id="jq_search">精确搜索</a>
+                <a href="javascript:void(0);" style="margin: 10px;float: left; <? if(empty($s['tmClass'])){?>display: none;<? } ?>" class="mj-sBtn" id="jq_search">精确搜索</a>
             </dd>
         </dl>
             <input type="hidden"  name="jname" value="">

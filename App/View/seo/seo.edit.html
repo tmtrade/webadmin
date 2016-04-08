@@ -55,10 +55,12 @@
             <tr>
                 <td class="f-clearfix">
                 <div class="bzform">
-                    <label for="tdi1">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;签：</label>
-                    <?foreach($seo['labelArr'] as $vl){?>
-                    <span style="padding: 0px 5px;border: 1px solid  #DDDDDD;"><?=$vl?> <a href="javascript:;" onclick="removeLabel(<?=$seo['id']?>,'<?=$vl?>',1)"> ×</a></span>
-                    <?}?>
+                    <label for="tdi1" style="float:left;">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;签：</label>
+                    <div id="tags">
+                        <?foreach($seo['labelArr'] as $vl){?>
+                        <span style="padding: 0px 5px;border: 1px solid  #DDDDDD;" ><?=$vl?> <a href="javascript:;" onclick="removeLabel(<?=$seo['id']?>,'<?=$vl?>',1)"> ×</a></span>
+                        <?}?>
+                    </div>
                     <br/>
                         
                         <div class="mj-deiBtns">
@@ -120,6 +122,7 @@ $('#addSeo').click(function () {
 });
 
 });
+var sid = <?=$seo['id']?>;
 //tmclass  移除标签
 function removeLabel(id, label, t) {
     if (id == "") {
@@ -135,14 +138,15 @@ function removeLabel(id, label, t) {
             if (data.code == 1) {
                 layer.msg('操作成功！', {
                     time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                }, function () {
-                    if (t == 1) {
-                        window.location.reload();
-                    } else {
-                        parent.location.reload();
-                    }
-
                 });
+                var neirou;
+                var item="";
+                for(var i=0,l=data.data.length;i<l;i++){
+                    neirou = data.data[i];    //当前层数据
+                    var names = "'"+neirou+"'";
+                    item += '<span style="padding: 0px 5px;border: 1px solid  #DDDDDD;" >'+neirou+' <a href="javascript:;" onclick="removeLabel('+sid+','+names+',1)"> ×</a></span>'; 
+                }
+                $("#tags").html(item);
             } else {
                 layer.msg(data.msg, {
                     time: 1000 //2秒关闭（如果不配置，默认是3秒）
@@ -177,13 +181,16 @@ function addLabel(t) {
             if (data.code == 1) {
                 layer.msg('操作成功！', {
                     time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                }, function () {
-                    if (t == 1) {
-                        window.location.reload();
-                    } else {
-                        parent.location.reload();
-                    }
                 });
+                var neirou;
+                var item="";
+                for(var i=0,l=data.data.length;i<l;i++){
+                    neirou = data.data[i];    //当前层数据
+                    var names = "'"+neirou+"'";
+                    item += '<span style="padding: 0px 5px;border: 1px solid  #DDDDDD;" >'+neirou+' <a href="javascript:;" onclick="removeLabel('+sid+','+names+',1)"> ×</a></span>'; 
+                }
+                    $("#tags").html(item);
+                    $("#label").val('');
             } else {
                 layer.msg(data.msg, {
                     time: 1000 //2秒关闭（如果不配置，默认是3秒）

@@ -76,6 +76,10 @@ class caseAction extends AppAction
 		if($id){
 			$case 	= $this->load('case')->getCaseInfo($id);
 		}
+                
+                //获取SEO设置
+		$seoInfo = $this->load('seo')->getInfoByType(12,$id);
+                $this->set('seoInfo', $seoInfo);
 		//分配数据
 		$this->set('case', $case);
 		$this->display();
@@ -96,7 +100,15 @@ class caseAction extends AppAction
 		unset($params['id']);
 		$res = $this->load('case')->updateCase($params, $id);
 		if ( $res ){
-			$this->returnAjax(array('code'=>1,'msg'=>'成功'));
+                    //设置SEO的信息
+                    $sid = $this->input('sid', 'int', '0');
+                    $data['vid']            = $id;
+                    $data['seotitle']       = $this->input('seotitle', 'string', '');
+                    $data['keyword']        = $this->input('keyword', 'string', '');
+                    $data['description']    = $this->input('description', 'string', '');
+                    $data['isUse']          = $this->input('isUse', 'int', '1');
+                    $reArr = $this->load('seo')->viewSetSeo($sid,$data,12);
+                    $this->returnAjax($reArr);
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
 	}

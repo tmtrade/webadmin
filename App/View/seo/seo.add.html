@@ -4,8 +4,14 @@
 
 <div class="mj-infoM" style="width:99%">
 <form name="addForm" id="addForm" >
-    <label>页面路径：</label>
-    <input type="input" class="form-control" name="index">
+    <label>页面选择：</label>
+    <select name="type" class="input input-sm">
+        <option value=" " >-请选择-</option>
+    <? foreach ($seo_list as $k => $v) {?>
+        <option value="<?=$k?>" ><?=$v['name']?></option>
+    <? } ?>
+    </select>
+    <br/>
 
     <div style="bottom:10px;position: fixed;">
         <a href="javascript:void(0);" class="mj-liBtns" onclick="opContact();">确定</a>

@@ -19,9 +19,12 @@
             <tr>
                 <td class="f-clearfix">
                     <div class="fl">
-                        <label for="tdi1">页面URl&nbsp;:</label>
-                        <input type="text" name="index"  style="width:450px;" value="<?=$seo['index']?>"/>
-                        <br/><p style="background-color:#FFFF99;margin-left: 54px;">注：程序访问的不带参数的页面URL。</p>
+                        <label for="tdi1">页面名称:</label>
+                        <select name="type" class="input input-sm">
+                        <? foreach ($seo_list as $k => $v) {?>
+                            <option value="<?=$k?>" <?if($seo['type']==$k){echo 'selected';} ?> ><?=$v['name']?></option>
+                        <? } ?>
+                        </select>
                     </div>
                 </td>
             </tr>

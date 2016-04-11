@@ -57,8 +57,12 @@ class topicAction extends AppAction
 			$topic 	= $this->load('topic')->getTopicInfo($id);
 			$topicItems = $this->load('topic')->getTopicClassList($id);
 		}
+                $referr = Session::get('edit_referr');
+                
+                //获取SEO设置
+		$seoInfo = $this->load('seo')->getInfoByType(10,$id);
+                $this->set('seoInfo', $seoInfo);
 		
-		$referr = Session::get('edit_referr');
 		$this->set('topic', $topic);
 		$this->set('topicItems', $topicItems);
 		$this->set('referr', $referr);
@@ -89,7 +93,15 @@ class topicAction extends AppAction
 		unset($params['id']);
 		$res = $this->load('topic')->updateTopic($params, $id);
 		if ( $res ){
-			$this->returnAjax(array('code'=>1,'msg'=>'成功'));
+                    //设置SEO的信息
+                    $sid = $this->input('sid', 'int', '0');
+                    $data['vid']            = $id;
+                    $data['seotitle']       = $this->input('seotitle', 'string', '');
+                    $data['keyword']        = $this->input('keyword', 'string', '');
+                    $data['description']    = $this->input('description', 'string', '');
+                    $data['isUse']          = $this->input('isUse', 'int', '1');
+                    $reArr = $this->load('seo')->viewSetSeo($sid,$data,10);
+                    $this->returnAjax($reArr);
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
 	}

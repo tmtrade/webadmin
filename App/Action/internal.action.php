@@ -178,7 +178,11 @@ class internalAction extends AppAction
 		$allphone 	= $this->load('phone')->getAllPhone();
 		$gjUrl 		= SEARCH_URL.'trademark/detail/?id='.$sale['tid'];
 		$referr 	= $this->getReferrUrl('internal_edit');
-
+                
+                //获取SEO设置
+		$seoInfo = $this->load('seo')->getInfoByType(8,$sale['tid']);
+                $this->set('seoInfo', $seoInfo);
+                
 		$this->getSetting();
 		$this->set('log', $log);
 		$this->set('sale', $sale);
@@ -363,7 +367,15 @@ class internalAction extends AppAction
 		}
 		$res = $this->load('internal')->setEmbellish($saleId, $sale, $tminfo);
 		if ( $res ){
-			$this->returnAjax(array('code'=>1,'msg'=>'操作成功'));
+                    //设置SEO的信息
+                    $sid = $this->input('sid', 'int', '0');
+                    $data['vid']            = $this->input('tid', 'int', '0');
+                    $data['seotitle']       = $this->input('seotitle', 'string', '');
+                    $data['keyword']        = $this->input('keyword', 'string', '');
+                    $data['description']    = $this->input('description', 'string', '');
+                    $data['isUse']          = $this->input('isUse', 'int', '1');
+                    $reArr = $this->load('seo')->viewSetSeo($sid,$data,8);
+                    $this->returnAjax($reArr);
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
 	}

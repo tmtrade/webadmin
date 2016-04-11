@@ -10,13 +10,29 @@ header("Content-type: text/html; charset=utf-8");
  */
 class seoAction extends AppAction
 {
-	//列表页
-	public function index()
-	{
-		$res = $this->load('seo')->getList();
-		$this->set('list', $res['rows']);
-		$this->display();
-	}
+        public function __construct() {
+            $seo_list = C('SEO_LIST');
+            $this->set('seo_list', $seo_list);
+        }
+    
+        //列表页
+        public function index()
+        {
+                //参数
+		$params = array();
+		$page 	= $this->input('page', 'int', '1');
+                $res = $this->load('seo')->getList($params, $page, $this->rowNum);
+
+		$total 	= empty($res['total']) ? 0 : $res['total'];
+		$list 	= empty($res['rows']) ? array() : $res['rows'];
+
+		$pager 		= $this->pager($total, $this->rowNum);
+                $pageBar 	= empty($list) ? '' : getPageBar($pager);
+                $this->set("pageBar",$pageBar);
+                $this->set('list', $res['rows']);
+                $this->display();
+
+        }
         
         /**
 	 * 创建SEO的弹窗及处理
@@ -30,12 +46,12 @@ class seoAction extends AppAction
 			exit;
 		}
 		//post方式添加案例
-		$index = $this->input('index', 'string', '');
-		if ( empty($index) ){
-			$this->returnAjax(array('code'=>2,'msg'=>'请填写页面路径'));
+		$type = $this->input('type', 'string', '');
+		if ( empty($type) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请选择页面'));
 		}
 		$data = array(
-			'index'     => $index,
+			'type'     => $type,
 			'date'      => time(),
 		);
 		$res = $this->load('seo')->addSeo($data);
@@ -44,6 +60,7 @@ class seoAction extends AppAction
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
 	}
+        
 	//编辑SEO
 	public function edit()
 	{

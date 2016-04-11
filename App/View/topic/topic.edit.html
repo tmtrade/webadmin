@@ -61,7 +61,12 @@
                     <input type="radio"  name="isMore" value="1" <?if($topic['isMore']==1) echo "checked='checked'";?> />是
                                         <input type="radio"  name="isMore" value="2" <?if($topic['isMore']==2) echo "checked='checked'";?> />否
                 </li>
-                                <li><br><hr><br></li>
+                <li><br><hr><br></li>
+                <li>
+                    <? require(ViewDir.'/seo/seo.set.html');?>
+                </li>
+                <li><br><hr><br></li>
+                                
                 <li>
                     <label>专题类型选择：</label>
                     <select name="type" id="changeType">

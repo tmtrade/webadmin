@@ -17,14 +17,16 @@ class SeoModule extends AppModule
     );
     
     //index 列表
-    public function getList()
+    public function getList($params, $page, $limit=20)
     {
             $r          = array();
-            $r['limit'] = 30;
+            $r['page']  = $page;
+            $r['limit'] = $limit;
             $r['order'] = array('date' => 'desc');
             $res        = $this->import('seo')->findAll($r);
             return $res;
     }
+    
     //info 单条
     public function getInfo($id)
     {
@@ -36,6 +38,20 @@ class SeoModule extends AppModule
             if (!empty($res['label'])) {
                     $res['labelArr'] = explode(",", $res['label']);
             }
+            return $res;
+    }
+    
+    //info 单条
+    public function getInfoByType($type,$vid="")
+    {
+            $r['eq']    = array(
+                    'type' => $type
+            );
+            if(!empty($vid)){
+                $r['eq']['vid'] = $vid;
+            }
+            $r['limit'] = 1;
+            $res        = $this->import('seo')->find($r);
             return $res;
     }
         
@@ -61,6 +77,38 @@ class SeoModule extends AppModule
         return $this->import('seo')->modify($data, $r);
     }
     
+    //详情页面设置SEO
+    public function viewSetSeo($sid,$data,$type)
+    {
+            if ( empty($sid) ){
+                if(!empty($data['seotitle']) || !empty($data['keyword']) || !empty($data['description'])){
+                    $params = array(
+                        'type'          => $type,
+                        'vid'           => $data['vid'],
+                        'title'         => $data['seotitle'],
+                        'keyword'       => $data['keyword'],
+                        'description'   => $data['description'],
+                        'isUse'         => $data['isUse'],
+                        'date'          => time(),
+                    );
+                    $res = $this->addSeo($params);
+                }else{
+                     return array('code'=>1,'msg'=>'成功');
+                }
+            }else{
+                $params = array(
+                    'title'         => $data['seotitle'],
+                    'keyword'       => $data['keyword'],
+                    'description'   => $data['description'],
+                    'isUse'         => $data['isUse'],
+            );
+                $res = $this->updateSeo($params, $sid);
+            }
+            if ( $res ){
+                return array('code'=>1,'msg'=>'成功');
+            }
+            return array('code'=>2,'msg'=>'创建失败啦');
+    }
     /**
      * 删除SEO
      * @param $id

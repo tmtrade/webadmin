@@ -10,9 +10,13 @@ class SeoSetseoForm extends AppForm
 			'field' => 'id',
 			'match' => array('int', '0', ''),
 			),
-		'index'    => array(
-			'field' => 'index',
-			'method' => 'fieldName',
+		'type'    => array(
+			'field' => 'type',
+			'match' => array('int', '0', '请选择页面'),
+			),
+                'vid'    => array(
+			'field' => 'vid',
+			'match' => array('int', '0', ''),
 			),
 		'title'    => array(
 			'field' => 'title',

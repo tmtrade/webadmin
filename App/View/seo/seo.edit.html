@@ -144,10 +144,12 @@ function removeLabel(id, label, t) {
                 });
                 var neirou;
                 var item="";
-                for(var i=0,l=data.data.length;i<l;i++){
-                    neirou = data.data[i];    //当前层数据
-                    var names = "'"+neirou+"'";
-                    item += '<span style="padding: 0px 5px;border: 1px solid  #DDDDDD;" >'+neirou+' <a href="javascript:;" onclick="removeLabel('+sid+','+names+',1)"> ×</a></span>'; 
+                if(data.data){
+                    for(var i=0,l=data.data.length;i<l;i++){
+                        neirou = data.data[i];    //当前层数据
+                        var names = "'"+neirou+"'";
+                        item += '<span style="padding: 0px 5px;border: 1px solid  #DDDDDD;" >'+neirou+' <a href="javascript:;" onclick="removeLabel('+sid+','+names+',1)"> ×</a></span>'; 
+                    }
                 }
                 $("#tags").html(item);
             } else {

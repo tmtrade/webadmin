@@ -619,6 +619,7 @@ class InternalModule extends AppModule
             'userId'    => $contact['userId'],
             'saleId'    => $contact['saleId'],
             'number'    => $contact['number'],
+            'name'      => $saleInfo['name'],
             'type'      => $type,
             'saleDate'  => $contact['date'],
             'price'     => $contact['price'],

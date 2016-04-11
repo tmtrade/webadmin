@@ -21,7 +21,7 @@
             <em class="blue"><?=$saleStatus[$sale['status']]?></em>
             <?if(!$isBlack){?>
                 <?if($sale['status']==1){?>
-                    <? if( in_array('2', $_role_) ){ ?>
+                    <? if( in_array('2', $_role_) || (in_array('26', $_role_) && $sale['isTop'] == 0 && $sale['listSort'] == 0) ){ ?>
                     <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$sale['id']?>);">下架</a>
                     <? } ?>
                 <?}else{?>
@@ -138,7 +138,8 @@
             <tr>
                 <td class="f-clearfix">
                     <div class="fl">
-                        <input type="checkbox" name="isSale" id="isSale" value="1" <?if($sale['isSale']==1){echo "checked";}?>/>
+                        <input type="checkbox" name="isSale" id="isSale" value="1" checked onclick="return false;" 
+                        <?//if($sale['isSale']==1){echo "checked";}?> />
                         <label for="tdi1">可出售</label>
                     </div>
                     <div class="mj-list1">
@@ -153,6 +154,8 @@
                             <label>销售价格：</label>
                             <input type="text" name="price" id="price" value="<?=$sale['price']?>" placeholder="请输入价格" maxlength="10" />元
                         </li>
+
+                        <? if( in_array('17', $_role_) || (in_array('25', $_role_) && $sale['priceType'] == 1 && $sale['isOffprice'] == 1) ){ ?>
                         <li>
                             <input type="checkbox" name="isOffprice" value="1" id="isOffprice" 
                             <?if($sale['isOffprice']==1){echo 'checked';}?>/>
@@ -171,6 +174,7 @@
                                 echo 'value="'.date('Y-m-d H:i:s',$sale['salePriceDate']).'"';
                             }?> readonly onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" placeholder="请选择截止日期"/>
                         </li>
+                        <? } ?>
                     </ul>
                 </div>
 
@@ -187,7 +191,7 @@
         </table>
     </form>
         <div class="mj-deiBtns">
-            <? if( in_array('17', $_role_) ){ ?>
+            <? if( in_array('17', $_role_) || (in_array('25', $_role_) && ($sale['priceType'] == 2 || $sale['isOffprice'] == 2)) ){ ?>
             <a href="javascript:void(0);" onclick="setPrice();">确定价格信息</a>
             <? } ?>
         </div>

@@ -252,7 +252,7 @@
                     <td>
                         <span class="icon icon-delete">
                         <?if($v['status']==1){?>
-                            <? if( in_array('2', $_role_) ){ ?>
+                            <? if( in_array('2', $_role_) || (in_array('26', $_role_) && $v['isTop'] == 0 && $v['listSort'] == 0) ){ ?>
                             <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$v['id']?>);">下架</a>
                             <? } ?>
                         <?}elseif($v['status']==2 && count($v['contact']) > 0){?>

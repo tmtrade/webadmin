@@ -137,7 +137,7 @@ $define = array(
 					'label' => '国内商标列表',
 				),
 				'2' => array(
-					'label' => '下架商品',
+					'label' => '下架包装商品',
 				),
 				'3' => array(
 					'label' => '删除商品',
@@ -149,7 +149,7 @@ $define = array(
 					'label' => '导入商品',
 				),
 				'17' => array(
-					'label' => '修改商品价格',
+					'label' => '修改特价价格',
 				),
 				'18' => array(
 					'label' => '修改包装信息',
@@ -166,6 +166,12 @@ $define = array(
 				'22' => array(
 					'label' => '修改备注信息',
 				),
+                '25' => array(
+                    'label' => '修改普通价格',
+                ),
+                '26' => array(
+                    'label' => '下架普通商品',
+                ),
 			),
 		),
 		'2' => array(
@@ -339,6 +345,16 @@ $define = array(
 			'up'	=> '2',
 			'label' => 'SEO设置',
 		),
+        '25' => array(
+            'id'    => '25',
+            'up'    => '1',
+            'label' => '修改普通价格',
+        ),
+        '26' => array(
+            'id'    => '26',
+            'up'    => '1',
+            'label' => '下架普通商品',
+        ),
 	),
     
         //SEO列表配置项
@@ -351,50 +367,50 @@ $define = array(
 			'id'            => '2',
 			'name'          => '特价商标页',
 		),
-                '3' => array(
-                            'id'	=> '3',
-                            'name'      => '商标筛选页',
-                    ),
-                '4' => array(
-                            'id'	=> '4',
-                            'name'      => '专利购买页',
-                    ),
-                '5' => array(
-                            'id'	=> '5',
-                            'name'      => '专利出售页',
-                    ),
-                '6' => array(
-                            'id'	=> '6',
-                            'name'      => '商标购买页',
-                    ),
-                '7' => array(
-                            'id'	=> '7',
-                            'name'      => '商标出售页',
-                    ),
-                '8' => array(
-                            'id'	=> '8',
-                            'name'      => '商标详情页',
-                    ),
-                '9' => array(
-                            'id'	=> '9',
-                            'name'      => '专题列表页',
-                    ),
-                '10' => array(
-                            'id'	=> '10',
-                            'name'      => '专题详情页',
-                    ),
-                '11' => array(
-                            'id'	=> '11',
-                            'name'      => '案列列表页',
-                    ),
-                '12' => array(
-                            'id'	=> '12',
-                            'name'      => '案列详情页',
-                    ),
-                '13' => array(
-                                'id'	=> '13',
-                                'name'      => '标签筛选页',
-                    ),
+        '3' => array(
+                    'id'	=> '3',
+                    'name'      => '商标筛选页',
+            ),
+        '4' => array(
+                    'id'	=> '4',
+                    'name'      => '专利购买页',
+            ),
+        '5' => array(
+                    'id'	=> '5',
+                    'name'      => '专利出售页',
+            ),
+        '6' => array(
+                    'id'	=> '6',
+                    'name'      => '商标购买页',
+            ),
+        '7' => array(
+                    'id'	=> '7',
+                    'name'      => '商标出售页',
+            ),
+        '8' => array(
+                    'id'	=> '8',
+                    'name'      => '商标详情页',
+            ),
+        '9' => array(
+                    'id'	=> '9',
+                    'name'      => '专题列表页',
+            ),
+        '10' => array(
+                    'id'	=> '10',
+                    'name'      => '专题详情页',
+            ),
+        '11' => array(
+                    'id'	=> '11',
+                    'name'      => '案列列表页',
+            ),
+        '12' => array(
+                    'id'	=> '12',
+                    'name'      => '案列详情页',
+            ),
+        '13' => array(
+                        'id'	=> '13',
+                        'name'      => '标签筛选页',
+            ),
         ),
 	'ROLE_LIST' => array(
 		'role/index' 			=> '13',
@@ -422,7 +438,9 @@ $define = array(
 		'internal/setContact' 	=> '20',
 		'internal/setVerify' 	=> '21',
 		'internal/delVerify' 	=> '21',
-		'internal/setMemo' 		=> '22',
+        'internal/setMemo'      => '22',
+        'internal/setPrice'     => '25',//修改普通价格
+        'internal/doDown'       => '26',//下架普通商品
 		
 		'cache/index' 			=> '14',
 		'phone/index' 			=> '4',

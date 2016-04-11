@@ -271,7 +271,8 @@ class internalAction extends AppAction
 				$data['price'] 	= $price;
 				$data['priceType'] = 1;
 			}else{//议价
-				$data['priceType'] = 2;
+				$data['priceType'] 	= 2;
+				$data['isOffprice'] = 2;
 			}
 			$data['isSale'] 	= 1;
 			$data['isLicense'] 	= $isLicense ? 1 : 2;
@@ -287,6 +288,13 @@ class internalAction extends AppAction
 		}else{
 			if ( $sale['isTop'] < 3 && $data['isOffprice'] == 1 ){
 				$data['isTop'] = 3;//特价自动修改置项值
+			}elseif ( $sale['isTop'] == 3 && $data['isOffprice'] != 1 ){
+				//非特价还原置项值
+				if ( empty($sale['tminfo']['embellish']) ){
+					$data['isTop'] = 0;
+				}else{
+					$data['isTop'] = 2;
+				}
 			}
 		}
 		$res = $this->load('internal')->update($data, $saleId);

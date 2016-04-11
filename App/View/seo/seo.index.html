@@ -35,7 +35,8 @@
                         <?=$v['id']?>
                     </td>
                     <td>
-                        <?=$seo_list[$v['type']]['name']?>
+                        <?=$seo_list[$v['type']]['name'];?>
+                        <?=$v['vid']?"-".$v['vid']:"";?>
                     </td>
                     <td>
                         <?=mbSub($v['title'],0,30)?>

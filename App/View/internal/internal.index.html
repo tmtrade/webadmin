@@ -175,13 +175,13 @@
                     <tr class="active">
                         <th><input type="checkbox" id="chkAll"></th>
                         <th>商标号</th>
-                        <th>销售状态</th>
-                        <th>出售时间</th>
+                        <th>销售<br>状态</th>
+                        <th>出售<br>时间</th>
                         <th>商标名</th>
-                        <th>交易类型</th>
-                        <th width="5%">类别</th>
-                        <th>顾问/部门</th>
-                        <th>来源渠道</th>
+                        <th>交易<br>类型</th>
+                        <th>类别</th>
+                        <th>顾问<br>部门</th>
+                        <th>来源<br>渠道</th>
                         <th>联系方式</th>
                         <th>底价</th>
                         <th>售价</th>
@@ -214,13 +214,14 @@
                             echo $saleType[2];
                         }?></td>
                     <td><?if(count(explode(',', $v['class'])) > 1){?>
-                        <div class="more" ><span>多类</span>
+                        <span class="classMore">多类
+                        <div class="more" >
                             <ol style=" max-height: 150px;  overflow-y: auto;width: 80px;">
                                 <? foreach (explode(',', $v['class']) as $cls) {
                                     echo "<li>$cls 类</li>";
                                 }?>
                             </ul>
-                        </div>
+                        </div></span>
                     <?}else{echo $v['class']."类";}?></td>
                     <td class="showMore"><?if(count($v['contact']) > 1){echo "多顾问";}else
                     {$ct=current($v['contact']);echo $ct['advisor'].'-'.$ct['department'];} ?>
@@ -228,27 +229,50 @@
                     <td class="showMore"><?if(count($v['contact']) > 1){echo '多渠道';}
                     else{$ct=current($v['contact']);echo $saleSource[$ct['source']];} ?>
                     </td>
-                    <td class="showMore"> <?if(count($v['contact']) > 1){?>
-                        <div class="more"><span>多联系方式</span>
-                            <ul>
+                    <td class="showMore"> 
+                    <?if(count($v['contact']) > 1){?>
+                        <span>多联系人</span>
+                        <div class="more">
+                            <ul <?if($k>10){echo 'style="bottom:0px;"';}?> >
                             <?foreach ($v['contact'] as $key => $value) { ?>
                                 <li><table width="99%"><tr align="center">
-                                <td width="30%"><?=$value['advisor'].'-'.$value['department']?></td>
+                                <td width="20%"><?=$value['advisor'].'-'.$value['department']?></td>
                                 <td width="15%"><?=$saleSource[$value['source']]?></td>
-                                <td width="40%">
+                                <td width="35%">
                                 <?if($value['isVerify'] == 2){?><span class="red">审</span><?}?>
                                 <?php echo mbSub( $value['name'] , 0, 3);?>-<?=$value['phone']?></td>
                                 <td width="15%"><?=$value['price']?></td>
+                                <td width="15%">
+                                    <?if ( $value['isVerify'] != 1 ) {?>
+                                        <? if( in_array('21', $_role_) ){ ?>
+                                        <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>, <?=$value['id']?>);">通过</a>
+                                        <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>, <?=$value['id']?>, <?=count($v['contact'])?>);">驳回</a>
+                                        <? } ?>
+                                    <?}?>
+                                </td>
                                 </tr></table>
                             <?}?>
                             </ul>
                         </div>
-                    <? }else{$ct=current($v['contact']);if($ct['isVerify'] == 2){echo '<span class="red">审</span>';}echo  mbSub( $ct['name'] , 0, 3)."-".$ct['phone'];} ?>
+                    <? }elseif(count($v['contact']) == 1){ ?>
+                        <?$ct=current($v['contact']);
+                        if($ct['isVerify'] == 2){echo '<font class="red">审</font>';}
+                        echo mbSub( $ct['name'] , 0, 3)."-".$ct['phone'];?>
+                    <div class="more" style="min-weight:150px;">
+                        <?if ( $ct['isVerify'] != 1 ) {?>                         
+                            <ol class="singleVerify"><li>
+                            <? if( in_array('21', $_role_) ){ ?>
+                            <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>, <?=$ct['id']?>);">通过</a>
+                            <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>, <?=$ct['id']?>, <?=count($v['contact'])?>);">驳回</a>
+                            </li></ol>
+                            <? } ?>
+                        <?}?>                        
+                    <?}?>
                     </td>
-                    <td class="showMore"><?if(count($v['contact']) > 1){echo '多底价';}
-                    else{$ct=current($v['contact']);echo $ct['price'];} ?>
+                    <td class="showMore">
+                    <?if(count($v['contact']) > 1){echo '多底价';}else{$ct=current($v['contact']);echo $ct['price'];} ?>
                     </td>
-                    <td class="showMore"><?if($v['priceType']==2){echo "议价";}else{echo $v['price'];}?></td>
+                    <td><?if($v['priceType']==2){echo "议价";}else{echo $v['price'];}?></td>
                     <td>
                         <span class="icon icon-delete">
                         <?if($v['status']==1){?>
@@ -371,10 +395,19 @@
                 }
             }
         });
+        
+        $(".table .classMore").hover(function(){
+            $(this).find('.more > ol').show();
+        },function(){
+            $(this).find('.more > ol').hide();
+        });
+
         $(".table tr td.showMore").hover(function(){
             $(this).parent('tr').find('.more > ul').show();
+            $(this).parent('tr').find('.singleVerify').show();
         },function(){
             $(this).parent('tr').find('.more > ul').hide();
+            $(this).parent('tr').find('.singleVerify').hide();
         });
 
         $('#chkAll').click(function(){ 
@@ -549,6 +582,98 @@
             content: $('#download')
         });
     }
+
+    //审核联系人
+function setVerify(saleId, id)
+{
+    if ( $.trim(saleId) == '' || $.trim(id) == '' ){
+        layer.msg('参数错误', {
+            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+        });
+        return false;
+    }
+    layer.confirm('请确认相关信息已正确！<br> <span class="red">注意：通过审核会自动上架商品。</span>', {
+        btn: ['通过','再想想'] //按钮
+    }, function(){
+        $.ajax({
+            type : 'post',
+            url  : '/internal/setVerify/',
+            data : {'id':id,'saleId':saleId},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请确认数据是否正确。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    });
+}
+
+//驳回联系人
+function delVerify(saleId, id, nums)
+{
+    if ( nums <= 1 ){
+        layer.msg('只有一个联系人时，请直接删除此商品即可！', {
+            time: 3000 //2秒关闭（如果不配置，默认是3秒）
+        });
+        return false;
+    }
+    if ( $.trim(saleId) == '' || $.trim(id) == '' ){
+        layer.msg('参数错误', {
+            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+        });
+        return false;
+    }
+    layer.prompt({
+        formType: 2,
+        scrollbar: false,
+        value: '',
+        maxlength: 100,
+        title: '请输入驳回联系人的原因'
+    }, function(value, index, elem){
+        if ( $.trim(value) == ''){
+            layer.tips('请输入原因',elem);
+            return false;
+        }else{
+            $.ajax({
+                type : 'post',
+                url  : '/internal/delVerify/',
+                data : {'id':id,'saleId':saleId,'reason':value},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.reload();
+                        });
+                    }else{
+                        var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+                        layer.tips(msg,elem);
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            });
+        }
+    });
+}
 </script>
 
 <? require(ViewDir.'/footer.html'); ?>

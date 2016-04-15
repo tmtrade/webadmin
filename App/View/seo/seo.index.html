@@ -8,11 +8,26 @@
     </ul>
 </div>
 <div class="wrap">
+    <div class="mj-screening">
+        <div class="mj-seT f-clearfix">
+            <span>搜索SEO列表</span>
+            <!-- <a href="javascript:void(0)">设置我的筛选偏好</a>-->
+        </div>
+        <form name="seoForm" id="seoForm" action="/seo/index/" method="GET">
+        <dl>
+            <dd>
+               页面名称：<select name="type" class="input input-sm" id="types">
+                <option value=" " >-请选择-</option>
+                    <? foreach ($seo_list as $k => $v) { ?>
+                    <option value="<?=$k?>" <? if($params['type']==$k) echo "selected";?>><?=$v['name']?></option>
+                    <? }?>
+                </select>
+                <a href="javascript:void(0);" class="mj-sBtn mj-sBtn-search" style="display:inline-block;margin-left:50px;">搜索</a>
+            </dd>
+        </dl>
+        </form>
+    </div>
     <div class="wrap-content">
-        <p class="text-left" style="float:left;padding-top:20px;">
-            您可以在此为各个频道页，详情页设置title 关键字 描述
-        </p>
-
         <div class="wrap-tittle">
             <button class="btn btn-danger" onclick="add();" type="button">创建新SEO</button>
         </div>
@@ -66,6 +81,17 @@
 <link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css"/>
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+$(function(){
+ $(".mj-sBtn-search").click(function(){
+            var number  = $.trim( $("#types").val() );
+            if (number == ''){
+                layer.tips('请选择页面', $(this),{tips: [2, '#78BA32']});
+                return false;
+            }
+            $("#seoForm").attr("action","/seo/index/");
+            $("#seoForm").submit();
+        });
+});
     function add() {
         layer.open({
             type: 2,

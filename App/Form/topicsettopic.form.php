@@ -70,6 +70,10 @@ class TopicSetTopicForm extends AppForm
             'field' => 'listClass',
             'method' => 'fieldName',
                         ),
+        'alt4'    => array(
+            'field' => 'alt4',
+            'method' => 'fieldName',
+        ),
     );
 	
 	

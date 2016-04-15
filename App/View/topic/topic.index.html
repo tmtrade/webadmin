@@ -35,6 +35,7 @@
                         <th>创建者</th>
                         <th>专题类型</th>
 						<th>包含商品</th>
+                        <th>是否启用</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -47,6 +48,7 @@
 					<td><?=$v['member']?></td>
                     <td><?=$v['type']==1?'普通专题':'静态链接专题'?></td>
 					<td><?=$v['classNum']?></td>
+                    <td><?=$v['isUse']==1?'是':'否'?></td>
                     <td>
 						<a href="javascript:void(0);" onclick="delTopic(<?=$v['id']?>);">删除</a>
 						<a href="/topic/edit/?id=<?=$v['id']?>">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;

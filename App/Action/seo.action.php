@@ -20,7 +20,9 @@ class seoAction extends AppAction
         {
                 //参数
 		$params = array();
-		$page 	= $this->input('page', 'int', '1');
+		$page   = $this->input('page', 'int', '1');
+                $type   = $this->input('type', 'int', '0');
+                if($type) $params['type'] = $type;
                 $res = $this->load('seo')->getList($params, $page, $this->rowNum);
 
 		$total 	= empty($res['total']) ? 0 : $res['total'];
@@ -29,6 +31,7 @@ class seoAction extends AppAction
 		$pager 		= $this->pager($total, $this->rowNum);
                 $pageBar 	= empty($list) ? '' : getPageBar($pager);
                 $this->set("pageBar",$pageBar);
+                $this->set("params",$params);
                 $this->set('list', $res['rows']);
                 $this->display();
 

@@ -7,9 +7,11 @@
     <label>页面选择：</label>
     <select name="type" class="input input-sm">
         <option value=" " >-请选择-</option>
-    <? foreach ($seo_list as $k => $v) {?>
+    <? foreach ($seo_list as $k => $v) {
+    if($k!=8 && $k!=10 && $k!=12){
+    ?>
         <option value="<?=$k?>" ><?=$v['name']?></option>
-    <? } ?>
+    <? } }?>
     </select>
     <br/>
 

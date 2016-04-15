@@ -233,7 +233,7 @@
                     <?if(count($v['contact']) > 1){?>
                         <span>多联系人</span>
                         <div class="more">
-                            <ul <?if($k>10){echo 'style="bottom:0px;"';}?> >
+                            <ul <?if($k>10){echo 'style="bottom:0px;top:inherit"';}?> >
                             <?foreach ($v['contact'] as $key => $value) { ?>
                                 <li><table width="99%"><tr align="center">
                                 <td width="20%"><?=$value['advisor'].'-'.$value['department']?></td>

@@ -103,10 +103,10 @@ class caseAction extends AppAction
                     //设置SEO的信息
                     $sid = $this->input('sid', 'int', '0');
                     $data['vid']            = $id;
-                    $data['seotitle']       = $this->input('seotitle', 'string', '');
-                    $data['keyword']        = $this->input('keyword', 'string', '');
-                    $data['description']    = $this->input('description', 'string', '');
-                    $data['isUse']          = $this->input('isUse', 'int', '1');
+                    $data['seotitle']       = $this->input('seo_title', 'string', '');
+                    $data['keyword']        = $this->input('seo_keyword', 'string', '');
+                    $data['description']    = $this->input('seo_description', 'string', '');
+                    $data['isUse']          = $this->input('seo_isUse', 'int', '1');
                     $reArr = $this->load('seo')->viewSetSeo($sid,$data,12);
                     $this->returnAjax($reArr);
 		}

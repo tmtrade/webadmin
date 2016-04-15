@@ -10,7 +10,7 @@
         <td class="f-clearfix">
             <div class="fl">
                 <label for="tdi1">SEO&nbsp;标题:</label>
-                <input type="text" name="seotitle"  style="width:450px;" value="<?=$seoInfo['title']?>"/>
+                <input type="text" name="seo_title"  style="width:450px;" value="<?=$seoInfo['title']?>"/>
                 <br/><p style="background-color:#FFFF99;margin-left: 54px;">注：请尽量简洁明了，建议控制在20个中文，最多不可超过30个中文。</p>
             </div>
         </td>
@@ -19,7 +19,7 @@
         <td class="f-clearfix">
             <div class="fl">
                 <label for="tdi1">关&nbsp;&nbsp;键&nbsp;&nbsp;字:</label>
-                <input type="text" name="keyword"  style="width:450px;" value="<?=$seoInfo['keyword']?>"/>
+                <input type="text" name="seo_keyword"  style="width:450px;" value="<?=$seoInfo['keyword']?>"/>
                 <br/><p style="background-color:#FFFF99;margin-left: 54px;">注：多个关键字之间以空格符区别</p>
             </div>
         </td>
@@ -28,7 +28,7 @@
         <td class="f-clearfix">
             <div class="fl">
                 <label for="tdi1" style="margin-top: -70px;">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述:</label>
-                <textarea name="description" cols="72" rows="5"><?=$seoInfo['description']?></textarea>
+                <textarea name="seo_description" cols="72" rows="5"><?=$seoInfo['description']?></textarea>
                 <br/><p style="background-color:#FFFF99;margin-left: 54px;">注：建议描述文字不宜太长，最多不可超过100个中文。</p>
             </div>
         </td>
@@ -37,8 +37,8 @@
         <td class="f-clearfix">
             <div class="fl">
                 <label for="tdi1">是否启用：</label>
-                    <input type="radio"  name="isUse" value="1" <?if($seoInfo['isUse']==1) echo "checked='checked'";?> />是
-                    <input type="radio"  name="isUse" value="2" <?if($seoInfo['isUse']==2) echo "checked='checked'";?> />否
+                    <input type="radio"  name="seo_isUse" value="1" <?if($seoInfo['isUse']==1) echo "checked='checked'";?> />是
+                    <input type="radio"  name="seo_isUse" value="2" <?if($seoInfo['isUse']==2) echo "checked='checked'";?> />否
             </div>
         </td>
     </tr>

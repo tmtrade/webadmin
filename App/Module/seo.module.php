@@ -19,7 +19,7 @@ class SeoModule extends AppModule
     //index 列表
     public function getList($params, $page, $limit=20)
     {
-            $r          = array();
+            $r['eq']    = $params;
             $r['page']  = $page;
             $r['limit'] = $limit;
             $r['order'] = array('date' => 'desc');

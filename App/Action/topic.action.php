@@ -57,11 +57,11 @@ class topicAction extends AppAction
 			$topic 	= $this->load('topic')->getTopicInfo($id);
 			$topicItems = $this->load('topic')->getTopicClassList($id);
 		}
-                $referr = Session::get('edit_referr');
-                
-                //获取SEO设置
+        $referr = Session::get('edit_referr');
+        
+        //获取SEO设置
 		$seoInfo = $this->load('seo')->getInfoByType(10,$id);
-                $this->set('seoInfo', $seoInfo);
+        $this->set('seoInfo', $seoInfo);
 		
 		$this->set('topic', $topic);
 		$this->set('topicItems', $topicItems);
@@ -93,15 +93,15 @@ class topicAction extends AppAction
 		unset($params['id']);
 		$res = $this->load('topic')->updateTopic($params, $id);
 		if ( $res ){
-                    //设置SEO的信息
-                    $sid = $this->input('sid', 'int', '0');
-                    $data['vid']            = $id;
-                    $data['seotitle']       = $this->input('seotitle', 'string', '');
-                    $data['keyword']        = $this->input('keyword', 'string', '');
-                    $data['description']    = $this->input('description', 'string', '');
-                    $data['isUse']          = $this->input('isUse', 'int', '1');
-                    $reArr = $this->load('seo')->viewSetSeo($sid,$data,10);
-                    $this->returnAjax($reArr);
+            //设置SEO的信息
+            $sid = $this->input('sid', 'int', '0');
+            $data['vid']            = $id;
+            $data['seotitle']       = $this->input('seo_title', 'string', '');
+            $data['keyword']        = $this->input('seo_keyword', 'string', '');
+            $data['description']    = $this->input('seo_description', 'string', '');
+            $data['isUse']          = $this->input('seo_isUse', 'int', '1');
+            $reArr = $this->load('seo')->viewSetSeo($sid,$data,10);
+            $this->returnAjax($reArr);
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
 	}

@@ -37,7 +37,33 @@ class InternalModule extends AppModule
         }
         if ( !empty($params['tmClass']) ){
             if($params['jname']==1){
-                $r['ft']['class'] = explode(",", $params['tmClass']);
+                //开始提取多标多类and关系的商标名称
+                $classArr = explode(",", $params['tmClass']);
+                $classCount = count($classArr);
+                foreach ($classArr as $k=>$v){
+                    $w['raw'] = " `class`={$v} AND (name in (SELECT name from t_sale 
+                            where `class` in ({$params['tmClass']})  and `name` != '图形' and `name` != '' group by `name` 
+                            HAVING count(id) >= {$classCount}));";
+                    $w['col']  = array('name');//商标号
+                    $w['limit'] = 10000;
+                    $classList[$k] = $this->import('sale')->find($w);
+                    if($k==0){
+                        $mstr = "MATCH(`class`) AGAINST ('{$v}')";
+                    }else{
+                        $mstr .= " and MATCH(`class`) AGAINST ('{$v}')";
+                    }
+                    
+                }
+                $result_array = $classList[0];
+                foreach($classList as $arr2){
+                    $result_array = call_user_func_array('array_intersect',array($result_array,$arr2));
+                }
+                foreach ($result_array as $v){
+                    $nameList[] = "'".$v['name']."'";
+                }
+                $nameStr = implode(",", $nameList);
+                $r['raw'] .= " AND name in ({$nameStr}) and MATCH class AGAINST ('{$params['tmClass']}') or ({$mstr})";
+                
             }else{
                  $r['ft']['class'] = $params['tmClass'];
             }
@@ -76,11 +102,11 @@ class InternalModule extends AppModule
         }
         if ( !empty($params['tmGroup']) ){
             
-            if($params['jname']==1){
-                 $r['ft']['group'] = explode(",", $params['tmGroup']);
-            }else{
+            //if($params['jname']==1){
+            //     $r['ft']['group'] = explode(",", $params['tmGroup']);
+            //}else{
                  $r['ft']['group'] = $params['tmGroup'];
-            }
+            //}
         }
         if ( !empty($params['offprice']) ){
             $r['eq']['priceType']   = 1;

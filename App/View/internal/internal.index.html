@@ -371,6 +371,9 @@
         
         //精确搜索
         $("#jq_search").click(function(){
+			var index = layer.load(1, {
+				shade: [0.5,'#fff'] //0.1透明度的白色背景
+			});
             $("input[name='jname']").val(1);
             $("#saleSearchForm").submit();
         });

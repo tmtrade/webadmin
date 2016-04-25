@@ -158,8 +158,11 @@ class InternalModule extends AppModule
         if ( !empty($params['listSort']) ){
             $r['raw'] .= " AND `listSort` > 0 ";
         }
-
-        $r['order'] = array('date'=>'desc');
+         if($params['jname']==1){
+             $r['order'] = array('name'=>'desc','date'=>'desc');
+         }else{
+             $r['order'] = array('date'=>'desc');
+         }
         $res = $this->import('sale')->findAll($r);
         return $res;
     }

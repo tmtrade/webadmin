@@ -375,6 +375,13 @@
 				shade: [0.5,'#fff'] //0.1透明度的白色背景
 			});
             $("input[name='jname']").val(1);
+            var tempStr = $("#tmClass").val();
+            if(tempStr.indexOf(",")<=0){
+                layer.msg('请选择多个类别！', {
+                                time: 1000 
+                            });
+                return;
+            }
             $("#saleSearchForm").submit();
         });
         //注册时间选择切换效果

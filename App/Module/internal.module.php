@@ -36,10 +36,10 @@ class InternalModule extends AppModule
             $r['ft']['type'] = $params['tmType'];
         }
         if ( !empty($params['tmClass']) ){
-            if($params['jname']==1){
+            $classArr = explode(",", $params['tmClass']);
+            $classCount = count($classArr);
+            if($params['jname']==1 && $classCount>1){
                 //开始提取多标多类and关系的商标名称
-                $classArr = explode(",", $params['tmClass']);
-                $classCount = count($classArr);
                 foreach ($classArr as $k=>$v){
                     $w['raw'] = " `class`={$v} AND (name in (SELECT name from t_sale 
                             where `class` in ({$params['tmClass']})  and `name` != '图形' and `name` != '' group by `name` 

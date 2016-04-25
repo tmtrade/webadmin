@@ -59,7 +59,7 @@ class InternalModule extends AppModule
                     $result_array = call_user_func_array('array_intersect',array($result_array,$arr2));
                 }
                 foreach ($result_array as $v){
-                    $nameList[] = "'".$v['name']."'";
+                    $nameList[] = '"'.$v['name'].'"';
                 }
                 $nameStr = implode(",", $nameList);
                 $r['raw'] .= " AND name in ({$nameStr}) and MATCH class AGAINST ('{$params['tmClass']}') or ({$mstr})";

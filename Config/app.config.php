@@ -11,6 +11,12 @@ define('GUANJIA_URL', 'http://192.168.0.156/');
 define('SEARCH_URL', 'http://shansoo.com/');
 //define('SEARCH_URL', 'http://tuotu.chaofan.wang/');
 
+//本站点域名
+define('TRADE_URL', 'http://tr2.chofn.net/');
+//define('TRADE_URL', 'http://tr2.chaofan.wang/');
+//一只蝉域名
+define('SITE_URL', 'http://t.chofn.net/');
+//define('SITE_URL', 'http://www.yizhchan.com/');
 
 
 //接口验证key

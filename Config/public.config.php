@@ -9,6 +9,13 @@ $define = array(
         'UserCenter' => 'api1010',//用户中心
     ),
 
+    'OPENAPI_KEY' => array(
+        'api1001' => 'JyZgJxMcHoFn2015ZxKfKeYsBxT',
+    ),
+    'OPENAPI_USERS' => array(
+        'TmSystem' => 'api1001',//商标系统
+    ),
+
     'ISTOP_LIST' => array(
     	'0' 	=> '不置项',
     	'1' 	=> '普通置项',

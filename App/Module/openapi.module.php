@@ -21,7 +21,7 @@ class OpenApiModule extends AppModule
         $limit = $params['limit'];
         if ( empty($class) || !is_numeric($class) ) return array();
 
-        $r['eq']    = array('class'=>$class);
+        $r['eq']    = array('class'=>$class,'status'=>'1');
         $r['limit'] = 50;
         $r['col']   = array('number','class','name','pid','tid','id');
         $r['order'] = array('isTop'=>'desc');
@@ -34,7 +34,7 @@ class OpenApiModule extends AppModule
             $_url = $this->getViewImg($v['id']);
             $list[$k]['imgUrl']     = $_url;
             $list[$k]['viewUrl']    = SITE_URL.'d-'.$v['tid']."-$class.html";
-            unset($list[$k]['id'],$list[$k]['pid']);
+            unset($list[$k]['id'],$list[$k]['<p></p>id']);
         }
         
         return $list;

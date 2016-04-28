@@ -188,4 +188,39 @@ $tbl['case'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['patent'] = array(
+	'name'		=> $prefix.'patent',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
+$tbl['patentContact'] = array(
+	'name'		=> $prefix.'patent_contact',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
+$tbl['patentHistory'] = array(
+	'name'		=> $prefix.'patent_history',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
+$tbl['patentInfo'] = array(
+	'name'		=> $prefix.'patent_info',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
+$tbl['patentLog'] = array(
+	'name'		=> $prefix.'patent_log',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
+$tbl['userPatentHistory'] = array(
+	'name'		=> $prefix.'user_patent_history',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 ?>

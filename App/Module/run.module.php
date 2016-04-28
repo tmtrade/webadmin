@@ -2,15 +2,269 @@
 class RunModule extends AppModule
 {
     public $models = array(
-        'ts'    => 'tsale',
-        'tst'   => 'tsaleTrademark',
-        'sale'  => 'sale',
+        'ts'        => 'tsale',
+        'tst'       => 'tsaleTrademark',
+        'sale'      => 'sale',
+        'patent'    => 'patent',
+        'ptinfo'    => 'patentInfo',
+        'ptlist'    => 'patentList',
+        'ptcontact' => 'patentContact',
+        'test'      => 'test',
     );
 
     private function msectime() {
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
     }
+
+    //获取单个专利数据
+    public function getPatentInfo($number)
+    {
+        if ( empty($number) ) return array();
+
+        $eq = (strpos($number, '.') !== false) ? array('number'=>$number) : array('code'=>$number);
+
+        $r['eq']    = $eq;
+        $r['limit'] = 1;
+        $info = $this->import('ptlist')->find($r);
+        if ( !empty($info['data']) ){
+            $data = unserialize($info['data']);
+            return $data;
+        }
+        
+        $code   = (strpos($number, '.') !== false) ? strstr($number, '.', true) : $number;
+        $url    = 'http://wanxiang.chaofan.wang/detail.php?id=%s&t=json';
+
+        $url    = sprintf($url, $code);
+        $data   = $this->requests($url);
+        if ( !empty($data) ){            
+            $_data = array(
+                'code'      => $code,
+                'number'    => $number,
+                'data'      => serialize($data),
+                );
+            $this->import('ptlist')->create($_data);
+        } 
+        return $data;
+    }
+
+    //导入专利数据
+    public function importPt()
+    {
+        $num        = 0;
+        $succList   = $faildList = array();
+        $start      = $this->msectime();
+        $rand       = randCode(6);
+
+        $list   = $this->getPatentList();
+        foreach ($list as $k => $v) {
+            $num++;
+            $number     = $v['number'];
+            $type       = $v['type'];
+
+            $source     = '2';
+            $saleType   = '1';//出售类型，1：出售，2：许可，3：出+许
+            $isVerify   = '1';//审核
+            $advisor    = '顾问';//顾问名称
+            $department = '顾问部门';//顾问部门
+            $memo       = '';//备注 
+            switch ($type) {
+                case '1':
+                    $phone      = '15868894581';
+                    $name       = '高';
+                    $price      = 1200;//底价
+                    break;
+                case '2'://发明 张汉清
+                    $phone      = '13005706040';
+                    $name       = '张汉清';
+                    $price      = 15000;//底价
+                    $memo       = '电话0752-2525361，手机13005706040，QQ1376088137， 发明约12000-18000';//备注 
+                    break;
+                case '3'://实用 张汉清
+                    $phone      = '13005706040';
+                    $name       = '张汉清';
+                    $price      = 3000;//底价
+                    $memo       = '电话0752-2525361，手机13005706040，QQ1376088137， 实用3000';//备注 
+                    break;
+            }
+
+            $name       = $v['name'] ? $v['name'] : $name;
+            $phone      = $v['phone'] ? $v['phone'] : $phone;
+            $price      = $v['price'] ? $v['price'] : $price;
+            
+            $info       = $this->getPatentInfo($number);
+
+            if ( empty($info) ){
+                $faildList[] = $number;
+                continue;
+            }
+
+            $number = strtolower($number);//专利编号 带.
+            $code   = $info['id'];
+
+            $patentId = $this->isSale($number);
+            if ( $patentId ) {
+                if ( $this->isContact($patentId, $phone) ) {
+                    $faildList[] = $number;
+                    continue;
+                }
+
+                $contact = array(
+                    'patentId'      => $patentId,
+                    'source'        => $source,
+                    'number'        => $number,
+                    'code'          => $code,
+                    'name'          => $name,
+                    'phone'         => $phone,
+                    'price'         => $price,
+                    'saleType'      => $saleType,
+                    'isVerify'      => $isVerify,
+                    'advisor'       => $advisor,
+                    'department'    => $department,
+                    'date'          => time(),
+                    'memo'          => $memo,
+                    );
+                $flag = $this->import('ptcontact')->create($contact);
+                if ( $flag ) {
+                    $succList[] = $number;
+                }else{
+                    $faildList[] = $number;
+                }
+                continue;
+            }
+
+            $_class = array();
+            $_group = array();
+            foreach ($info['ipcs'] as $ky => $val) {
+                array_push($_class, current($val['ancestors']));
+                array_push($_group, $val['id']);
+                $_group = array_merge($_group, (array)$val['ancestors']);
+            }
+            $class = implode(',', array_unique(array_filter($_class)));//专利所有大类
+            $group = implode(',', array_unique(array_filter($_group)));//专利所有群组
+
+            $title  = $info['title']['original'];//专利标题
+            $type   = 0;//专利类型
+            if ( strpos($info['typeName'], '发明') !== false ){
+                $type = 1;
+            }elseif ( strpos($info['typeName'], '新型') !== false || strpos($info['typeName'], '实用') !== false ){
+                $type = 2;
+            }elseif ( strpos($info['typeName'], '外观') !== false ){
+                $type = 3;
+            }
+            $applyDate  = (int)strtotime($info['application_date']);//申请日
+            $publicDate = (int)strtotime($info['earliest_publication_date']);//最早公开日
+            $viewPhone  = $this->load('phone')->getRandPhone();
+            $_memo      = '后台程序默认创建';
+            $patent = array(
+                'number'        => $number,
+                'code'          => $code,
+                'class'         => $class,
+                'group'         => $group,
+                'title'         => $title,
+                'type'          => $type,
+                'applyDate'     => $applyDate,
+                'publicDate'    => $publicDate,
+                'date'          => time(),
+                'viewPhone'     => $viewPhone,
+                'memo'          => $_memo,
+                );
+
+            $ptinfo = array(
+                'number'    => $number,
+                'code'      => $code,
+                'intro'     => '',
+                );
+
+            $contact = array(
+                'source'        => $source,
+                'number'        => $number,
+                'code'          => $code,
+                'name'          => $name,
+                'phone'         => $phone,
+                'price'         => $price,
+                'saleType'      => $saleType,
+                'isVerify'      => $isVerify,
+                'advisor'       => $advisor,
+                'department'    => $department,
+                'date'          => time(),
+                'memo'          => $memo,
+                );
+
+            $this->begin('patent');//开始事务
+
+            $patentId   = $this->import('patent')->create($patent);
+            if ( $patentId > 0 ){                
+                $ptinfo['patentId'] = $contact['patentId'] = $patentId;
+                $flag1      = $this->import('ptinfo')->create($ptinfo);
+                $flag2      = $this->import('ptcontact')->create($contact);
+                if ( $flag1 && $flag2 ){
+                    $flag = true;
+                }else{
+                    $flag = false;
+                }
+            }else{
+                $flag = false;
+            }            
+
+            if ( $flag ) {
+                $this->commit('patent');
+                $succList[] = $number;
+            }else{
+                $this->rollBack('patent');
+                $faildList[] = $number;
+            }
+        }
+
+        $end    = $this->msectime() - $start;
+        $log = array(
+            'useTime'   => $end,
+            );
+        $_name_ = 'importPt';
+        if ( count($succList) > 0 ){
+            $_log = $log;
+            $_log['succ']       = count($succList);
+            $_log['succList']   = $succList;
+            $name = $_name_.date("Y-m-d")."($rand)-list-----success.log";
+            Log::write(print_r($_log,1), $name);
+        }
+        if ( count($faildList) > 0 ){
+            $_log = $log;
+            $_log['faild']       = count($faildList);
+            $_log['faildList']   = $faildList;
+            $name = $_name_.date("Y-m-d")."($rand)-list-----faild.log";
+            Log::write(print_r($_log,1), $name);
+        }
+        echo "list-$p finish...\n";
+    }
+
+    //获取所有待处理的专利
+    private function getPatentList()
+    {
+        $r['limit'] = 1000000;
+        return $this->import('test')->find($r);
+    }
+
+    //判断专利是否出售
+    private function isSale($number)
+    {
+        $r['limit'] = 1;
+        $r['eq']    = array('number'=>$number);
+        $r['col']   = array('id');
+        $res = $this->import('patent')->find($r);
+        return $res['id'] > 0 ? $res['id'] : 0;
+    }
+
+    //判断专利是否出售
+    private function isContact($patentId, $phone)
+    {
+        $r['limit'] = 1;
+        $r['eq']    = array('patentId'=>$patentId,'phone'=>$phone);
+        $r['col']   = array('id');
+        $res = $this->import('ptcontact')->find($r);
+        return $res['id'] > 0 ? true : false;
+    }
+
 
     //更新没有商品名称的数据
     public function runName()
@@ -488,6 +742,30 @@ class RunModule extends AppModule
         //$r['limit'] = 1000;
         $r['order'] = array('bzpic'=>'desc');
         return $this->import('tst')->find($r);
+    }
+
+    
+
+
+    public function requests( $url, $type='GET', $params=array() )
+    {
+        $_type = ($type == 'POST') ? 'POST' : 'GET';
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $_type);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt(
+            $ch, CURLOPT_POSTFIELDS, $params
+        );
+        $result = curl_exec($ch);
+        
+        if($result === false) {
+            $result = curl_error($ch);
+        }
+        curl_close($ch);
+        return json_decode(trim($result,chr(239).chr(187).chr(191)),true);
     }
 
 }

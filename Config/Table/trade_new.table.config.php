@@ -223,4 +223,17 @@ $tbl['userPatentHistory'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+
+$tbl['patentList'] = array(
+	'name'		=> $prefix.'patent_list',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
+$tbl['test'] = array(
+	'name'		=> $prefix.'test',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
 ?>

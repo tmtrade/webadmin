@@ -45,5 +45,11 @@ class TaskAction extends QueueCommonAction
         $this->load('run')->runName();
     }
 
+
+    public function importPt()
+    {
+        $this->load('run')->importPt();
+    }
+
 }
 ?>

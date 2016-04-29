@@ -12,13 +12,14 @@ class LogModule extends AppModule
 {
     public $models = array(
         'saleLog'   => 'saleLog',
+        'patentLog'   => 'patentLog',
         'api'       => 'apiLog',
     );
 
     //添加国内商标出售日志
-    public function addSaleLog($saleId, $type=0, $memo='', $desc='')
+    public function addSaleLog($patentId, $type=0, $memo='', $desc='')
     {
-        if ( empty($saleId) ) return false;
+        if ( empty($patentId) ) return false;
 
         if ( empty($this->userId) ){
             $member = array(
@@ -29,10 +30,10 @@ class LogModule extends AppModule
             $member = $this->load('member')->getMemberById($this->userId);
         }
         if ( empty($desc) ){
-            $desc  = serialize( $this->load('internal')->getSaleInfo($saleId) );
+            $desc  = serialize( $this->load('internal')->getSaleInfo($patentId) );
         }
         $_data = array(
-            'saleId'    => $saleId,
+            'saleId'    => $patentId,
             'roleId'    => $member['roleId'],
             'type'      => $type,
             'name'      => $member['name'],
@@ -50,16 +51,72 @@ class LogModule extends AppModule
      * @since       2016-03-01
      * 
      * @access      public
-     * @param       int     $saleId     出售信息ID
+     * @param       int     $patentId     出售信息ID
      * @return      array
      */
-    public function getSaleLog($saleId)
+    public function getSaleLog($patentId)
     {
-        if ( empty($saleId) ) return false;
-        $r['eq']    = array('saleId'=>$saleId);
+        if ( empty($patentId) ) return false;
+        $r['eq']    = array('saleId'=>$patentId);
         $r['limit'] = 100;
         $r['order'] = array('date'=>'desc');
         $list = $this->import('saleLog')->find($r);
+        if ( empty($list) ) array();
+        $opType = C("OP_TYPE");
+        foreach ($list as $k => $v) {
+            $list[$k]['typeName']   = $opType[$v['type']];
+            if ( $v['roleId'] == 0 ) continue;
+            $role   = $this->load('role')->getRoleById($v['roleId']);
+            $list[$k]['roleName']   = $role['name'];
+        }
+        return $list;
+    }
+    
+    //添加专利出售日志
+    public function addPatentLog($patentId, $type=0, $memo='', $desc='')
+    {
+        if ( empty($patentId) ) return false;
+
+        if ( empty($this->userId) ){
+            $member = array(
+                'roleId'    => 0,
+                'name'      => '系统（接口）',
+                );
+        }else{
+            $member = $this->load('member')->getMemberById($this->userId);
+        }
+        if ( empty($desc) ){
+            $desc  = serialize( $this->load('patent')->getPatentInfo($patentId) );
+        }
+        $_data = array(
+            'patentId'    => $patentId,
+            'roleId'    => $member['roleId'],
+            'type'      => $type,
+            'name'      => $member['name'],
+            'date'      => time(),
+            'memo'      => $memo,
+            'data'      => $desc,
+            );
+
+        return $this->import('patentLog')->create($_data);
+    }
+
+    /**
+     * 获取专利出售信息日志列表
+     * @author      Far
+     * @since       2016-04-28
+     * 
+     * @access      public
+     * @param       int     $patentId     出售信息ID
+     * @return      array
+     */
+    public function getPatentLog($patentId)
+    {
+        if ( empty($patentId) ) return false;
+        $r['eq']    = array('patentId'=>$patentId);
+        $r['limit'] = 100;
+        $r['order'] = array('date'=>'desc');
+        $list = $this->import('patentLog')->find($r);
         if ( empty($list) ) array();
         $opType = C("OP_TYPE");
         foreach ($list as $k => $v) {

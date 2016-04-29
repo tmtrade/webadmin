@@ -1,0 +1,115 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+
+<!--出售信息弹层-->
+<div class="mj-infoM">
+    <span class="ms-close mj-close"></span>
+<form name="deleteForm" id="deleteForm" >
+    <input type="hidden" name="patentId" id="patentId" value="<?=$patentId?>">
+    <ul>
+        <li><label>删除原因：</label>
+            <input type="radio" name="reason" class="reason" value="2">无效删除&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="reason" class="reason" value="1">交易成功
+        </li>        
+        <li id="saleTime"><label>出售时间：</label><input type="text" name="saleDate" id="saleDate" readonly onclick="laydate()" /><em>(仅交易成功填写)</em></li>
+       <li><label>剔除黑名单：</label>
+            <input type="radio" name="isBlack" id="isBlack" value="1">是&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="isBlack" id="isBlack" checked value="2">否
+        </li>  
+         <li><span class="red"> 注意：交易成功的，不建议剔除黑名单！ </span>
+        </li>    
+        <li><label>备注(原因)：</label>
+        <textarea name="memo" id="memo" style="margin: 0px; width: 380px; height: 100px;"></textarea></li>
+        <li><label> </label>
+            <a href="javascript:void(0);" class="mj-liBtns" onclick="deleteSale();">确定</a>
+            <a href="javascript:void(0);" class="mj-liBtns mj-abgcg" onclick="closeAll();">取消</a>
+        </li>
+    </ul>
+</form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $("#saleTime").hide();
+        $(".mj-infoM").show();
+        $(".mj-close").on("click",function(){
+            closeAll();
+        });
+        $(".reason").click(function(){
+            var val = $(this).val();
+            if ( val == 1 ){
+                $("#saleTime").show();
+            }else {
+                $("#saleTime").hide();
+            }
+        });
+    });
+    function closeAll()
+    {
+        parent.layer.closeAll();
+    }
+    function deleteSale()
+    {
+        var reason      = $('input:radio[name="reason"]:checked').val();
+        var isBlack     = $('input:radio[name="isBlack"]:checked').val();
+        var saleDate    = $.trim( $('#saleDate').val() );
+        var memo        = $.trim( $('#memo').val() );
+
+        if ( reason == undefined ){
+            layer.msg('请选择删除原因', {
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        if ( isBlack == undefined ){
+            layer.msg('请选择是否剔除黑名单', {
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        if ( reason == 1 && $.trim(saleDate) == '' ){
+            layer.msg('请选择出售时间', {
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        if ( $.trim(memo) == '' ){
+            layer.msg('请填写备注(原因)信息', {
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+
+        var data = $("#deleteForm").serialize();
+
+        $.ajax({
+            type : 'post',
+            url  : '/patent/deleteSale/',
+            data : data,
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        parent.window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请重试。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

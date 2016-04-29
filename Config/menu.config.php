@@ -1,7 +1,7 @@
 <?
 return $menu = array(
 	'1' => array(
-		'title' => '商标列表',
+		'title' => '商标专利列表',
 		'ico'   => 'images/menu1.png',
 		//'url'   => '/sale/index/',
 		'child'	=> array(
@@ -9,6 +9,11 @@ return $menu = array(
 						'title' => '国内商标列表',
 						'url'   => '/internal/index/',
 						'auth'	=> '1',
+					),
+                                        '2' => array(
+						'title' => '专利列表',
+						'url'   => '/patent/index/',
+						'auth'	=> '2',
 					),
 		),
 	),

@@ -1,0 +1,639 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>专利列表</li>
+    </ul>
+</div>
+<div class="wrap">
+    <div class="mj-screening">
+        <div class="mj-seT f-clearfix">
+            <span>专利筛选</span>
+        </div>
+        <form name="saleSearchForm" id="saleSearchForm" action="/patent/index/" method="GET">
+        <dl>
+            <dd>
+                <label>专利分类：</label>
+                <div class="mj-checkbox">
+                    <input type="radio" name="type" value=""  <?if(empty($s['type'])){ echo 'checked';} ?> />
+                    <label >全部</label>
+                </div>
+                
+                <? foreach ($patentType as $k => $v) {?>
+                <div class="mj-checkbox">
+                     
+                    <input type="radio" name="type" 
+                    <?if(!empty($s['type']) && in_array($k, array_filter(explode(',',$s['type'])))){
+                        echo 'checked';} ?> value="<?=$k?>" onclick="showClass(<?=$k?>);" />
+                    <label for="va<?=$k?>"><?=$v?></label>
+                </div>
+                <? } ?>
+            </dd>
+            <dt><span>行业分类：<button class="btn" type="button">全部分类</button></span></dt>
+            <dd class="mj-ddList" <?if(empty($s['tmClass'])){echo 'style="display:none"';}?> >
+                <input type="hidden" id="tmClass" name="tmClass" value="<?=$s['tmClass']?>">
+                <?php
+                    $classArr = explode(',', $s['tmClass']);
+                ?>
+                <ul class="f-clearfix" id="oneClass" <?if((empty($s['tmClass']) || array_key_exists($classArr[0],$patentClassTwo)) && ($s['type']!=1 && $s['type']!=2)){echo 'style="display:none"';}?> >
+                <? foreach ($patentClassOne as $k => $v) {?>
+                    <li style="width:130px"><input type="checkbox" tname="tmClass"
+                    <?if(!empty($s['tmClass']) && in_array($k, array_filter($classArr))){
+                        echo 'checked';} ?> value="<?=$k?>" class="tmClass" />
+                        <label for="che<?=$v?>" title="<?=$v?>" style="width:100px"><?=$k.mb_substr($v,0,6,'utf8')?></label></li>
+                <? } ?>
+                </ul>
+                <ul class="f-clearfix" id="twoClass" <?if((empty($s['tmClass']) || array_key_exists($classArr[0],$patentClassOne)) && $s['type']!=3){echo 'style="display:none"';}?> >
+                <? foreach ($patentClassTwo as $k => $v) {?>
+                    <li style="width:130px"><input type="checkbox" tname="tmClass"
+                    <?if(!empty($s['tmClass']) && in_array($k, array_filter($classArr))){
+                        echo 'checked';} ?> value="<?=$k?>" class="tmClass" />
+                        <label for="che<?=$v?>" title="<?=$v?>" style="width:100px"><?=$k.mb_substr($v,0,6,'utf8')?></label></li>
+                <? } ?>
+                </ul>
+            </dd>
+            
+            <dd>
+                <label>专利名称：</label> <input type="text" name="tmName" value="<?=$s['tmName']?>" class="input input-sm"/> 
+                <label> 专利号：</label> <input type="text" name="tmNumber" value="<?=$s['tmNumber']?>" class="input input-sm"/>
+                <label> 销售状态：</label>
+                <select name="saleStatus" class="input input-sm">
+                    <option value="0">--请选择--</option>
+                <? foreach ($saleStatus as $k => $v) {?>
+                    <option value="<?=$k?>" <?if($s['saleStatus']==$k){echo 'selected';} ?> ><?=$v?></option>
+                <? } ?>
+                </select>
+                <label> 出售时间：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
+                <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input type="text" name="dateEnd" value="<?=$s['dateEnd']?>" class="input input-sm" readonly onclick="laydate()" />
+                
+            </dd>
+            <dd>
+                <label>来源渠道：</label>
+                <select name="saleSource" class="input input-sm">
+                    <option value="0">--请选择--</option>
+                <? foreach ($saleSource as $k => $v) {?>
+                    <option value="<?=$k?>" <?if($s['saleSource']==$k){echo 'selected';} ?>><?=$v?></option>
+                <? } ?>
+                </select>
+                <label> 交易类型：</label>
+                <select name="saleType" class="input input-sm">
+                    <option value="0">--请选择--</option>
+                <? foreach ($saleType as $k => $v) {?>
+                    <option value="<?=$k?>" <?if($s['saleType']==$k){echo 'selected';} ?>><?=$v?></option>
+                <? } ?>
+                </select>
+            </dd>
+            <dd>
+                <label>底&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：</label>
+                <div class="mj-radio">
+                    <? foreach ($tmPrice as $k => $v) {?>
+                    <div class="mj-checkbox">
+                        <input type="radio" name="tmType" 
+                        <?if(!empty($s['tmType']) && $k==$s['tmType']){ echo 'checked';} ?> value="<?=$k?>" class="tmType" />
+                        <label for="le<?=$k?>"><?=$v[2]?></label>
+                    </div>
+                    <? } ?>
+                </div>
+            </dd>
+            <dd>
+                <label>其他属性：</label>
+                <div class="mj-checkbox">
+                    <input type="checkbox" name="isTop" <?if($s['isTop']==1){echo 'checked';}?> value="1" id="bq9"/>
+                    <label for="bq9">置项</label>
+                </div>
+                <div class="mj-checkbox">
+                    <input type="checkbox" name="listSort" <?if($s['listSort']==1){echo 'checked';}?> value="1" id="bq9"/>
+                    <label for="bq9">列表(排序)</label>
+                </div>
+            </dd>
+            <dd style="height: 35px;">
+                <a href="javascript:void(0);" style="margin: 10px;float: left;" class="mj-sBtn" id="mj-sBtn">搜索</a>
+            </dd>
+        </dl>
+            <input type="hidden"  name="jname" value="">
+        </form>
+    </div>
+    <div class="wrap-content">
+        <p class="text-left" style="float:left;padding-top:20px;">共有 <b class="red"><?=$allTotal?></b> 条数据，当前筛选结果 <b class="blue"><?=$total?></b> 条数据</p>
+        <div class="wrap-tittle">
+            <? if( in_array('15', $_role_) ){ ?>
+            <!--<button class="btn btn-danger" onclick="add();"    type="button">创建商品</button>-->
+            <? } ?>
+            <!--<button class="btn btn-info" onclick="download();" type="button" type="button">导出表格EXCEL</button>-->
+            <? if( in_array('2', $_role_) ){ ?>
+            <button type="button" class="btn btn-info" onclick="setMoreDown();">批量下架</button>
+            <? } ?>
+            <? if( in_array('3', $_role_) ){ ?>
+            <button type="button" class="btn btn-info" onclick="delMoreSale();">批量删除</button>
+            <? } ?>
+            <button class="btn btn-info" type="button" onclick="reloadList();">刷新</button>
+        </div>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                    <tr class="active">
+                        <th><input type="checkbox" id="chkAll"></th>
+                        <th>专利号</th>
+                        <th>销售<br>状态</th>
+                        <th>出售<br>时间</th>
+                        <th>专利名</th>
+                        <th>交易<br>类型</th>
+                        <th>类别</th>
+                        <th>顾问<br>部门</th>
+                        <th>来源<br>渠道</th>
+                        <th>联系方式</th>
+                        <th>底价</th>
+                        <th>售价</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody class="table-list">
+                <? foreach ($saleList as $k => $v) {  ?>
+                <tr>
+                    <td><input type="checkbox" name="chkId[]" class="chklist" value="<?=$v['id']?>"></td>
+                    <td><?=$v['number']?></td>
+                    <td><span <?if ($v['status']==1){
+                            echo 'class="blue"';
+                        }elseif ($v['status']==2){
+                            echo 'class="red"';
+                        }else{
+                            echo 'class="yellow"';
+                        }
+                        ?> ><?=$saleStatus[$v['status']]?></span></td>
+                    <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?>
+                    <?if( !empty($v['tminfo']['embellish'])){?><span class="blue">包</span><?}?></td>
+                    <td title="<?=$v['title']?>"><?if(mb_strlen($v['title'],'utf8') > 15)
+                    {echo mb_substr($v['title'],0,12,'utf8')."...";}
+                    else{echo $v['title'];}?></td>
+                    <td><? if ($v['isSale'] == 1 && $v['isLicense'] == 1) {
+                            echo $saleType[3];
+                        }elseif($v['isSale'] == 1){
+                            echo $saleType[1];
+                        }elseif($v['isLicense'] == 1){
+                            echo $saleType[2];
+                        }?></td>
+                    <td><?if(count(explode(',', $v['class'])) > 1){?>
+                        <span class="classMore">多类
+                        <div class="more" >
+                            <ol style=" max-height: 150px;  overflow-y: auto;width: 80px;">
+                                <? foreach (explode(',', $v['class']) as $cls) {
+                                    echo "<li>$cls 类</li>";
+                                }?>
+                            </ul>
+                        </div></span>
+                    <?}else{echo $v['class']."类";}?></td>
+                    <td class="showMore"><?if(count($v['contact']) > 1){echo "多顾问";}else
+                    {$ct=current($v['contact']);echo $ct['advisor'].'-'.$ct['department'];} ?>
+                    </td>
+                    <td class="showMore"><?if(count($v['contact']) > 1){echo '多渠道';}
+                    else{$ct=current($v['contact']);echo $saleSource[$ct['source']];} ?>
+                    </td>
+                    <td class="showMore"> 
+                    <?if(count($v['contact']) > 1){?>
+                        <span>多联系人</span>
+                        <div class="more">
+                            <ul <?if($k>10){echo 'style="bottom:0px;top:inherit"';}?> >
+                            <?foreach ($v['contact'] as $key => $value) { ?>
+                                <li><table width="99%"><tr align="center">
+                                <td width="20%"><?=$value['advisor'].'-'.$value['department']?></td>
+                                <td width="15%"><?=$saleSource[$value['source']]?></td>
+                                <td width="35%">
+                                <?if($value['isVerify'] == 2){?><span class="red">审</span><?}?>
+                                <?php echo mbSub( $value['name'] , 0, 3);?>-<?=$value['phone']?></td>
+                                <td width="15%"><?=$value['price']?></td>
+                                <td width="15%">
+                                    <?if ( $value['isVerify'] != 1 ) {?>
+                                        <? if( in_array('21', $_role_) ){ ?>
+                                        <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>, <?=$value['id']?>);">通过</a>
+                                        <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>, <?=$value['id']?>, <?=count($v['contact'])?>);">驳回</a>
+                                        <? } ?>
+                                    <?}?>
+                                </td>
+                                </tr></table>
+                            <?}?>
+                            </ul>
+                        </div>
+                    <? }elseif(count($v['contact']) == 1){ ?>
+                        <?$ct=current($v['contact']);
+                        if($ct['isVerify'] == 2){echo '<font class="red">审</font>';}
+                        echo mbSub( $ct['name'] , 0, 3)."-".$ct['phone'];?>
+                    <div class="more" style="min-weight:150px;">
+                        <?if ( $ct['isVerify'] != 1 ) {?>                         
+                            <ol class="singleVerify"><li>
+                            <? if( in_array('21', $_role_) ){ ?>
+                            <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>, <?=$ct['id']?>);">通过</a>
+                            <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>, <?=$ct['id']?>, <?=count($v['contact'])?>);">驳回</a>
+                            </li></ol>
+                            <? } ?>
+                        <?}?>                        
+                    <?}?>
+                    </td>
+                    <td class="showMore">
+                    <?if(count($v['contact']) > 1){echo '多底价';}else{$ct=current($v['contact']);echo $ct['price']<=0?'面议':$ct['price'];} ?>
+                    </td>
+                    <td><?if($v['priceType']==2){echo "议价";}else{echo $v['price'];}?></td>
+                    <td>
+                        <span class="icon icon-delete">
+                        <?if($v['status']==1){?>
+                            <? if( in_array('2', $_role_) || (in_array('26', $_role_) && $v['isTop'] == 0 && $v['listSort'] == 0) ){ ?>
+                            <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$v['id']?>);">下架</a>
+                            <? } ?>
+                        <?}elseif($v['status']==2 && count($v['contact']) > 0){?>
+                            <a href="javascript:;" class="btn-success" onclick="doUp(<?=$v['id']?>);">上架</a>
+                        <?}?></span>
+                        <span class="icon icon-editor">
+                        <a href="/patent/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>
+                        </span>
+                    </td>
+                </tr>
+                <? } ?>
+                </tbody>
+            </table>
+        </div>    
+<div id="page" align="center"><?=$pageBar?></div>  
+    </div>
+</div>
+
+
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css" />
+<style>
+	.check label{
+		width: 100px;
+    	display: inline-block;
+    	margin-bottom: 14px;
+	}
+	.check input{
+		margin:0px;
+		vertical-align:top;
+	}
+</style>
+<div class="im-wrap" id="download" style="display:none;" >
+	<div class="im-title borderBtmCd">
+		<em><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></em>
+		<h1>导出商品</h1>
+	</div>
+	<div class="loading borderBtmCd" style="height:70px;padding-top:25px;">
+		<em>当前共&nbsp;<?=$total?>&nbsp;条商品。如导出商品过多 ，请先通过筛选功能筛选后再进行导出。</em>
+	</div>
+	<br>
+	<p><em>请选择您需要导出的数据</em></p>
+	<br>
+	<div class="check borderBtmCd mb10">
+		<iframe name="excelpost" style="display:none;"></iframe>
+		<form name="saleSearchForm" action="/patent/excel/" method="post" id="excelpost" target="excelpost">
+		<?php
+		if($s){
+			foreach($s as $k => $v){
+				if($k != 'page'){
+					echo "<input type='hidden' checked name='".$k."' value='".$v."' /> ";
+				}
+			}
+		}
+		?>
+		<input type="hidden" name="excelTable" id="excelTable" value="" >
+		</form>
+		<label><input type="checkbox" checked class="excelTable" value="1" >ID</label>
+		<label><input type="checkbox" checked class="excelTable" value="2" disabled>专利号</label>
+		<label><input type="checkbox" checked class="excelTable" value="3">销售状态</label>
+		<label><input type="checkbox" checked class="excelTable" value="4">出售时间</label>
+		<label><input type="checkbox" checked class="excelTable" value="5">专利名称</label>
+		<label><input type="checkbox" checked class="excelTable" value="6">交易类型</label>
+		<label><input type="checkbox" checked class="excelTable" value="7">类别</label>
+		<label><input type="checkbox" checked class="excelTable" value="8">顾问/部门</label>  
+		<label><input type="checkbox" checked class="excelTable" value="9">来源渠道</label>
+		<label><input type="checkbox" checked class="excelTable" value="10">联系方式</label>
+		<label><input type="checkbox" checked class="excelTable" value="11">底价</label>
+		<label><input type="checkbox" checked class="excelTable" value="12">售价</label>
+	</div>
+	
+	<p class="">
+		<a href="javascript:" class="nexta">确定</a>
+		<a href="javascript:" class="cancela">取消</a>
+	</p>
+</div>
+
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/patent/updown.js"></script>
+
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $(".mj-screening .btn").click(function(){
+            $(".mj-ddList").toggle();
+        });
+        $("#mj-sBtn").click(function(){
+			var index = layer.load(1, {
+				shade: [0.5,'#fff'] //0.1透明度的白色背景
+			});
+            $("#saleSearchForm").submit();
+        });
+        
+        //精确搜索
+        $("#jq_search").click(function(){
+            $("input[name='jname']").val(1);
+            var tempStr = $("#tmClass").val();
+            if(tempStr.indexOf(",")<=0){
+                layer.msg('请选择多个类别！', {
+                                time: 1000 
+                            });
+                return;
+            }
+            var index = layer.load(1, {
+                    shade: [0.5,'#fff'] //0.1透明度的白色背景
+            });
+            $("#saleSearchForm").submit();
+        });
+        //注册时间选择切换效果
+        $("#show_rd").click(function(){
+            $("input[name='regDate']").val("");
+            $("#reDate").toggle();
+        });
+        //多选处理
+        $('input[type="checkbox"]').click(function(){
+            var strClass = '';
+            var id = $(this).attr('tname');
+            $('.'+id).each(function(){
+                if($(this).prop('checked')){
+                    strClass += ","+$(this).val();
+                }
+            });
+            strClass = strClass ? strClass.substr(1) : '';
+            $('#'+id).val(strClass);
+        });
+        
+        $(".table .classMore").hover(function(){
+            $(this).find('.more > ol').show();
+        },function(){
+            $(this).find('.more > ol').hide();
+        });
+
+        $(".table tr td.showMore").hover(function(){
+            $(this).parent('tr').find('.more > ul').show();
+            $(this).parent('tr').find('.singleVerify').show();
+        },function(){
+            $(this).parent('tr').find('.more > ul').hide();
+            $(this).parent('tr').find('.singleVerify').hide();
+        });
+
+        $('#chkAll').click(function(){ 
+            $('.chklist').prop("checked",this.checked);
+        });
+
+		$(".im-title-span,.cancela").on("click",function(){
+            layer.closeAll();
+        });
+		
+		//提交导出
+		$('.nexta').click(function(){
+		
+			var str = '';
+			$('.excelTable').each(function(){
+				if($(this).prop('checked')){
+					str += ","+$(this).val();
+				}
+			})
+			str = str ? str.substr(1) : '';
+			$('#excelTable').val(str);
+			$('#excelpost').submit();
+			return false;
+		})
+	
+    });
+
+    //批量下架
+    function setMoreDown()
+    {
+        var chkId = getChecked();
+        if ( chkId == '' ) {
+            layer.msg('请选择至少一个商品', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        layer.prompt({
+            formType: 2,
+            scrollbar: false,
+            value: '',
+            maxlength: 100,
+            title: '请输入下架原因'
+        }, function(value, index, elem){
+            if ( $.trim(value) == ''){
+                layer.tips('请输入下架原因',elem);
+                return false;
+            }else{
+                $.ajax({
+                    type : 'post',
+                    url  : '/patent/doDown/',
+                    data : {'id':chkId, 'reason':value},
+                    dataType : 'json',
+                    success : function (data){
+                        if (data.code==1){
+                            layer.msg('操作成功！', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            layer.msg('操作失败！', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            });
+                        }
+                    },
+                    error : function (data){
+                        layer.msg('操作失败，请稍后重试。', {
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function delMoreSale()
+    {
+        var chkId = getChecked();
+        if ( chkId == '' ) {
+            layer.msg('请选择至少一个商品', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        var url = '?id='+chkId;
+        layer.open({
+            type: 2,
+            title: false,
+            scrollbar: false,
+            closeBtn: false,
+            area: ['520px', '400px'],
+
+            content: '/patent/delete/'+url,
+        });
+        return false;
+    }
+
+    function getChecked()
+    {
+        var strId = '';
+        $('.chklist').each(function(){
+            if($(this).prop('checked')){
+                strId += ","+$(this).val();
+            }
+        });
+        strId = strId ? strId.substr(1) : '';
+        return strId;
+    }
+
+    function add()
+    {
+        layer.open({
+            type: 2,
+            title: false,
+            scrollbar: false,
+            closeBtn: false,
+            area: ['560px', '350px'],
+
+            content: '/patent/create/'
+        });
+    }
+	
+	//批量导入专利
+	function Import()
+    {
+        layer.open({
+            type: 2,
+            title: false,
+            scrollbar: false,
+            closeBtn: false,
+            area: ['650px', '420px'],
+            content: '/patent/import/'
+        });
+    }
+
+    function reloadList()
+    {
+        window.location.reload();
+    }
+	
+	//导出弹出
+	function download()
+    {
+		 layer.open({
+            type: 1,
+            title: false,
+            scrollbar: false,
+            closeBtn: false,
+            area: ['630px', '360px'],
+            content: $('#download')
+        });
+    }
+
+    //审核联系人
+function setVerify(saleId, id)
+{
+    if ( $.trim(saleId) == '' || $.trim(id) == '' ){
+        layer.msg('参数错误', {
+            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+        });
+        return false;
+    }
+    layer.confirm('请确认相关信息已正确！<br> <span class="red">注意：通过审核会自动上架商品。</span>', {
+        btn: ['通过','再想想'] //按钮
+    }, function(){
+        $.ajax({
+            type : 'post',
+            url  : '/patent/setVerify/',
+            data : {'id':id,'saleId':saleId},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请确认数据是否正确。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    });
+}
+
+//驳回联系人
+function delVerify(saleId, id, nums)
+{
+    if ( nums <= 1 ){
+        layer.msg('只有一个联系人时，请直接删除此商品即可！', {
+            time: 3000 //2秒关闭（如果不配置，默认是3秒）
+        });
+        return false;
+    }
+    if ( $.trim(saleId) == '' || $.trim(id) == '' ){
+        layer.msg('参数错误', {
+            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+        });
+        return false;
+    }
+    layer.prompt({
+        formType: 2,
+        scrollbar: false,
+        value: '',
+        maxlength: 100,
+        title: '请输入驳回联系人的原因'
+    }, function(value, index, elem){
+        if ( $.trim(value) == ''){
+            layer.tips('请输入原因',elem);
+            return false;
+        }else{
+            $.ajax({
+                type : 'post',
+                url  : '/patent/delVerify/',
+                data : {'id':id,'saleId':saleId,'reason':value},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.reload();
+                        });
+                    }else{
+                        var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+                        layer.tips(msg,elem);
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            });
+        }
+    });
+}
+
+//切换专利分类，行业分类展示效果
+function showClass(c){
+    $(".mj-ddList ul").hide();
+    $("#tmClass").val("");
+    $(".mj-ddList ul input:checked").attr("checked",false);
+    if(c==1 || c==2){
+        $("#oneClass").show();
+    }else{
+        $("#twoClass").show();
+    }
+}
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

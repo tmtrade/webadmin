@@ -18,6 +18,8 @@ define('TRADE_URL', 'http://tr2.chofn.net/');
 define('SITE_URL', 'http://t.chofn.net/');
 //define('SITE_URL', 'http://www.yizhchan.com/');
 
+//万向云
+define('WANGXIANG_URL', 'http://wanxiang.chaofan.wang/');
 
 //接口验证key
 define('NAV_LOGIN_KEY', 'LsvuQQ$1u*3xU&CG$fsh%nn$m#FiT$Px');

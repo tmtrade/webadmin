@@ -13,7 +13,7 @@ return $menu = array(
                                         '2' => array(
 						'title' => '专利列表',
 						'url'   => '/patent/index/',
-						'auth'	=> '2',
+						'auth'	=> '27',
 					),
 		),
 	),

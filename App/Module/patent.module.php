@@ -336,63 +336,117 @@ class PatentModule extends AppModule
     }
 
     //创建默认的商品信息
-    public function addDefault($number, $memo='后台创建默认专利商品')
+    public function addDefault($number, $info)
     {
         if ( empty($number) ) return false;
         if ( $this->existSale($number) ) return false;
+        $type       = $info['type'];
+        $source     = '2';
+        $saleType   = '1';//出售类型，1：出售，2：许可，3：出+许
+        $isVerify   = '1';//审核
+        $advisor    = '顾问';//顾问名称
+        $department = '顾问部门';//顾问部门
+        $memo       = '';//备注 
+        switch ($type) {
+            case '1':
+                $phone      = '15868894581';
+                $name       = '高';
+                $price      = 1200;//底价
+                break;
+            case '2'://发明 张汉清
+                $phone      = '13005706040';
+                $name       = '张汉清';
+                $price      = 15000;//底价
+                $memo       = '电话0752-2525361，手机13005706040，QQ1376088137， 发明约12000-18000';//备注 
+                break;
+            case '3'://实用 张汉清
+                $phone      = '13005706040';
+                $name       = '张汉清';
+                $price      = 3000;//底价
+                $memo       = '电话0752-2525361，手机13005706040，QQ1376088137， 实用3000';//备注 
+                break;
+        }
 
-        $info   = $this->load('trademark')->getTmInfo($number);
-        if ( empty($info) ) return false;
+        $name       = $info['name'] ? $info['name'] : $name;
+        $phone      = $info['phone'] ? $info['phone'] : $phone;
+        $price      = $info['price'] ? $info['price'] : $price;
 
-        $other  = $this->load('trademark')->getTmOther($number);
-        if ( empty($other) ) return false;
-        
-        $class      = implode(',', $info['class']);
-        $platform   = implode(',', $other['platform']);
+        $number = strtolower($number);//专利编号 带.
+        $code   = $info['id'];
+
+        $_class = array();
+        $_group = array();
+        foreach ($info['ipcs'] as $ky => $val) {
+            array_push($_class, current($val['ancestors']));
+            array_push($_group, $val['id']);
+            $_group = array_merge($_group, (array)$val['ancestors']);
+        }
+        $class = implode(',', array_unique(array_filter($_class)));//专利所有大类
+        $group = implode(',', array_unique(array_filter($_group)));//专利所有群组
+
+        $title  = $info['title']['original'];//专利标题
+        $type   = 0;//专利类型
+        if ( strpos($info['typeName'], '发明') !== false ){
+            $type = 1;
+        }elseif ( strpos($info['typeName'], '新型') !== false || strpos($info['typeName'], '实用') !== false ){
+            $type = 2;
+        }elseif ( strpos($info['typeName'], '外观') !== false ){
+            $type = 3;
+        }
+        $applyDate  = (int)strtotime($info['application_date']);//申请日
+        $publicDate = (int)strtotime($info['earliest_publication_date']);//最早公开日
         $viewPhone  = $this->load('phone')->getRandPhone();
-        $regDate    = strtotime($info['reg_date']) > 0 ? strtotime($info['reg_date']) : 0;
+        $_memo      = '后台程序默认创建';
         $patent = array(
-            'tid'           => intval($info['tid']),
             'number'        => $number,
+            'code'          => $code,
             'class'         => $class,
-            'group'         => trim($info['group']),
-            'name'          => trim($info['name']),
-            'pid'           => intval($info['pid']),
-            'price'         => 0,
-            'priceType'     => 2,
-            'isOffprice'    => 2,
-            'salePrice'     => 0,
-            'salePriceDate' => 0,
-            'status'        => 3, 
-            'isSale'        => 1,
-            'isLicense'     => 2,
-            'isTop'         => 0,
-            'type'          => $other['type'],
-            'platform'      => $platform,
-            'label'         => '',
-            'length'        => $other['length'],
-            'regDate'       => $regDate,
+            'group'         => $group,
+            'title'         => $title,
+            'type'          => $type,
+            'applyDate'     => $applyDate,
+            'publicDate'    => $publicDate,
             'date'          => time(),
             'viewPhone'     => $viewPhone,
-            'hits'          => 0,
-            'memo'          => $memo,
-        );
-        $tminfo = array(
+            'memo'          => $_memo,
+            );
+
+        $ptinfo = array(
             'number'    => $number,
-            'memo'      => $memo,
+            'code'      => $code,
             'intro'     => '',
-        );
-        $this->begin('sale');
-        $patentId = $this->addSale($patent);//创建商品信息
-        $tmId   = $this->addTminfo($tminfo, $patentId);//创建商品包装信息
-        $black  = $this->load('blacklist')->setBlack($number);
-        if ( $patentId && $tmId && $black ){
+            );
+
+        $contact = array(
+            'source'        => $source,
+            'number'        => $number,
+            'code'          => $code,
+            'name'          => $name,
+            'phone'         => $phone,
+            'price'         => $price,
+            'saleType'      => $saleType,
+            'isVerify'      => $isVerify,
+            'advisor'       => $advisor,
+            'department'    => $department,
+            'date'          => time(),
+            'memo'          => $memo,
+            );
+
+        $this->begin('patent');//开始事务
+        $patentId   = $this->import('patent')->create($patent);
+        if ( $patentId > 0 ){
+            $ptinfo['patentId'] = $contact['patentId'] = $patentId;
+            $flag1      = $this->import('tminfo')->create($ptinfo);
+            $flag2      = $this->import('contact')->create($contact);
             $this->load('log')->addPatentLog($patentId, 3, $memo);//创建商品日志
-            $this->commit('sale');
-            return $patentId;
+            if($flag1 && $flag2){
+                $this->commit('patent');
+                return $patentId;
+            }
         }
-        $this->rollBack('sale');
+        $this->rollBack('patent');
         return false;
+        
     }
 
     //更新商品信息
@@ -476,7 +530,7 @@ class PatentModule extends AppModule
     }
 
     //删除商品
-    public function deleteSale($ids, $type=2, $memo='', $black=2, $date='')
+    public function deleteSale($ids, $type=2, $memo='', $date='')
     {
         if ( empty($ids) || !is_array($ids) ) return false;
 
@@ -502,11 +556,6 @@ class PatentModule extends AppModule
                 'memo'      => $memo,
             );
             $hisId = $this->import('history')->create($data);//创建商品历史记录
-            if ( $black == 1 ) {
-                $isBlack = $this->load('blacklist')->outBlack($number);//剔除黑名单
-            }else{
-                $isBlack = true;
-            }
             //处理用户出售信息历史记录
             foreach ($patent['contact'] as $k => $v) {
                 $addUserHistory = $this->addUserHistory($v, $patent, $type);
@@ -522,7 +571,7 @@ class PatentModule extends AppModule
             $rl['eq']   = array('patentId'=>$patentId);
             $delContact = $this->import('contact')->remove($rl);//删除联系人
             $delTminfo  = $this->import('tminfo')->remove($rl);//删除包装信息
-            if ( $hisId <= 0 || !$isBlack || !$delSale || !$delContact || !$delTminfo ){
+            if ( $hisId <= 0 || !$delSale || !$delContact || !$delTminfo ){
                 $this->rollBack('patent');
                 return false;
             }
@@ -574,7 +623,7 @@ class PatentModule extends AppModule
             'userId'    => $contact['userId'],
             'patentId'    => $contact['patentId'],
             'number'    => $contact['number'],
-            'name'      => $patentInfo['name'],
+            'name'      => $patentInfo['title'],
             'type'      => $type,
             'saleDate'  => $contact['date'],
             'price'     => $contact['price'],

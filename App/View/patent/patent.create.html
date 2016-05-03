@@ -70,14 +70,8 @@
                     var _edit_ = '<a href="/patent/edit/?id='+data.id+'" target="rightFrame">点击进入编辑</a>';
                     _info.html(_tmEdit+_edit_);
                     _info.show();
-                }else if (data.code==3){//在黑名单中
-                    _info.html(_tmBlack);
-                    _info.show();
                 }else if (data.code==4){//无该商标
                     _info.text(_tmNull);
-                    _info.show();
-                }else if (data.code==5){//商标无效
-                    _info.text(_tmWuxiao);
                     _info.show();
                 }else if (data.code==6){//商标号为空
                     _info.text('请输入商标号');
@@ -85,38 +79,6 @@
                 }else if (data.code==0){//未创建成功
                     _info.show();
                     _info.text('操作失败');
-                }
-            },
-            error : function (data){
-                layer.msg('操作失败，请稍后重试。', {
-                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                });
-            }
-        });
-    }
-    function _outBlack()
-    {
-        var _number = $.trim($("#searchNumber").val());
-        if ( _number == '' ) {
-            layer.msg('商标号不能为空');
-            return false;
-        } 
-        $.ajax({
-            type : 'post',
-            url  : '/blacklist/outBlack/',
-            data : {'number':_number},
-            dataType : 'json',
-            success : function (data){
-                if (data.code==1){
-                    layer.msg('操作成功！', {
-                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                    }, function(){
-                        $("#searchNumber").blur();
-                    });
-                }else{
-                    layer.msg('操作失败，请重试。', {
-                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                    });
                 }
             },
             error : function (data){

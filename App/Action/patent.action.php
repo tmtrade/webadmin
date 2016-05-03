@@ -74,14 +74,13 @@ class PatentAction extends AppAction
 		}
 
 		$type 	= $this->input('reason', 'int', 0);//删除原因
-		$black 	= $this->input('isBlack', 'int', 0);//是否剔除黑名单
 		$date 	= $this->input('saleDate', 'string', '');//出售日期
 		$memo 	= $this->input('memo', 'string', '');//备注（原因）
-		if ( empty($type) || empty($black) || empty($memo) || ($type == 1 && empty($date)) ){
+		if ( empty($type) || empty($memo) || ($type == 1 && empty($date)) ){
 			$this->returnAjax(array('code'=>2,'msg'=>'相关数据不能为空'));
 		}
 
-		$res = $this->load('patent')->deleteSale($ids, $type, $memo, $black, $date);
+		$res = $this->load('patent')->deleteSale($ids, $type, $memo, $date);
 		if ( $res ){
 			$this->returnAjax(array('code'=>1,'msg'=>'成功'));
 		}
@@ -359,21 +358,13 @@ class PatentAction extends AppAction
 		$number = $this->input('number', 'text', '');
 		$isAdd 	= $this->input('add', 'int', 0);
 		if ( empty($number) ) $this->returnAjax(array('code'=>6));
-
-		if ( !$this->load('trademark')->existTm($number) ) $this->returnAjax(array('code'=>4));//无商标信息
-
-		$first = $this->load('trademark')->getFirst($tm['tid'], 'n');
-		if ( $first == 3 ) $this->returnAjax(array('code'=>5));//商标已无效
-
+                $info = $this->load('run')->getPatentInfo($number);
+		if ( !$info['id'] ) $this->returnAjax(array('code'=>4));//无商标信息
 		$patentId = $this->load('patent')->existSale($number);
 		if ( $patentId ) $this->returnAjax(array('code'=>2,'id'=>$patentId));//在出售中
-
-		//$isBlack = $this->load('blacklist')->isBlack($number);
-		//if ( $isBlack ) $this->returnAjax(array('code'=>3));//在黑名单中
-
 		if ( $isAdd ){
 			//正常商标马上创建默认的出售信息
-			$patentId = $this->load('patent')->addDefault($number);
+			$patentId = $this->load('patent')->addDefault($number,$info);
 			if ( $patentId ) $this->returnAjax(array('code'=>1,'id'=>$patentId));
 			$this->returnAjax(array('code'=>0));
 		}

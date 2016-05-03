@@ -680,7 +680,8 @@ class PatentModule extends AppModule
     public function existSale($number)
     {
         if ( empty($number) ) return false;
-        $r['eq']    = array('number'=>$number);
+        $code   = (strpos($number, '.') !== false) ? strstr($number, '.', true) : $number;
+        $r['eq']    = array('code'=>$code);
         $r['col']   = array('id');
         $res = $this->import('patent')->find($r);
         if ( empty($res) ) return false;

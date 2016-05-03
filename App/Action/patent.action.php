@@ -362,6 +362,7 @@ class PatentAction extends AppAction
 		if ( !$info['id'] ) $this->returnAjax(array('code'=>4));//无商标信息
 		$patentId = $this->load('patent')->existSale($number);
 		if ( $patentId ) $this->returnAjax(array('code'=>2,'id'=>$patentId));//在出售中
+
 		if ( $isAdd ){
 			//正常商标马上创建默认的出售信息
 			$patentId = $this->load('patent')->addDefault($number,$info);

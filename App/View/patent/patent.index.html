@@ -137,7 +137,7 @@
                 <thead>
                     <tr class="active">
                         <th><input type="checkbox" id="chkAll"></th>
-                        <th>专利号</th>
+                        <th>申请号</th>
                         <th>销售<br>状态</th>
                         <th>出售<br>时间</th>
                         <th>专利名</th>
@@ -422,7 +422,9 @@
             title: '请输入下架原因'
         }, function(value, index, elem){
             if ( $.trim(value) == ''){
-                layer.tips('请输入下架原因',elem);
+                layer.msg('请输入下架原因', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
                 return false;
             }else{
                 $.ajax({

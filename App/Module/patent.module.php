@@ -340,37 +340,6 @@ class PatentModule extends AppModule
     {
         if ( empty($number) ) return false;
         if ( $this->existSale($number) ) return false;
-        $type       = $info['type'];
-        $source     = '2';
-        $saleType   = '1';//出售类型，1：出售，2：许可，3：出+许
-        $isVerify   = '1';//审核
-        $advisor    = '顾问';//顾问名称
-        $department = '顾问部门';//顾问部门
-        $memo       = '';//备注 
-        switch ($type) {
-            case '1':
-                $phone      = '15868894581';
-                $name       = '高';
-                $price      = 1200;//底价
-                break;
-            case '2'://发明 张汉清
-                $phone      = '13005706040';
-                $name       = '张汉清';
-                $price      = 15000;//底价
-                $memo       = '电话0752-2525361，手机13005706040，QQ1376088137， 发明约12000-18000';//备注 
-                break;
-            case '3'://实用 张汉清
-                $phone      = '13005706040';
-                $name       = '张汉清';
-                $price      = 3000;//底价
-                $memo       = '电话0752-2525361，手机13005706040，QQ1376088137， 实用3000';//备注 
-                break;
-        }
-
-        $name       = $info['name'] ? $info['name'] : $name;
-        $phone      = $info['phone'] ? $info['phone'] : $phone;
-        $price      = $info['price'] ? $info['price'] : $price;
-
         $number = strtolower($number);//专利编号 带.
         $code   = $info['id'];
 
@@ -396,7 +365,7 @@ class PatentModule extends AppModule
         $applyDate  = (int)strtotime($info['application_date']);//申请日
         $publicDate = (int)strtotime($info['earliest_publication_date']);//最早公开日
         $viewPhone  = $this->load('phone')->getRandPhone();
-        $_memo      = '后台程序默认创建';
+        $_memo      = '后台手动创建专利';
         $patent = array(
             'number'        => $number,
             'code'          => $code,
@@ -416,30 +385,13 @@ class PatentModule extends AppModule
             'code'      => $code,
             'intro'     => '',
             );
-
-        $contact = array(
-            'source'        => $source,
-            'number'        => $number,
-            'code'          => $code,
-            'name'          => $name,
-            'phone'         => $phone,
-            'price'         => $price,
-            'saleType'      => $saleType,
-            'isVerify'      => $isVerify,
-            'advisor'       => $advisor,
-            'department'    => $department,
-            'date'          => time(),
-            'memo'          => $memo,
-            );
-
         $this->begin('patent');//开始事务
         $patentId   = $this->import('patent')->create($patent);
         if ( $patentId > 0 ){
-            $ptinfo['patentId'] = $contact['patentId'] = $patentId;
+            $ptinfo['patentId'] = $patentId;
             $flag1      = $this->import('tminfo')->create($ptinfo);
-            $flag2      = $this->import('contact')->create($contact);
-            $this->load('log')->addPatentLog($patentId, 3, $memo);//创建商品日志
-            if($flag1 && $flag2){
+            $this->load('log')->addPatentLog($patentId, 3, $_memo);//创建商品日志
+            if($flag1){
                 $this->commit('patent');
                 return $patentId;
             }

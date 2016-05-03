@@ -14,7 +14,7 @@
             <span>创建成功</span>
         </div>
         <div class="mj-inp">
-            <p>你需要输入一个专利号来查询专利</p>
+            <p>你需要输入一个申请号来查询专利</p>
             <input type="text" id="searchNumber" />
             <span id="searchInfo" style="display:none;"></span>
             <div style="text-align:center"> <a class="mj-sBtn" id="addBtn" href="javascript:void(0);" style="display:none;margin:0 auto;" onclick="_addGoods('yes');" >创建商品</a></div>
@@ -26,7 +26,7 @@
     var _tmBlack    = '该专利位于黑名单内，请先解除黑名单限制 <a href="javascript:void(0);" onClick="_outBlack();">解除黑名单</a>';
     var _tmEdit     = '该专利已有对应专利 ';
     var _tmNull     = '无该专利，请验证后输入';
-    var _tmWuxiao   = '该专利号已失效';
+    var _tmWuxiao   = '该申请号已失效';
     $(function(){
         $(".mj-glM").show();
         $(".mj-close").on("click",function(){
@@ -47,7 +47,7 @@
         var _info   = $("#searchInfo");
         _info.hide();
         if ( _value == '' ){
-            _info.text('请输入专利号');
+            _info.text('请输入申请号');
             _info.show();
         }
         $.ajax({
@@ -74,7 +74,7 @@
                     _info.text(_tmNull);
                     _info.show();
                 }else if (data.code==6){//专利号为空
-                    _info.text('请输入专利号');
+                    _info.text('请输入申请号');
                     _info.show();
                 }else if (data.code==0){//未创建成功
                     _info.show();

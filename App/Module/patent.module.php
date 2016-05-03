@@ -35,7 +35,13 @@ class PatentModule extends AppModule
         }
          //行业分类
          if ( !empty($params['tmClass']) ){
-            $r['ft']['class'] = $params['tmClass'];
+             if($params['type'] !=3 ){
+                $classArr = explode(",", $params['tmClass']);
+                $_class = array_map('ord', $classArr);
+                $r['ft']['class'] = implode(',', $_class);
+             }else{
+                 $r['ft']['class'] = $params['tmClass'];
+             }
         }
         if ( !empty($params['tmName']) ){
             $r['like']['title'] = $params['tmName'];
@@ -350,9 +356,6 @@ class PatentModule extends AppModule
             array_push($_group, $val['id']);
             $_group = array_merge($_group, (array)$val['ancestors']);
         }
-        $class = implode(',', array_unique(array_filter($_class)));//专利所有大类
-        $group = implode(',', array_unique(array_filter($_group)));//专利所有群组
-
         $title  = $info['title']['original'];//专利标题
         $type   = 0;//专利类型
         if ( strpos($info['typeName'], '发明') !== false ){
@@ -362,6 +365,12 @@ class PatentModule extends AppModule
         }elseif ( strpos($info['typeName'], '外观') !== false ){
             $type = 3;
         }
+        
+        if($type!=3){
+            $_class = array_map('ord', $_class);
+        }
+        $class = implode(',', array_unique(array_filter($_class)));//专利所有大类
+        $group = implode(',', array_unique(array_filter($_group)));//专利所有群组
         $applyDate  = (int)strtotime($info['application_date']);//申请日
         $publicDate = (int)strtotime($info['earliest_publication_date']);//最早公开日
         $viewPhone  = $this->load('phone')->getRandPhone();

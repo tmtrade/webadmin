@@ -20,7 +20,7 @@ class PatentAction extends AppAction
 	 * @return	void
 	 */
 	public function index()
-	{	
+	{
 		$this->getSetting();
 		//参数
 		$params = $this->getFormData();
@@ -37,6 +37,11 @@ class PatentAction extends AppAction
 		//获取所有联系人
 		foreach ($list as $k => $v) {
 			$result[$k] = $this->load('patent')->getPatentInfo($v['id']);
+                        if($v['type']!=3){
+                            $classArr = explode(",", $result[$k]['class']);
+                            $_class = array_map('chr', $classArr);
+                            $result[$k]['class'] = implode(',', $_class);
+                        }
 		}
                 $this->set("allTotal",$this->load('patent')->countSale());
 		$this->set('total', $total);

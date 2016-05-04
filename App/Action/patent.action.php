@@ -37,7 +37,7 @@ class PatentAction extends AppAction
 		//获取所有联系人
 		foreach ($list as $k => $v) {
 			$result[$k] = $this->load('patent')->getPatentInfo($v['id']);
-                        if($v['type']!=3){
+                        if($result[$k]['type']!=3){
                             $classArr = explode(",", $result[$k]['class']);
                             $_class = array_map('chr', $classArr);
                             $result[$k]['class'] = implode(',', $_class);

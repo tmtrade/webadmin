@@ -272,7 +272,7 @@
                     <td class="showMore">
                     <?if(count($v['contact']) > 1){echo '多底价';}else{$ct=current($v['contact']);echo $ct['price'];} ?>
                     </td>
-                    <td><?if($v['priceType']==2){echo "议价";}else{echo $v['price'];}?></td>
+                    <td><?if($v['priceType']==2){echo "议价";}else{if(($v['isOffprice']==1 && $v['salePriceDate']>time()) || ($v['isOffprice']==1 && $v['salePriceDate']==0) ){echo $v['salePrice'];}else{echo $v['price'];}}?></td>
                     <td>
                         <span class="icon icon-delete">
                         <?if($v['status']==1){?>

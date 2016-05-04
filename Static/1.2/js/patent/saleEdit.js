@@ -145,7 +145,7 @@ function setContact(patentId, cId)
         title: false,
         scrollbar: false,
 		closeBtn: false,
-		area: ['501px', '485px'],
+		area: ['520px', '570px'],
 
 		content: '/patent/contact/'+url,
 	});

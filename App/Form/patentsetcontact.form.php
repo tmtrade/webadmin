@@ -50,6 +50,10 @@ class PatentsetcontactForm extends AppForm
 			'field' => 'department',
 			'method' => 'fieldName',
 			),
+                'memo'    => array(
+			'field' => 'memo',
+			'method' => 'fieldName',
+			),
     );
 	
 	

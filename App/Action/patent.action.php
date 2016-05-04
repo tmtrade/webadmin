@@ -164,6 +164,12 @@ class PatentAction extends AppAction
 		$gjUrl 		= WANGXIANG_URL.'detail.php?id='.$patent['code'];
 		$referr 	= $this->getReferrUrl('patent_edit');
                 
+                //转换ascll
+                if($patent['type']!=3){
+                    $classArr = explode(",", $patent['class']);
+                    $_class = array_map('chr', $classArr);
+                    $patent['class'] = implode(',', $_class);
+                }
                 //获取SEO设置
 		$seoInfo = $this->load('seo')->getInfoByType(15,$id);
                 $this->set('seoInfo', $seoInfo);

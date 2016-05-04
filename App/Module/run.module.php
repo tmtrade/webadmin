@@ -12,6 +12,52 @@ class RunModule extends AppModule
         'test'      => 'test',
     );
 
+    // public function importOp()
+    // {
+    //     $r['limit'] = 10000;
+    //     $list = $this->import('test')->find($r);
+    //     if ( empty($list) ) exit('no data.');
+    //     $id = 30001;
+    //     foreach ($list as $k => $v) {
+    //         $type       = $v['number'];
+    //         $number     = $v['department'];
+    //         $advisor    = $v['type'];
+    //         $t1         = empty($v['price'])?'':'联系方式：'.$v['price'].';';
+    //         $t2         = empty($v['memo'])?'':'价格：'.$v['memo'].';';
+    //         $t3         = empty($v['advisor'])?'':'QQ：'.$v['advisor'].';';
+
+    //         $data = array(
+    //             'id'            => $id,
+    //             'number'        => $number,
+    //             'type'          => $type,
+    //             'price'         => 0,
+    //             'advisor'       => $advisor,
+    //             'department'    => '',
+    //             'memo'          => $t1.$t2.$t3,
+    //             );
+    //         $rl['eq'] = array('id'=>$v['id']);
+    //         $this->import('test')->modify($data, $rl);
+
+    //         $id++;
+    //     }
+    // }
+    // public function importOp()
+    // {
+    //     $r['limit'] = 10000;
+    //     $list = $this->import('test')->find($r);
+    //     if ( empty($list) ) exit('no data.');
+    //     $id = 1;
+    //     foreach ($list as $k => $v) {
+    //         $data = array(
+    //             'id'            => $id,
+    //             );
+    //         $rl['eq'] = array('id'=>$v['id']);
+    //         $this->import('test')->modify($data, $rl);
+
+    //         $id++;
+    //     }
+    // }
+
     private function msectime() {
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
@@ -60,49 +106,26 @@ class RunModule extends AppModule
         foreach ($list as $k => $v) {
             $num++;
             $number     = $v['number'];
-            $type       = $v['type'];
-
-            $source     = '2';
+            $source     = $v['type'];
             $saleType   = '1';//出售类型，1：出售，2：许可，3：出+许
             $isVerify   = '1';//审核
-            $advisor    = '顾问';//顾问名称
-            $department = '顾问部门';//顾问部门
-            $memo       = '';//备注 
-            switch ($type) {
-                case '1':
-                    $phone      = '15868894581';
-                    $name       = '高';
-                    $price      = 1200;//底价
-                    break;
-                case '2'://发明 张汉清
-                    $phone      = '13005706040';
-                    $name       = '张汉清';
-                    $price      = 15000;//底价
-                    $memo       = '电话0752-2525361，手机13005706040，QQ1376088137， 发明约12000-18000';//备注 
-                    break;
-                case '3'://实用 张汉清
-                    $phone      = '13005706040';
-                    $name       = '张汉清';
-                    $price      = 3000;//底价
-                    $memo       = '电话0752-2525361，手机13005706040，QQ1376088137， 实用3000';//备注 
-                    break;
-            }
-
-            $name       = $v['name'] ? $v['name'] : $name;
-            $phone      = $v['phone'] ? $v['phone'] : $phone;
-            $price      = $v['price'] ? $v['price'] : $price;
+            $advisor    = $v['advisor'];//顾问名称
+            $department = $v['department'];//顾问部门
+            $memo       = $v['memo'];//备注 
+            $name       = $v['name'];
+            $phone      = $v['phone'];
+            $price      = $v['price'];
             
-            $info       = $this->getPatentInfo($number);
+            $number = strtolower($number);//专利编号 带.
+            $info   = $this->getPatentInfo($number);
 
-            if ( empty($info) ){
+            if ( empty($info) || empty($info['id']) ){
                 $faildList[] = $number;
                 continue;
             }
 
-            $number = strtolower($number);//专利编号 带.
-            $code   = $info['id'];
-
-            $patentId = $this->isSale($number);
+            $code       = $info['id'];
+            $patentId   = $this->isSale($number);
             if ( $patentId ) {
                 if ( $this->isContact($patentId, $phone) ) {
                     $faildList[] = $number;
@@ -140,10 +163,9 @@ class RunModule extends AppModule
                 array_push($_group, $val['id']);
                 $_group = array_merge($_group, (array)$val['ancestors']);
             }
-            $class = implode(',', array_unique(array_filter($_class)));//专利所有大类
             $group = implode(',', array_unique(array_filter($_group)));//专利所有群组
 
-            $title  = $info['title']['original'];//专利标题
+            $title  = $info['title']['original'] ? $info['title']['original'] : $info['title']['zh-cn'];//专利标题
             $type   = 0;//专利类型
             if ( strpos($info['typeName'], '发明') !== false ){
                 $type = 1;
@@ -152,6 +174,14 @@ class RunModule extends AppModule
             }elseif ( strpos($info['typeName'], '外观') !== false ){
                 $type = 3;
             }
+            $_class = array_unique(array_filter($_class));
+            if ( $type == 3 ){
+                $class  = implode(',', $_class);
+            }else{
+                $class  = empty($_class) ? '' : implode(',', array_map('ord', $_class));
+            }
+            
+
             $applyDate  = (int)strtotime($info['application_date']);//申请日
             $publicDate = (int)strtotime($info['earliest_publication_date']);//最早公开日
             $viewPhone  = $this->load('phone')->getRandPhone();

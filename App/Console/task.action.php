@@ -51,5 +51,17 @@ class TaskAction extends QueueCommonAction
         $this->load('run')->importPt();
     }
 
+
+    public function importPtId()
+    {
+        $number = $this->input('id', 'string', '');
+        $this->load('run')->importPt();
+    }
+
+    // public function importOp()
+    // {
+    //     $this->load('run')->importOp();
+    // }
+
 }
 ?>

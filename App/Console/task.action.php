@@ -55,7 +55,9 @@ class TaskAction extends QueueCommonAction
     public function importPtId()
     {
         $number = $this->input('id', 'string', '');
-        $this->load('run')->importPt();
+        $ids = array_filter(array_unique(explode(',', $number)));
+        if ( empty($ids) ) exit('no ids.');
+        $this->load('run')->importPt($ids);
     }
 
     // public function importOp()

@@ -95,14 +95,14 @@ class RunModule extends AppModule
     }
 
     //导入专利数据
-    public function importPt()
+    public function importPt($ids=array())
     {
         $num        = 0;
         $succList   = $faildList = array();
         $start      = $this->msectime();
         $rand       = randCode(6);
 
-        $list   = $this->getPatentList();
+        $list   = $this->getPatentList($ids);
         foreach ($list as $k => $v) {
             $num++;
             $number     = $v['number'];
@@ -121,6 +121,7 @@ class RunModule extends AppModule
 
             if ( empty($info) || empty($info['id']) ){
                 $faildList[] = $number;
+                $faildLists[] = array('number'=>$number,'msg'=>'未查询到专利');
                 continue;
             }
 
@@ -129,6 +130,7 @@ class RunModule extends AppModule
             if ( $patentId ) {
                 if ( $this->isContact($patentId, $phone) ) {
                     $faildList[] = $number;
+                    $faildLists[] = array('number'=>$number,'msg'=>'联系人重复');
                     continue;
                 }
 
@@ -152,6 +154,7 @@ class RunModule extends AppModule
                     $succList[] = $number;
                 }else{
                     $faildList[] = $number;
+                    $faildLists[] = array('number'=>$number,'msg'=>'联系人插入失败');
                 }
                 continue;
             }
@@ -243,6 +246,7 @@ class RunModule extends AppModule
             }else{
                 $this->rollBack('patent');
                 $faildList[] = $number;
+                $faildLists[] = array('number'=>$number,'msg'=>'专利数据插入失败');
             }
         }
 
@@ -262,6 +266,7 @@ class RunModule extends AppModule
             $_log = $log;
             $_log['faild']       = count($faildList);
             $_log['faildList']   = $faildList;
+            $_log['msg']         = $faildLists;
             $name = $_name_.date("Y-m-d")."($rand)-list-----faild.log";
             Log::write(print_r($_log,1), $name);
         }
@@ -269,8 +274,11 @@ class RunModule extends AppModule
     }
 
     //获取所有待处理的专利
-    private function getPatentList()
+    private function getPatentList($ids=array())
     {
+        if ( !empty($ids) ){
+            $r['in'] = array('number'=>$ids);
+        }
         $r['limit'] = 1000000;
         return $this->import('test')->find($r);
     }
@@ -795,7 +803,8 @@ class RunModule extends AppModule
             $result = curl_error($ch);
         }
         curl_close($ch);
-        return json_decode(trim($result,chr(239).chr(187).chr(191)),true);
+        $res =  json_decode(trim($result,chr(239).chr(187).chr(191)),true);
+        return $res;
     }
 
 }

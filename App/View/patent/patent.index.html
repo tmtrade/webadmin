@@ -19,7 +19,7 @@
             <dd>
                 <label>专利分类：</label>
                 <div class="mj-checkbox">
-                    <input type="radio" name="type" value=""  <?if(empty($s['type'])){ echo 'checked';} ?> />
+                    <input type="radio" name="type" value=" "  <?if(empty($s['type'])){ echo 'checked';} ?> />
                     <label >全部</label>
                 </div>
                 
@@ -90,6 +90,10 @@
             <dd>
                 <label>底&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：</label>
                 <div class="mj-radio">
+                    <div class="mj-checkbox">
+                        <input type="radio" name="tmType" value=" " />
+                        <label >全部</label>
+                    </div>
                     <? foreach ($tmPrice as $k => $v) {?>
                     <div class="mj-checkbox">
                         <input type="radio" name="tmType" 
@@ -142,7 +146,8 @@
                         <th>出售<br>时间</th>
                         <th>专利名</th>
                         <th>交易<br>类型</th>
-                        <th>类别</th>
+                        <th>专利<br>分类</th>
+                        <th>行业<br>分类</th>
                         <th>顾问<br>部门</th>
                         <th>来源<br>渠道</th>
                         <th>联系方式</th>
@@ -176,6 +181,7 @@
                         }elseif($v['isLicense'] == 1){
                             echo $saleType[2];
                         }?></td>
+                    <td><?=$patentType[$v['type']]?></td>
                     <td><?if(count(explode(',', $v['class'])) > 1){?>
                         <span class="classMore">多类
                         <div class="more" >

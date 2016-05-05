@@ -83,7 +83,7 @@ class RunModule extends AppModule
 
         $url    = sprintf($url, $code);
         $data   = $this->requests($url);
-        if ( !empty($data) ){            
+        if ( !empty($data) && !empty($data['id']) ){            
             $_data = array(
                 'code'      => $code,
                 'number'    => $number,
@@ -105,16 +105,16 @@ class RunModule extends AppModule
         $list   = $this->getPatentList($ids);
         foreach ($list as $k => $v) {
             $num++;
-            $number     = $v['number'];
-            $source     = $v['type'];
+            $number     = trim($v['number']);
+            $source     = trim($v['type']);
             $saleType   = '1';//出售类型，1：出售，2：许可，3：出+许
             $isVerify   = '1';//审核
-            $advisor    = $v['advisor'];//顾问名称
-            $department = $v['department'];//顾问部门
-            $memo       = $v['memo'];//备注 
-            $name       = $v['name'];
-            $phone      = $v['phone'];
-            $price      = $v['price'];
+            $advisor    = trim($v['advisor']);//顾问名称
+            $department = trim($v['department']);//顾问部门
+            $memo       = trim($v['memo']);//备注 
+            $name       = trim($v['name']);
+            $phone      = trim($v['phone']);
+            $price      = trim($v['price']);
             
             $number = strtolower($number);//专利编号 带.
             $info   = $this->getPatentInfo($number);
@@ -181,6 +181,13 @@ class RunModule extends AppModule
             if ( $type == 3 ){
                 $class  = implode(',', $_class);
             }else{
+                if ( empty($_class) ){
+                    $_class = array();
+                    foreach (explode(',', $group) as $ky => $val) {
+                        $_class[] = strtolower( substr($val,0,1) );
+                    }
+                }
+                $_class = array_map('strtolower', $_class);
                 $class  = empty($_class) ? '' : implode(',', array_map('ord', $_class));
             }
             
@@ -195,6 +202,7 @@ class RunModule extends AppModule
                 'class'         => $class,
                 'group'         => $group,
                 'title'         => $title,
+                'status'        => '1',
                 'type'          => $type,
                 'applyDate'     => $applyDate,
                 'publicDate'    => $publicDate,

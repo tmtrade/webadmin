@@ -159,7 +159,7 @@
                 <tbody class="table-list">
                 <? foreach ($saleList as $k => $v) {  ?>
                 <tr>
-                    <td><input type="checkbox" name="chkId[]" class="chklist" value="<?=$v['id']?>"></td>
+                    <td><input type="checkbox" name="chkId" class="chklist" <?if ($v['status']==1){echo 'status="1"';}else{echo 'status="2"';}?> value="<?=$v['id']?>"></td>
                     <td><?=$v['number']?></td>
                     <td><span <?if ($v['status']==1){
                             echo 'class="blue"';
@@ -420,6 +420,19 @@
             });
             return false;
         }
+        
+        //判断选择的数据是否正确
+         var s = "";
+         $('input[name="chkId"]:checked ').each(function(){
+             if($(this).attr("status")!=1){
+                 s = 1;
+             }
+        });
+        if(s==1){
+            layer.msg('你选中有不在销售中的数据!');
+            return;
+        }
+        
         layer.prompt({
             formType: 2,
             scrollbar: false,
@@ -443,6 +456,7 @@
                             layer.msg('操作成功！', {
                                 time: 1000 //2秒关闭（如果不配置，默认是3秒）
                             }, function(){
+                                $('.chklist').prop("checked",false);
                                 window.location.reload();
                             });
                         }else{

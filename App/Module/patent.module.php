@@ -16,6 +16,7 @@ class PatentModule extends AppModule
         'history'               => 'patentHistory',
         'tminfo'                => 'patentInfo',
         'userPatentHistory'     => 'userPatentHistory',
+        'ptlist'                => 'patentList',
     );
     
     public function getList($params, $page, $limit=20)
@@ -366,11 +367,21 @@ class PatentModule extends AppModule
             $type = 3;
         }
         
-        if($type!=3){
-            $_class = array_map('ord', $_class);
-        }
-        $class = implode(',', array_unique(array_filter($_class)));//专利所有大类
         $group = implode(',', array_unique(array_filter($_group)));//专利所有群组
+        $_class = array_unique(array_filter($_class));
+           if ( $type == 3 ){
+               $class  = implode(',', $_class);
+           }else{
+               if ( empty($_class) ){
+                   $_class = array();
+                   foreach (explode(',', $group) as $ky => $val) {
+                       $_class[] = strtolower( substr($val,0,1) );
+                   }
+               }
+               $_class = array_map('strtolower', $_class);
+               $class  = empty($_class) ? '' : implode(',', array_map('ord', $_class));
+           }
+            
         $applyDate  = (int)strtotime($info['application_date']);//申请日
         $publicDate = (int)strtotime($info['earliest_publication_date']);//最早公开日
         $viewPhone  = $this->load('phone')->getRandPhone();
@@ -832,6 +843,59 @@ class PatentModule extends AppModule
     {
         return $this->import('contact')->find($r);
     }
+    
+    //获取单个专利数据
+    public function getPatentInfoByWanxiang($number)
+    {
+        if ( empty($number) ) return array();
 
+        $eq = (strpos($number, '.') !== false) ? array('number'=>$number) : array('code'=>$number);
+
+        $r['eq']    = $eq;
+        $r['limit'] = 1;
+        $info = $this->import('ptlist')->find($r);
+        if ( !empty($info['data']) ){
+            $data = unserialize($info['data']);
+            return $data;
+        }
+        
+        $code   = (strpos($number, '.') !== false) ? strstr($number, '.', true) : $number;
+        $url    = 'http://wanxiang.chaofan.wang/detail.php?id=%s&t=json';
+
+        $url    = sprintf($url, $code);
+        $data   = $this->requests($url);
+        if ( !empty($data) && !empty($data['id']) ){            
+            $_data = array(
+                'code'      => $code,
+                'number'    => $number,
+                'data'      => serialize($data),
+                );
+            $this->import('ptlist')->create($_data);
+        } 
+        return $data;
+    }
+    
+    //请求连接
+    public function requests( $url, $type='GET', $params=array() )
+    {
+        $_type = ($type == 'POST') ? 'POST' : 'GET';
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $_type);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt(
+            $ch, CURLOPT_POSTFIELDS, $params
+        );
+        $result = curl_exec($ch);
+        
+        if($result === false) {
+            $result = curl_error($ch);
+        }
+        curl_close($ch);
+        $res =  json_decode(trim($result,chr(239).chr(187).chr(191)),true);
+        return $res;
+    }
 }
 ?>

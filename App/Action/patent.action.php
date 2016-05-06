@@ -369,11 +369,10 @@ class PatentAction extends AppAction
 		$number = $this->input('number', 'text', '');
 		$isAdd 	= $this->input('add', 'int', 0);
 		if ( empty($number) ) $this->returnAjax(array('code'=>6));
-                $info = $this->load('run')->getPatentInfo($number);
+                $info = $this->load('patent')->getPatentInfoByWanxiang($number);
 		if ( !$info['id'] ) $this->returnAjax(array('code'=>4));//无商标信息
 		$patentId = $this->load('patent')->existSale($number);
 		if ( $patentId ) $this->returnAjax(array('code'=>2,'id'=>$patentId));//在出售中
-
 		if ( $isAdd ){
 			//正常商标马上创建默认的出售信息
 			$patentId = $this->load('patent')->addDefault($number,$info);

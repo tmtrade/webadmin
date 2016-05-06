@@ -50,7 +50,7 @@ class InternalModule extends AppModule
                     if($k==0){
                         $mstr = "MATCH(`class`) AGAINST ('{$v}')";
                     }else{
-                        $mstr .= " and MATCH(`class`) AGAINST ('{$v}')";
+                        $mstr .= " or MATCH(`class`) AGAINST ('{$v}')";
                     }
                     
                 }
@@ -62,7 +62,7 @@ class InternalModule extends AppModule
                     $nameList[] = '"'.$v['name'].'"';
                 }
                 $nameStr = implode(",", $nameList);
-                $r['raw'] .= " AND name in ({$nameStr}) and MATCH class AGAINST ('{$params['tmClass']}') or ({$mstr})";
+                $r['raw'] .= " AND name in ({$nameStr}) and MATCH class AGAINST ('{$params['tmClass']}') and ({$mstr})";
                 
             }else{
                  $r['ft']['class'] = $params['tmClass'];

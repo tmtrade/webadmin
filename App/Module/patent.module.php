@@ -17,6 +17,7 @@ class PatentModule extends AppModule
         'tminfo'                => 'patentInfo',
         'userPatentHistory'     => 'userPatentHistory',
         'ptlist'                => 'patentList',
+         'test'                 => 'test',
     );
     
     public function getList($params, $page, $limit=20)
@@ -751,93 +752,6 @@ class PatentModule extends AppModule
         return $total;
     }
 	
-	//组装商标数据，写入数据库.用事物做，一个不写入，则都不写入
-	public function saleZZ($info,$data,$param)
-    {
-		//事物开始
-		//$start = $this->msectime();
-		$number = $data['number'];
-		$type = $label = $platform = $length = array();
-		$price      = 0;//指导价格
-		$priceType  = 2;//价格类型 1定价，2议价
-		$isOffprice = 2;//是否特价
-		$patentPrice  = 0;//特价价格
-		$patentPriceDate = 0;//特价时间
-
-		$status = 1;//销售中
-		$isTop  = 0;//不置项
-		$date   = 0;//出售时间
-		$hits   = 0;//阅读数
-		$class  = implode(',', $info['class']);
-		//联系人
-		$contact = array(
-			'source'        => intval($param['source']),
-			'userId'        => 0,
-			'tid'           => intval($info['tid']),
-			'number'        => $number,
-			'name'          => $param['name'] ? $param['name'] : $data['name'],
-			'phone'         => $param['phone'] ? $param['phone'] : $data['phone'],
-			'price'         => isset($data['price']) ? $data['price'] : 0,
-			'saleType'      => 1,
-			'isVerify'      => 1,
-			'advisor'       => $data['advisor'],
-			'department'    => $data['department'],
-			'date'          => time(),
-			'isVerify'  	=> 1,
-		);
-		
-		//出售数据
-		$other  = $this->load('trademark')->getTmOther($number);
-		
-
-        if ( empty($other) ) return false;
-        $platform   = implode(',', $other['platform']);
-		$length	    = $other['length'];
-		$type	    = $other['type'];
-		$viewPhone  = $this->load('phone')->getRandPhone();
-        $regDate    = strtotime($info['reg_date']) > 0 ? strtotime($info['reg_date']) : 0;
-		$patent = array(
-			'tid'           => intval($info['tid']),
-			'number'        => $number,
-			'class'         => $class,
-			'group'         => trim($info['group']),
-			'name'          => trim($info['name']),
-			'pid'           => intval($info['pid']),
-			'price'         => $price,
-			'priceType'     => $priceType,
-			'isOffprice'    => $isOffprice,
-			'salePrice'     => $patentPrice,
-			'salePriceDate' => $patentPriceDate,
-			'status'        => $status, 
-			'isSale'        => 1,
-			'isLicense'     => 2,
-			'isTop'         => $isTop,
-			'type'          => $type,
-			'platform'      => $platform,
-			'label'         => '',
-			'length'        => $length,
-            'regDate'       => $regDate,
-			'date'          => $date,
-			'viewPhone'     => $viewPhone,
-			'hits'          => intval($hits),
-			'memo'          => $data['memo'],
-			'date'          => time(),
-			);
-		$tminfo = array(
-            'number'    => $number,
-            'memo'      => $data['memo'],
-			'intro'     => '',
-			
-        );
-	
-		$result = array(
-			'sale'          => $patent,
-			'saleTminfo'    => $tminfo,
-			'saleContact'   => $contact,
-			);
-		$res = $this->load('internal')->addAll($result);
-		return $res;
-    }
 
     public function findContact($r)
     {
@@ -845,7 +759,7 @@ class PatentModule extends AppModule
     }
     
     //获取单个专利数据
-    public function getPatentInfoByWanxiang($number)
+    public function getPatentInfoByWanxiang($number,$addlist=1)
     {
         if ( empty($number) ) return array();
 
@@ -864,7 +778,7 @@ class PatentModule extends AppModule
 
         $url    = sprintf($url, $code);
         $data   = $this->requests($url);
-        if ( !empty($data) && !empty($data['id']) ){            
+        if ( !empty($data) && !empty($data['id']) && $addlist==1){            
             $_data = array(
                 'code'      => $code,
                 'number'    => $number,
@@ -896,6 +810,21 @@ class PatentModule extends AppModule
         curl_close($ch);
         $res =  json_decode(trim($result,chr(239).chr(187).chr(191)),true);
         return $res;
+    }
+    
+     //获取待处理的专利
+    function getPatentTest($number)
+    {
+        $r['eq'] = array('number'=>$number);
+        $r['limit'] = 1;
+        return $this->import('test')->find($r);
+    }
+    
+      //获取待处理的专利
+    function createTest($data)
+    {
+        if (!$data['number']) return false;
+        return $this->import('test')->create($data);
     }
 }
 ?>

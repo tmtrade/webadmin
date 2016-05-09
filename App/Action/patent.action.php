@@ -449,44 +449,143 @@ class PatentAction extends AppAction
 		$this->returnAjax(array('code'=>2, 'msg'=>'驳回失败了'));
     }
 
-	protected function getSetting()
-	{
-		$saleStatus     = C("SALE_STATUS");//出售商标状态
-                $saleType 	= C("SALE_TYPE");
-		$saleSource     = C("SOURCE");//来源渠道
-		$tmLabel 	= C("TM_LABEL");//商标标签
-		$tmPrice 	= C("SEARCH_PRICE");//出售搜索底价
-                $patentType 	= C("PATENT_TYPE");//专利类别
-                $patentClassOne	= C("PATENT_ClASS_ONE");//行业分类
-                $patentClassTwo	= C("PATENT_ClASS_TWO");//行业分类
-                
-		$this->set('tmPrice', $tmPrice);
-		$this->set('tmLabel', $tmLabel);
-                $this->set('saleType', $saleType);
-		$this->set('saleSource', $saleSource);
-		$this->set('saleStatus', $saleStatus);
-                $this->set('patentType', $patentType);
-                $this->set('patentClassOne', $patentClassOne);
-                $this->set('patentClassTwo', $patentClassTwo);
-	}
-	
-	
-	
-	//导出数据提交操作
-	public function excel()
-	{
-		$params = $this->getFormData();
-		$list = $this->load('patent')->getExcelList($params);
+    protected function getSetting()
+    {
+            $saleStatus     = C("SALE_STATUS");//出售商标状态
+            $saleType 	= C("SALE_TYPE");
+            $saleSource     = C("SOURCE");//来源渠道
+            $tmLabel 	= C("TM_LABEL");//商标标签
+            $tmPrice 	= C("SEARCH_PRICE");//出售搜索底价
+            $patentType 	= C("PATENT_TYPE");//专利类别
+            $patentClassOne	= C("PATENT_ClASS_ONE");//行业分类
+            $patentClassTwo	= C("PATENT_ClASS_TWO");//行业分类
 
-		$result = array();
-		
-		//获取所有联系人
-		foreach ($list['rows'] as $k => $v) {
-			$result[$k] = $this->load('patent')->getPatentInfo($v['id']);
+            $this->set('tmPrice', $tmPrice);
+            $this->set('tmLabel', $tmLabel);
+            $this->set('saleType', $saleType);
+            $this->set('saleSource', $saleSource);
+            $this->set('saleStatus', $saleStatus);
+            $this->set('patentType', $patentType);
+            $this->set('patentClassOne', $patentClassOne);
+            $this->set('patentClassTwo', $patentClassTwo);
+    }
+	
+	
+    //导出数据提交操作
+    public function excel()
+    {
+            $params = $this->getFormData();
+            $list = $this->load('patent')->getExcelList($params);
+
+            $result = array();
+
+            //获取所有联系人
+            foreach ($list['rows'] as $k => $v) {
+                    $result[$k] = $this->load('patent')->getPatentInfo($v['id']);
+            }
+
+            $excelTable = $params['excelTable'];
+            $data['filepath'] = $this->load('excel')->downloadExcel($result,$excelTable);
+    }	
+        
+    //导入数据弹出界面
+    public function import()
+    {
+            $source = C('SOURCE');
+            $this->set('source', $source);
+            $this->display();
+    }
+	
+    //excel文件上传
+    public function ajaxUploadExcel()
+    {
+        $msg = array(
+            'code'  => 0,
+            'msg'   => '',
+            'filename'   => '',
+            );
+        if ( empty($_FILES) || empty($_FILES['fileName']) ) {
+            $msg['msg'] = '请上传EXCEL文件';
+            $this->returnAjax($msg);
+        }
+        $obj = $this->load('upload')->uploadExcel('fileName', 'excel');
+        if ( $obj->fileurl ){
+            $msg['code']    = 1;
+            $msg['fileurl']     = $obj->fileurl;
+        }else{
+            $msg['msg']     = $obj->msg;
+        }
+        $this->returnAjax($msg);
+    }
+	
+    //导入数据提交操作
+    public function importForm()
+    {
+            $param['name'] = $this->input('name', 'text', ''); 
+            $param['phone']   = $this->input('phone', 'text', ''); //电话
+            $param['source']  = $this->input('source', 'text', '');//来源
+            $filePath  = $this->input('excelurl', 'text', '');//来源
+            $result = $this->PHPExcelToArr($filePath,$param);
+            $this->returnAjax($result);
+    }
+    
+    //把文件里面的数据读取出来，然后组成一个数组返回  
+	public function PHPExcelToArr($filePath,$param){
+		$SBarr = $this->load('excel')->PHPExcelToArr($filePath);
+		/**商标已传的黑名单  不存在该商标      上传成功的  上传失败的 黑名单**/
+		$saleExists = $saleNotHas = $saleSucess = $saleError = $saleNotContact = array();
+		if($SBarr){
+			if(isset($SBarr['statue']) && $SBarr['statue'] == 1){
+				$data['code']  = 0;
+				$data['msg']   = '上传数量超过3000条';
+			}else{
+				foreach($SBarr as $k => $item){
+					if((!$item['phone']  && !$param['phone']) || (!$item['name'] && !$param['name'])){
+						$saleNotContact[] = $item;
+						continue;
+					}
+					$tmInfo = $this->load('patent')->getPatentInfoByWanxiang($item['number'],2);
+					if(empty($tmInfo['id'])){//万象云没有该专利
+						$saleNotHas[] = $item;
+					}else{
+						//专利已上传的
+						$saleB = $this->load('patent')->getPatentTest($item['number']);
+						if($saleB){
+                                                        $saleExists[] = $item;
+							continue;
+						}else{
+                                                    //开始写入专利
+                                                    $item['type'] = $param['source'];
+                                                    $item['phone'] = $param['phone'] ? $param['phone'] : $item['phone'];
+                                                    $item['name'] = $param['name'] ? $param['name'] : $item['name'];
+                                                    $result = $this->load('patent')->createTest($item);
+                                                    if($result){
+                                                            $saleSucess[] = $item;
+                                                    }else{
+                                                            $saleError[] = $item;
+                                                    }
+						}
+					}
+				}
+				$numSucess = count($saleSucess);
+				$data['code']  = 1;
+				$data['alldata'] = count($SBarr);
+				$data['sucdata'] = $numSucess;
+				$data['errdata'] = (count($SBarr)-$numSucess);
+				if($data['errdata'] > 0){
+					$data['filepath'] = $this->load('excel')->upPatentErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact);
+				}
+			}
+		}else{
+			//没有商标数据
+			$data['code']  = 0;
+			$data['msg']   = '文件没有数据';
 		}
 		
-		$excelTable = $params['excelTable'];
-		$data['filepath'] = $this->load('excel')->downloadExcel($result,$excelTable);
-	}		
+		if(file_exists(FILEDIR.$filePath)){
+		  unlink(FILEDIR.$filePath);
+		}
+		return $data;
+	}
 }
 ?>

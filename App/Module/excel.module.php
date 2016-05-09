@@ -300,6 +300,203 @@ class ExcelModule extends AppModule
 		return $pathfile;
 	}
 	
+        /**
+	 * 导出excel  上传失败的
+	 * @author    Far
+	 * @since     2016/5/09
+	 * @access    public
+	 * @param    array $data 信息
+	 * @return   array
+	 */
+	public function upPatentErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact)
+	{
+		
+		require_once(FILEDIR."/App/Util/PHPExcel.php");	
+		$PHPExcel = new PHPExcel();
+		$PHPExcel->getProperties()->setCreator("chofn")
+			->setLastModifiedBy("chofn")
+			->setTitle("chofn")
+			->setSubject("超凡专利导入统计")
+			->setDescription("")
+			->setKeywords("专利导入统计")
+			->setCategory("");
+		$PHPExcel->setActiveSheetIndex(0);
+		$PHPExcel->getActiveSheet()->setTitle('专利导入信息');
+		$PHPExcel->setActiveSheetIndex(0);
+		//合并单元格
+		$PHPExcel->getActiveSheet()->mergeCells('B1:G1');
+		$PHPExcel->getActiveSheet()->getStyle('A1:B1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+		$PHPExcel->getActiveSheet()->getStyle('A1:B1')->getFill()->getStartColor()->setRGB('e86b1d');
+		//设置居中
+		$PHPExcel->getActiveSheet()->getStyle('A1:B1')->getAlignment()->setHorizontal(
+			PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+		);
+		//所有垂直居中
+		$PHPExcel->getActiveSheet()->getStyle('A1:B1')->getAlignment()->setVertical(
+			PHPExcel_Style_Alignment::VERTICAL_CENTER
+		);
+		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setName('微软雅黑');
+		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
+		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+		//字体颜色
+		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+		$PHPExcel->getActiveSheet()->setCellValue('A1', " 超凡-专利导入信息");
+		$PHPExcel->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(
+			PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
+		);
+		$PHPExcel->getActiveSheet()->getStyle('B1')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+		$PHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setName('微软雅黑');
+		$PHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setSize(9);
+		$PHPExcel->getActiveSheet()->setCellValue('B1',
+			"报告编号：" . date('Ymd', time()) . randCode(4, 'NUMBER') . '  数据截止时间：' . date(
+				'Y/m/d',
+				time()
+			) . '  导出时间：' . date('Y/m/d', time()) . "  "
+		);
+		
+		//第二行-----------------------------------------------------------
+		$PHPExcel->getActiveSheet()->mergeCells('A2:G2');
+		$PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setName('微软雅黑');
+		$PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setSize(12);
+		$PHPExcel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
+		$PHPExcel->getActiveSheet()->getStyle('A2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+		//设置居中
+		$PHPExcel->getActiveSheet()->getStyle('A2')->getAlignment()->setHorizontal(
+			PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+		);
+		//所有垂直居中
+		$PHPExcel->getActiveSheet()->getStyle('A2')->getAlignment()->setVertical(
+			PHPExcel_Style_Alignment::VERTICAL_CENTER
+		);
+		$numExists = count($saleExists);
+		$numNotHas = count($saleNotHas);
+		$numNError = count($saleError);
+		$numNotContact = count($saleNotContact);
+		
+		$error = $numExists+$numNotHas+$numNError+$numNotContact;
+		$PHPExcel->getActiveSheet()->setCellValue('A2',
+			"导入成功".$numSucess."条   共导入失败".$error."条  缺少联系人、缺少联系电话".$numNotContact."条 数据写入失败".$numNError."条  数据表已存在专利".$numExists."条  万象云不存在的专利".$numNotHas."条"
+		);
+		//----------------全局---------------------------------------------
+		//设置单元格宽度
+		$PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+		//设置单元格高度
+		$PHPExcel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(35);
+		//单元格样式
+		$style_obj   = new PHPExcel_Style();
+		$style_array = array(
+			'font'      => array(
+				'size' => 10.5,
+				'name' => '微软雅黑'
+			),
+			'borders'   => array(
+				'top'    => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+				'left'   => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+				'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+				'right'  => array('style' => PHPExcel_Style_Border::BORDER_THIN)
+			),
+			'alignment' => array(
+				'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+				'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+				'wrap'       => true
+			)
+		);
+		$style_obj->applyFromArray($style_array);
+		$PHPExcel->getActiveSheet()->setCellValue('A3', "专利号");
+		$PHPExcel->getActiveSheet()->setCellValue('B3', "联系人");
+		$PHPExcel->getActiveSheet()->setCellValue('C3', "联系电话");
+		$PHPExcel->getActiveSheet()->setCellValue('D3', "底价");
+		$PHPExcel->getActiveSheet()->setCellValue('E3', "顾问");
+		$PHPExcel->getActiveSheet()->setCellValue('F3', "顾问部门");
+		$PHPExcel->getActiveSheet()->setCellValue('G3', "备注");
+		//第三行--------------------------------------------------------
+		$num = 3 ;
+		if($saleExists){
+			$num = $num+1;	
+			$PHPExcel->getActiveSheet()->mergeCells('A'.$num.':G'.$num);
+			$PHPExcel->getActiveSheet()->setCellValue('A'.$num, "数据表已存在专利");
+			foreach($saleExists as $k => $item ){
+				$num ++;
+				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['number']);
+				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['name']);
+				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $item['phone']);
+				$PHPExcel->getActiveSheet()->setCellValue('D'.$num, $item['price']);
+				$PHPExcel->getActiveSheet()->setCellValue('E'.$num, $item['advisor']);
+				$PHPExcel->getActiveSheet()->setCellValue('F'.$num, $item['department']);
+				$PHPExcel->getActiveSheet()->setCellValue('G'.$num, $item['memo']);
+			}
+		}
+		if($saleNotHas){
+			$num = $num+1;
+			$PHPExcel->getActiveSheet()->mergeCells('A'.$num.':G'.$num);
+			$PHPExcel->getActiveSheet()->setCellValue('A'.$num, "该专利号错误、无对应专利号");
+			foreach($saleNotHas as $k => $item ){
+				$num ++;
+				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['number']);
+				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['name']);
+				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $item['phone']);
+				$PHPExcel->getActiveSheet()->setCellValue('D'.$num, $item['price']);
+				$PHPExcel->getActiveSheet()->setCellValue('E'.$num, $item['advisor']);
+				$PHPExcel->getActiveSheet()->setCellValue('F'.$num, $item['department']);
+				$PHPExcel->getActiveSheet()->setCellValue('G'.$num, $item['memo']);
+			}
+		}
+		if($saleNotHas){
+			$num = $num+1;
+			$PHPExcel->getActiveSheet()->mergeCells('A'.$num.':G'.$num);
+			$PHPExcel->getActiveSheet()->setCellValue('A'.$num, "数据存入错误专利");
+			foreach($saleError as $k => $item ){
+				$num ++;
+				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['number']);
+				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['name']);
+				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $item['phone']);
+				$PHPExcel->getActiveSheet()->setCellValue('D'.$num, $item['price']);
+				$PHPExcel->getActiveSheet()->setCellValue('E'.$num, $item['advisor']);
+				$PHPExcel->getActiveSheet()->setCellValue('F'.$num, $item['department']);
+				$PHPExcel->getActiveSheet()->setCellValue('G'.$num, $item['memo']);
+			}
+		}
+		
+		if($saleNotContact){
+			$num = $num+1;
+			$PHPExcel->getActiveSheet()->mergeCells('A'.$num.':G'.$num);
+			$PHPExcel->getActiveSheet()->setCellValue('A'.$num, "缺少联系人、缺少联系电话");
+			foreach($saleNotContact as $k => $item ){
+				$num ++;
+				$PHPExcel->getActiveSheet()->setCellValue('A'.$num, $item['number']);
+				$PHPExcel->getActiveSheet()->setCellValue('B'.$num, $item['name']);
+				$PHPExcel->getActiveSheet()->setCellValue('C'.$num, $item['phone']);
+				$PHPExcel->getActiveSheet()->setCellValue('D'.$num, $item['price']);
+				$PHPExcel->getActiveSheet()->setCellValue('E'.$num, $item['advisor']);
+				$PHPExcel->getActiveSheet()->setCellValue('F'.$num, $item['department']);
+				$PHPExcel->getActiveSheet()->setCellValue('G'.$num, $item['memo']);
+			}
+		}
+		
+		//---------------------------------------------------------------------------
+		$PHPExcel->setActiveSheetIndex(0);
+
+		$filename  = iconv('utf-8', 'gbk', "专利导入信息");
+		//$filenames = $filename . date('Ymd', time()) . $code; //防止乱码
+		$filenames = "errorexcel" . date('YmdHis', time()) . $code; //防止乱码
+		$objWriter = new PHPExcel_Writer_Excel5($PHPExcel);
+		header("Content-type:application/octet-stream");
+		header("Accept-Ranges:bytes");
+		header("Content-type:application/vnd.ms-excel");
+		header("Content-Disposition:attachment;filename=" . $filenames . ".xls");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+		$savepath = UPLOADEXCEL.$filenames . ".xls";
+		$pathfile = UPLOADEXCELED.$filenames . ".xls";
+		$objWriter->save($savepath);
+		return $pathfile;
+	}
 	
 	/**
 	 * 导出商标列表excel

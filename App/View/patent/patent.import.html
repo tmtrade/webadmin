@@ -84,7 +84,7 @@
         });
 		
 		$(".returnIndex").on("click",function(){
-			parent.window.location = '/internal/index/';
+			parent.window.location = '/patent/index/';
         });
     });
 
@@ -105,7 +105,7 @@
 	}
 	
 	//excel文件上传
-	$("#upfile").wrap("<form id='bzformupload' action='/internal/ajaxUploadExcel/' method='post' enctype='multipart/form-data'></form>");
+	$("#upfile").wrap("<form id='bzformupload' action='/patent/ajaxUploadExcel/' method='post' enctype='multipart/form-data'></form>");
 	$("#upfile").on('change', function(){
 	
 		/**文件格式**/
@@ -133,7 +133,7 @@
 	
 	//下载模板
 	function downModel(){
-		window.location.href="/Static/1.2/saletemplate.xls";
+		window.location.href="/Static/1.2/patenttemplate.xls";
 	}
 	
 	var filepath;
@@ -154,7 +154,7 @@
 		content = $('#importForm').serialize();
 		$.ajax({
 			type: "post",
-			url: "/internal/importForm/",
+			url: "/patent/importForm/",
 			data: content,
 			dataType: "json",
 			success: function(data){

@@ -127,6 +127,10 @@
             <? if( in_array('15', $_role_) ){ ?>
             <button class="btn btn-danger" onclick="add();"    type="button">创建商品</button>
             <? } ?>
+            
+            <? if( in_array('16', $_role_) ){ ?>
+            <button class="btn btn-danger" onclick="Import();" type="button">导入商品</button>
+            <? } ?>
             <!--<button class="btn btn-info" onclick="download();" type="button" type="button">导出表格EXCEL</button>-->
             <? if( in_array('2', $_role_) ){ ?>
             <button type="button" class="btn btn-info" onclick="setMoreDown();">批量下架</button>
@@ -522,8 +526,8 @@
         });
     }
 	
-	//批量导入专利
-	function Import()
+    //批量导入专利
+    function Import()
     {
         layer.open({
             type: 2,

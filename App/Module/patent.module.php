@@ -344,7 +344,7 @@ class PatentModule extends AppModule
     }
 
     //创建默认的商品信息
-    public function addDefault($number, $info)
+    public function addDefault($number, $info, $contact="")
     {
         if ( empty($number) ) return false;
         if ( $this->existSale($number) ) return false;
@@ -407,12 +407,16 @@ class PatentModule extends AppModule
             'intro'     => '',
             );
         $this->begin('patent');//开始事务
-        $patentId   = $this->import('patent')->create($patent);
+        $patentId  = $this->import('patent')->create($patent);
+        $contactId = true;
         if ( $patentId > 0 ){
             $ptinfo['patentId'] = $patentId;
             $flag1      = $this->import('tminfo')->create($ptinfo);
+            if(!empty($contactId)){
+                $contactId  = $this->addContact($contact, $patentId);//添加联系人
+            }
             $this->load('log')->addPatentLog($patentId, 3, $_memo);//创建商品日志
-            if($flag1){
+            if($flag1 && $contactId){
                 $this->commit('patent');
                 return $patentId;
             }
@@ -441,33 +445,6 @@ class PatentModule extends AppModule
     {
         $r['eq'] = array('patentId'=>$patentId);
         return $this->import('tminfo')->modify($data, $r);
-    }
-
-    //打包新增出售（数据过滤使用）
-    public function addAll($data)
-    {
-        if ( empty($data) || empty($data['sale']) || empty($data['saleTminfo']) || empty($data['saleContact']) ){
-            return false;
-        }
-        $patent       = $data['sale'];
-        $tminfo     = $data['saleTminfo'];
-        $contact    = $data['saleContact'];
-
-        $this->begin('sale');
-        $patentId = $this->addSale($patent);
-        if ( $patentId <= 0 ) {
-            $this->rollBack('sale');
-            return false;
-        }
-        $tminfoId   = $this->addTminfo($tminfo, $patentId);//添加包装信息
-        $contactId  = $this->addContact($contact, $patentId);//添加联系人
-        $black      = $this->load('blacklist')->setBlack($patent['number']);//加入黑名单
-		
-        if ( $tminfoId && $contactId && $black ) {
-            return $this->commit('sale');
-        } 
-        $this->rollBack('sale');
-        return false;
     }
 
     //添加出售基础信息

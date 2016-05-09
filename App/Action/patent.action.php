@@ -549,16 +549,31 @@ class PatentAction extends AppAction
 						$saleNotHas[] = $item;
 					}else{
 						//专利已上传的
-						$saleB = $this->load('patent')->getPatentTest($item['number']);
+						$saleB = $this->load('patent')->existSale($item['number']);
+                                                $dataContat = $item;
+                                                $dataContat['source']       = $param['source'];
+                                                $dataContat['phone']        = $param['phone'] ? $param['phone'] : $item['phone'];
+                                                $dataContat['name']         = $param['name'] ? $param['name'] : $item['name'];
+                                                $dataContat['saleType']     = 1;
+                                                $dataContat['number']       = $item['number'];
+                                                $dataContat['userId']       = 0;
+                                                $dataContat['isVerify']     = 1;
+                                                $dataContat['date']         = time();
 						if($saleB){
                                                         $saleExists[] = $item;
+                                                        if($param['phone'] || $item['phone']){
+								$phone = $param['phone'] ? $param['phone'] : $item['phone'];
+							}
+							$saleBContact = $this->load('patent')->getSaleContactByPhone($item['number'],$phone);
+							//如果没有这个联系人，就写入这个联系人信息
+							if(!$saleBContact){
+								$dataContat['patentId']     = $saleB;
+								$result = $this->load('patent')->addContact($dataContat,$saleB);
+							}
 							continue;
 						}else{
                                                     //开始写入专利
-                                                    $item['type'] = $param['source'];
-                                                    $item['phone'] = $param['phone'] ? $param['phone'] : $item['phone'];
-                                                    $item['name'] = $param['name'] ? $param['name'] : $item['name'];
-                                                    $result = $this->load('patent')->createTest($item);
+                                                    $result = $this->load('patent')->addDefault($item['number'],$tmInfo,$dataContat);
                                                     if($result){
                                                             $saleSucess[] = $item;
                                                     }else{

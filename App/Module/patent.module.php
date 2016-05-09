@@ -412,7 +412,7 @@ class PatentModule extends AppModule
         if ( $patentId > 0 ){
             $ptinfo['patentId'] = $patentId;
             $flag1      = $this->import('tminfo')->create($ptinfo);
-            if(!empty($contactId)){
+            if(!empty($contact)){
                 $contactId  = $this->addContact($contact, $patentId);//添加联系人
             }
             $this->load('log')->addPatentLog($patentId, 3, $_memo);//创建商品日志

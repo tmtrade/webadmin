@@ -131,6 +131,10 @@ class InternalModule extends AppModule
             $source = $params['saleSource'];
             $_child .= " AND `source` = $source ";
         }
+        if ( !empty($params['phone']) ){//处理子表联系人电话号码
+            $phone = $params['phone'];
+            $_child .= " AND `phone` = $phone ";
+        }
         if ( !empty($params['startPrice']) || !empty($params['endPrice']) ){//处理子表底价
             $_start = ($params['startPrice'] > $params['endPrice']) ? $params['endPrice'] : $params['startPrice'];
             $_end   = $params['startPrice'] + $params['endPrice'] - $_start;

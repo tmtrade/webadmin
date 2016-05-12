@@ -102,6 +102,10 @@ class InternalindexForm extends AppForm
             'field'  => 'jname',
             'match' => array('int', '', ''),
             ),
+        'phone' => array(
+            'field'  => 'phone',
+            'method' => 'fieldName',
+            ),
     );
 	
 	

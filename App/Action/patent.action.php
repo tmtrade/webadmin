@@ -544,7 +544,7 @@ class PatentAction extends AppAction
 						$saleNotContact[] = $item;
 						continue;
 					}
-					$tmInfo = $this->load('patent')->getPatentInfoByWanxiang($item['number'],2);
+					$tmInfo = $this->load('patent')->getPatentInfoByWanxiang($item['number']);
 					if(empty($tmInfo['id'])){//万象云没有该专利
 						$saleNotHas[] = $item;
 					}else{

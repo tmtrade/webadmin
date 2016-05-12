@@ -17,7 +17,6 @@ class PatentModule extends AppModule
         'tminfo'                => 'patentInfo',
         'userPatentHistory'     => 'userPatentHistory',
         'ptlist'                => 'patentList',
-         'test'                 => 'test',
     );
     
     public function getList($params, $page, $limit=20)
@@ -787,21 +786,6 @@ class PatentModule extends AppModule
         curl_close($ch);
         $res =  json_decode(trim($result,chr(239).chr(187).chr(191)),true);
         return $res;
-    }
-    
-     //获取待处理的专利
-    function getPatentTest($number)
-    {
-        $r['eq'] = array('number'=>$number);
-        $r['limit'] = 1;
-        return $this->import('test')->find($r);
-    }
-    
-      //获取待处理的专利
-    function createTest($data)
-    {
-        if (!$data['number']) return false;
-        return $this->import('test')->create($data);
     }
 }
 ?>

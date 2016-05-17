@@ -17,7 +17,34 @@ return $menu = array(
 					),
 		),
 	),
-	'2' => array(
+    '2' => array(
+		'title' => '数据分析',
+		'ico'   => 'images/menu1.png',
+		'url'   => '/visitlog/userlist/',
+		'child'	=> array(
+					'1' => array(
+						'title' => '访问者数据跟踪',
+						'url'   => '/visitlog/userlist/',
+						'auth'	=> '28',
+					),
+                                        '2' => array(
+						'title' => '模块使用频率',
+						'url'   => '/visitlog/frequency/',
+						'auth'	=> '29',
+					),
+                                        '3' => array(
+						'title' => '模块走势图',
+						'url'   => '/visitlog/trendChart/',
+						'auth'	=> '30',
+					),
+                                        '4' => array(
+						'title' => '热门搜索 筛选页',
+						'url'   => '/visitlog/search/',
+						'auth'	=> '31',
+					),
+		),
+	),
+	'3' => array(
 		'title' => '站点管理',
 		'url'   => '/phone/index/',
 		'ico'   => 'images/menu2.png',
@@ -74,7 +101,7 @@ return $menu = array(
 			),
 		),
 	),
-	'3' => array(
+	'4' => array(
 		'title' => '系统配置',
 		'ico'   => 'images/menu9.png',
 		'url'   => '/user/index/',

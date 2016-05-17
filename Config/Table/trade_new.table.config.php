@@ -236,4 +236,19 @@ $tbl['test'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['VisitlogSem'] = array(
+	'name'		=> 'st_sem_visitlog',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+$tbl['VisitlogSessions'] = array(
+	'name'		=> 'st_sessions',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+$tbl['visitlog'] = array(
+	'name'		=> 'st_visitlog',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 ?>

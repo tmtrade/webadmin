@@ -184,6 +184,7 @@ $define = array(
                 ),
 			),
 		),
+            
 		'2' => array(
 			'label' => '站点管理',
 			'child' => array(
@@ -230,6 +231,23 @@ $define = array(
 				),
 				'14' => array(
 					'label' => '缓存管理',
+				),
+			),
+		),
+                '4' => array(
+			'label' => '数据跟踪',
+			'child' => array(
+				'28' => array(
+					'label' => '访问者数据跟踪',
+				),
+				'29' => array(
+					'label' => '模块使用频率',
+				),
+				'30' => array(
+					'label' => '模块走势图',
+				),
+                                '31' => array(
+					'label' => '热门搜索 筛选页',
 				),
 			),
 		),
@@ -370,7 +388,27 @@ $define = array(
             'up'    => '1',
             'label' => '专利列表',
         ),
-	),
+        '28' => array(
+            'id'    => '28',
+            'up'    => '1',
+            'label' => '访问者数据跟踪',
+        ),
+        '29' => array(
+            'id'    => '29',
+            'up'    => '1',
+            'label' => '模块使用频率',
+        ),
+        '30' => array(
+            'id'    => '30',
+            'up'    => '1',
+            'label' => '模块走势图',
+        ),
+        '31' => array(
+            'id'    => '31',
+            'up'    => '1',
+            'label' => '热门搜索 筛选页',
+        ),
+    ),
     
         //SEO列表配置项
         'SEO_LIST' => array(

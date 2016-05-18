@@ -14,7 +14,7 @@ class VisitlogSemApi extends Entity
 	/**
 	 * 数据表键[表的唯一标识]
 	 */
-	public $tableKey = 'VisitlogSem';
+	public $tableKey = 'visitlogSem';
 
 	/**
 	 * 数据表主键

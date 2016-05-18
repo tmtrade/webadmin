@@ -14,7 +14,7 @@ class VisitlogApi extends Entity
 	/**
 	 * 数据表键[表的唯一标识]
 	 */
-	public $tableKey = 'Visitlog';
+	public $tableKey = 'visitlog';
 
 	/**
 	 * 数据表主键

@@ -236,12 +236,12 @@ $tbl['test'] = array(
 	'configFile'=> $configFile,
 );
 
-$tbl['VisitlogSem'] = array(
+$tbl['visitlogSem'] = array(
 	'name'		=> 'st_sem_visitlog',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
-$tbl['VisitlogSessions'] = array(
+$tbl['visitlogSessions'] = array(
 	'name'		=> 'st_sessions',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,

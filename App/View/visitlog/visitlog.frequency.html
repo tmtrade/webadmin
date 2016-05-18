@@ -40,7 +40,7 @@
                     <tbody class="table-list">
                     <tr>
                     <? foreach ($v['view'] as $key => $val) { ?>
-                        <td>模块：<?=$val['title']?>&nbsp;&nbsp;<img src="/Static/images/u35.png">&nbsp;&nbsp;点击次数：<?=$val['count']?>&nbsp;&nbsp;<img src="/Static/images/u43.png">&nbsp;&nbsp;占比：<?=$val['zhanbi']?>%</td>
+                        <td width="33%">模块：<?=$val['title']?>&nbsp;&nbsp;<img src="/Static/images/u35.png">&nbsp;&nbsp;点击次数：<?=$val['count']?>&nbsp;&nbsp;<img src="/Static/images/u43.png">&nbsp;&nbsp;占比：<?=$val['zhanbi']?>%</td>
                         <? if($key%3==0){
                             echo "</tr><tr>";
                         }
@@ -55,7 +55,7 @@
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     $(function(){
-        $("#mj-sBtn").click(function(){
+        $(".mj-sBtn").click(function(){
 			var index = layer.load(1, {
 				shade: [0.5,'#fff'] //0.1透明度的白色背景
 			});

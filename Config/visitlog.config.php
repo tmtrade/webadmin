@@ -369,5 +369,109 @@ return $frequency = array(
                 ),
             ),
         ),
+    "4" =>array(
+        'title'     => '商品详情页',
+        "url"       =>"http://www.yizhchan.com/d",
+        "like"      =>1,
+	'view' => array(
+            '1' => array(
+                    'title' => '热门商标',
+                    'url'   => 'http://www.yizhchan.com/zhuanti/view/?id=24',
+                ),
+            '2' => array(
+                    'title' => '买一送一',
+                    'url'   => 'http://www.yizhchan.com/topic/buyone_getone',
+                ),
+            '3' => array(
+                    'title' => '入驻平台-京东',
+                    'url'   => 'http://www.yizhchan.com/v-54-989/#r6',
+                ),
+            '4' => array(
+                    'title' => '入驻平台-天猫',
+                    'url'   => 'http://www.yizhchan.com/v-54-989/#r7',
+                ),
+            '5' => array(
+                    'title' => '入驻平台-大型超市',
+                    'url'   => 'http://www.yizhchan.com/v-54-989/#r1',
+                ),
+            '6' => array(
+                    'title' => '入驻平台-一号店',
+                    'url'   => 'http://www.yizhchan.com/v-54-989/#r5',
+                ),
+            '7' => array(
+                    'title' => '入驻平台-美丽说',
+                    'url'   => 'http://www.yizhchan.com/v-54-989/#r3',
+                ),
+            '8' => array(
+                    'title' => '入驻平台-聚美优品',
+                    'url'   => 'http://www.yizhchan.com/v-54-989/#r4',
+                ),
+            '8' => array(
+                    'title' => '入驻平台-聚美优品',
+                    'url'   => 'http://www.yizhchan.com/v-54-989/#r4',
+                ),
+            '9' => array(
+                    'title' => '商标检测',
+                    'url'   => 'http://jingling.yizhchan.com/?nid',
+                    "like"      =>1,
+                ),
+            '10' => array(
+                    'title' => '猜你喜欢+浏览记录',
+                    'url'   => 'http://www.yizhchan.com/d',
+                    "like"      =>1,
+                ),
+            '11' => array(
+                        'title' => '成功案例-格伦贝拉',
+                        'url'   => 'http://www.yizhchan.com/case/detail/?id=14',
+                ),
+             '12' => array(
+                        'title' => '成功案例-Hesiod',
+                        'url'   => 'http://www.yizhchan.com/case/detail/?id=12',
+                ),
+             '13' => array(
+                        'title' => '成功案例-麦普森',
+                        'url'   => 'http://www.yizhchan.com/case/detail/?id=16',
+                ),
+            
+            ),
+        ),
+    "5" =>array(
+        'title'     => '通用',
+        "url"       =>"http://www.yizhchan.com/",
+        "like"      =>1,
+	'view' => array(
+            '1' => array(
+                    'title' => '搜索',
+                    'url'   => 'http://www.yizhchan.com/s-kw',
+                    "like"      =>1,
+                ),
+            '2' => array(
+                    'title' => '左侧下拉菜单',
+                    'url'   => 'http://www.yizhchan.com/g',
+                    "like"      =>1,
+                ),
+            '3' => array(
+                    'title' => '频道按钮-特价商标',
+                    'url'   => 'http://www.yizhchan.com/offprice',
+                ),
+            '4' => array(
+                    'title' => '频道按钮-商标筛选',
+                    'url'   => 'http://www.yizhchan.com/s/',
+                ),
+            '5' => array(
+                    'title' => '频道按钮-商标注册',
+                    'url'   => 'http://r.chaofan.wang/reg/',
+                ),
+            '6' => array(
+                    'title' => '频道按钮-专利购买',
+                    'url'   => 'http://www.yizhchan.com/pt',
+                ),
+            '7' => array(
+                    'title' => '频道按钮-专利出售',
+                    'url'   => 'http://www.yizhchan.com/pt/sell',
+                ),
+            
+            ),
+        ),
 );
 ?>

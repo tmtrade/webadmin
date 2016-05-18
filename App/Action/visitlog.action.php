@@ -54,9 +54,12 @@ class VisitlogAction extends AppAction
 		$total 	= empty($footprint['total']) ? 0 : $footprint['total'];
 		$list 	= empty($footprint['rows']) ? array() : $footprint['rows'];
 		$total = ceil($total/$size);
+		//来源页
+		$referr = $this->getReferrUrl('viewuser');
 		//渲染页面
 		$this->set('start',$start1);
 		$this->set('end',$end1);
+		$this->set('referr',$referr);
 		$this->set('total', $total);
 		$this->set('page', $page);
 		$this->set("basic",$basic);

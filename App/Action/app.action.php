@@ -146,6 +146,7 @@ abstract class AppAction extends Action
 		//配置项
 		$referrArr 	= array(
 			'internal_edit' => '/internal/index/',
+			'viewuser' => '/visitlog/userlist/',
                         'patent_edit' => '/patent/index/',
 			); 
 		if ( empty($referrArr[$action]) ) return '/index/main/';

@@ -357,7 +357,11 @@ class PatentModule extends AppModule
             array_push($_group, $val['id']);
             $_group = array_merge($_group, (array)$val['ancestors']);
         }
-        $title  = $info['title']['original'];//专利标题
+        //专利标题
+        $title  = $info['title']['original'] ? $info['title']['original'] : $info['title']['zh-cn'];
+        if(!$title){
+            $title = $info['title']['en'];
+        }
         $type   = 0;//专利类型
         if ( strpos($info['typeName'], '发明') !== false ){
             $type = 1;
@@ -403,7 +407,7 @@ class PatentModule extends AppModule
         $ptinfo = array(
             'number'    => $number,
             'code'      => $code,
-            'intro'     => '',
+            'intro'     => empty($info['abstract']['original'])?$info['abstract']['en']:$info['abstract']['original'],
             );
         $this->begin('patent');//开始事务
         $patentId  = $this->import('patent')->create($patent);

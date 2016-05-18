@@ -214,7 +214,7 @@ class RunModule extends AppModule
             $ptinfo = array(
                 'number'    => $number,
                 'code'      => $code,
-                'intro'     => '',
+                'intro'     => empty($info['abstract']['original'])?$info['abstract']['en']:$info['abstract']['original'],
                 );
 
             $contact = array(

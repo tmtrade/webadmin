@@ -23,14 +23,14 @@
             <br />
             <div style="width:100%;height:250px">
             <? foreach ($authList as $k => $v) {?>
-            <span style="width:140px;height:100px;text-align:center;float:left;margin:10 0 10 0;">
+            <span style="width:140px;text-align:center;float:left;margin:10px 0 10px 0;">
             <div style="text-align:left;"><?=$v['label']?></div>            
             <ul style="text-align:left;padding-left:20px;">
                 <? if( !empty($v['child']) ){ 
                    foreach ($v['child'] as $ky => $val) {
                 ?>
                 <li>
-                <input type="checkbox" name="role[]" class="checklist" value="<?=$ky?>"  />&nbsp;<?=$val['label']?>&nbsp;&nbsp;
+                <label><input type="checkbox" name="role[]" class="checklist" value="<?=$ky?>"  />&nbsp;<?=$val['label']?></label>&nbsp;&nbsp;
                 </li>
                 <?  }
                 }?>

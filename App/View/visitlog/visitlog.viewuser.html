@@ -1,0 +1,135 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<style>
+.img-flip {
+        position:absolute;
+        width:16px;
+        height:16px;
+        -webkit-transform:rotate(180deg);
+        -moz-transform:rotate(180deg);
+        -ms-transform:rotate(180deg);
+        transform:rotate(180deg);
+    }
+</style>
+<div class="place">
+    <h4><span>访问者数据跟踪分析 / <sub>访问者详情</sub></span></h4>
+</div>
+<div class="wrap">
+    <div class="wrap-content">
+		<br>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <caption>访问者基本信息</caption>
+                <thead>
+                    <tr class="active">
+						<td>访问者类型</td>
+                        <td>来源</td>
+                        <td>忠诚度</td>
+                        <td>用户id</td>
+						<td>访问者姓名</td>
+                        <td>联系电话</td>
+                        <td>操作</td>
+                    </tr>
+                </thead>
+                <tbody class="table-list">
+                <tr>
+					<td>访问者</td>
+					<td><?=($basic['issem']?'推广':'直接访问')?></td>
+					<td><?=($basic['visits']>5)?'老用户':'新用户'?>(<?=$basic['visits']?>)</td>
+                    <td>未实现</td>
+                    <td>未实现</td>
+                    <td>未实现</td>
+                    <td>
+						<a href="javascript:;" onclick="">前往crm系统管理用户(未实现)</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>   
+		<br>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <caption>访问轨迹</caption>
+                <tbody>
+                    <tr>
+                        <td colspan="5">
+                            <form id="timeoo">
+                                <label>我需要统计从：</label> <input type="text" name="start" value="<?=($start?$start:'')?>" class="input input-sm start" readonly style="border: 1px solid #3EAFE0" onclick="laydate()" />
+                                <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input style="border: 1px solid #3EAFE0" type="text" name="end" value="<?=($end?$end:'')?>" class="input input-sm end" readonly onclick="laydate()" />
+                                <input style="float: right;margin-right: 200px" class="mj-sBtn timeooo" type="button"  value="确定">
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+                <?foreach($list as $k=>$v):?>
+                    <tbody class="table-list">
+                        <tr style="font-weight: bold;">
+                            <td width="10%"><a href="javascript:;" class="btn btn-info"><?=$k?></a></td>
+                            <td colspan="4"style=" vertical-align: middle"><?=$v['location']?> <?=$v['ip']?></td>
+                        </tr>
+                        <tr style="font-weight: 600">
+                            <td></td>
+                            <td>访问时间</td>
+                            <td>停留时间</td>
+                            <td>页面类型</td>
+                            <td>操作类型</td>
+                        </tr>
+                        <?foreach($v['data'] as $item):?>
+                            <tr>
+                                <td></td>
+                                <td><?=date('H:i',$item['time'])?></td>
+                                <td><?=($item['stay']?date('i:s',$item['stay']):0)?></td>
+                                <td><?=$item['type']?></td>
+                                <td>未实现</td>
+                            </tr>
+                        <?endforeach;?>
+                    </tbody>
+                <?endforeach;?>
+            </table>
+        </div>
+        <br>
+        <div id="page1" align="center" style="margin:10px 0 40px 0"></div>
+    </div>
+</div>
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script src="<?=StaticDir?>1.2/js/objurl.js"></script>
+<script src="<?=StaticDir?>1.2/js/laypage/laypage.js"></script>
+<script type="text/javascript">
+    var total = "<?=$total?>";
+    var page = "<?=$page?>";
+    //分页
+    laypage({
+        cont: 'page1',
+        pages: total,
+        curr: page,
+        jump: function(e, first){ //触发分页后的回调
+            if(!first){
+                var myurl = new objURL(location.href);
+                //操作url
+                myurl.set('page',e.curr);
+                location.href=myurl.url();
+            }
+        },
+        skip: true, //是否开启跳页
+        skin: 'molv',
+        prev: false,
+        next: false,
+    });
+    if(total){
+        $('.laypage_main').prepend('<span>'+page+' / '+total+' 页</span>>');
+    }
+    $(function(){
+        //提交时间
+        $('.timeooo').click(function(){
+            var start = $('.start').val();
+            var end = $('.end').val();
+            var myurl = new objURL(location.href);
+            //操作url
+            myurl.remove('page');
+            myurl.set('start',start);
+            myurl.set('end',end);
+            location.href=myurl.url();
+        })
+    });
+</script>
+<? require(ViewDir.'/footer.html'); ?>

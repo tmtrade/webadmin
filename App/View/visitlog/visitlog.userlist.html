@@ -12,48 +12,37 @@
     }
 </style>
 <div class="place">
-    <span>位置：</span>
-    <ul class="placeul">
-        <li>首页</li>
-        <li>专题设置</li>
-        <li>专题设置列表</li>
-    </ul>
+    <span>访问者数据跟踪分析</span>
 </div>
 <div class="wrap">
     <div class="wrap-content">
-		<p class="text-left" style="float:left;margin-top:20px;padding:0 5px 0 5px;background-color:#FFFF99;border:1px solid #dadada;">您可以在此为分类、群组设置对应的描述语言、标签以及权重排序。共有 <b class="red"><?=$total?></b> 条数据</p>
-        <br>
-		<br>
 		<br>
         <div class="wrap-table">
             <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
                 <thead>
                     <tr class="active">
-						<th>序号</th>
-                        <th>专题标题</th>
-                        <th>发布时间</th>
-                        <th>创建者</th>
-                        <th>专题类型</th>
-						<th>包含商品</th>
-                        <th>是否启用</th>
+						<th>访问者类型</th>
+                        <th>来源</th>
+                        <th>设备</th>
+                        <th>忠诚度</th>
+                        <th>用户画像</th>
+						<th>访问时间</th>
+                        <th>时长</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody class="table-list">
                 <? foreach ($list as $k => $v) {  ?>
                 <tr>
-					<td><?=($k+1)?></td>
-                    <td><?=$v['title']?></td>
-					<td><?=date('Y-m-d', $v['date'])?></td>
-					<td><?=$v['member']?></td>
-                    <td><?=$v['type']==1?'普通专题':'静态链接专题'?></td>
-					<td><?=$v['classNum']?></td>
-                    <td><?=$v['isUse']==1?'是':'否'?></td>
+					<td>访问者</td>
+					<td><?=($v['issem']?'推广':'直接访问')?></td>
+					<td><?=($v['device'])?'手机':'电脑'?></td>
+					<td><?=($v['visits']>5)?'老用户':'新用户'?>(<?=$v['visits']?>)</td>
+                    <td>无</td>
+					<td><?=date('Y.m.d H:i', $v['lastdateline'])?></td>
+					<td><?=$v['stay']?></td>
                     <td>
-						<a href="javascript:void(0);" onclick="delTopic(<?=$v['id']?>);">删除</a>
-						<a href="/topic/edit/?id=<?=$v['id']?>">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
-						<span onclick="sortChaneg(<?=$v['id']?>, 1 , 1)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
-						<span class="img-flip" onclick="sortChaneg(<?=$v['id']?>, 1, 2)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
+						<a href="/visitlog/viewuser/?sid=<?=$v['sid']?>" onclick="">查看详情</a>
                     </td>
                 </tr>
                 <? } ?>
@@ -61,95 +50,35 @@
             </table>
         </div>   
 		<br>
-		<div class="btn-group">
-            <button class="btn btn-danger add-topic" type="button">+ 创建一个模块</button>
-        </div>
-        <div id="page" align="center"><?=$pageBar?></div>
+        <div id="page1" align="center" style="margin:10px 0 40px 0"></div>
     </div>
 </div>
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script src="<?=StaticDir?>1.2/js/objurl.js"></script>
+<script src="<?=StaticDir?>1.2/js/laypage/laypage.js"></script>
 <script type="text/javascript">
-    $(function (){
-
-        $(".add-topic").click(function(){
-            layer.open({
-                type: 2,
-                scrollbar: false,
-                title: '创建专题',
-                area: ['400px', '200px'],
-
-                content: '/topic/add/'
-            });
-        });
-    });
-//删除链接
-function delTopic(id)
-{	
-	if ( id <= 0 || id == '' ) return false;
-	layer.confirm('确认要删除此模块吗？<br>', {
-		btn: ['删了','算了'] //按钮
-	}, function(){
-		$.ajax({
-			type : 'post',
-			url  : '/topic/delTopic/',
-			data : {'id':id},
-			dataType : 'json',
-			success : function (data){
-				if (data.code==1){
-					layer.msg('操作成功', {
-						time: 1000 //2秒关闭（如果不配置，默认是3秒）
-					}, function(){
-						window.location.reload();
-					});
-				}else{
-					var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
-					layer.msg(msg, {
-						time: 2000 //2秒关闭（如果不配置，默认是3秒）
-					});
-				}
-			},
-			error : function (data){
-				layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
-					time: 2000 //2秒关闭（如果不配置，默认是3秒）
-				});
-			}
-		});
-	});
-}
-
-
-function sortChaneg(id, type, updown)
-{
-    if ( id == '' || updown == '' || type == '') return false;
-    $.ajax({
-        type : 'post',
-        url  : '/topic/sortChaneg/',
-        data : {id:id,updown:updown,type:type},
-        dataType : 'json',
-        success : function (data){
-            if (data.code==1){
-                layer.msg('操作成功', {
-                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                }, function(){
-                    window.location.reload();
-                });
-            }else{
-                layer.msg(data.msg, {
-                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                });
+    var total = "<?=$total?>";
+    var page = "<?=$page?>";
+    //分页
+    laypage({
+        cont: 'page1',
+        pages: total,
+        curr: page,
+        jump: function(e, first){ //触发分页后的回调
+            if(!first){
+                var myurl = new objURL(location.href);
+                //操作url
+                myurl.set('page',e.curr);
+                location.href=myurl.url();
             }
         },
-        error : function (data){
-            layer.msg('操作失败，请稍后重试。', {
-                time: 2000 //2秒关闭（如果不配置，默认是3秒）
-            });
-        }
+        skip: true, //是否开启跳页
+        skin: 'molv',
+        prev: false,
+        next: false,
     });
-}
-
-function edit(id){
-	window.location.href="/topic/edit/?id="+id;
-}
+    if(total){
+        $('.laypage_main').prepend('<span>'+page+' / '+total+' 页</span>>');
+    }
 </script>
-
 <? require(ViewDir.'/footer.html'); ?>

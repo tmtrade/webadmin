@@ -1,155 +1,123 @@
 <? require(ViewDir.'/header.html');?>
+<script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+<script src="http://cdn.hcharts.cn/highcharts/highcharts-3d.js"></script>
+<script src="http://cdn.hcharts.cn/highcharts/modules/exporting.js"></script>
+
 <link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<script type="text/javascript">
+$(function () {
+    // Set up the chart
+    var chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'container',
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 20,
+                beta: -4,
+                depth: 52,
+                viewDistance: 25
+            }
+        },
+        title: {
+            text: '模块数据柱形走势图'
+        },
+        plotOptions: {
+            column: {
+                depth: 25
+            }
+        },
+		xAxis: {
+            categories: <?=$data['date']?>
+        },
+        series: [{
+            data: [<?=$data['page_count']?>]
+        }]
+    });
+
+});
+</script>
 <style>
-.img-flip {
-        position:absolute;
-        width:16px;
-        height:16px;
-        -webkit-transform:rotate(180deg);
-        -moz-transform:rotate(180deg);
-        -ms-transform:rotate(180deg);
-        transform:rotate(180deg);
-    }
+    td{border: 1px solid #dadada;}
+    #container {
+    height: 500px; 
+    width:1000px;
+}
 </style>
 <div class="place">
     <span>位置：</span>
     <ul class="placeul">
         <li>首页</li>
-        <li>专题设置</li>
-        <li>专题设置列表</li>
+        <li>数据分析</li>
+        <li>模块走势图</li>
     </ul>
 </div>
 <div class="wrap">
+    <div class="mj-screening">
+        <div class="mj-seT f-clearfix">
+            <span>模块走势图</span>
+        </div>
+        <form name="visitlogForm" id="visitlogForm" action="/visitlog/trendChart/" method="GET">
+        <dl>
+            <dd>
+               <label> 我要统计从：</label>
+               <label>页面：</label>
+                <select name="pages" class="input input-sm" id="pages">
+                    <option value="0">--请选择--</option>
+                <? foreach ($url_array as $k => $v) {?>
+                    <option value="<?=$k?>" <?if($s['pages']==$k){echo 'selected';} ?>><?=$v['title']?></option>
+                <? } ?>
+                </select>
+                <label> 模块：</label>
+                <select name="page_module" class="input input-sm" id="page_module">
+                    <option value="0">--请选择--</option>
+                    <? foreach ($url_array[$s['pages']]['view'] as $k => $v) {?>
+                        <option value="<?=$k?>" <?if($s['page_module']==$k){echo 'selected';} ?>><?=$v['title']?></option>
+                    <? } ?>
+                </select>
+               
+               <input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
+                <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input type="text" name="dateEnd" value="<?=$s['dateEnd']?>" class="input input-sm" readonly onclick="laydate()" />
+                
+                <a href="javascript:void(0);" class="mj-sBtn mj-sBtn-search" style="display:inline-block;margin-left:50px;">搜索</a>
+            </dd>
+        </dl>
+        </form>
+    </div>
     <div class="wrap-content">
-		<p class="text-left" style="float:left;margin-top:20px;padding:0 5px 0 5px;background-color:#FFFF99;border:1px solid #dadada;">您可以在此为分类、群组设置对应的描述语言、标签以及权重排序。共有 <b class="red"><?=$total?></b> 条数据</p>
-        <br>
-		<br>
 		<br>
         <div class="wrap-table">
-            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
-                <thead>
-                    <tr class="active">
-						<th>序号</th>
-                        <th>专题标题</th>
-                        <th>发布时间</th>
-                        <th>创建者</th>
-                        <th>专题类型</th>
-						<th>包含商品</th>
-                        <th>是否启用</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody class="table-list">
-                <? foreach ($list as $k => $v) {  ?>
-                <tr>
-					<td><?=($k+1)?></td>
-                    <td><?=$v['title']?></td>
-					<td><?=date('Y-m-d', $v['date'])?></td>
-					<td><?=$v['member']?></td>
-                    <td><?=$v['type']==1?'普通专题':'静态链接专题'?></td>
-					<td><?=$v['classNum']?></td>
-                    <td><?=$v['isUse']==1?'是':'否'?></td>
-                    <td>
-						<a href="javascript:void(0);" onclick="delTopic(<?=$v['id']?>);">删除</a>
-						<a href="/topic/edit/?id=<?=$v['id']?>">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
-						<span onclick="sortChaneg(<?=$v['id']?>, 1 , 1)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
-						<span class="img-flip" onclick="sortChaneg(<?=$v['id']?>, 1, 2)"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
-                    </td>
-                </tr>
-                <? } ?>
-                </tbody>
-            </table>
-        </div>   
-		<br>
-		<div class="btn-group">
-            <button class="btn btn-danger add-topic" type="button">+ 创建一个模块</button>
+            <div id="container"></div>
         </div>
-        <div id="page" align="center"><?=$pageBar?></div>
     </div>
 </div>
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-    $(function (){
-
-        $(".add-topic").click(function(){
-            layer.open({
-                type: 2,
-                scrollbar: false,
-                title: '创建专题',
-                area: ['400px', '200px'],
-
-                content: '/topic/add/'
+    $(function(){
+        var page_url = new Array();
+        page_url = '<?=$url_json?>';
+        page_url = eval("("+page_url+")");
+        
+        //提交按钮
+        $(".mj-sBtn").click(function(){
+			var index = layer.load(1, {
+				shade: [0.5,'#fff'] //0.1透明度的白色背景
+			});
+            $("#visitlogForm").submit();
+        });
+        
+        //选择页面
+        $("#pages").change(function(){
+            var id = $(this).val();
+            if(id===0) return;
+            var str="<option value='0'>--请选择--</option>";
+            $.each(page_url[id]['view'],function(key,val){
+                str+="<option value='"+key+"'>"+val.title+"</option>";
             });
+             
+            //console.log(dataObj[id]);
+            $("#page_module").html(str);
         });
     });
-//删除链接
-function delTopic(id)
-{	
-	if ( id <= 0 || id == '' ) return false;
-	layer.confirm('确认要删除此模块吗？<br>', {
-		btn: ['删了','算了'] //按钮
-	}, function(){
-		$.ajax({
-			type : 'post',
-			url  : '/topic/delTopic/',
-			data : {'id':id},
-			dataType : 'json',
-			success : function (data){
-				if (data.code==1){
-					layer.msg('操作成功', {
-						time: 1000 //2秒关闭（如果不配置，默认是3秒）
-					}, function(){
-						window.location.reload();
-					});
-				}else{
-					var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
-					layer.msg(msg, {
-						time: 2000 //2秒关闭（如果不配置，默认是3秒）
-					});
-				}
-			},
-			error : function (data){
-				layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
-					time: 2000 //2秒关闭（如果不配置，默认是3秒）
-				});
-			}
-		});
-	});
-}
-
-
-function sortChaneg(id, type, updown)
-{
-    if ( id == '' || updown == '' || type == '') return false;
-    $.ajax({
-        type : 'post',
-        url  : '/topic/sortChaneg/',
-        data : {id:id,updown:updown,type:type},
-        dataType : 'json',
-        success : function (data){
-            if (data.code==1){
-                layer.msg('操作成功', {
-                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                }, function(){
-                    window.location.reload();
-                });
-            }else{
-                layer.msg(data.msg, {
-                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
-                });
-            }
-        },
-        error : function (data){
-            layer.msg('操作失败，请稍后重试。', {
-                time: 2000 //2秒关闭（如果不配置，默认是3秒）
-            });
-        }
-    });
-}
-
-function edit(id){
-	window.location.href="/topic/edit/?id="+id;
-}
-</script>
-
+    </script>
 <? require(ViewDir.'/footer.html'); ?>

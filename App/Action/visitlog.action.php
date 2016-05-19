@@ -117,8 +117,60 @@ class VisitlogAction extends AppAction
 	 */
 	public function trendChart()
 	{
+                $url_array = require ConfigDir.'/visitlog.config.php';
+                $pages = $this->input('pages','int','');
+                $page_module = $this->input('page_module','int','');
+                $dateStart 	= $this->input('dateStart', 'string');
+                $dateEnd 	= $this->input('dateEnd', 'string');
+                $dates 	= $this->input('dates', 'int',1);
+                if(empty($pages))  $pages = 1;
+                $page_array = $url_array[$pages];
+                $count = 0;
+                if(empty($dateStart) || empty($dateEnd)){
+                    $dateStart = strtotime(date("Y-m-d"))-518400;
+                    $dateEnd = strtotime(date("Y-m-d"));
+                    
+                }else{
+                    $dateStart = strtotime($dateStart);
+                    $dateEnd = strtotime($dateEnd);
+                }
+                if($dates==1){//选择日
+                    $day = ($dateEnd-$dateStart)/86400;//取得选择时间段的天数
+                    if(empty($page_module)){//当只选择页面时
+                        for($i=0;$i<=$day;$i++){
+                            $date_start = $dateStart+$i*86400;
+                            $date_end = $date_start+86400;
+                            $page_count[$i] = $this->load('visitlog')->page_count($page_array['url'], date("Y-m-d",$date_start), date("Y-m-d",$date_end), $page_array['like']); 
+                            $date[$i] = date("m-d",$date_start);
+                        }
+                    }else{//当选择页面的模块时
+                         $module_array = $page_array['view'][$page_module]['url'];
+                         for($i=0;$i<=$day;$i++){
+                            $date_start = $dateStart+$i*86400;
+                            $date_end = $date_start+86400;
+                            foreach ($module_array as $val){
+                                $count+=$this->load('visitlog')->pageUrl_count($val['url'],$page_array['url'], date("Y-m-d",$date_start), date("Y-m-d",$date_end), $page_array['like'], $val['like']); 
+                            }
+                            $page_count[$i] = $count; 
+                            $date[$i] = date("m-d",$date_start);
+                            $count = 0;
+                        }
+                    }
+                    
+                }else if($dates==2){//选择月
+                    
+                }else{
+                    
+                }
+                
+                
+                $this->set("url_array",$url_array);
+                $this->set("url_json",json_encode($url_array));
+                $this->set("data",array("page_count"=>implode(",", $page_count),"date"=>json_encode($date)));
+                $this->set("s",array("dateStart"=>date("Y-m-d",$dateStart),"dateEnd"=>date("Y-m-d",$dateEnd),"pages"=>$pages,"page_module"=>$page_module));
 		$this->display();
 	} 
+
         
         /**
 	 * 热门搜索，筛选页

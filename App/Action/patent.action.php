@@ -163,7 +163,8 @@ class PatentAction extends AppAction
 		$allphone 	= $this->load('phone')->getAllPhone();
 		$gjUrl 		= WANGXIANG_URL.'detail.php?id='.$patent['code'];
 		$referr 	= $this->getReferrUrl('patent_edit');
-                
+                $patentInfo = $this->load('patent')->getPatentInfoByWanxiang($patent['number']);
+                $memo = empty($patentInfo['abstract']['original'])?$patentInfo['abstract']['en']:$patentInfo['abstract']['original'];
                 //转换ascll
                 if($patent['type']!=3){
                     $classArr = explode(",", $patent['class']);
@@ -181,6 +182,7 @@ class PatentAction extends AppAction
 		$this->set('tmTop', C('ISTOP_LIST'));
 		$this->set('allphone', $allphone);
 		$this->set('referr', $referr);
+                $this->set('memo', $memo);
 		$this->display();
 	}
 

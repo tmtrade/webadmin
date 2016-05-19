@@ -257,7 +257,7 @@
                     </div><br/>
                 </dd>
                 <dd><label>专利介绍：</label>
-                <textarea name="intro" id="intro" style="width:80%;height:150px;"><?=$patent['tminfo']['intro']?></textarea></dd>
+                <textarea name="intro" id="intro" style="width:80%;height:150px;"><?=empty($patent['tminfo']['intro'])?$memo:$patent['tminfo']['intro']; ?></textarea></dd>
                 <dd>
                     <label>展示电话：</label>
                     <select name="viewPhone" id="viewPhone">

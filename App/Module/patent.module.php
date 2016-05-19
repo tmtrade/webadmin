@@ -385,7 +385,8 @@ class PatentModule extends AppModule
         $applyDate  = (int)strtotime($info['application_date']);//申请日
         $publicDate = (int)strtotime($info['earliest_publication_date']);//最早公开日
         $viewPhone  = $this->load('phone')->getRandPhone();
-        $_memo      = '后台手动创建专利';
+        $_memo      = empty($info['abstract']['original'])?$info['abstract']['en']:$info['abstract']['original'];
+        
         $patent = array(
             'number'        => $number,
             'code'          => $code,

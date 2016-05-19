@@ -40,8 +40,8 @@
                     <tbody class="table-list">
                     <tr>
                     <? foreach ($v['view'] as $key => $val) { ?>
-                        <td width="33%">模块：<?=$val['title']?>&nbsp;&nbsp;<img src="/Static/images/u35.png">&nbsp;&nbsp;点击次数：<?=$val['count']?>&nbsp;&nbsp;<img src="/Static/images/u43.png">&nbsp;&nbsp;占比：<?=$val['zhanbi']?>%</td>
-                        <? if($key%3==0){
+                        <td width="50%">模块：<?=$val['title']?>&nbsp;&nbsp;<img src="/Static/images/u35.png">&nbsp;&nbsp;点击次数：<?=$val['count']?>&nbsp;&nbsp;<img src="/Static/images/u43.png">&nbsp;&nbsp;占比：<?=$val['zhanbi']?>%</td>
+                        <? if($key%2==0){
                             echo "</tr><tr>";
                         }
                     } ?>

@@ -79,6 +79,7 @@ class VisitlogAction extends AppAction
             $frequency = require ConfigDir.'/visitlog.config.php';
             $arr = array();
             $arr1 = array();
+            $count = 0;
             $dateStart 	= $this->input('dateStart', 'string');
             $dateEnd 	= $this->input('dateEnd', 'string');
             
@@ -89,9 +90,13 @@ class VisitlogAction extends AppAction
                    $arr[$k]['page_count'] = $this->load('visitlog')->page_count($v['url'], $dateStart, $dateEnd, $v['like']); 
                    $arr[$k]['pageUser_count'] = $this->load('visitlog')->pageUser_count($v['url'], $dateStart, $dateEnd, $v['like']);
                    foreach ($v['view'] as $key=>$val){  
-                       $arr1[$key]['title'] = $val['title']; 
-                       $arr1[$key]['count'] = $this->load('visitlog')->pageUrl_count($val['url'],$v['url'], $dateStart, $dateEnd, $v['like'], $val['like']); 
-                       $arr1[$key]['zhanbi'] = round($arr1[$key]['count']/$arr[$k]['page_count']*100,2); 
+                       $arr1[$key]['title'] = $val['title'];
+                       foreach ($val['url'] as $u_val){
+                           $count+=$this->load('visitlog')->pageUrl_count($u_val['url'],$v['url'], $dateStart, $dateEnd, $v['like'], $u_val['like']); 
+                       }
+                       $arr1[$key]['count'] = $count;
+                       $arr1[$key]['zhanbi'] = round($count/$arr[$k]['page_count']*100,2);
+                       $count = 0;
                    }
                    $arr[$k]['view'] = $arr1; 
                    $arr1 = array();

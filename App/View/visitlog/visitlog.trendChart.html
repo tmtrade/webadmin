@@ -24,7 +24,7 @@ $(function () {
         },
         plotOptions: {
             column: {
-                depth: 25
+                depth: 26
             }
         },
 		xAxis: {
@@ -42,6 +42,22 @@ $(function () {
     #container {
     height: 500px; 
     width:1000px;
+}
+.mj-screening .bt{
+    background-color:  #FFF;
+    color: #000;
+    border: 1px solid #CCC;
+    width:50px;
+    padding: 0px;
+    margin: -5px;
+}
+.mj-screening .on_bt{
+    background-color:  #000;
+    color: #FFF;
+    border: 1px solid #CCC;
+    width:50px;
+    padding: 0px;
+    margin: -5px;
 }
 </style>
 <div class="place">
@@ -82,6 +98,14 @@ $(function () {
                 <a href="javascript:void(0);" class="mj-sBtn mj-sBtn-search" style="display:inline-block;margin-left:50px;">搜索</a>
             </dd>
         </dl>
+            <dl>
+                <dd>
+                    <input type="button" value="年"  data-date="3" <?if($s['dates']==3){echo 'class="on_bt"';}else{echo 'class="bt"';} if($s['year']==0){echo 'disabled="disabled"';}?>>
+                    <input type="button" value="月"  data-date="2" <?if($s['dates']==2){echo 'class="on_bt"';}else{echo 'class="bt"';} if($s['month']==0){echo 'disabled="disabled"';}?>>
+                    <input type="button" value="日"  data-date="1" <?if($s['dates']==1){echo 'class="on_bt"';}else{echo 'class="bt"';} ?>>
+                </dd>
+                <input type="hidden" value="1" id="dates" name="dates">
+            </dl>
         </form>
     </div>
     <div class="wrap-content">
@@ -103,6 +127,14 @@ $(function () {
 			var index = layer.load(1, {
 				shade: [0.5,'#fff'] //0.1透明度的白色背景
 			});
+            $("#visitlogForm").submit();
+        });
+        
+        $("input[type=button]").click(function(){
+			var index = layer.load(1, {
+				shade: [0.5,'#fff'] //0.1透明度的白色背景
+			});
+                        $("#dates").val($(this).data("date"));
             $("#visitlogForm").submit();
         });
         

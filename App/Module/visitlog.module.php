@@ -73,7 +73,7 @@ class VisitlogModule extends AppModule
         
         $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($dateStart)){
-            $r['raw'] = " dateline>".strtotime($dateStart);
+            $r['raw'] = " dateline>=".strtotime($dateStart);
         }
         if(!empty($dateEnd)){
             $r['raw'] .= " and dateline<".strtotime($dateEnd);

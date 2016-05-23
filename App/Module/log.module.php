@@ -17,9 +17,9 @@ class LogModule extends AppModule
     );
 
     //添加国内商标出售日志
-    public function addSaleLog($patentId, $type=0, $memo='', $desc='')
+    public function addSaleLog($saleId, $type=0, $memo='', $desc='')
     {
-        if ( empty($patentId) ) return false;
+        if ( empty($saleId) ) return false;
 
         if ( empty($this->userId) ){
             $member = array(
@@ -30,10 +30,10 @@ class LogModule extends AppModule
             $member = $this->load('member')->getMemberById($this->userId);
         }
         if ( empty($desc) ){
-            $desc  = serialize( $this->load('internal')->getSaleInfo($patentId) );
+            $desc  = serialize( $this->load('internal')->getSaleInfo($saleId) );
         }
         $_data = array(
-            'saleId'    => $patentId,
+            'saleId'    => $saleId,
             'roleId'    => $member['roleId'],
             'type'      => $type,
             'name'      => $member['name'],
@@ -54,10 +54,10 @@ class LogModule extends AppModule
      * @param       int     $patentId     出售信息ID
      * @return      array
      */
-    public function getSaleLog($patentId)
+    public function getSaleLog($saleId)
     {
-        if ( empty($patentId) ) return false;
-        $r['eq']    = array('saleId'=>$patentId);
+        if ( empty($saleId) ) return false;
+        $r['eq']    = array('saleId'=>$saleId);
         $r['limit'] = 100;
         $r['order'] = array('date'=>'desc');
         $list = $this->import('saleLog')->find($r);

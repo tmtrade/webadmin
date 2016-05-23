@@ -140,8 +140,8 @@ class VisitlogModule extends AppModule
 	 * @param $sid
 	 * @param $page
 	 * @param int $size
-	 * @param int $start
-	 * @param int $end
+	 * @param bool $start
+	 * @param bool $end
 	 * @return array
 	 */
 	public function getUserAll($sid,$page, $size = 10,$start = false,$end = false){
@@ -191,7 +191,7 @@ class VisitlogModule extends AppModule
 			$end = time();
 		}
 		if($end && !$start){
-			$start = 0;
+			$start = 1000;
 		}
 		if($start && $end){
 			//保证end大于start

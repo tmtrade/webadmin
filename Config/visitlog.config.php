@@ -559,5 +559,39 @@ return $frequency = array(
             ),
         ),
     ),
+    "6" => array(
+        'title' => '案列列表页',
+        "url" => "http://www.yizhchan.com/case/",
+        "like" => 1,
+        'view' => array(
+            '1' => array(
+                'title' => '查看详情',
+                'url' => array(
+                    '1' => array(
+                        'title' => '查看详情',
+                        'url' => 'http://www.yizhchan.com/case/detail/',
+                        "like" => 1,
+                    ),
+                ),
+            ),
+        ),
+    ),
+    "7" => array(
+        'title' => '案列详情页',
+        "url" => "http://www.yizhchan.com/case/detail/",
+        "like" => 1,
+        'view' => array(
+            '1' => array(
+                'title' => '查看详情',
+                'url' => array(
+                    '1' => array(
+                        'title' => '查看详情',
+                        'url' => 'http://www.yizhchan.com/case/detail/',
+                        "like" => 1,
+                    ),
+                ),
+            ),
+        ),
+    ),
 );
 ?>

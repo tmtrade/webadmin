@@ -9,8 +9,9 @@
         border-bottom: 0px;
         color: #999999;
         cursor: pointer;
+        background-color: #F2F2F2;
     }
-   .seach_ul .on{color: #000;}
+   .seach_ul .on{color: #000; background-color: #FFF;}
 </style>
 <div class="place">
     <span>位置：</span>
@@ -25,24 +26,31 @@
         <div class="mj-seT f-clearfix">
             <span>热门搜索统计</span>
         </div>
-        <form name="visitlogForm" id="visitlogForm" action="/visitlog/frequency/" method="GET">
+        <form name="visitlogForm" id="visitlogForm" action="/visitlog/search/" method="GET">
         <dl>
             <dd>
-               <label> 我要统计从：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
+               <label> 我要统计从<?=$s['dateStart']?>：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
                 <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input type="text" name="dateEnd" value="<?=$s['dateEnd']?>" class="input input-sm" readonly onclick="laydate()" />
                 
                 <a href="javascript:void(0);" class="mj-sBtn mj-sBtn-search" style="display:inline-block;margin-left:50px;">搜索</a>
             </dd>
         </dl>
+            <input type="hidden" value="<?=$s['type']?>"  name="type" id="types">
         </form>
     </div>
     <div class="wrap-content">
 		<br>
         <div class="wrap-table">
             <ul class="seach_ul">
-                <li  class="on" data-type="1">商标名称搜索排行</li>
-                <li data-type="2">商标号搜索排行</li>
-                <li data-type="3">适用服务搜索排行</li>
+                <li data-type="1" <?if($s['type']==1){echo 'class="on"';} ?>>商标名称搜索排行</li>
+                <li data-type="2" <?if($s['type']==2){echo 'class="on"';} ?>>商标号搜索排行</li>
+                <li data-type="3" <?if($s['type']==3){echo 'class="on"';} ?>>适用服务搜索排行</li>
+                <li data-type="4" <?if($s['type']==4){echo 'class="on"';} ?>>商标分类</li>
+                <li data-type="5" <?if($s['type']==5){echo 'class="on"';} ?>>分类群组</li>
+                <li data-type="6" <?if($s['type']==6){echo 'class="on"';} ?>>组合类型</li>
+                <li data-type="7" <?if($s['type']==7){echo 'class="on"';} ?>>商标字数</li>
+                <li data-type="8" <?if($s['type']==8){echo 'class="on"';} ?>>注册时间</li>
+                <li data-type="9" <?if($s['type']==9){echo 'class="on"';} ?>>入驻平台</li>
             </ul>
              <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
                 <thead>
@@ -57,15 +65,16 @@
                 <? foreach ($list as $k => $v) {  ?>
                 <tr>
 					<td><?=($k+1)?></td>
-                    <td><?=$v['title']?></td>
-					<td><?=date('Y-m-d', $v['date'])?></td>
-					<td><?=$v['member']?></td>
+                    <td><?=$v['keyword']?></td>
+					<td><?=$v['counts']?></td>
+					<td><?=round(($v['counts']/$counts)*100,2)?>%</td>
                 </tr>
                 <? } ?>
                 </tbody>
             </table>
         </div>
     </div>
+    <div id="page" align="center"><?=$pageBar?></div>
 </div>
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
@@ -74,6 +83,14 @@
 			var index = layer.load(1, {
 				shade: [0.5,'#fff'] //0.1透明度的白色背景
 			});
+            $("#visitlogForm").submit();
+        });
+        
+        $(".seach_ul li").click(function(){
+			var index = layer.load(1, {
+				shade: [0.5,'#fff'] //0.1透明度的白色背景
+			});
+                        $("#types").val($(this).data("type"));
             $("#visitlogForm").submit();
         });
     });

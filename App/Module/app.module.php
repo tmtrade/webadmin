@@ -63,5 +63,25 @@ abstract class AppModule extends Module
 		$this->isLogin 	= true;
 		return true;
 	}
+        
+        /**
+	 * 执行原生sql语句
+	 * @author	void
+	 * @since	2015-06-19
+	 *
+	 * @access	public
+	 * @param	string	$dbName	数据库名
+	 * @return	mixed
+	 */
+	protected function fetchAll($dbName, $sql)
+	{
+                static $db = null;
+		if ( $db == null ) {
+			$db = new DbQuery($dbName);
+		}
+		
+		return $db->fetchAll($sql);
+	}
+
 }
 ?>

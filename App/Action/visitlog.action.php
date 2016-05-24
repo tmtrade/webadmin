@@ -101,7 +101,7 @@ class VisitlogAction extends AppAction
                    $arr[$k]['view'] = $arr1; 
                    $arr1 = array();
                 }
-                $this->com('redisHtml')->set('frequency_list', $arr, 300);
+                $this->com('redisHtml')->set('frequency_list', $arr, 600);
             }
             $this->set("list",$arr);
             $this->set("s",array("dateStart"=>$dateStart,"dateEnd"=>$dateEnd));
@@ -226,7 +226,20 @@ class VisitlogAction extends AppAction
 	 */
 	public function search()
 	{
-		$this->display();
+            $page 	= $this->input('page', 'int', '1');
+            $type       = $this->input('type','int','1');
+            $dateStart 	= $this->input('dateStart', 'string');
+            $dateEnd 	= $this->input('dateEnd', 'string');
+            $res        = $this->load('keywordcount')->getKeywordList($type,$dateStart,$dateEnd,$page, $this->rowNum);
+            $total 	= empty($res['total']) ? 0 : $res['total'];
+            $list 	= empty($res['rows']) ? array() : $res['rows'];
+            $pager 	= $this->pager($total, $this->rowNum);
+            $pageBar 	= empty($list) ? '' : getPageBar($pager);
+            $this->set('counts', $res['counts']);
+            $this->set("pageBar",$pageBar);
+            $this->set("list",$list);
+            $this->set("s",array("dateStart"=>$dateStart,"dateEnd"=>$dateEnd,'type'=>$type));
+            $this->display();
 	} 
 
 }

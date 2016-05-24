@@ -236,6 +236,12 @@ $tbl['test'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['keywordCount'] = array(
+	'name'		=> $prefix.'keyword_count',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
 $tbl['visitlogSem'] = array(
 	'name'		=> 'st_sem_visitlog',
 	'dbId'		=> $dbId,

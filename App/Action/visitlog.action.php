@@ -132,7 +132,6 @@ class VisitlogAction extends AppAction
                 $dateStart 	= $this->input('dateStart', 'string');
                 $dateEnd 	= $this->input('dateEnd', 'string');
                 $dates          = $this->input('dates', 'int',1);
-                if(empty($pages))  $pages = 1;
                 $page_array = $url_array[$pages];
                 $count = 0;
                 $month = 0;

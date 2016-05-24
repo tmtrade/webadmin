@@ -85,7 +85,7 @@ $(function () {
                 </select>
                 <label> 模块：</label>
                 <select name="page_module" class="input input-sm" id="page_module">
-                    <option value="0">--请选择--</option>
+                    <option value="0">--全部模块--</option>
                     <? foreach ($url_array[$s['pages']]['view'] as $k => $v) {?>
                         <option value="<?=$k?>" <?if($s['page_module']==$k){echo 'selected';} ?>><?=$v['title']?></option>
                     <? } ?>
@@ -123,9 +123,16 @@ $(function () {
         
         //提交按钮
         $(".mj-sBtn").click(function(){
-			var index = layer.load(1, {
-				shade: [0.5,'#fff'] //0.1透明度的白色背景
-			});
+            if($("#pages").val()==0){
+                layer.msg('您还未选择需要统计的页面', {
+					time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				});
+                return false;
+            }
+            
+            var index = layer.load(1, {
+                    shade: [0.5,'#fff'] //0.1透明度的白色背景
+            });
             $("#visitlogForm").submit();
         });
         
@@ -141,7 +148,7 @@ $(function () {
         $("#pages").change(function(){
             var id = $(this).val();
             if(id===0) return;
-            var str="<option value='0'>--请选择--</option>";
+            var str="<option value='0'>--全部模块--</option>";
             $.each(page_url[id]['view'],function(key,val){
                 str+="<option value='"+key+"'>"+val.title+"</option>";
             });

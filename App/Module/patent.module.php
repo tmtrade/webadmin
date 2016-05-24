@@ -399,6 +399,7 @@ class PatentModule extends AppModule
             'date'          => time(),
             'viewPhone'     => $viewPhone,
             'memo'          => $_memo,
+            'status'        => 1,
             );
 
         $ptinfo = array(

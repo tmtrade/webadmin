@@ -77,6 +77,8 @@ class VisitlogAction extends AppAction
 	public function frequency()
 	{
             $frequency = require ConfigDir.'/visitlog.config.php';
+            $module = $this->load('visitlog')->getModule();
+            $frequency[1]['view'] = array_merge($frequency[1]['view'],$module);
             $arr = array();
             $arr1 = array();
             $count = 0;
@@ -118,6 +120,13 @@ class VisitlogAction extends AppAction
 	public function trendChart()
 	{
                 $url_array      = require ConfigDir.'/visitlog.config.php';
+                
+            
+                $module = $this->load('visitlog')->getModule();
+                $arr = array_merge($url_array[1]['view'],$module);
+                foreach ($arr as $k=>$v){
+                    $url_array[1]['view'][$k+1] = $v;
+                }
                 $pages          = $this->input('pages','int','');
                 $page_module    = $this->input('page_module','int','');
                 $dateStart 	= $this->input('dateStart', 'string');

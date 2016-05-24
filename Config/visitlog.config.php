@@ -13,20 +13,20 @@ return $frequency = array(
                         'url' => 'http://www.yizhchan.com/topic/motherday',
                     ),
                     '2' => array(
+                        'title' => '天猫招商门槛',
+                        'url' => 'http://www.yizhchan.com/topic/tm',
+                    ),
+                    '3' => array(
                         'title' => '天猫京东',
                         'url' => 'http://www.yizhchan.com/topic/tmall_jd',
                     ),
-                    '3' => array(
+                    '4' => array(
                         'title' => '第一课',
                         'url' => 'http://www.yizhchan.com/topic/lesson_one',
                     ),
-                    '4' => array(
+                    '5' => array(
                         'title' => '第二课',
                         'url' => 'http://www.yizhchan.com/topic/lesson_two',
-                    ),
-                    '5' => array(
-                        'title' => '购买商标',
-                        'url' => 'http://www.yizhchan.com/buy',
                     ),
                 ),
             ),

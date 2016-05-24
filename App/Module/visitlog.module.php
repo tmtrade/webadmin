@@ -15,6 +15,12 @@ class VisitlogModule extends AppModule
 		'visitlog'              => 'visitlog',
 		'sessions'              => 'visitlogSessions',
 		'sem'                   => 'visitlogSem',
+                'module'      => 'Module',
+                'moduleClass'      => 'ModuleClass',
+                'moduleLink'      => 'ModuleLink',
+                'modulePic'      => 'ModulePic',
+                'moduleClassItems'      => 'ModuleClassItems',
+                'sale'		=> 'Sale',
 	);
     
     //计算每个页面点击数
@@ -290,5 +296,155 @@ class VisitlogModule extends AppModule
 			return '未知';
 		}
 	}
+        
+    /**
+     * 得到模块信息
+     * @return array
+     */
+    public function getModule(){
+        //得到所有的模块信息
+        $r['order'] = array('sort'=>'asc');
+        $r['eq'] = array('isUse'=>1);
+        $r['col'] = array('id','name');
+        $r['limit'] = 1000;
+        $modules = $this->import('module')->find($r);
+        $data = array();
+        foreach($modules as $k=>$module){
+            $class = $this->getModuleClass($module['id']);
+            $pic = $this->getModuleAds($module['id']);
+            $link = $this->getModuleLink($module['id']);
+            $data[$k]['title'] = ($k+1)."F-".$module['name'];
+            $data[$k]['url'] =  array_merge($class,$pic,$link);
+        }
+        return $data;
+    }
+
+    /**
+     * 首页模块子分类列表信息
+     * @param $moduleId
+     * @return array
+     */
+    private function getModuleClass($moduleId)
+    {
+        $r = array();
+        $r['eq']['moduleId'] = $moduleId;
+        $r['limit'] = 100;
+        $r['col'] = array('id','name');
+        $r['order'] = array('sort'=>'asc');
+        $data = $this->import('moduleClass')->find($r);
+        //得到分类的子分类列表
+        $arr = array();
+        $a = array();
+        foreach($data as $k=>$item){
+            $arr[$k] = $this->getModuleClassItems($item['id']);
+            $a = array_merge($a,$arr[$k]);
+        }
+        return $a;
+    }
+
+    /**
+     * 首页模块子分类列表信息
+     * @param $classId
+     * @return array
+     * @throws array
+     */
+    private function getModuleClassItems($classId)
+    {
+        $r = array();
+        $r['eq']['classId'] = $classId;
+        $r['limit'] = 100;
+        $r['order'] = array('sort'=>'asc');
+        $r['col'] = array('id','name','number');
+        $data = $this->import('moduleClassItems')->find($r);
+        //添加额外信息
+        $arr = array();
+        foreach($data as $k=>$item){
+            //判断商品是否销售中
+            $rst = $this->isSale($item['number']);
+            if(!$rst){
+                unset($data[$k]);
+                continue;
+            }
+            //得到所属分类名
+            $result = $this->getSaleInfoByNumber($item['number']);
+            $arr[$k]['title'] = $result['name'];
+            $arr[$k]['url'] = 'http://www.yizhchan.com/d-'.$result['tid'].'-'.$result['class'].'.html';
+        }
+        return $arr;
+    }
+
+    /**
+     * 首页模块包含广告列表信息
+     * @param $moduleId
+     * @return array
+     */
+    private function getModuleAds($moduleId)
+    {
+        $r = array();
+        $r['eq']['moduleId'] = $moduleId;
+        $r['limit'] = 100;
+        $r['col'] = array('pic','link','alt');
+        $r['order'] = array('sort'=>'asc');
+        $data = $this->import('modulePic')->find($r);
+        $arr = array();
+        foreach ($data as $k=>$v){
+            $arr[$k]['title']   = $v['alt'];
+            $arr[$k]['url']     = "http://www.yizhchan.com".$v['link'];
+        }
+        return $arr;
+    }
+
+    /**
+     * 首页模块推广链接列表信息
+     * @param $moduleId
+     * @return array
+     */
+    private function getModuleLink($moduleId)
+    {
+        $r = array();
+        $r['eq']['moduleId'] = $moduleId;
+        $r['limit'] = 100;
+        $r['col'] = array('title','link','show');
+        $r['order'] = array('sort'=>'asc');
+        $data = $this->import('moduleLink')->find($r);
+        $arr = array();
+        foreach ($data as $k=>$v){
+            $arr[$k]['title']   = $v['title'];
+            $arr[$k]['url']     = "http://www.yizhchan.com".$v['link'];
+        }
+        return $arr;
+    }
+
+        
+    /**
+     * 根据商标得到sale信息(分类第一个)
+     * @author dower
+     * @param $number
+     * @return mixed
+     */
+    public function getSaleInfoByNumber($number,$col = array('tid','class','name')){
+        //得到商标的第一个分类
+        $r['eq'] = array('number'=>$number);
+        $r['col'] = $col;
+        $rst = $this->import('sale')->find($r);
+        //返回商标的分类名
+        return $rst;
+    }
+    
+        /**
+     * 判断商标是否销售中
+     * @author dower
+     * @param $number
+     * @return bool
+     */
+    public function isSale($number){
+        $r['eq'] = array('number'=>$number);
+        $r['col'] = array('status');
+        $result = $this->import('sale')->find($r);
+        if($result && $result['status']==1){
+            return true;
+        }
+        return false;
+    }
 }
 ?>

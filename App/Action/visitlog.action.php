@@ -103,7 +103,7 @@ class VisitlogAction extends AppAction
                    $arr[$k]['view'] = $arr1; 
                    $arr1 = array();
                 }
-                $this->com('redisHtml')->set('frequency_list', $arr, 600);
+                $this->com('redisHtml')->set('frequency_list', $arr, 1200);
             }
             $this->set("list",$arr);
             $this->set("s",array("dateStart"=>$dateStart,"dateEnd"=>$dateEnd));

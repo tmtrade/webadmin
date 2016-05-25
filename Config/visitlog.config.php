@@ -335,7 +335,7 @@ return $frequency = array(
         "like" => 1,
         'view' => array(
             '1' => array(
-                'title' => '查看详情',
+                'title' => '商标列表',
                 'url' => array(
                     '1' => array(
                         'title' => '查看详情',
@@ -345,7 +345,7 @@ return $frequency = array(
                 ),
             ),
             '2' => array(
-                'title' => '特价推荐',
+                'title' => '广告模块',
                 'url' => array(
                     '1' => array(
                         'title' => '特价推荐-君一堂',
@@ -389,7 +389,7 @@ return $frequency = array(
         "like" => 1,
         'view' => array(
             '1' => array(
-                'title' => '查看详情',
+                'title' => '商标列表',
                 'url' => array(
                     '1' => array(
                         'title' => '查看详情',
@@ -399,7 +399,7 @@ return $frequency = array(
                 ),
             ),
             '2' => array(
-                'title' => 'banner',
+                'title' => '广告模块',
                 'url' => array(
                     '1' => array(
                         'title' => 'banner-青竹宝',
@@ -560,12 +560,12 @@ return $frequency = array(
         ),
     ),
     "6" => array(
-        'title' => '案列列表页',
+        'title' => '案例列表页',
         "url" => "http://www.yizhchan.com/case/",
         "like" => 1,
         'view' => array(
             '1' => array(
-                'title' => '查看详情',
+                'title' => '案例列表',
                 'url' => array(
                     '1' => array(
                         'title' => '查看详情',
@@ -577,12 +577,12 @@ return $frequency = array(
         ),
     ),
     "7" => array(
-        'title' => '案列详情页',
+        'title' => '案例详情页',
         "url" => "http://www.yizhchan.com/case/detail/",
         "like" => 1,
         'view' => array(
             '1' => array(
-                'title' => '查看详情',
+                'title' => '案例列表',
                 'url' => array(
                     '1' => array(
                         'title' => '查看详情',

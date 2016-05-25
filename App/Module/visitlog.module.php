@@ -298,7 +298,7 @@ class VisitlogModule extends AppModule
 	}
         
     /**
-     * 得到模块信息
+     * 得到首页个楼层模块信息
      * @return array
      */
     public function getModule(){

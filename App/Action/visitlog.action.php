@@ -84,7 +84,7 @@ class VisitlogAction extends AppAction
             $count = 0;
             $dateStart 	= $this->input('dateStart', 'string');
             $dateEnd 	= $this->input('dateEnd', 'string');
-            if($dateStart==$dateEnd){//查询同一天时
+            if($dateStart==$dateEnd && $dateStart!=""){//查询同一天时
                 $dateEnd = date("Y-m-d",strtotime($dateEnd)+86400);
             }
             

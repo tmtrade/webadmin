@@ -60,7 +60,7 @@ return $frequency = array(
                 'url' => array(
                     '1' => array(
                         'title' => '01类',
-                        'url' => 'http://www.yizhchan.com/s-c-2/',
+                        'url' => 'http://www.yizhchan.com/s-c-1/',
                     ),
                     '2' => array(
                         'title' => '02类',
@@ -68,7 +68,7 @@ return $frequency = array(
                     ),
                     '3' => array(
                         'title' => '03类',
-                        'url' => 'http://www.yizhchan.com/s-c-33/',
+                        'url' => 'http://www.yizhchan.com/s-c-3/',
                     ),
                     '4' => array(
                         'title' => '04类',

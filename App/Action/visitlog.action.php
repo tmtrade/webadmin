@@ -84,6 +84,9 @@ class VisitlogAction extends AppAction
             $count = 0;
             $dateStart 	= $this->input('dateStart', 'string');
             $dateEnd 	= $this->input('dateEnd', 'string');
+            if($dateStart==$dateEnd){//查询同一天时
+                $dateEnd = date("Y-m-d",strtotime($dateEnd)+86400);
+            }
             
             $arr = $this->com('redisHtml')->get('frequency_list');
             if(empty($arr) || !empty($dateStart) || !empty($dateEnd)){
@@ -238,6 +241,10 @@ class VisitlogAction extends AppAction
             $type       = $this->input('type','int','1');
             $dateStart 	= $this->input('dateStart', 'string');
             $dateEnd 	= $this->input('dateEnd', 'string');
+            if($dateStart==$dateEnd && $dateStart!=""){//查询同一天时
+                $dateEnd = date("Y-m-d",strtotime($dateEnd)+86400);
+            }
+            
             $res        = $this->load('keywordcount')->getKeywordList($type,$dateStart,$dateEnd,$page, $this->rowNum);
             $total 	= empty($res['total']) ? 0 : $res['total'];
             $list 	= empty($res['rows']) ? array() : $res['rows'];

@@ -327,7 +327,7 @@ return $frequency = array(
                 'url' => array(
                     '1' => array(
                         'title' => '底部banner',
-                        'url' => 'http://www.yizhchan.com/s/',
+                        'url' => 'http://www.yizhchan.com/search',
                     ),
                 ),
             ),

@@ -79,10 +79,10 @@ class VisitlogModule extends AppModule
         
         $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($dateStart)){
-            $r['raw'] = " dateline>=".strtotime($dateStart);
+            $r['raw'] = " dateline>=".$dateStart;
         }
         if(!empty($dateEnd)){
-            $r['raw'] .= " and dateline<".strtotime($dateEnd);
+            $r['raw'] .= " and dateline<".$dateEnd;
         }
         return $this->import('visitlog')->count($r);
     }

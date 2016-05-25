@@ -97,7 +97,7 @@ class VisitlogAction extends AppAction
                    foreach ($v['view'] as $key=>$val){  
                        $arr1[$key]['title'] = $val['title'];
                        foreach ($val['url'] as $u_val){
-                           $count+=$this->load('visitlog')->pageUrl_count($u_val['url'],$v['url'], $dateStart, $dateEnd, $v['like'], $u_val['like']); 
+                           $count+=$this->load('visitlog')->pageUrl_count($u_val['url'],$v['url'], strtotime($dateStart), strtotime($dateEnd), $v['like'], $u_val['like']); 
                        }
                        $arr1[$key]['count'] = $count;
                        $arr1[$key]['zhanbi'] = round($count/$arr[$k]['page_count']*100,2);
@@ -123,8 +123,6 @@ class VisitlogAction extends AppAction
 	public function trendChart()
 	{
                 $url_array      = require ConfigDir.'/visitlog.config.php';
-                
-            
                 $module = $this->load('visitlog')->getModule();
                 $arr = array_merge($url_array[1]['view'],$module);
                 foreach ($arr as $k=>$v){
@@ -158,6 +156,7 @@ class VisitlogAction extends AppAction
                         for($i=0;$i<=$day;$i++){
                             $date_start = $dateStart+$i*86400;
                             $date_end = $date_start+86400;
+                            
                             $page_count[$i] = $this->load('visitlog')->page_count($page_array['url'], date("Y-m-d",$date_start), date("Y-m-d",$date_end), $page_array['like']); 
                             $date[$i] = date("m-d",$date_start);
                         }
@@ -167,7 +166,7 @@ class VisitlogAction extends AppAction
                             $date_start = $dateStart+$i*86400;
                             $date_end = $date_start+86400;
                             foreach ($module_array as $val){
-                                $count+=$this->load('visitlog')->pageUrl_count($val['url'],$page_array['url'], date("Y-m-d",$date_start), date("Y-m-d",$date_end), $page_array['like'], $val['like']); 
+                                $count+=$this->load('visitlog')->pageUrl_count($val['url'],$page_array['url'], $date_start, $date_end, $page_array['like'], $val['like']); 
                             }
                             $page_count[] = $count; 
                             $date[] = date("m-d",$date_start);
@@ -209,7 +208,7 @@ class VisitlogAction extends AppAction
                                 $date_end = strtotime("$date_start +1 month");    //加一个月
                             }
                             foreach ($module_array as $val){
-                                $count+=$this->load('visitlog')->pageUrl_count($val['url'],$page_array['url'], date("Y-m-d",$date_start), date("Y-m-d",$date_end), $page_array['like'], $val['like']); 
+                                $count+=$this->load('visitlog')->pageUrl_count($val['url'],$page_array['url'], $date_start, $date_end, $page_array['like'], $val['like']); 
                             }
                             $page_count[] = $count; 
                             $date[] = $i<10?"0".intval($i):$i;

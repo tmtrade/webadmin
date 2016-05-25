@@ -388,7 +388,7 @@ return $frequency = array(
         ),
     ),
     "3" => array(
-        'title' => '特价列表页',
+        'title' => '特价商标',
         "url" => "http://www.yizhchan.com/offprice",
         "like" => 1,
         'view' => array(

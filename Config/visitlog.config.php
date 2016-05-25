@@ -255,6 +255,10 @@ return $frequency = array(
                         'title' => '成功案例-麦普森',
                         'url' => 'http://www.yizhchan.com/case/detail/?id=16',
                     ),
+                    '4' => array(
+                        'title' => '成功案例',
+                        'url' => 'http://www.yizhchan.com/case/',
+                    ),
                 ),
             ),
             '5' => array(

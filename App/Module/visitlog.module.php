@@ -15,24 +15,23 @@ class VisitlogModule extends AppModule
 		'visitlog'              => 'visitlog',
 		'sessions'              => 'visitlogSessions',
 		'sem'                   => 'visitlogSem',
-                'module'      => 'Module',
-                'moduleClass'      => 'ModuleClass',
-                'moduleLink'      => 'ModuleLink',
-                'modulePic'      => 'ModulePic',
+                'module'                => 'Module',
+                'moduleClass'           => 'ModuleClass',
+                'moduleLink'            => 'ModuleLink',
+                'modulePic'             => 'ModulePic',
                 'moduleClassItems'      => 'ModuleClassItems',
-                'sale'		=> 'Sale',
+                'sale'                  => 'Sale',
 	);
     
     //计算每个页面点击数
     public function page_count($url,$dateStart="",$dateEnd="",$like="")
     {
+        $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($like)){
-            $r['like']['s_url'] = $url;
+            $r['llike']['s_url'] = $url;
         }else{
             $r['eq']['s_url'] = $url;
         }
-        
-        $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($dateStart)){
             $r['raw'] = " dateline>".strtotime($dateStart);
         }
@@ -45,12 +44,12 @@ class VisitlogModule extends AppModule
     //计算每个页面访问者
     public function pageUser_count($url,$dateStart="",$dateEnd="",$like="")
     {
+        $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($like)){
-            $r['like']['s_url'] = $url;
+            $r['llike']['s_url'] = $url;
         }else{
             $r['eq']['s_url'] = $url;
         }
-        $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($dateStart)){
             $r['raw'] = " dateline>".strtotime($dateStart);
         }
@@ -64,20 +63,18 @@ class VisitlogModule extends AppModule
     //计算每个链接访问次数
     public function pageUrl_count($url,$s_url,$dateStart="",$dateEnd="",$slike="",$like="")
     {
-        
+        $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($slike)){
-            $r['like']['s_url'] = $s_url;
+            $r['llike']['s_url'] = $s_url;
         }else{
             $r['eq']['s_url'] = $s_url;
         }
         
         if(!empty($like)){
-            $r['like']['url'] = $url;
+            $r['llike']['url'] = $url;
         }else{
             $r['eq']['url'] = $url;
         }
-        
-        $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($dateStart)){
             $r['raw'] = " dateline>=".$dateStart;
         }
@@ -307,16 +304,41 @@ class VisitlogModule extends AppModule
         $r['eq'] = array('isUse'=>1);
         $r['col'] = array('id','name');
         $r['limit'] = 1000;
-        $modules = $this->import('module')->find($r);
-        $data = array();
-        foreach($modules as $k=>$module){
-            $class = $this->getModuleClass($module['id']);
-            $pic = $this->getModuleAds($module['id']);
-            $link = $this->getModuleLink($module['id']);
-            $data[$k]['title'] = ($k+1)."F-".$module['name'];
-            $data[$k]['url'] =  array_merge($class,$pic,$link);
+        $data = $this->com('redisHtml')->get('admin_index_Module');
+        if ( empty($data) ){
+            $modules = $this->import('module')->find($r);
+            foreach($modules as $k=>$module){
+                $class = $this->getModuleClass($module['id']);
+                $pic = $this->getModuleAds($module['id']);
+                $link = $this->getModuleLink($module['id']);
+                $data[$k]['title'] = ($k+1)."F-".$module['name'];
+                $data[$k]['url'] =  array_merge($class,$pic,$link);
+            }
+            $this->com('redisHtml')->set('admin_index_Module', $data, 3600);
         }
         return $data;
+    }
+    
+    //获取新闻问答的链接
+    public function getFaq(){
+        $_news = $this->com('redisHtml')->get('_news_tmp');
+        $arr1 = array();
+        $arr2 = array();
+        $arr3 = array();
+        $arr4 = array();
+        foreach ($_news['news'] as $k=>$v){
+            $arr1[$k]['url'] = 'http://www.yizhchan.com'.$v['url'];
+        }
+        foreach ($_news['baike'] as $k=>$v){
+            $arr2[$k]['url'] = 'http://www.yizhchan.com'.$v['url'];
+        }
+        foreach ($_news['faq'] as $k=>$v){
+            $arr3[$k]['url'] = 'http://www.yizhchan.com'.$v['url'];
+        }
+        foreach ($_news['law'] as $k=>$v){
+            $arr4[$k]['url'] = 'http://www.yizhchan.com'.$v['url'];
+        }
+        return array_merge($arr1,$arr2,$arr3,$arr4);
     }
 
     /**

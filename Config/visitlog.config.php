@@ -264,62 +264,6 @@ return $frequency = array(
             '5' => array(
                 'title' => '首页新闻/问答',
                 'url' => array(
-                    '1' => array(
-                        'title' => '商标新闻-01',
-                        'url' => 'http://www.yizhchan.com/v-50-1186/',
-                    ),
-                    '2' => array(
-                        'title' => '商标新闻-02',
-                        'url' => 'http://www.yizhchan.com/v-50-1185/',
-                    ),
-                    '3' => array(
-                        'title' => '商标新闻-03',
-                        'url' => 'http://www.yizhchan.com/v-50-1183/',
-                    ),
-                    '4' => array(
-                        'title' => '商标新闻-04',
-                        'url' => 'http://www.yizhchan.com/v-50-1177/',
-                    ),
-                    '5' => array(
-                        'title' => '商标新闻-05',
-                        'url' => 'http://www.yizhchan.com/v-50-1176/',
-                    ),
-                    '6' => array(
-                        'title' => '商标转让问答-01',
-                        'url' => 'http://www.yizhchan.com/v-45-1187/',
-                    ),
-                    '7' => array(
-                        'title' => '商标转让问答-02',
-                        'url' => 'http://www.yizhchan.com/v-45-1182/',
-                    ),
-                    '8' => array(
-                        'title' => '商标转让问答-03',
-                        'url' => 'http://www.yizhchan.com/v-45-1181/',
-                    ),
-                    '9' => array(
-                        'title' => '商标转让问答-04',
-                        'url' => 'http://www.yizhchan.com/v-45-1157/',
-                    ),
-                    '10' => array(
-                        'title' => '商标转让问答-05',
-                        'url' => 'http://www.yizhchan.com/v-45-1156/',
-                    ),
-                    '11' => array(
-                        'title' => '商标百科-01',
-                        'url' => 'http://www.yizhchan.com/v-53-1168/',
-                    ),
-                    '12' => array(
-                        'title' => '商标百科-02',
-                        'url' => 'http://www.yizhchan.com/v-53-1161/',
-                    ),
-                    '13' => array(
-                        'title' => '商标法律-01',
-                        'url' => 'http://www.yizhchan.com/v-51-1180/',
-                    ),
-                    '14' => array(
-                        'title' => '商标法律-02',
-                        'url' => 'http://www.yizhchan.com/v-51-1179/',
-                    ),
                 ),
             ),
             '6' => array(
@@ -388,7 +332,7 @@ return $frequency = array(
         ),
     ),
     "3" => array(
-        'title' => '特价商标',
+        'title' => '特价商标列表页',
         "url" => "http://www.yizhchan.com/offprice",
         "like" => 1,
         'view' => array(
@@ -483,10 +427,10 @@ return $frequency = array(
                 ),
             ),
             '4' => array(
-                'title' => '收藏+浏览记录',
+                'title' => '猜你喜欢+收藏+浏览记录',
                 'url' => array(
                     '1' => array(
-                        'title' => '猜你喜欢+浏览记录',
+                        'title' => '猜你喜欢...',
                         'url' => 'http://www.yizhchan.com/d',
                         "like" => 1,
                     ),

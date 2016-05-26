@@ -78,9 +78,9 @@ class CountModule extends AppModule
             'isnew' => $isnew,
             'issem' => isset($params['issem'])?$params['issem']:0,
         );
-        $this->import('visitlog')->create($data);
-        //返回新的cookie值
-        return implode('-',array($sid,$time));
+        $id = $this->import('visitlog')->create($data);
+        //返回新的cookie值 和 日志的id
+        return array(implode('-',array($sid,$time)),$id);
     }
 
     /**
@@ -98,9 +98,25 @@ class CountModule extends AppModule
             'y' => isset($params['y'])?$params['y']:0,
             'type' => isset($params['type'])?$params['type']:0,
             'web_id' => isset($params['web_id'])?$params['web_id']:'',
+            'addition' => isset($params['addition'])?$params['addition']:'',
             'date' => time(),
         );
-        $this->import('page')->create($data);
+        $visitid = isset($params['visitid'])?$params['visitid']:0;
+        $id = $this->import('page')->create($data);
+        //保存操作id到日志表oid中
+        if($id && $visitid !=0){
+            //得到日志表的信息
+            $r['eq']['id'] = $visitid;
+            $r['col'] = array('oid');
+            $rst = $this->import('visitlog')->find($r);
+            if($rst && $rst['oid']){
+                $data = array('oid'=>$rst['oid'].','.$id);
+            }else{
+                $data = array('oid'=>$id);
+            }
+            //保存操作到浏览日志表中
+            $this->import('visitlog')->modify($data,array('eq'=>array('id'=>$visitid)));
+        }
     }
 }
 ?>

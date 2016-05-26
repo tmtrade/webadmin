@@ -39,7 +39,7 @@ class CountAction extends Action
 			//处理数据
 			$rst = $this->load('count')->handleFirst($params,$flag);
 			if($rst){
-				$res = array('code'=>1,'msg'=>$rst);
+				$res = array('code'=>1,'msg'=>$rst[0],'id'=>$rst[1]);
 			}
 		}else{ //关闭页面的信息
 			$this->load('count')->handleLast($params);//保存用户的操作信息

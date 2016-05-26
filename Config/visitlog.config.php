@@ -147,19 +147,49 @@ return $frequency = array(
             ),
         ),
     ),
-    "5" => array(
-        'title' => '案例列表页',
+     "5" => array(
+        'title' => '专利购买列表页',
         "web_type" => "5",
         'view' => array(
             '1' => array(
-                'title' => '案例列表',
+                'title' => '专利列表',
                 'web_id' => '1',
+            ),
+            '2' => array(
+                'title' => '广告模块',
+                'web_id' => '2',
             ),
         ),
     ),
     "6" => array(
-        'title' => '案例详情页',
+        'title' => '专利详情页',
         "web_type" => "6",
+        'view' => array(
+            '1' => array(
+                'title' => '在线咨询',
+                'web_id' => '1',
+            ),
+            '2' => array(
+                'title' => '查看价格',
+                'web_id' => '2',
+            ),
+            '3' => array(
+                'title' => '联系我们',
+                'web_id' => '3',
+            ),
+            '4' => array(
+                'title' => '帮我选',
+                'web_id' => '4',
+            ),
+            '5' => array(
+                'title' => '成功案例',
+                'web_id' => '5',
+            ),
+        ),
+    ),
+    "7" => array(
+        'title' => '案例列表页',
+        "web_type" => "7",
         'view' => array(
             '1' => array(
                 'title' => '案例列表',
@@ -167,29 +197,39 @@ return $frequency = array(
             ),
         ),
     ),
-    "7" => array(
+    "8" => array(
+        'title' => '案例详情页',
+        "web_type" => "8",
+        'view' => array(
+            '1' => array(
+                'title' => '案例列表',
+                'web_id' => '1',
+            ),
+        ),
+    ),
+    "107" => array(
         'title' => '通用',
         "web_type" => "7",
         'view' => array(
             '1' => array(
                 'title' => '搜索',
-                'web_id' => '1',
+                'web_id' => '100',
             ),
             '2' => array(
                 'title' => '左侧下拉菜单',
-                'web_id' => '2',
+                'web_id' => '102',
             ),
             '3' => array(
                 'title' => '频道按钮',
-                'web_id' => '3',
+                'web_id' => '103',
             ),
             '4' => array(
                 'title' => '右侧浮动层',
-                'web_id' => '4',
+                'web_id' => '104',
             ),
             '5' => array(
                 'title' => '友情链接',
-                'web_id' => '5',
+                'web_id' => '105',
             ),
         ),
     ),

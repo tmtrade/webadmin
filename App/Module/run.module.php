@@ -287,6 +287,7 @@ class RunModule extends AppModule
         if ( !empty($ids) ){
             $r['in'] = array('number'=>$ids);
         }
+        //$r['raw']   = " id > 4895";
         $r['limit'] = 1000000;
         return $this->import('test')->find($r);
     }

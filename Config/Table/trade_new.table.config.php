@@ -257,4 +257,19 @@ $tbl['visitlog'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+$tbl['stpage'] = array(
+	'name'		=> $prefix.'stpage',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+$tbl['tvisitlog'] = array(
+	'name'		=> $prefix.'visitlog',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+$tbl['tsessions'] = array(
+	'name'		=> $prefix.'sessions',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 ?>

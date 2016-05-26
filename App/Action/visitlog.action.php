@@ -91,7 +91,10 @@ class VisitlogAction extends AppAction
             if($dateStart==$dateEnd && $dateStart!=""){//查询同一天时
                 $dateEnd = date("Y-m-d",strtotime($dateEnd)+86400);
             }
-            
+            if($dateStart=="" && $dateEnd==""){
+                $dateStart = date("Y-m-d",time());
+                $dateEnd = date("Y-m-d",time()+86400);
+            }
             $arr = $this->com('redisHtml')->get('frequency_list');
             if(empty($arr) || !empty($dateStart) || !empty($dateEnd)){
                 foreach ($frequency as $k=>$v){

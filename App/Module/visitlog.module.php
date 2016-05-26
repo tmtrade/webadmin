@@ -28,7 +28,7 @@ class VisitlogModule extends AppModule
     {
         $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($like)){
-            $r['llike']['s_url'] = $url;
+            $r['lLike']['s_url'] = $url;
         }else{
             $r['eq']['s_url'] = $url;
         }
@@ -46,7 +46,7 @@ class VisitlogModule extends AppModule
     {
         $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($like)){
-            $r['llike']['s_url'] = $url;
+            $r['lLike']['s_url'] = $url;
         }else{
             $r['eq']['s_url'] = $url;
         }
@@ -65,13 +65,13 @@ class VisitlogModule extends AppModule
     {
         $r['eq']['host'] = "www.yizhchan.com";
         if(!empty($slike)){
-            $r['llike']['s_url'] = $s_url;
+            $r['lLike']['s_url'] = $s_url;
         }else{
             $r['eq']['s_url'] = $s_url;
         }
         
         if(!empty($like)){
-            $r['llike']['url'] = $url;
+            $r['lLike']['url'] = $url;
         }else{
             $r['eq']['url'] = $url;
         }

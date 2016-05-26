@@ -457,7 +457,7 @@ return $frequency = array(
     ),
     "5" => array(
         'title' => '通用',
-        "url" => "http://www.yizhchan.com/",
+        "url" => "",
         "like" => 1,
         'view' => array(
             '1' => array(
@@ -483,23 +483,27 @@ return $frequency = array(
             '3' => array(
                 'title' => '频道按钮',
                 'url' => array(
-                    '1' => array(
+                     '1' => array(
+                        'title' => '首页',
+                        'url' => 'http://www.yizhchan.com/',
+                    ),
+                    '2' => array(
                         'title' => '频道按钮-特价商标',
                         'url' => 'http://www.yizhchan.com/offprice',
                     ),
-                    '2' => array(
+                    '3' => array(
                         'title' => '频道按钮-商标筛选',
                         'url' => 'http://www.yizhchan.com/s/',
                     ),
-                    '3' => array(
+                    '4' => array(
                         'title' => '频道按钮-商标注册',
                         'url' => 'http://r.chaofan.wang/reg/',
                     ),
-                    '4' => array(
+                    '5' => array(
                         'title' => '频道按钮-专利购买',
                         'url' => 'http://www.yizhchan.com/pt',
                     ),
-                    '5' => array(
+                    '6' => array(
                         'title' => '频道按钮-专利出售',
                         'url' => 'http://www.yizhchan.com/pt/sell',
                     ),

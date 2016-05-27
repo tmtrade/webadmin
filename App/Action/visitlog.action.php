@@ -76,16 +76,10 @@ class VisitlogAction extends AppAction
 	 */
 	public function frequency()
 	{
-            $frequency = require ConfigDir.'/visitlog.config.php';
-            $faq = $this->load('visitlog')->getFaq();
-            $frequency[1]['view'][5]['url'] = $faq;//新闻URL
-            $module = $this->load('visitlog')->getModule();
-            $frequency[1]['view'] = array_merge($frequency[1]['view'],$module);//楼层新闻URL
-            
+            $menu = $this->load('visitlog')->menu();
             $arr        = array();
             $arr1       = array();
             $count      = 0;
-            $url_count  = 0; 
             $dateStart 	= $this->input('dateStart', 'string');
             $dateEnd 	= $this->input('dateEnd', 'string');
             if($dateStart==$dateEnd && $dateStart!=""){//查询同一天时
@@ -97,16 +91,13 @@ class VisitlogAction extends AppAction
             }
             $arr = $this->com('redisHtml')->get('frequency_list');
             if(empty($arr) || !empty($dateStart) || !empty($dateEnd)){
-                foreach ($frequency as $k=>$v){
+                foreach ($menu as $k=>$v){
                    $arr[$k]['title'] = $v['title']; 
-                   $arr[$k]['page_count'] = $this->load('visitlog')->page_count($v['url'], $dateStart, $dateEnd, $v['like']); 
-                   $arr[$k]['pageUser_count'] = $this->load('visitlog')->pageUser_count($v['url'], $dateStart, $dateEnd, $v['like']);
-                   foreach ($v['view'] as $key=>$val){  
+                   $arr[$k]['page_count'] = $this->load('visitlog')->page_count($v['web_type'], strtotime($dateStart), strtotime($dateEnd)); 
+                   $arr[$k]['pageUser_count'] = $this->load('visitlog')->pageUser_count($v['web_type'], strtotime($dateStart), strtotime($dateEnd));
+                   foreach ($v['view'] as $key=>$val){
                        $arr1[$key]['title'] = $val['title'];
-                       foreach ($val['url'] as $u_val){
-                           $url_count=$this->load('visitlog')->pageUrl_count($u_val['url'],$v['url'], strtotime($dateStart), strtotime($dateEnd), $v['like'], $u_val['like']); 
-                           $count+=$url_count;
-                       }
+                       $count=$this->load('visitlog')->pageUrl_count($val['web_id'],$v['web_type'], strtotime($dateStart), strtotime($dateEnd), $val['in']); 
                        $arr1[$key]['count'] = $count;
                        $arr1[$key]['zhanbi'] = round($count/$arr[$k]['page_count']*100,2);
                        $count = 0;
@@ -130,21 +121,14 @@ class VisitlogAction extends AppAction
 	 */
 	public function trendChart()
 	{
-                $url_array      = require ConfigDir.'/visitlog.config.php';
-                $faq = $this->load('visitlog')->getFaq();
-                $url_array[1]['view'][5]['url'] = $faq;
-                $module = $this->load('visitlog')->getModule();
-                $arr = array_merge($url_array[1]['view'],$module);
-                foreach ($arr as $k=>$v){
-                    $url_array[1]['view'][$k+1] = $v;
-                }
+                $menu = $this->load('visitlog')->menu();
                 
                 $pages          = $this->input('pages','int','');
                 $page_module    = $this->input('page_module','int','');
                 $dateStart 	= $this->input('dateStart', 'string');
                 $dateEnd 	= $this->input('dateEnd', 'string');
                 $dates          = $this->input('dates', 'int',1);
-                $page_array = $url_array[$pages];
+                $page_array = $menu[$pages];
                 $count = 0;
                 $month = 0;
                 $year  = 0;
@@ -167,18 +151,15 @@ class VisitlogAction extends AppAction
                         for($i=0;$i<=$day;$i++){
                             $date_start = $dateStart+$i*86400;
                             $date_end = $date_start+86400;
-                            
-                            $page_count[$i] = $this->load('visitlog')->page_count($page_array['url'], date("Y-m-d",$date_start), date("Y-m-d",$date_end), $page_array['like']); 
+                            $page_count[$i] = $this->load('visitlog')->page_count($page_array['web_type'], $date_start, $date_end); 
                             $date[$i] = date("m-d",$date_start);
                         }
                     }else{//当选择页面的模块时
-                         $module_array = $page_array['view'][$page_module]['url'];
+                         $module_array = $page_array['view'][$page_module];
                          for($i=0;$i<=$day;$i++){
                             $date_start = $dateStart+$i*86400;
                             $date_end = $date_start+86400;
-                            foreach ($module_array as $val){
-                                $count+=$this->load('visitlog')->pageUrl_count($val['url'],$page_array['url'], $date_start, $date_end, $page_array['like'], $val['like']); 
-                            }
+                            $count=$this->load('visitlog')->pageUrl_count($module_array['web_id'],$page_array['web_type'], $date_start, $date_end, $module_array['in']); 
                             $page_count[] = $count; 
                             $date[] = date("m-d",$date_start);
                             $count = 0;
@@ -196,16 +177,16 @@ class VisitlogAction extends AppAction
                                 $date_end = strtotime("$oneDay +1 month");
                             }else if($i==$month_end){
                                 $date_start = date('Y-'.$i.'-01');
-                                $date_end = $dateEnd;
+                                $date_end = $dateEnd+86400;
                             }else{
                                 $date_start=date('Y-'.$i.'-01'); //获取当前月份第一天
                                 $date_end = strtotime("$date_start +1 month");    //加一个月
                             }
-                            $page_count[] = $this->load('visitlog')->page_count($page_array['url'], $date_start, date("Y-m-d",$date_end), $page_array['like']); 
+                            $page_count[] = $this->load('visitlog')->page_count($page_array['web_type'], strtotime($date_start), $date_end); 
                             $date[] = $i<10?"0".intval($i):$i;
                         }
                     }else{//当选择页面的模块时
-                        $module_array = $page_array['view'][$page_module]['url'];
+                        $module_array = $page_array['view'][$page_module];
                         for($i=$month_start;$i<=$month_end;$i++){
                             if($i==$month_start){
                                 $date_start = date("Y-m-d",$dateStart);
@@ -213,13 +194,13 @@ class VisitlogAction extends AppAction
                                 $date_end = strtotime("$oneDay +1 month");
                             }else if($i==$month_end){
                                 $date_start = date('Y-'.$i.'-01');
-                                $date_end = $dateEnd;
+                                $date_end = $dateEnd+86400;
                             }else{
                                 $date_start=date('Y-'.$i.'-01'); //获取当前月份第一天
                                 $date_end = strtotime("$date_start +1 month");    //加一个月
                             }
                             foreach ($module_array as $val){
-                                $count+=$this->load('visitlog')->pageUrl_count($val['url'],$page_array['url'], $date_start, $date_end, $page_array['like'], $val['like']); 
+                                $count+=$this->load('visitlog')->pageUrl_count($module_array['web_id'],$page_array['web_type'], strtotime($date_start), $date_end, $module_array['in']); 
                             }
                             $page_count[] = $count; 
                             $date[] = $i<10?"0".intval($i):$i;
@@ -230,8 +211,8 @@ class VisitlogAction extends AppAction
                     
                 }
                 
-                $this->set("url_array",$url_array);
-                $this->set("url_json",json_encode($url_array));
+                $this->set("url_array",$menu);
+                $this->set("url_json",json_encode($menu));
                 $this->set("data",array("page_count"=>implode(",", $page_count),"date"=>json_encode($date)));
                 $this->set("s",array("dateStart"=>date("Y-m-d",$dateStart),"dateEnd"=>date("Y-m-d",$dateEnd),"pages"=>$pages,"page_module"=>$page_module,"dates"=>$dates,"month"=>$month,"year"=>$year));
 		$this->display();

@@ -217,7 +217,7 @@ return $frequency = array(
     ),
     "5" => array(
         'title' => '案例列表页',
-        "web_type" => "7",
+        "web_type" => "5",
         'view' => array(
             '1' => array(
                 'title' => '案例列表',
@@ -227,7 +227,7 @@ return $frequency = array(
     ),
     "6" => array(
         'title' => '案例详情页',
-        "web_type" => "8",
+        "web_type" => "6",
         'view' => array(
             '1' => array(
                 'title' => '案例列表',
@@ -261,7 +261,7 @@ return $frequency = array(
     ),
     "10" => array(
         'title' => '专利列表页',
-        "web_type" => "11",
+        "web_type" => "10",
         "like" =>"1,2,3,30,31,7",
         "ad"=>"6",
         'view' => array(
@@ -298,7 +298,7 @@ return $frequency = array(
     
     "11" => array(
         'title' => '专利详情页',
-        "web_type" => "10",
+        "web_type" => "11",
         'view' => array(
             '30' => array(
                 'title' => '询价',
@@ -360,7 +360,7 @@ return $frequency = array(
     ),
     "100" => array(
         'title' => '通用',
-        "web_type" => "7",
+        "web_type" => "100",
         'view' => array(
             '1' => array(
                 'title' => '搜索',

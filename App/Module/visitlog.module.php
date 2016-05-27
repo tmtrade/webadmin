@@ -11,89 +11,105 @@
  */
 class VisitlogModule extends AppModule
 {
-	public $models = array(
-		'page'     => 'stpage',
-		'visitlog'     => 'tvisitlog',
-		'sessions'     => 'tsessions',
-                'module'                => 'Module',
-                'moduleClass'           => 'ModuleClass',
-                'moduleLink'            => 'ModuleLink',
-                'modulePic'             => 'ModulePic',
-                'moduleClassItems'      => 'ModuleClassItems',
-                'sale'                  => 'Sale',
-	);
+    public $models = array(
+            'page'     => 'stpage',
+            'visitlog'     => 'tvisitlog',
+            'sessions'     => 'tsessions',
+    );
 
-	/**
-	 * 得到配置文件的数组信息
-	 * @return mixed
-	 */
-	private function getConfigData(){
-		if($this->configData){
-			return $this->configData;
-		}else{
-			return require ConfigDir.'/visitlog.config.php';
-		}
-	}
+    /**
+     * 得到配置文件的数组信息
+     * @return mixed
+     */
+    private function getConfigData(){
+            if($this->configData){
+                    return $this->configData;
+            }else{
+                    return require ConfigDir.'/visitlog.config.php';
+            }
+    }
+    
+    //得到数据配置的菜单信息
+    public function menu(){
+        $config = $this->getConfigData();//得到所有的配置信息
+        $array = array(1,2,3,4,5,6,10,11,100);
+        $m = array();
+        foreach ($config as $k=>$v){
+            if(in_array($k, $array)){
+                $m[$k] = $v;
+                if(!empty($v['like'])){
+                    $m[$k]['view'] = "";
+                    $m[$k]['view'][1] = array(
+                                    'title' => '列表点击详情',
+                                    'web_id' => $v['like'],
+                                    'in' => 1,
+                                    );
+                    $m[$k]['view'][2] = array(
+                                    'title' => '广告模块',
+                                    'web_id' => $v['ad'],
+                                    );
+                }
+            }
+        }
+        return $m;
+    }
 
     //计算每个页面点击数
-    public function page_count($url,$dateStart="",$dateEnd="",$like="")
+    public function page_count($type,$dateStart="",$dateEnd="")
     {
-        $r['eq']['host'] = "www.yizhchan.com";
-        if(!empty($like)){
-            $r['lLike']['s_url'] = $url;
+        if($type==100){
+            $r['scope'] = array('web_id' => array(100, 110));
         }else{
-            $r['eq']['s_url'] = $url;
+            $r['eq']['type'] = $type;
         }
         if(!empty($dateStart)){
-            $r['raw'] = " dateline>".strtotime($dateStart);
+            $r['raw'] = " date>".$dateStart;
         }
         if(!empty($dateEnd)){
-            $r['raw'] .= " and dateline<".strtotime($dateEnd);
+            $r['raw'] .= " and date<".$dateEnd;
         }
-        return $this->import('visitlog')->count($r);
+        return $this->import('page')->count($r);
     }
     
     //计算每个页面访问者
-    public function pageUser_count($url,$dateStart="",$dateEnd="",$like="")
+    public function pageUser_count($type,$dateStart="",$dateEnd="")
     {
-        $r['eq']['host'] = "www.yizhchan.com";
-        if(!empty($like)){
-            $r['lLike']['s_url'] = $url;
+        if($type==100){
+            $r['scope'] = array('web_id' => array(100, 110));
         }else{
-            $r['eq']['s_url'] = $url;
+            $r['eq']['type'] = $type;
         }
         if(!empty($dateStart)){
-            $r['raw'] = " dateline>".strtotime($dateStart);
+            $r['raw'] = " date>".$dateStart;
         }
         if(!empty($dateEnd)){
-            $r['raw'] .= " and dateline<".strtotime($dateEnd);
+            $r['raw'] .= " and date<".$dateEnd;
         }
         $r['group'] = array('sid' => 'asc');
-        return $this->import('visitlog')->count($r);
+        return $this->import('page')->count($r);
     }
     
     //计算每个链接访问次数
-    public function pageUrl_count($url,$s_url,$dateStart="",$dateEnd="",$slike="",$like="")
+    public function pageUrl_count($web_id,$type,$dateStart="",$dateEnd="",$in="")
     {
-        $r['eq']['host'] = "www.yizhchan.com";
-        if(!empty($slike)){
-            $r['lLike']['s_url'] = $s_url;
+        if($type==100){
+            $r['scope'] = array('web_id' => array(100, 110));
+            $r['eq']['web_id'] = $web_id;
         }else{
-            $r['eq']['s_url'] = $s_url;
-        }
-        
-        if(!empty($like)){
-            $r['lLike']['url'] = $url;
-        }else{
-            $r['eq']['url'] = $url;
+            $r['eq']['type'] = $type;
+            if(!empty($in)){
+                $r['in'] = array('web_id' => array($web_id));
+            }else{
+                $r['eq']['web_id'] = $web_id;  
+            }
         }
         if(!empty($dateStart)){
-            $r['raw'] = " dateline>=".$dateStart;
+            $r['raw'] = " date>=".$dateStart;
         }
         if(!empty($dateEnd)){
-            $r['raw'] .= " and dateline<".$dateEnd;
+            $r['raw'] .= " and date<".$dateEnd;
         }
-        return $this->import('visitlog')->count($r);
+        return $this->import('page')->count($r);
     }
     
 	/**
@@ -377,179 +393,5 @@ class VisitlogModule extends AppModule
 		return $tmp;
 	}
         
-    /**
-     * 得到首页个楼层模块信息
-     * @return array
-     */
-    public function getModule(){
-        //得到所有的模块信息
-        $r['order'] = array('sort'=>'asc');
-        $r['eq'] = array('isUse'=>1);
-        $r['col'] = array('id','name');
-        $r['limit'] = 1000;
-        $data = $this->com('redisHtml')->get('admin_index_Module');
-        if ( empty($data) ){
-            $modules = $this->import('module')->find($r);
-            foreach($modules as $k=>$module){
-                $class = $this->getModuleClass($module['id']);
-                $pic = $this->getModuleAds($module['id']);
-                $link = $this->getModuleLink($module['id']);
-                $data[$k]['title'] = ($k+1)."F-".$module['name'];
-                $data[$k]['url'] =  array_merge($class,$pic,$link);
-            }
-            $this->com('redisHtml')->set('admin_index_Module', $data, 3600);
-        }
-        return $data;
-    }
-    
-    //获取新闻问答的链接
-    public function getFaq(){
-        $_news = $this->com('redisHtml')->get('_news_tmp');
-        $arr1 = array();
-        $arr2 = array();
-        $arr3 = array();
-        $arr4 = array();
-        foreach ($_news['news'] as $k=>$v){
-            $arr1[$k]['url'] = 'http://www.yizhchan.com'.$v['url'];
-        }
-        foreach ($_news['baike'] as $k=>$v){
-            $arr2[$k]['url'] = 'http://www.yizhchan.com'.$v['url'];
-        }
-        foreach ($_news['faq'] as $k=>$v){
-            $arr3[$k]['url'] = 'http://www.yizhchan.com'.$v['url'];
-        }
-        foreach ($_news['law'] as $k=>$v){
-            $arr4[$k]['url'] = 'http://www.yizhchan.com'.$v['url'];
-        }
-        return array_merge($arr1,$arr2,$arr3,$arr4);
-    }
-
-    /**
-     * 首页模块子分类列表信息
-     * @param $moduleId
-     * @return array
-     */
-    private function getModuleClass($moduleId)
-    {
-        $r = array();
-        $r['eq']['moduleId'] = $moduleId;
-        $r['limit'] = 100;
-        $r['col'] = array('id','name');
-        $r['order'] = array('sort'=>'asc');
-        $data = $this->import('moduleClass')->find($r);
-        //得到分类的子分类列表
-        $arr = array();
-        $a = array();
-        foreach($data as $k=>$item){
-            $arr[$k] = $this->getModuleClassItems($item['id']);
-            $a = array_merge($a,$arr[$k]);
-        }
-        return $a;
-    }
-
-    /**
-     * 首页模块子分类列表信息
-     * @param $classId
-     * @return array
-     * @throws array
-     */
-    private function getModuleClassItems($classId)
-    {
-        $r = array();
-        $r['eq']['classId'] = $classId;
-        $r['limit'] = 100;
-        $r['order'] = array('sort'=>'asc');
-        $r['col'] = array('id','name','number');
-        $data = $this->import('moduleClassItems')->find($r);
-        //添加额外信息
-        $arr = array();
-        foreach($data as $k=>$item){
-            //判断商品是否销售中
-            $rst = $this->isSale($item['number']);
-            if(!$rst){
-                unset($data[$k]);
-                continue;
-            }
-            //得到所属分类名
-            $result = $this->getSaleInfoByNumber($item['number']);
-            $arr[$k]['title'] = $result['name'];
-            $arr[$k]['url'] = 'http://www.yizhchan.com/d-'.$result['tid'].'-'.$result['class'].'.html';
-        }
-        return $arr;
-    }
-
-    /**
-     * 首页模块包含广告列表信息
-     * @param $moduleId
-     * @return array
-     */
-    private function getModuleAds($moduleId)
-    {
-        $r = array();
-        $r['eq']['moduleId'] = $moduleId;
-        $r['limit'] = 100;
-        $r['col'] = array('pic','link','alt');
-        $r['order'] = array('sort'=>'asc');
-        $data = $this->import('modulePic')->find($r);
-        $arr = array();
-        foreach ($data as $k=>$v){
-            $arr[$k]['title']   = $v['alt'];
-            $arr[$k]['url']     = "http://www.yizhchan.com".$v['link'];
-        }
-        return $arr;
-    }
-
-    /**
-     * 首页模块推广链接列表信息
-     * @param $moduleId
-     * @return array
-     */
-    private function getModuleLink($moduleId)
-    {
-        $r = array();
-        $r['eq']['moduleId'] = $moduleId;
-        $r['limit'] = 100;
-        $r['col'] = array('title','link','show');
-        $r['order'] = array('sort'=>'asc');
-        $data = $this->import('moduleLink')->find($r);
-        $arr = array();
-        foreach ($data as $k=>$v){
-            $arr[$k]['title']   = $v['title'];
-            $arr[$k]['url']     = "http://www.yizhchan.com".$v['link'];
-        }
-        return $arr;
-    }
-
-        
-    /**
-     * 根据商标得到sale信息(分类第一个)
-     * @author dower
-     * @param $number
-     * @return mixed
-     */
-    public function getSaleInfoByNumber($number,$col = array('tid','class','name')){
-        //得到商标的第一个分类
-        $r['eq'] = array('number'=>$number);
-        $r['col'] = $col;
-        $rst = $this->import('sale')->find($r);
-        //返回商标的分类名
-        return $rst;
-    }
-    
-        /**
-     * 判断商标是否销售中
-     * @author dower
-     * @param $number
-     * @return bool
-     */
-    public function isSale($number){
-        $r['eq'] = array('number'=>$number);
-        $r['col'] = array('status');
-        $result = $this->import('sale')->find($r);
-        if($result && $result['status']==1){
-            return true;
-        }
-        return false;
-    }
 }
 ?>

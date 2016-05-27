@@ -71,12 +71,20 @@ return $frequency = array(
                 'title' => '页脚横幅广告',
                 'web_id' => '16',
             ),
+            '30' => array(
+                'title' => '询价',
+                'web_id' => '30',
+            ),
+            '31' => array(
+                'title' => '联系卖家',
+                'web_id' => '31',
+            ),
         ),
     ),
     "2" => array(
         'title' => '商标列表页',
         "web_type" => "2",
-        "like" =>"1,2,3,4,5,6,7,8,9,10,11",
+        "like" =>"1,2,3,4,5,6,7,30,31,10,11",
         "ad"=>"12",
         'view' => array(
             '1' => array(
@@ -107,14 +115,6 @@ return $frequency = array(
                 'title' => '清楚筛选条件',
                 'web_id' => '7',
             ),
-            '8' => array(
-                'title' => '询价',
-                'web_id' => '8',
-            ),
-            '9' => array(
-                'title' => '联系卖家',
-                'web_id' => '9',
-            ),
             '10' => array(
                 'title' => '查看详情',
                 'web_id' => '10',
@@ -126,6 +126,14 @@ return $frequency = array(
             '12' => array(
                 'title' => '广告模块',
                 'web_id' => '12',
+            ),
+            '30' => array(
+                'title' => '询价',
+                'web_id' => '30',
+            ),
+            '31' => array(
+                'title' => '联系卖家',
+                'web_id' => '31',
             ),
         ),
     ),
@@ -143,10 +151,6 @@ return $frequency = array(
                 'title' => '筛选群组',
                 'web_id' => '2',
             ),
-            '3' => array(
-                'title' => '联系卖家',
-                'web_id' => '3',
-            ),
             '4' => array(
                 'title' => '查看详情',
                 'web_id' => '4',
@@ -155,10 +159,18 @@ return $frequency = array(
                 'title' => '广告模块',
                 'web_id' => '5',
             ),
+            '30' => array(
+                'title' => '询价',
+                'web_id' => '30',
+            ),
+            '31' => array(
+                'title' => '联系卖家',
+                'web_id' => '31',
+            ),
         ),
     ),
     "4" => array(
-        'title' => '商品详情页',
+        'title' => '商标详情页',
         "web_type" => "4",
         'view' => array(
             '1' => array(
@@ -173,10 +185,6 @@ return $frequency = array(
                 'title' => '商标检测',
                 'web_id' => '3',
             ),
-            '4' => array(
-                'title' => '在线咨询',
-                'web_id' => '4',
-            ),
             '5' => array(
                 'title' => '收藏',
                 'web_id' => '5',
@@ -184,10 +192,6 @@ return $frequency = array(
             '6' => array(
                 'title' => '查看价格',
                 'web_id' => '6',
-            ),
-            '7' => array(
-                'title' => '联系我们',
-                'web_id' => '7',
             ),
             '8' => array(
                 'title' => '猜你喜欢',
@@ -200,6 +204,14 @@ return $frequency = array(
             '10' => array(
                 'title' => '成功案例',
                 'web_id' => '10',
+            ),
+            '30' => array(
+                'title' => '询价',
+                'web_id' => '30',
+            ),
+            '31' => array(
+                'title' => '联系卖家',
+                'web_id' => '31',
             ),
         ),
     ),
@@ -228,7 +240,7 @@ return $frequency = array(
         "web_type" => "8",
         'view' => array(
             '1' => array(
-                'title' => '查看zhuanti',
+                'title' => '查看专题',
                 'web_id' => '1',
             ),
         ),
@@ -237,20 +249,20 @@ return $frequency = array(
         'title' => '专题详情页',
         "web_type" => "9",
         'view' => array(
-            '1' => array(
+            '30' => array(
                 'title' => '询价',
-                'web_id' => '1',
+                'web_id' => '30',
             ),
-            '2' => array(
+            '31' => array(
                 'title' => '联系卖家',
-                'web_id' => '2',
+                'web_id' => '31',
             ),
         ),
     ),
     "10" => array(
         'title' => '专利列表页',
         "web_type" => "11",
-        "like" =>"1,2,3,4,5,7",
+        "like" =>"1,2,3,30,31,7",
         "ad"=>"6",
         'view' => array(
             '1' => array(
@@ -265,13 +277,13 @@ return $frequency = array(
                 'title' => '清楚筛选条件',
                 'web_id' => '3',
             ),
-            '4' => array(
+            '30' => array(
                 'title' => '询价',
-                'web_id' => '4',
+                'web_id' => '30',
             ),
-            '5' => array(
+            '31' => array(
                 'title' => '联系卖家',
-                'web_id' => '5',
+                'web_id' => '31',
             ),
             '6' => array(
                 'title' => '更多专利',
@@ -288,13 +300,13 @@ return $frequency = array(
         'title' => '专利详情页',
         "web_type" => "10",
         'view' => array(
-            '1' => array(
-                'title' => '查看价格',
-                'web_id' => '1',
+            '30' => array(
+                'title' => '询价',
+                'web_id' => '30',
             ),
-            '2' => array(
-                'title' => '在线咨询',
-                'web_id' => '2',
+            '31' => array(
+                'title' => '联系卖家',
+                'web_id' => '31',
             ),
             '3' => array(
                 'title' => '更多专利',
@@ -326,13 +338,13 @@ return $frequency = array(
         'title' => '商品聚合页',
         "web_type" => "14",
         'view' => array(
-            '1' => array(
+            '30' => array(
                 'title' => '询价',
-                'web_id' => '1',
+                'web_id' => '30',
             ),
-            '2' => array(
+            '31' => array(
                 'title' => '联系卖家',
-                'web_id' => '2',
+                'web_id' => '31',
             ),
         ),
     ),

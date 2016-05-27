@@ -12,9 +12,9 @@
 class VisitlogModule extends AppModule
 {
 	public $models = array(
-		'visitlog'              => 'visitlog',
-		'sessions'              => 'visitlogSessions',
-		'sem'                   => 'visitlogSem',
+		'page'     => 'stpage',
+		'visitlog'     => 'tvisitlog',
+		'sessions'     => 'tsessions',
                 'module'                => 'Module',
                 'moduleClass'           => 'ModuleClass',
                 'moduleLink'            => 'ModuleLink',
@@ -22,7 +22,19 @@ class VisitlogModule extends AppModule
                 'moduleClassItems'      => 'ModuleClassItems',
                 'sale'                  => 'Sale',
 	);
-    
+
+	/**
+	 * 得到配置文件的数组信息
+	 * @return mixed
+	 */
+	private function getConfigData(){
+		if($this->configData){
+			return $this->configData;
+		}else{
+			return require ConfigDir.'/visitlog.config.php';
+		}
+	}
+
     //计算每个页面点击数
     public function page_count($url,$dateStart="",$dateEnd="",$like="")
     {
@@ -109,14 +121,16 @@ class VisitlogModule extends AppModule
 	private function handList($data){
 		foreach($data as $k=>$item){
 			$sid = $item['sid'];
-			//设备数据
-			if($item['issem']){
-				$data[$k]['device'] = $this->getDevice($sid);//去sem表记录查询
+			$rst = $this->getVisitLog($item['logids'],1);
+			if($rst){
+				$data[$k]['device'] = $rst['device'];
+				date_default_timezone_set ( 'GMT' );
+				$data[$k]['stay'] = date('H.i.s',$rst['stay']);
+				date_default_timezone_set ( 'PRC' );
 			}else{
 				$data[$k]['device'] = 0;
+				$data[$k]['stay'] = 0;
 			}
-			//停留时间
-			$data[$k]['stay'] = '未实现';
 		}
 		return $data;
 	}
@@ -129,15 +143,64 @@ class VisitlogModule extends AppModule
 	private function getDevice($sid){
 		$r['limit'] = 1;
 		$r['eq']['sid'] = $sid;
-		$r['order'] = array('auto'=>'desc');
+		$r['order'] = array('id'=>'desc');
 		$r['col'] = array('device');
-		$res = $this->import('sem')->find($r);
+		$res = $this->import('visitlog')->find($r);
 		if($res){
 			return $res['device'];
 		}
 		return 0;
 	}
 
+	/**
+	 * 得到指定cookie的最近一次访问信息
+	 * @param $logids
+	 * @return bool
+	 */
+	public function getVisitLog($logids,$type=0){
+		$ids = explode(',',ltrim($logids,','));
+		if($ids){
+			//得到所有记录信息
+			$r['in']['id'] = $ids;
+			$r['limit'] = 1000;
+			$r['col'] = array('device','tel','dateline','leavetime');
+			$rst = $this->import('visitlog')->find($r);
+			if($rst){
+				if(!$type){
+					return $rst;//返回原生结果
+				}
+				$len = count($rst);
+				//得到电话号码信息
+				$tel = array_filter(array_unique(arrayColumn($rst,'tel')));
+				$data['tel'] = $tel[0];
+				//得到设备信息
+				$data['device'] = $rst[0]['device'];
+				//得到停留时间信息
+				if($rst[$len-1]['leavetime']){
+					$end = $rst[$len-1]['leavetime'];
+				}else{
+					$end = $rst[$len-1]['dateline'];
+				}
+				$data['stay'] = $end-$rst[0]['dateline'];
+				return $data;
+			}
+		}else{
+			return false;
+		}
+	}
+
+	/**
+	 * 得到访客的所有信息
+	 * @param $sid
+	 * @return array
+	 */
+	private function getAllLog($sid){
+		//得到所有记录信息
+		$r['eq']['sid'] = $sid;
+		$r['limit'] = 1000;
+		$r['col'] = array('device','tel');
+		return $this->import('visitlog')->find($r);
+	}
 	/**
 	 * 得到访问者的所有信息
 	 * @param $sid
@@ -161,13 +224,29 @@ class VisitlogModule extends AppModule
 	 * @return array
 	 */
 	private function getBasicInfo($sid){
+		//得到session信息
 		$r = array();
 		$r['eq']['sid']  = $sid;
 		$r['limit'] = 1;
-		$r['col'] = array('issem','visits');
+		$r['col'] = array('issem','visits','tel','logids');
 		$data = $this->import('sessions')->find($r);
-		if($data && $data['issem']==1){
-			$data['device'] = $this->getDevice($sid);
+		//得到其他信息
+		if($data){
+			$rst = $this->getAllLog($sid);//处理手机
+			if($rst){
+				$tel = arrayColumn($rst,'device');
+				$data['device'] = array(0,0);
+				foreach($tel as $v){
+					if($v){
+						$data['device'][0] += 1;//手机
+					}else{
+						$data['device'][1] += 1;//电脑
+					}
+				}
+			}else{
+				$data['device'] = 0;
+			}
+			$data['utype'] = $data['tel']?1:0;//用户类型
 		}else{
 			$data['device'] = 0;
 		}
@@ -225,13 +304,17 @@ class VisitlogModule extends AppModule
 			$tmp = array();
 			$tmp['time'] = $item['dateline'];//进入时间
 			//停留时间
-			if(isset($data[($k-1)])){
-				$tmp['stay'] = $data[($k-1)]['dateline']-$item['dateline'];//上一个减当前
+			if($item['leavetime']){
+				date_default_timezone_set ( 'GMT' );
+				$tmp['stay'] = date('i:s',$item['leavetime']-$item['dateline']);
+				date_default_timezone_set ( 'PRC' );
 			}else{
 				$tmp['stay'] = 0;
 			}
-			$tmp['type'] = $this->analyseUrl($item['url']);//页面类型
-			$tmp['opr'] = '未实现';//操作类型
+			//处理页面信息
+			$rst = $this->analyseUrl($item['type'],$item['oid']);
+			$tmp['type'] = $rst['page'];//页面类型
+			$tmp['opr'] = $rst['opt'];//操作类型
 			//分日期保存(精确到天)
 			$temp[$riqi]['data'][] = $tmp;
 			$temp[$riqi]['location'] = $this->getLocByIp($item['ip']);//地址>>TODO 此处有问题(ip对应一个记录)
@@ -257,41 +340,41 @@ class VisitlogModule extends AppModule
 	}
 
 	/**
-	 * 根据url得到访问的页面
-	 * @param $url
+	 * 得到页面信息
+	 * @param $oid string 操作的id
+	 * @param $type int 页面类型
 	 * @return string
 	 */
-	private function analyseUrl($url){
-//		$site_url = SITE_URL;
-		$site_url = 'http://www.yizhchan.com/';//todo
-		//匹配页面
-		if($url==$site_url || $url==substr($url,0,-1)){
-			return '网站首页';
-		}elseif(strpos($url,$site_url.'s')!==false || strpos($url,$site_url.'offprice')!==false){
-			return '商标列表页/特价商标列表页';
-		}elseif(strpos($url,$site_url.'d-')!==false){
-			return '商标详情页';
-		}elseif(strpos($url,$site_url.'n-45-')!==false){
-			return 'faq详情页';
-		}elseif(strpos($url,$site_url.'g')!==false){
-			return '商品聚合页';
-		}elseif(strpos($url,$site_url.'n-45')!==false){
-			return 'faq列表面';
-		}elseif(strpos($url,$site_url.'n-50-')!==false){
-			return '新闻详情页';
-		}elseif(strpos($url,$site_url.'n-50')!==false){
-			return '新闻列表面';
-		}elseif(strpos($url,$site_url.'zhuanti/view')!==false || strpos($url,$site_url.'topic/')!==false){
-			return '专题详情面';
-		}elseif(strpos($url,$site_url.'zhuanti')!==false){
-			return '专题列表面';
-		}elseif(strpos($url,$site_url.'buy')!==false){
-			return '我要买';
-		}elseif(strpos($url,$site_url.'sell')!==false){
-			return '我要卖';
-		}else{
-			return '未知';
+	private function analyseUrl($type,$oid){
+		$oid = explode(',',ltrim($oid));
+		$config = $this->getConfigData();//得到所有的配置信息
+		$tmp = array();
+		$tmp['page'] = $config[$type]['title'];
+		if($oid){
+			//得到操作信息
+			$r['in']['id'] = $oid;
+			$r['limit'] = 1000;
+			$r['col'] = array('web_id','addition');
+			$rst = $this->import('page')->find($r);
+			if($rst){
+				foreach($config[$type]['view'] as $k=>$v){
+					foreach($rst as $v0){
+						if($v0['web_id']==$k){
+							//组装操作信息
+							$temp = '操作: '.$v['title'];
+							if($v0['addition']){
+								$temp .= ' | 附加信息: '.$v0['addition'];
+							}
+							$tmp['opt'][] = $temp;
+						}
+					}
+				}
+				$tmp['opt'] = implode('<br/>',$tmp['opt']);
+				return $tmp;
+			}
 		}
+		$tmp['opt'] = '无操作信息';
+		return $tmp;
 	}
         
     /**

@@ -303,6 +303,10 @@ return $frequency = array(
                 'title' => '更多专利',
                 'web_id' => '6',
             ),
+            '7' => array(
+                'title' => '查看详情',
+                'web_id' => '7',
+            ),
         ),
     ),
     "12" => array(

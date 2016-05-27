@@ -24,6 +24,7 @@
                     <tr class="active">
 						<td>访问者类型</td>
                         <td>来源</td>
+                        <td>设备</td>
                         <td>忠诚度</td>
                         <td>用户id</td>
 						<td>访问者姓名</td>
@@ -33,12 +34,19 @@
                 </thead>
                 <tbody class="table-list">
                 <tr>
-					<td>访问者</td>
+					<td><?=($basic['utype']?'用户':'访问者')?></td>
 					<td><?=($basic['issem']?'推广':'直接访问')?></td>
+					<td>
+                        <? if($basic['device']): ?>
+                        电脑:<?=$basic['device'][1]?> | 手机:<?=$basic['device'][0]?>
+                        <? else: ?>
+                        异常
+                        <? endif; ?>
+                    </td>
 					<td><?=($basic['visits']>5)?'老用户':'新用户'?>(<?=$basic['visits']?>)</td>
+                    <td><?=($basic['tel']?$basic['tel']:'-')?></td>
                     <td>未实现</td>
-                    <td>未实现</td>
-                    <td>未实现</td>
+                    <td><?=($basic['tel']?$basic['tel']:'-')?></td>
                     <td>
 						<a href="javascript:;" onclick="">前往crm系统管理用户(未实现)</a>
                     </td>
@@ -80,7 +88,7 @@
                                 <td><?=date('H:i',$item['time'])?></td>
                                 <td><?=($item['stay']?date('i:s',$item['stay']):0)?></td>
                                 <td><?=$item['type']?></td>
-                                <td>未实现</td>
+                                <td><?=$item['opr']?></td>
                             </tr>
                         <?endforeach;?>
                     </tbody>

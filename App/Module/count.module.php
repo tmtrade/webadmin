@@ -31,6 +31,20 @@ class CountModule extends AppModule
         }else{
             $isnew = 0;
         }
+        //添加到访问日志表
+        $data  = array(
+            'sid' => $sid,
+            's_url' => isset($params['referrer'])?$params['referrer']:'',
+            'url' => $params['url'],
+            'device' => isset($params['device'])?$params['device']:0,
+            'dateline' => $time,
+            'ip' => $params['ip'],
+            'tel' => isset($params['tel'])?$params['tel']:'',
+            'type' => isset($params['type'])?$params['type']:0,
+            'isnew' => $isnew,
+            'issem' => isset($params['issem'])?$params['issem']:0,
+        );
+        $id = $this->import('visitlog')->create($data);
         if($flag){
             //添加到访问信息表中
             if(!$params['referrer']){
@@ -50,6 +64,7 @@ class CountModule extends AppModule
                 'lastdateline' => $time,
                 'visits' => 1,
                 'issem' => isset($params['issem'])?$params['issem']:0,
+                'tel' => isset($params['tel'])?$params['tel']:'',
             );
             $this->import('sessions')->create($data);
         }else{
@@ -59,26 +74,25 @@ class CountModule extends AppModule
                 'lastip' => $params['ip'],
                 'lastdateline' => $time,
             );
-            if($isnew){ //二次访问更新次数
-                $data['visits'] = array('visits',1);
+            if(isset($params['tel'])){
+                $data['tel'] = $params['tel'];//保存账户
+            }
+            if($isnew){
+                $data['logids'] = $id;//--直接添加id
+                $data['visits'] = array('visits',1);//二次访问更新次数
+            }else{
+                //得到该访问的session信息信息--追加上去
+                $r['eq']['sid'] = $sid;
+                $r['col'] = array('logids');
+                $rst = $this->import('sessions')->find($r);
+                if($rst){
+                    $data['logids'] = $rst['logids'].','.$id;
+                }
             }
             $r['eq']['sid'] = $sid;
             $this->import('sessions')->modify($data,$r);
         }
-        //添加到访问日志表
-        $data = array();
-        $data  = array(
-            'sid' => $sid,
-            's_url' => isset($params['referrer'])?$params['referrer']:'',
-            'url' => $params['url'],
-            'device' => isset($params['device'])?$params['device']:0,
-            'dateline' => $time,
-            'ip' => $params['ip'],
-            'tel' => isset($params['tel'])?$params['tel']:'',
-            'isnew' => $isnew,
-            'issem' => isset($params['issem'])?$params['issem']:0,
-        );
-        $id = $this->import('visitlog')->create($data);
+
         //返回新的cookie值 和 日志的id
         return array(implode('-',array($sid,$time)),$id);
     }

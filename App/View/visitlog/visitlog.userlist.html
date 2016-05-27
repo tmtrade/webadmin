@@ -38,7 +38,7 @@
 					<td><?=($v['issem']?'推广':'直接访问')?></td>
 					<td><?=($v['device'])?'手机':'电脑'?></td>
 					<td><?=($v['visits']>5)?'老用户':'新用户'?>(<?=$v['visits']?>)</td>
-                    <td>无</td>
+                    <td><?=$v['huaxiang']?></td>
 					<td><?=date('Y.m.d H:i', $v['lastdateline'])?></td>
 					<td><?=$v['stay']?></td>
                     <td>

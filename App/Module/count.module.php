@@ -26,7 +26,7 @@ class CountModule extends AppModule
         $temp = explode('-',$params['sid']);
         $sid = $temp[0];
         $start = isset($temp[1])?$temp[1]:0;
-        if($flag || ($time-$start)>3600){ //访问间隔大于1个小时认为第二次访问
+        if($flag || ($time-$start)>1800){ //访问间隔大于30分钟认为第二次访问
             $isnew = 1;
         }else{
             $isnew = 0;

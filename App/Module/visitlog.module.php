@@ -16,7 +16,7 @@ class VisitlogModule extends AppModule
             'visitlog'     => 'tvisitlog',
             'sessions'     => 'tsessions',
     );
-
+	private $configData;
     /**
      * 得到配置文件的数组信息
      * @return mixed
@@ -147,25 +147,10 @@ class VisitlogModule extends AppModule
 				$data[$k]['device'] = 0;
 				$data[$k]['stay'] = 0;
 			}
+			//得到用户画像
+			$data[$k]['huaxiang'] = implode(',',$this->getHuaxiang($sid));
 		}
 		return $data;
-	}
-
-	/**
-	 * 根据唯一用户cookie获得最近的访问设备
-	 * @param $sid
-	 * @return int
-	 */
-	private function getDevice($sid){
-		$r['limit'] = 1;
-		$r['eq']['sid'] = $sid;
-		$r['order'] = array('id'=>'desc');
-		$r['col'] = array('device');
-		$res = $this->import('visitlog')->find($r);
-		if($res){
-			return $res['device'];
-		}
-		return 0;
 	}
 
 	/**
@@ -229,9 +214,11 @@ class VisitlogModule extends AppModule
 	public function getUserAll($sid,$page, $size = 10,$start = false,$end = false){
 		//得到基本信息
 		$basic = $this->getBasicInfo($sid);
+		//得到用户画像信息
+		$huaxiang = $this->getHuaxiang($sid);
 		//得到浏览足迹信息
 		$footprint = $this->getFootprint($sid,$page,$size,$start,$end);
-		return array($basic,$footprint);
+		return array($basic,$huaxiang,$footprint);
 	}
 
 	/**
@@ -265,6 +252,44 @@ class VisitlogModule extends AppModule
 			$data['utype'] = $data['tel']?1:0;//用户类型
 		}else{
 			$data['device'] = 0;
+		}
+		return $data;
+	}
+
+	/**
+	 * 得到用户画像信息
+	 * @param $sid
+	 * @return array
+	 */
+	private function getHuaxiang($sid){
+		$data = array();
+		//是否提交过商标销售信息
+		$r['eq'] = array('sid'=>$sid,'type'=>13);
+		$r['col'] = array('sid');
+		$rst = $this->import('page')->find($r);
+		if($rst){
+			$data[] = '卖商标';
+		}
+		//是否提交过商标购买信息
+		$r = array();
+		$r['eq'] = array('sid'=>$sid);
+		$r['in']['web_id'] = array('30','31');
+		$r['col'] = array('sid');
+		$rst = $this->import('page')->find($r);
+		if($rst){
+			$data[] = '买商标';
+		}
+		//其他信息
+		$rst = $this->import('sessions')->find(array('eq'=>array('sid'=>$sid),'col'=>array('visits','issem')));
+		if($rst){
+			//是否老用户
+			if($rst['visits']>5){
+				$data[] = '老用户';
+			}
+			//是否推广来源
+			if($rst['issem']){
+				$data[] = '推广来源';
+			}
 		}
 		return $data;
 	}
@@ -314,8 +339,12 @@ class VisitlogModule extends AppModule
 	 */
 	private function handFootprint($data){
 		$temp = array();
+		$i = 0;
 		foreach($data as $k=>$item){
 			$riqi = date('Y-m-d',$item['dateline']);
+			if($item['isnew']){
+				++$i;
+			}
 			//处理停留时间
 			$tmp = array();
 			$tmp['time'] = $item['dateline'];//进入时间
@@ -332,9 +361,10 @@ class VisitlogModule extends AppModule
 			$tmp['type'] = $rst['page'];//页面类型
 			$tmp['opr'] = $rst['opt'];//操作类型
 			//分日期保存(精确到天)
-			$temp[$riqi]['data'][] = $tmp;
-			$temp[$riqi]['location'] = $this->getLocByIp($item['ip']);//地址>>TODO 此处有问题(ip对应一个记录)
-			$temp[$riqi]['ip'] = $item['ip'];//ip
+			$temp[$i]['data'][] = $tmp;
+			$temp[$i]['riqi'] = $riqi;
+			$temp[$i]['location'] = $this->getLocByIp($item['ip']);//地址>>TODO 此处有问题(ip对应一个记录)
+			$temp[$i]['ip'] = $item['ip'];//ip
 		}
 		return $temp;
 	}
@@ -347,12 +377,13 @@ class VisitlogModule extends AppModule
 	private function getLocByIp($ip){
 		$str = file_get_contents('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip='.$ip);//新浪接口
 		$arr = json_decode($str);
-		$str = $arr->province.$arr->city;
-		if($str){
-			return $str;
-		}else{
-			return '未知';
+		if(is_object($arr)){
+			$str = $arr->province.$arr->city;
+			if($str){
+				return $str;
+			}
 		}
+		return '未知';
 	}
 
 	/**
@@ -362,11 +393,15 @@ class VisitlogModule extends AppModule
 	 * @return string
 	 */
 	private function analyseUrl($type,$oid){
+		if($type==0){
+			return array('page'=>'未知','opt'=>'未知');
+		}
 		$oid = explode(',',ltrim($oid));
 		$config = $this->getConfigData();//得到所有的配置信息
 		$tmp = array();
 		$tmp['page'] = $config[$type]['title'];
 		if($oid){
+			$tmp['opt'] = '';
 			//得到操作信息
 			$r['in']['id'] = $oid;
 			$r['limit'] = 1000;
@@ -385,8 +420,10 @@ class VisitlogModule extends AppModule
 						}
 					}
 				}
-				$tmp['opt'] = implode('<br/>',$tmp['opt']);
-				return $tmp;
+				if($tmp['opt']){
+					$tmp['opt'] = implode('<br/>',$tmp['opt']);
+					return $tmp;
+				}
 			}
 		}
 		$tmp['opt'] = '无操作信息';

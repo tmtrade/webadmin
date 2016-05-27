@@ -57,6 +57,17 @@
 		<br>
         <div class="wrap-table">
             <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <caption>用户画像</caption>
+                <tr class="active">
+                    <?foreach($huaxiang as $item):?>
+                    <td><?=$item?></td>
+                    <?endforeach;?>
+                </tr>
+            </table>
+        </div>
+        <br>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
                 <caption>访问轨迹</caption>
                 <tbody>
                     <tr>
@@ -72,7 +83,7 @@
                 <?foreach($list as $k=>$v):?>
                     <tbody class="table-list">
                         <tr style="font-weight: bold;">
-                            <td width="10%"><a href="javascript:;" class="btn btn-info"><?=$k?></a></td>
+                            <td width="10%"><a href="javascript:;" class="btn btn-info"><?=$v['riqi']?></a></td>
                             <td colspan="4"style=" vertical-align: middle"><?=$v['location']?> <?=$v['ip']?></td>
                         </tr>
                         <tr style="font-weight: 600">
@@ -86,7 +97,7 @@
                             <tr>
                                 <td></td>
                                 <td><?=date('H:i',$item['time'])?></td>
-                                <td><?=($item['stay']?date('i:s',$item['stay']):0)?></td>
+                                <td><?=$item['stay']?></td>
                                 <td><?=$item['type']?></td>
                                 <td><?=$item['opr']?></td>
                             </tr>

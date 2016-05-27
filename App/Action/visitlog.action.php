@@ -77,7 +77,7 @@ class VisitlogAction extends AppAction
 	 */
 	public function frequency()
 	{
-            $menu = $this->load('visitlog')->menu();
+            $menu       = $this->load('visitlog')->menu();
             $arr        = array();
             $arr1       = array();
             $count      = 0;
@@ -122,14 +122,13 @@ class VisitlogAction extends AppAction
 	 */
 	public function trendChart()
 	{
-                $menu = $this->load('visitlog')->menu();
-                
+                $menu           = $this->load('visitlog')->menu();
                 $pages          = $this->input('pages','int','');
                 $page_module    = $this->input('page_module','int','');
                 $dateStart 	= $this->input('dateStart', 'string');
                 $dateEnd 	= $this->input('dateEnd', 'string');
                 $dates          = $this->input('dates', 'int',1);
-                $page_array = $menu[$pages];
+                $page_array     = $menu[$pages];
                 $count = 0;
                 $month = 0;
                 $year  = 0;

@@ -97,7 +97,7 @@ return $frequency = array(
             ),
             '3' => array(
                 'title' => '筛选组合类型',
-                'web_id' => '4',
+                'web_id' => '3',
             ),
             '4' => array(
                 'title' => '筛选商标字数',
@@ -140,7 +140,7 @@ return $frequency = array(
     "3" => array(
         'title' => '特价商标列表页',
         "web_type" => "3",
-        "like" =>"1,2,3,4",
+        "like" =>"1,2,4,30,31",
         "ad"=>"5",
         'view' => array(
             '1' => array(
@@ -185,25 +185,25 @@ return $frequency = array(
                 'title' => '商标检测',
                 'web_id' => '3',
             ),
-            '5' => array(
+            '4' => array(
                 'title' => '收藏',
+                'web_id' => '4',
+            ),
+            '5' => array(
+                'title' => '查看价格',
                 'web_id' => '5',
             ),
             '6' => array(
-                'title' => '查看价格',
+                'title' => '猜你喜欢',
                 'web_id' => '6',
             ),
-            '8' => array(
-                'title' => '猜你喜欢',
-                'web_id' => '8',
-            ),
-            '9' => array(
+            '7' => array(
                 'title' => '浏览记录',
-                'web_id' => '9',
+                'web_id' => '7',
             ),
-            '10' => array(
+            '8' => array(
                 'title' => '成功案例',
-                'web_id' => '10',
+                'web_id' => '8',
             ),
             '30' => array(
                 'title' => '询价',

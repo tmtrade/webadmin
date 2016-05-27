@@ -26,16 +26,17 @@ class CountModule extends AppModule
         $temp = explode('-',$params['sid']);
         $sid = $temp[0];
         $start = isset($temp[1])?$temp[1]:0;
-        if(!$flag || ($time-$start)>3600){ //访问间隔大于1个小时认为第二次访问
+        if($flag || ($time-$start)>3600){ //访问间隔大于1个小时认为第二次访问
             $isnew = 1;
         }else{
             $isnew = 0;
         }
         if($flag){
             //添加到访问信息表中
-            $host = parse_url($params['referrer'],PHP_URL_HOST);//解析来源的host
-            if(!$host){
+            if(!$params['referrer']){
                 $host = '';
+            }else{
+                $host = parse_url($params['referrer'],PHP_URL_HOST);
             }
             $data  = array(
                 'sid' => $sid,
@@ -70,7 +71,6 @@ class CountModule extends AppModule
             'sid' => $sid,
             's_url' => isset($params['referrer'])?$params['referrer']:'',
             'url' => $params['url'],
-            'host' => $params['host'],
             'device' => isset($params['device'])?$params['device']:0,
             'dateline' => $time,
             'ip' => $params['ip'],
@@ -84,10 +84,10 @@ class CountModule extends AppModule
     }
 
     /**
-     * 处理访问离开信息
+     * 处理操作信息
      * @param $params
      */
-    public function handleLast($params){
+    public function handleOpt($params){
         $temp = explode('-',$params['sid']);
         $sid = $temp[0];
         $data  = array(
@@ -116,6 +116,17 @@ class CountModule extends AppModule
             }
             //保存操作到浏览日志表中
             $this->import('visitlog')->modify($data,array('eq'=>array('id'=>$visitid)));
+        }
+    }
+
+    /**
+     * 处理离开信息
+     * @param $params
+     */
+    public function handleLast($params){
+        if(isset($params['visitid'])){
+            //更新访问记录表
+            $this->import('visitlog')->modify(array('leavetime'=>time()),array('eq'=>array('id'=>$params['visitid'])));
         }
     }
 }

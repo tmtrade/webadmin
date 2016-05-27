@@ -13,7 +13,7 @@ class CountAction extends Action
 	 */
 	public function index(){
 		$yzc = $this->input('yzc','int',0);
-		if($yzc !=1 && $yzc !=2){
+		if(!in_array($yzc,array(1,2,3))){
 			return;
 		}
 		//获得参数
@@ -23,26 +23,31 @@ class CountAction extends Action
 				$params[$k] = $v;
 			}
 		}
-		//获取ip
-		$params['ip'] = getClientIp();
-		//获取用户cookie
-		$sid = isset($_GET['cookie'])?$_GET['cookie']:'';
-		if($sid){
-			$flag = false;
-			$params['sid'] = $sid;
-		}else{
-			$flag = true;
-			$params['sid'] = uniqid();
-		}
+		//分类型处理
 		$res = array('code'=>0);
-		if($yzc==1){ //打开页面的记录
-			//处理数据
-			$rst = $this->load('count')->handleFirst($params,$flag);
-			if($rst){
-				$res = array('code'=>1,'msg'=>$rst[0],'id'=>$rst[1]);
-			}
-		}else{ //关闭页面的信息
+		if($yzc==3){ //离开站点
 			$this->load('count')->handleLast($params);//保存用户的操作信息
+		}else{
+			//获取ip
+			$params['ip'] = getClientIp();
+			//获取用户cookie
+			$sid = isset($_GET['cookie'])?$_GET['cookie']:'';
+			if($sid){
+				$flag = false;
+				$params['sid'] = $sid;
+			}else{
+				$flag = true;
+				$params['sid'] = uniqid();
+			}
+			if($yzc==1){ //打开页面的记录
+				//处理数据
+				$rst = $this->load('count')->handleFirst($params,$flag);
+				if($rst){
+					$res = array('code'=>1,'msg'=>$rst[0],'id'=>$rst[1]);
+				}
+			}else{ //页面操作的信息
+				$this->load('count')->handleOpt($params);//保存用户的操作信息
+			}
 		}
 		//返回结果
 		exit($_GET['yzctj'].'('.json_encode($res).')');

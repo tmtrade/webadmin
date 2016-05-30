@@ -73,7 +73,7 @@
                     <tr>
                         <td colspan="5">
                             <form id="timeoo">
-                                <label>我需要统计从：</label> <input type="text" name="start" value="<?=($start?$start:'')?>" class="input input-sm start" readonly style="border: 1px solid #3EAFE0" onclick="laydate()" />
+                                <label>我需要统计从：</label> <input type="text" name="start" value="<?=($start?$start:'')?>" class="input input-sm start" readonly style="border: 1px solid #3EAFE0" onclick="laydate({istime:true})" />
                                 <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input style="border: 1px solid #3EAFE0" type="text" name="end" value="<?=($end?$end:'')?>" class="input input-sm end" readonly onclick="laydate()" />
                                 <input style="float: right;margin-right: 200px" class="mj-sBtn timeooo" type="button"  value="确定">
                             </form>
@@ -84,14 +84,16 @@
                     <tbody class="table-list">
                         <tr style="font-weight: bold;">
                             <td width="10%"><a href="javascript:;" class="btn btn-info"><?=$v['riqi']?></a></td>
-                            <td colspan="4"style=" vertical-align: middle"><?=$v['location']?> <?=$v['ip']?></td>
+                            <td width="10%" style=" vertical-align: middle"><?=($v['device'])?'移动端':'PC'?></td>
+                            <td width="10%" style=" vertical-align: middle"><?=$v['location']?></td>
+                            <td colspan="2" style=" vertical-align: middle"><?=$v['ip']?></td>
                         </tr>
                         <tr style="font-weight: 600">
                             <td></td>
                             <td>访问时间</td>
                             <td>停留时间</td>
                             <td>页面类型</td>
-                            <td>操作类型</td>
+                            <td width="20%">操作类型</td>
                         </tr>
                         <?foreach($v['data'] as $item):?>
                             <tr>

@@ -65,6 +65,7 @@ class CountModule extends AppModule
                 'visits' => 1,
                 'issem' => isset($params['issem'])?$params['issem']:0,
                 'tel' => isset($params['tel'])?$params['tel']:'',
+                'logids' => $id?$id:'',
             );
             $this->import('sessions')->create($data);
         }else{

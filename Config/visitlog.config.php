@@ -358,6 +358,26 @@ return $frequency = array(
             ),
         ),
     ),
+    "16" => array(
+        'title' => 'faq列表页',
+        "web_type" => "16",
+        'view' => array(
+            '1' => array(
+                'title' => '查看详情',
+                'web_id' => '1',
+            ),
+        ),
+    ),
+    "17" => array(
+        'title' => 'faq详情页',
+        "web_type" => "17",
+        'view' => array(
+            '1' => array(
+                'title' => '查看详情',
+                'web_id' => '1',
+            ),
+        ),
+    ),
     "100" => array(
         'title' => '通用',
         "web_type" => "100",

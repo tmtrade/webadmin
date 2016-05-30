@@ -48,7 +48,7 @@ class VisitlogAction extends AppAction
 		$end1 = $this->input('end','string','');
 		$start = strtotime($start1);
 		$end = strtotime($end1);
-		$size = 16;
+		$size = 12;
 		list($basic,$huaxiang,$footprint) = $this->load('visitlog')->getUserAll($sid,$page,$size,$start,$end);
 		//处理数据
 		$total 	= empty($footprint['total']) ? 0 : $footprint['total'];
@@ -64,7 +64,7 @@ class VisitlogAction extends AppAction
 		$this->set('page', $page);
 		$this->set("basic",$basic);
 		$this->set("huaxiang",$huaxiang);
-		$this->set('list', $footprint['rows']);
+		$this->set('list', $list);
 		$this->display();
 	}
         

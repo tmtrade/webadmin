@@ -156,6 +156,7 @@ class VisitlogModule extends AppModule
 	/**
 	 * 得到指定cookie的最近一次访问信息
 	 * @param $logids
+	 * @param $type int 默认返回原生结果
 	 * @return bool
 	 */
 	public function getVisitLog($logids,$type=0){
@@ -202,6 +203,7 @@ class VisitlogModule extends AppModule
 		$r['col'] = array('device','tel');
 		return $this->import('visitlog')->find($r);
 	}
+
 	/**
 	 * 得到访问者的所有信息
 	 * @param $sid
@@ -323,6 +325,8 @@ class VisitlogModule extends AppModule
 				$end = $start ^ $end;
 				$start = $start ^ $end;
 			}
+			$start += 28800;//加8小时 时区问题
+			$end += 115200;//加32小时 定位到当天24点
 			$r['scope'] = array('dateline'=>array($start,$end));
 		}
 		$r['order'] = array('dateline'=>'desc');
@@ -340,9 +344,14 @@ class VisitlogModule extends AppModule
 	private function handFootprint($data){
 		$temp = array();
 		$i = 0;
+		$len = count($data);
 		foreach($data as $k=>$item){
 			$riqi = date('Y-m-d',$item['dateline']);
-			if($item['isnew']){
+			if($item['isnew']){ //新访问，次数加一
+				$temp[$i]['riqi'] = $riqi;
+				$temp[$i]['device'] = $item['device'];
+				$temp[$i]['location'] = $this->getLocByIp($item['ip']);
+				$temp[$i]['ip'] = $item['ip'];
 				++$i;
 			}
 			//处理停留时间
@@ -360,11 +369,14 @@ class VisitlogModule extends AppModule
 			$rst = $this->analyseUrl($item['type'],$item['oid']);
 			$tmp['type'] = $rst['page'];//页面类型
 			$tmp['opr'] = $rst['opt'];//操作类型
-			//分日期保存(精确到天)
+			//分访问次数保存
 			$temp[$i]['data'][] = $tmp;
-			$temp[$i]['riqi'] = $riqi;
-			$temp[$i]['location'] = $this->getLocByIp($item['ip']);//地址>>TODO 此处有问题(ip对应一个记录)
-			$temp[$i]['ip'] = $item['ip'];//ip
+			if($k==$len-1){ //最后一个添加相关信息
+				$temp[$i]['riqi'] = $riqi;
+				$temp[$i]['device'] = $item['device'];
+				$temp[$i]['location'] = $this->getLocByIp($item['ip']);
+				$temp[$i]['ip'] = $item['ip'];
+			}
 		}
 		return $temp;
 	}
@@ -414,6 +426,9 @@ class VisitlogModule extends AppModule
 							//组装操作信息
 							$temp = '操作: '.$v['title'];
 							if($v0['addition']){
+								if($type==13){ //解码我要卖提交的数据
+									$v0['addition'] = urldecode($v0['addition']);
+								}
 								$temp .= ' | 附加信息: '.$v0['addition'];
 							}
 							$tmp['opt'][] = $temp;

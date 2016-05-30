@@ -101,7 +101,7 @@ class VisitlogModule extends AppModule
         }else{
             $r['eq']['type'] = $type;
             if(!empty($in)){
-                $r['in'] = array('web_id' => array($web_id));
+                $r['in'] = array('web_id' => $web_id);
             }else{
                 $r['eq']['web_id'] = $web_id;  
             }

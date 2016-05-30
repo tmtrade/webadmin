@@ -39,7 +39,9 @@
                     </thead>
                     <tbody class="table-list">
                     <tr>
-                    <? foreach ($v['view'] as $key => $val) { ?>
+                    <? foreach ($v['view'] as $key => $val) { 
+                        if(($key==30 || $key==31) && $k!=11) continue;
+                    ?>
                         <td width="50%">模块：<?=$val['title']?>&nbsp;&nbsp;<img src="/Static/images/u35.png">&nbsp;&nbsp;点击次数：<?=$val['count']?>&nbsp;&nbsp;<img src="/Static/images/u43.png">&nbsp;&nbsp;占比：<?=$val['zhanbi']?>%</td>
                         <? if($key%2==0){
                             echo "</tr><tr>";

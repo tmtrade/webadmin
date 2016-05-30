@@ -81,24 +81,26 @@ class VisitlogAction extends AppAction
             $arr        = array();
             $arr1       = array();
             $count      = 0;
+            $s          = 0;
             $dateStart 	= $this->input('dateStart', 'string');
             $dateEnd 	= $this->input('dateEnd', 'string');
-            if($dateStart==$dateEnd && $dateStart!=""){//查询同一天时
-                $dateEnd = date("Y-m-d",strtotime($dateEnd)+86400);
-            }
             if($dateStart=="" && $dateEnd==""){
-                $dateStart = date("Y-m-d",time());
-                $dateEnd = date("Y-m-d",time()+86400);
+                $dateStart  = strtotime(date("Y-m-d"));
+                $dateEnd    = strtotime(date("Y-m-d 23:59:59"));
+            }else{
+                $dateStart  = empty($dateStart) ? "" : strtotime($dateStart);
+                $dateEnd    = empty($dateEnd) ? "" : strtotime($dateEnd)+86399;//结束时间为一天的最后
+                $s = 1;
             }
-            $arr = $this->com('redisHtml')->get('frequency_list');
-            if(empty($arr) || !empty($dateStart) || !empty($dateEnd)){
+            $arr = $this->com('redisHtml')->get('frequency_list'.$s);
+            if(empty($arr) || $s==1){
                 foreach ($menu as $k=>$v){
                    $arr[$k]['title'] = $v['title']; 
-                   $arr[$k]['page_count'] = $this->load('visitlog')->page_count($v['web_type'], strtotime($dateStart), strtotime($dateEnd)); 
-                   $arr[$k]['pageUser_count'] = $this->load('visitlog')->pageUser_count($v['web_type'], strtotime($dateStart), strtotime($dateEnd));
+                   $arr[$k]['page_count'] = $this->load('visitlog')->page_count($v['web_type'], $dateStart, $dateEnd); 
+                   $arr[$k]['pageUser_count'] = $this->load('visitlog')->pageUser_count($v['web_type'], $dateStart, $dateEnd);
                    foreach ($v['view'] as $key=>$val){
                        $arr1[$key]['title'] = $val['title'];
-                       $count=$this->load('visitlog')->pageUrl_count($val['web_id'],$v['web_type'], strtotime($dateStart), strtotime($dateEnd), $val['in']); 
+                       $count=$this->load('visitlog')->pageUrl_count($val['web_id'],$v['web_type'], $dateStart, $dateEnd, $val['in']); 
                        $arr1[$key]['count'] = $count;
                        $arr1[$key]['zhanbi'] = round($count/$arr[$k]['page_count']*100,2);
                        $count = 0;
@@ -106,10 +108,10 @@ class VisitlogAction extends AppAction
                    $arr[$k]['view'] = $arr1; 
                    $arr1 = array();
                 }
-                $this->com('redisHtml')->set('frequency_list', $arr, 1200);
+                $this->com('redisHtml')->set('frequency_list'.$s, $arr, 1200);
             }
             $this->set("list",$arr);
-            $this->set("s",array("dateStart"=>$dateStart,"dateEnd"=>$dateEnd));
+            $this->set("s",array("dateStart"=>date("Y-m-d",$dateStart),"dateEnd"=>date("Y-m-d",$dateEnd)));
             $this->display();
 	} 
         
@@ -232,8 +234,12 @@ class VisitlogAction extends AppAction
             $type       = $this->input('type','int','1');
             $dateStart 	= $this->input('dateStart', 'string');
             $dateEnd 	= $this->input('dateEnd', 'string');
-            if($dateStart==$dateEnd && $dateStart!=""){//查询同一天时
-                $dateEnd = date("Y-m-d",strtotime($dateEnd)+86400);
+            if($dateStart=="" && $dateEnd==""){
+                $dateStart  = strtotime(date("Y-m-d"));
+                $dateEnd    = strtotime(date("Y-m-d 23:59:59"));
+            }else{
+                $dateStart  = empty($dateStart) ? "" : strtotime($dateStart);
+                $dateEnd    = empty($dateEnd) ? "" : strtotime($dateEnd)+86399;//结束时间为一天的最后
             }
             
             $res        = $this->load('keywordcount')->getKeywordList($type,$dateStart,$dateEnd,$page, $this->rowNum);
@@ -244,7 +250,7 @@ class VisitlogAction extends AppAction
             $this->set('counts', $res['counts']);
             $this->set("pageBar",$pageBar);
             $this->set("list",$list);
-            $this->set("s",array("dateStart"=>$dateStart,"dateEnd"=>$dateEnd,'type'=>$type));
+            $this->set("s",array("dateStart"=>date("Y-m-d",$dateStart),"dateEnd"=>date("Y-m-d",$dateEnd),'type'=>$type));
             $this->display();
 	} 
 

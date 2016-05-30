@@ -37,10 +37,10 @@ class KeywordCountModule extends AppModule
         $r['col']   = array('keyword',"count(1)as counts");
         
         if(!empty($dateStart)){
-            $r['raw'] .= " and date>=".strtotime($dateStart);
+            $r['raw'] .= " and date>=".$dateStart;
         }
         if(!empty($dateEnd)){
-            $r['raw'] .= " and date<".strtotime($dateEnd);
+            $r['raw'] .= " and date<".$dateEnd;
         }
         $r['group'] = array('keyword' => 'asc');
         $r['order'] = array('counts' => 'desc');

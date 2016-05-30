@@ -57,13 +57,14 @@ class VisitlogModule extends AppModule
     //计算每个页面点击数
     public function page_count($type,$dateStart="",$dateEnd="")
     {
+        $r['raw'] = "1";
         if($type==100){
             $r['scope'] = array('web_id' => array(100, 110));
         }else{
             $r['eq']['type'] = $type;
         }
         if(!empty($dateStart)){
-            $r['raw'] = " date>".$dateStart;
+            $r['raw'] .= " and date>=".$dateStart;
         }
         if(!empty($dateEnd)){
             $r['raw'] .= " and date<".$dateEnd;
@@ -74,13 +75,14 @@ class VisitlogModule extends AppModule
     //计算每个页面访问者
     public function pageUser_count($type,$dateStart="",$dateEnd="")
     {
+        $r['raw'] = "1";
         if($type==100){
             $r['scope'] = array('web_id' => array(100, 110));
         }else{
             $r['eq']['type'] = $type;
         }
         if(!empty($dateStart)){
-            $r['raw'] = " date>".$dateStart;
+            $r['raw'] .= " and date>=".$dateStart;
         }
         if(!empty($dateEnd)){
             $r['raw'] .= " and date<".$dateEnd;
@@ -92,6 +94,7 @@ class VisitlogModule extends AppModule
     //计算每个链接访问次数
     public function pageUrl_count($web_id,$type,$dateStart="",$dateEnd="",$in="")
     {
+        $r['raw'] = "1";
         if($type==100){
             $r['scope'] = array('web_id' => array(100, 110));
             $r['eq']['web_id'] = $web_id;
@@ -104,7 +107,7 @@ class VisitlogModule extends AppModule
             }
         }
         if(!empty($dateStart)){
-            $r['raw'] = " date>=".$dateStart;
+            $r['raw'] .= " and date>=".$dateStart;
         }
         if(!empty($dateEnd)){
             $r['raw'] .= " and date<".$dateEnd;

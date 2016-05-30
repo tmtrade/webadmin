@@ -149,7 +149,7 @@ $(function () {
             if(id===0) return;
             var str="<option value='0'>--全部模块--</option>";
             $.each(page_url[id]['view'],function(key,val){
-                if((key==30 || key==31) && id!=11){
+                if((key==30 || key==31) && id!=11 && id!=4){
                     return;
                 }
                 str+="<option value='"+key+"'>"+val.title+"</option>";

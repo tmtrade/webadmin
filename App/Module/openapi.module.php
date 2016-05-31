@@ -22,6 +22,15 @@ class OpenApiModule extends AppModule
         $limit = $params['limit'];
         if ( empty($class) || !is_numeric($class) ) return array();
 
+        $code   = rand(0,9);
+        $time   = 600;//10分钟
+        $name   = 'getRandomTm_'.$class.'_'.$limit;
+        $random = (array)unserialize($this->com('redisHtml')->get($name));
+        //return count($random);
+        if ( !empty($random) && is_array($random) ){            
+            if ( !empty($random[$code]) ) return $random[$code];
+        }
+
         $r['eq']    = array('class'=>$class,'status'=>'1');
         $r['limit'] = 50;
         $r['col']   = array('number','class','name','pid','tid','id');
@@ -40,7 +49,8 @@ class OpenApiModule extends AppModule
             $list[$k]['viewUrl']    = SITE_URL.'d-'.$v['tid']."-$class.html";
             unset($list[$k]['id'],$list[$k]['pid']);
         }
-        
+        $random[$code] = $list;
+        $this->com('redisHtml')->set($name, serialize($random), $time);
         return $list;
     }
 

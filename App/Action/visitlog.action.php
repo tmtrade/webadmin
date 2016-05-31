@@ -96,8 +96,8 @@ class VisitlogAction extends AppAction
             if(empty($arr) || $s==1){
                 foreach ($menu as $k=>$v){
                    $arr[$k]['title'] = $v['title']; 
-                   $arr[$k]['page_count'] = $this->load('visitlog')->page_count($v['web_type'], $dateStart, $dateEnd); 
-                   $arr[$k]['pageUser_count'] = $this->load('visitlog')->pageUser_count($v['web_type'], $dateStart, $dateEnd);
+                   $arr[$k]['page_count'] = $this->load('visitlog')->page_count($v['web_type'], $dateStart, $dateEnd,$v['class']); 
+                   $arr[$k]['pageUser_count'] = $this->load('visitlog')->pageUser_count($v['web_type'], $dateStart, $dateEnd,$v['class']);
                    foreach ($v['view'] as $key=>$val){
                        $arr1[$key]['title'] = $val['title'];
                        $count=$this->load('visitlog')->pageUrl_count($val['web_id'],$v['web_type'], $dateStart, $dateEnd, $val['in']); 
@@ -153,7 +153,7 @@ class VisitlogAction extends AppAction
                         for($i=0;$i<=$day;$i++){
                             $date_start = $dateStart+$i*86400;
                             $date_end = $date_start+86400;
-                            $page_count[$i] = $this->load('visitlog')->page_count($page_array['web_type'], $date_start, $date_end); 
+                            $page_count[$i] = $this->load('visitlog')->page_count($page_array['web_type'], $date_start, $date_end,$page_array['class']); 
                             $date[$i] = date("m-d",$date_start);
                         }
                     }else{//当选择页面的模块时
@@ -184,7 +184,7 @@ class VisitlogAction extends AppAction
                                 $date_start=date('Y-'.$i.'-01'); //获取当前月份第一天
                                 $date_end = strtotime("$date_start +1 month");    //加一个月
                             }
-                            $page_count[] = $this->load('visitlog')->page_count($page_array['web_type'], strtotime($date_start), $date_end); 
+                            $page_count[] = $this->load('visitlog')->page_count($page_array['web_type'], strtotime($date_start), $date_end,$page_array['class']); 
                             $date[] = $i<10?"0".intval($i):$i;
                         }
                     }else{//当选择页面的模块时
@@ -201,9 +201,9 @@ class VisitlogAction extends AppAction
                                 $date_start=date('Y-'.$i.'-01'); //获取当前月份第一天
                                 $date_end = strtotime("$date_start +1 month");    //加一个月
                             }
-                            foreach ($module_array as $val){
-                                $count+=$this->load('visitlog')->pageUrl_count($module_array['web_id'],$page_array['web_type'], strtotime($date_start), $date_end, $module_array['in']); 
-                            }
+                            
+                            $count=$this->load('visitlog')->pageUrl_count($module_array['web_id'],$page_array['web_type'], strtotime($date_start), $date_end, $module_array['in']); 
+                            
                             $page_count[] = $count; 
                             $date[] = $i<10?"0".intval($i):$i;
                             $count = 0;

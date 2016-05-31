@@ -495,14 +495,20 @@ $define = array(
 		'internal/setPrice' 	=> '17',
 		'internal/setEmbellish' => '18',
 		'internal/delContact' 	=> '19',
-		'internal/contact' 		=> '20',
+		'internal/contact' 	=> '20',
 		'internal/setContact' 	=> '20',
 		'internal/setVerify' 	=> '21',
 		'internal/delVerify' 	=> '21',
-        'internal/setMemo'      => '22',
-        'internal/setPrice'     => '25',//修改普通价格
-        'internal/doDown'       => '26',//下架普通商品
-		
+                'internal/setMemo'      => '22',
+                'internal/setPrice'     => '25',//修改普通价格
+                'internal/doDown'       => '26',//下架普通商品
+            
+                '/patent/index/' 			=> '27',
+                '/visitlog/userlist/' 			=> '28',
+                '/visitlog/frequency/' 			=> '29',
+                '/visitlog/trendChart/' 		=> '30',
+                '/visitlog/search/' 			=> '31',
+            
 		'cache/index' 			=> '14',
 		'phone/index' 			=> '4',
 		'blacklist/index' 		=> '5',

@@ -55,13 +55,22 @@ class VisitlogModule extends AppModule
     }
 
     //计算每个页面点击数
-    public function page_count($type,$dateStart="",$dateEnd="")
+    public function page_count($type,$dateStart="",$dateEnd="",$class="")
     {
         $r['raw'] = "1";
         if($type==100){
             $r['scope'] = array('web_id' => array(100, 110));
         }else{
             $r['eq']['type'] = $type;
+            if(!empty($class)){
+                $r['in'] = array('web_id' => $class);
+            }else{
+                if($type==4 || $type==9 || $type==11){
+                    $r['scope'] = array('web_id' => array(1, 32));
+                }else{
+                    $r['scope'] = array('web_id' => array(1, 29));
+                }
+            }
         }
         if(!empty($dateStart)){
             $r['raw'] .= " and date>=".$dateStart;
@@ -73,13 +82,22 @@ class VisitlogModule extends AppModule
     }
     
     //计算每个页面访问者
-    public function pageUser_count($type,$dateStart="",$dateEnd="")
+    public function pageUser_count($type,$dateStart="",$dateEnd="",$class)
     {
         $r['raw'] = "1";
         if($type==100){
             $r['scope'] = array('web_id' => array(100, 110));
         }else{
             $r['eq']['type'] = $type;
+            if(!empty($class)){
+                $r['in'] = array('web_id' => $class);
+            }else{
+                if($type==4 || $type==9 || $type==11){
+                    $r['scope'] = array('web_id' => array(1, 32));
+                }else{
+                    $r['scope'] = array('web_id' => array(1, 29));
+                }
+            }
         }
         if(!empty($dateStart)){
             $r['raw'] .= " and date>=".$dateStart;

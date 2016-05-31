@@ -242,21 +242,6 @@ $tbl['keywordCount'] = array(
 	'configFile'=> $configFile,
 );
 
-$tbl['visitlogSem'] = array(
-	'name'		=> 'st_sem_visitlog',
-	'dbId'		=> $dbId,
-	'configFile'=> $configFile,
-);
-$tbl['visitlogSessions'] = array(
-	'name'		=> 'st_sessions',
-	'dbId'		=> $dbId,
-	'configFile'=> $configFile,
-);
-$tbl['visitlog'] = array(
-	'name'		=> 'st_visitlog',
-	'dbId'		=> $dbId,
-	'configFile'=> $configFile,
-);
 $tbl['stpage'] = array(
 	'name'		=> $prefix.'stpage',
 	'dbId'		=> $dbId,

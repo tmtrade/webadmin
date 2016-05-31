@@ -34,7 +34,7 @@
                 </thead>
                 <tbody class="table-list">
                 <tr>
-					<td><?=($basic['utype']?'用户':'访问者')?></td>
+					<td><?=($basic['tel']?'用户('.$basic['tel'].')':'访问者')?></td>
 					<td><?=($basic['issem']?'推广':'直接访问')?></td>
 					<td>
                         <? if($basic['device']): ?>
@@ -86,12 +86,13 @@
                             <td width="10%"><a href="javascript:;" class="btn btn-info"><?=$v['riqi']?></a></td>
                             <td width="10%" style=" vertical-align: middle"><?=($v['device'])?'移动端':'PC'?></td>
                             <td width="10%" style=" vertical-align: middle"><?=$v['location']?></td>
-                            <td colspan="2" style=" vertical-align: middle"><?=$v['ip']?></td>
+                            <td colspan="3" style=" vertical-align: middle"><?=$v['ip']?></td>
                         </tr>
                         <tr style="font-weight: 600">
                             <td></td>
                             <td>访问时间</td>
                             <td>停留时间</td>
+                            <td width="20%">来源地址</td>
                             <td>页面类型</td>
                             <td width="20%">操作类型</td>
                         </tr>
@@ -100,6 +101,7 @@
                                 <td></td>
                                 <td><?=date('H:i',$item['time'])?></td>
                                 <td><?=$item['stay']?></td>
+                                <td><span title="<?=$item['s_url']?>"><?=mbSub($item['s_url'],0,20)?></span></td>
                                 <td><?=$item['type']?></td>
                                 <td><?=$item['opr']?></td>
                             </tr>

@@ -272,7 +272,6 @@ class VisitlogModule extends AppModule
 			}else{
 				$data['device'] = 0;
 			}
-			$data['utype'] = $data['tel']?1:0;//用户类型
 		}else{
 			$data['device'] = 0;
 		}
@@ -368,13 +367,6 @@ class VisitlogModule extends AppModule
 		$len = count($data);
 		foreach($data as $k=>$item){
 			$riqi = date('Y-m-d',$item['dateline']);
-			if($item['isnew']){ //新访问，次数加一
-				$temp[$i]['riqi'] = $riqi;
-				$temp[$i]['device'] = $item['device'];
-				$temp[$i]['location'] = $this->getLocByIp($item['ip']);
-				$temp[$i]['ip'] = $item['ip'];
-				++$i;
-			}
 			//处理停留时间
 			$tmp = array();
 			$tmp['time'] = $item['dateline'];//进入时间
@@ -390,9 +382,17 @@ class VisitlogModule extends AppModule
 			$rst = $this->analyseUrl($item['type'],$item['oid']);
 			$tmp['type'] = $rst['page'];//页面类型
 			$tmp['opr'] = $rst['opt'];//操作类型
+			$tmp['s_url'] = $item['s_url'];//来源地址
 			//分访问次数保存
 			$temp[$i]['data'][] = $tmp;
-			if($k==$len-1){ //最后一个添加相关信息
+			if($item['isnew']){ //新访问，次数加一
+				$temp[$i]['riqi'] = $riqi;
+				$temp[$i]['device'] = $item['device'];
+				$temp[$i]['location'] = $this->getLocByIp($item['ip']);
+				$temp[$i]['ip'] = $item['ip'];
+				++$i;
+			}
+			if($k==$len-1 && $item['isnew']!=1){ //最后一个不是新访问时添加相关信息
 				$temp[$i]['riqi'] = $riqi;
 				$temp[$i]['device'] = $item['device'];
 				$temp[$i]['location'] = $this->getLocByIp($item['ip']);

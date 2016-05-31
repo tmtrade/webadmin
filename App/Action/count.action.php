@@ -31,10 +31,10 @@ class CountAction extends Action
 		//分类型处理
 		$res = array('code'=>0);
 		if($yzc==3){ //离开站点
-			$this->load('count')->handleLast($params);//保存用户的操作信息
+			$this->load('count')->handleLast($params);//保存用户的操作信息-------兼容性问题,废弃
 		}else{
 			//获取ip
-			$params['ip'] = getClientIp();
+			$params['ip'] = get_client_ip();
 			//获取用户cookie
 			$sid = isset($_GET['cookie'])?$_GET['cookie']:'';
 			if($sid){

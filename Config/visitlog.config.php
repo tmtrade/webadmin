@@ -332,7 +332,11 @@ return $frequency = array(
         "web_type" => "13",
         'view' => array(
             '1' => array(
-                'title' => '提交数据',
+                'title' => '商标提交数据',
+                'web_id' => '1',
+            ),
+            '2' => array(
+                'title' => '专利提交数据',
                 'web_id' => '1',
             ),
         ),

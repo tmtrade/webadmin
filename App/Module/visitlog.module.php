@@ -40,7 +40,7 @@ class VisitlogModule extends AppModule
                 if(!empty($v['like'])){
                     $m[$k]['view'] = "";
                     $m[$k]['view'][1] = array(
-                                    'title' => '列表点击详情',
+                                    'title' => $v['like_name'],
                                     'web_id' => $v['like'],
                                     'in' => 1,
                                     );

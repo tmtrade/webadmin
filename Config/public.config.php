@@ -503,11 +503,11 @@ $define = array(
                 'internal/setPrice'     => '25',//修改普通价格
                 'internal/doDown'       => '26',//下架普通商品
             
-                '/patent/index/' 			=> '27',
-                '/visitlog/userlist/' 			=> '28',
-                '/visitlog/frequency/' 			=> '29',
-                '/visitlog/trendChart/' 		=> '30',
-                '/visitlog/search/' 			=> '31',
+                'patent/index/' 			=> '27',
+                'visitlog/userlist/' 			=> '28',
+                'visitlog/frequency/' 			=> '29',
+                'visitlog/trendChart/'                  => '30',
+                'visitlog/search/' 			=> '31',
             
 		'cache/index' 			=> '14',
 		'phone/index' 			=> '4',

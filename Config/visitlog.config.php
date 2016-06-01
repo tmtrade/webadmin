@@ -340,7 +340,7 @@ return $frequency = array(
             ),
             '2' => array(
                 'title' => '专利提交数据',
-                'web_id' => '1',
+                'web_id' => '2',
             ),
         ),
     ),
@@ -392,23 +392,23 @@ return $frequency = array(
         'title' => '通用',
         "web_type" => "100",
         'view' => array(
-            '1' => array(
+            '100' => array(
                 'title' => '搜索',
                 'web_id' => '100',
             ),
-            '2' => array(
+            '101' => array(
                 'title' => '左侧下拉菜单',
                 'web_id' => '101',
             ),
-            '3' => array(
+            '102' => array(
                 'title' => '频道按钮',
                 'web_id' => '102',
             ),
-            '4' => array(
+            '103' => array(
                 'title' => '右侧浮动层',
                 'web_id' => '103',
             ),
-            '5' => array(
+            '104' => array(
                 'title' => '友情链接',
                 'web_id' => '104',
             ),

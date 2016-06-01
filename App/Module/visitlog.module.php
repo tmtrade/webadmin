@@ -19,14 +19,25 @@ class VisitlogModule extends AppModule
 	private $configData;
     /**
      * 得到配置文件的数组信息
+     * @param $type
      * @return mixed
      */
-    private function getConfigData(){
-            if($this->configData){
-                    return $this->configData;
-            }else{
-                    return require ConfigDir.'/visitlog.config.php';
-            }
+    private function getConfigData($type=0){
+		if($this->configData){
+			return $this->configData;
+		}else{
+			$data = require ConfigDir.'/visitlog.config.php';
+			if($type){
+				foreach($data as $k=>$v){ //将通用的追加到每个页面
+					if($k!=100){
+						$data[$k]['view'] += $data[100]['view'];
+					}else{
+						unset($data['100']);
+					}
+				}
+			}
+			$this->configData = $data;
+		}
     }
     
     //得到数据配置的菜单信息
@@ -420,7 +431,7 @@ class VisitlogModule extends AppModule
 			return array('page'=>'未知','opt'=>'未知');
 		}
 		$oid = explode(',',ltrim($oid));
-		$config = $this->getConfigData();//得到所有的配置信息
+		$config = $this->getConfigData(1);//得到所有的配置信息
 		$tmp = array();
 		$tmp['page'] = $config[$type]['title'];
 		if($oid){

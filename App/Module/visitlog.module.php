@@ -82,31 +82,21 @@ class VisitlogModule extends AppModule
     }
     
     //计算每个页面访问者
-    public function pageUser_count($type,$dateStart="",$dateEnd="",$class)
+    public function pageUser_count($type,$dateStart="",$dateEnd="")
     {
-        $r['raw'] = "1";
-        if($type==100){
-            $r['scope'] = array('web_id' => array(100, 110));
-        }else{
-            $r['eq']['type'] = $type;
-            if(!empty($class)){
-                $r['in'] = array('web_id' => $class);
-            }else{
-                if($type==4 || $type==9 || $type==11){
-                    $r['scope'] = array('web_id' => array(1, 32));
-                }else{
-                    $r['scope'] = array('web_id' => array(1, 29));
-                }
-            }
+        if($type==100){//如果是通用页面不统计
+            return 0;
         }
+        $r['raw'] = "1";
+        $r['eq']['type'] = $type;
         if(!empty($dateStart)){
-            $r['raw'] .= " and date>=".$dateStart;
+            $r['raw'] .= " and dateline>=".$dateStart;
         }
         if(!empty($dateEnd)){
-            $r['raw'] .= " and date<".$dateEnd;
+            $r['raw'] .= " and dateline<".$dateEnd;
         }
         $r['group'] = array('sid' => 'asc');
-        return $this->import('page')->count($r);
+        return $this->import('visitlog')->count($r);
     }
     
     //计算每个链接访问次数

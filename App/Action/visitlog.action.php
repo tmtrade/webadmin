@@ -97,7 +97,7 @@ class VisitlogAction extends AppAction
                 foreach ($menu as $k=>$v){
                    $arr[$k]['title'] = $v['title']; 
                    $arr[$k]['page_count'] = $this->load('visitlog')->page_count($v['web_type'], $dateStart, $dateEnd,$v['class']); 
-                   $arr[$k]['pageUser_count'] = $this->load('visitlog')->pageUser_count($v['web_type'], $dateStart, $dateEnd,$v['class']);
+                   $arr[$k]['pageUser_count'] = $this->load('visitlog')->pageUser_count($v['web_type'], $dateStart, $dateEnd);
                    foreach ($v['view'] as $key=>$val){
                        $arr1[$key]['title'] = $val['title'];
                        $count=$this->load('visitlog')->pageUrl_count($val['web_id'],$v['web_type'], $dateStart, $dateEnd, $val['in']); 

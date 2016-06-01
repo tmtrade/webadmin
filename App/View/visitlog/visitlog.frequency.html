@@ -34,7 +34,9 @@
                 <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
                     <thead>
                         <tr class="active">
-                            <th colspan="6"><?=$v['title']?> |  &nbsp;&nbsp;<img src="/Static/images/u33.png">&nbsp;&nbsp;访问者：<?=$v['pageUser_count']?>  &nbsp;&nbsp;&nbsp;&nbsp;<img src="/Static/images/u35.png">&nbsp;&nbsp;点击次数：<?=$v['page_count']?></th>
+                           
+                            <th colspan="6"><?=$v['title']?> |  &nbsp;&nbsp;<? if($k!=100){?><img src="/Static/images/u33.png">&nbsp;&nbsp;访问者：<?=$v['pageUser_count']?>  &nbsp;&nbsp;&nbsp;&nbsp;<?}?><img src="/Static/images/u35.png">&nbsp;&nbsp;点击次数：<?=$v['page_count']?></th>
+                        
                         </tr>
                     </thead>
                     <tbody class="table-list">

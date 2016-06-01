@@ -42,7 +42,8 @@ class VisitlogModule extends AppModule
     
     //得到数据配置的菜单信息
     public function menu(){
-        $config = $this->getConfigData();//得到所有的配置信息
+        $this->getConfigData();//得到所有的配置信息
+        $config = $this->configData;
         $array = array(1,2,3,4,5,6,10,11,100);
         $m = array();
         foreach ($config as $k=>$v){

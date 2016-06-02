@@ -67,10 +67,13 @@ class VisitlogModule extends AppModule
         return $m;
     }
 
-    //计算每个页面点击数
     /**
-     * @author John Doe <john.doe@example.com>
-     * @ticket
+     * 计算每个页面点击数
+     * @param int $type 
+     * @param int $dateStart
+     * @param int $dateEnd
+     * @param array $class 需要统计的模块ID
+     * @return type
      */
     public function page_count($type,$dateStart="",$dateEnd="",$class="")
     {
@@ -116,7 +119,15 @@ class VisitlogModule extends AppModule
         return $this->import('visitlog')->count($r);
     }
     
-    //计算每个链接访问次数
+    /**
+     * 计算每个链接访问次数
+     * @param int $web_id 模块ID
+     * @param int $type 页面ID
+     * @param int $dateStart
+     * @param int $dateEnd
+     * @param array $in 包含的模块
+     * @return int
+     */
     public function pageUrl_count($web_id,$type,$dateStart="",$dateEnd="",$in="")
     {
         $r['raw'] = "1";

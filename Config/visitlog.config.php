@@ -224,7 +224,7 @@ return $frequency = array(
         "web_type" => "5",
         'view' => array(
             '1' => array(
-                'title' => '案例列表',
+                'title' => '查看详情',
                 'web_id' => '1',
             ),
         ),
@@ -234,12 +234,12 @@ return $frequency = array(
         "web_type" => "6",
         'view' => array(
             '1' => array(
-                'title' => '案例列表',
+                'title' => '查看其他案例',
                 'web_id' => '1',
             ),
-            '30' => array(
-                'title' => '询价',
-                'web_id' => '30',
+            '31' => array(
+                'title' => '咨询',
+                'web_id' => '31',
             ),
         ),
     ),

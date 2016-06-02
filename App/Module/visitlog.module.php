@@ -451,6 +451,17 @@ class VisitlogModule extends AppModule
 							if($v0['addition']){
 								if($type==13){ //解码我要卖提交的数据
 									$v0['addition'] = urldecode($v0['addition']);
+									parse_str($v0['addition'],$aaa);
+									$v0['addition'] = '';
+									if(isset($aaa['number'])){
+										$v0['addition'] .= ' 编号:'.$aaa['number'];
+									}
+									if(isset($aaa['price'])){
+										$v0['addition'] .= ' 价格:'.$aaa['price'];
+									}
+									if(isset($aaa['phone'])){
+										$v0['phone'] .= ' 电话:'.$aaa['phone'];
+									}
 								}
 								$temp .= ' | 附加信息: '.$v0['addition'];
 							}

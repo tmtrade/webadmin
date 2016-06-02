@@ -15,6 +15,7 @@ class VisitlogModule extends AppModule
             'page'     => 'stpage',
             'visitlog'     => 'tvisitlog',
             'sessions'     => 'tsessions',
+			'contact'           => 'saleContact',
     );
 	private $configData;
     /**
@@ -304,7 +305,7 @@ class VisitlogModule extends AppModule
 			$data[] = '买商标';
 		}
 		//其他信息
-		$rst = $this->import('sessions')->find(array('eq'=>array('sid'=>$sid),'col'=>array('visits','issem')));
+		$rst = $this->import('sessions')->find(array('eq'=>array('sid'=>$sid),'col'=>array('visits','issem','tel')));
 		if($rst){
 			//是否老用户
 			if($rst['visits']>5){
@@ -313,6 +314,16 @@ class VisitlogModule extends AppModule
 			//是否推广来源
 			if($rst['issem']){
 				$data[] = '推广来源';
+			}
+			//是否有业务往来---暂时只有卖商标信息
+			if($rst['tel']){
+				$r = array();
+				$r['eq']['phone'] = $rst['tel'];
+				$r['col'] = array('id');
+				$res = $this->import('contact')->find($r);
+				if($res){
+					$data[] = '忠实用户';
+				}
 			}
 		}
 		return $data;

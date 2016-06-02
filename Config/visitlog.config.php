@@ -129,6 +129,10 @@ return $frequency = array(
                 'title' => '广告模块',
                 'web_id' => '12',
             ),
+            '13' => array(
+                'title' => '多选',
+                'web_id' => '13',
+            ),
             '30' => array(
                 'title' => '询价',
                 'web_id' => '30',
@@ -302,6 +306,10 @@ return $frequency = array(
             '7' => array(
                 'title' => '查看详情',
                 'web_id' => '7',
+            ),
+            '13' => array(
+                'title' => '多选',
+                'web_id' => '13',
             ),
         ),
     ),

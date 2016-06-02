@@ -237,6 +237,10 @@ return $frequency = array(
                 'title' => '案例列表',
                 'web_id' => '1',
             ),
+            '30' => array(
+                'title' => '询价',
+                'web_id' => '30',
+            ),
         ),
     ),
     "8" => array(

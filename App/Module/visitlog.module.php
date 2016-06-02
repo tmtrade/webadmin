@@ -68,6 +68,10 @@ class VisitlogModule extends AppModule
     }
 
     //计算每个页面点击数
+    /**
+     * @author John Doe <john.doe@example.com>
+     * @ticket
+     */
     public function page_count($type,$dateStart="",$dateEnd="",$class="")
     {
         $r['raw'] = "1";
@@ -464,14 +468,21 @@ class VisitlogModule extends AppModule
 									$v0['addition'] = urldecode($v0['addition']);
 									parse_str($v0['addition'],$aaa);
 									$v0['addition'] = '';
-									if(isset($aaa['number'])){
-										$v0['addition'] .= ' 编号:'.$aaa['number'];
+									if(isset($aaa['number']) && isset($aaa['price'])){
+                                                                            foreach ($aaa['number'] as $k=>$v){
+                                                                                $v0['addition'] .="<br/>";
+                                                                                $v0['addition'] .= ' 编号:'.$v;
+                                                                                $v0['addition'] .= ' 价格:'.$aaa['price'][$k];
+                                                                            }
+										
 									}
-									if(isset($aaa['price'])){
-										$v0['addition'] .= ' 价格:'.$aaa['price'];
+                                                                        
+                                                                        $v0['addition'] .="<br/>";
+                                                                        if(!empty($aaa['contact'])){
+										$v0['addition'] .= ' 联系人:'.$aaa['contact'];
 									}
 									if(isset($aaa['phone'])){
-										$v0['phone'] .= ' 电话:'.$aaa['phone'];
+										$v0['addition'] .= ' 电话:'.$aaa['phone'];
 									}
 								}
 								$temp .= ' | 附加信息: '.$v0['addition'];

@@ -288,7 +288,7 @@ class PatentAction extends AppAction
 		$res = $this->load('patent')->update($data, $patentId);
 		if ( $res ){
 			$this->load('log')->addPatentLog($patentId, 10, '商品价格已修改', serialize($data));//修改价格信息
-			$this->load('usercenter')->pushTmPrice($sale['number'], $sale, $data);//推送到用户
+			//$this->load('usercenter')->pushTmPrice($sale['number'], $sale, $data);//推送到用户
 			$this->returnAjax(array('code'=>1,'msg'=>'操作成功'));
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));

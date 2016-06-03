@@ -231,13 +231,14 @@ class VisitlogModule extends AppModule
 	}
 
 	/**
-	 * 得到访客的所有信息
+	 * 得到访客的所有信息--次数
 	 * @param $sid
 	 * @return array
 	 */
 	private function getAllLog($sid){
 		//得到所有记录信息
 		$r['eq']['sid'] = $sid;
+		$r['eq']['isnew'] = 1;
 		$r['limit'] = 1000;
 		$r['col'] = array('device','tel');
 		return $this->import('visitlog')->find($r);

@@ -44,7 +44,29 @@ return $menu = array(
 					),
 		),
 	),
-	'3' => array(
+    '3' => array(
+		'title' => '出售者平台',
+		'ico'   => 'images/menu1.png',
+		'url'   => '/exchange/index/',
+		'child'	=> array(
+					'1' => array(
+						'title' => '兑换信息列表',
+						'url'   => '/exchange/index/',
+						'auth'	=> '28',
+					),
+                                        '2' => array(
+						'title' => '站内信配置',
+						'url'   => '/messages/index/',
+						'auth'	=> '29',
+					),
+                                        '3' => array(
+						'title' => '广告管理',
+						'url'   => '/ad/index/',
+						'auth'	=> '30',
+					),
+		),
+	),
+	'4' => array(
 		'title' => '站点管理',
 		'url'   => '/phone/index/',
 		'ico'   => 'images/menu2.png',
@@ -101,7 +123,7 @@ return $menu = array(
 			),
 		),
 	),
-	'4' => array(
+	'5' => array(
 		'title' => '系统配置',
 		'ico'   => 'images/menu9.png',
 		'url'   => '/user/index/',

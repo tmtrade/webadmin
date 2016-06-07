@@ -1,0 +1,91 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<style>
+    td{border: 1px solid #dadada;}
+    .seach_ul li{
+        border: 1px solid #DDDDDD;
+        float: left;
+        padding: 7px 15px;
+        border-bottom: 0px;
+        color: #999999;
+        cursor: pointer;
+        background-color: #F2F2F2;
+    }
+   .seach_ul .on{color: #000; background-color: #FFF;}
+</style>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>出售者平台</li>
+        <li>兑换信息列表</li>
+    </ul>
+</div>
+<div class="wrap">
+    <div class="mj-screening">
+        <div class="mj-seT f-clearfix">
+            <span>热门搜索统计</span>
+        </div>
+        <form name="visitlogForm" id="visitlogForm" action="/visitlog/search/" method="GET">
+        <dl>
+            <dd>
+               <label> 我要统计从<?=$s['dateStart']?>：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
+                <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input type="text" name="dateEnd" value="<?=$s['dateEnd']?>" class="input input-sm" readonly onclick="laydate()" />
+                
+                <a href="javascript:void(0);" class="mj-sBtn mj-sBtn-search" style="display:inline-block;margin-left:50px;">搜索</a>
+            </dd>
+        </dl>
+            <input type="hidden" value="<?=$s['type']?>"  name="type" id="types">
+        </form>
+    </div>
+    <div class="wrap-content">
+		<br>
+        <div class="wrap-table">
+            <ul class="seach_ul">
+                <li data-type="1" <?if($s['type']==1){echo 'class="on"';} ?>>下月兑换信息</li>
+                <li data-type="2" <?if($s['type']==2){echo 'class="on"';} ?>>历史兑换信息</li>
+            </ul>
+             <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                    <tr class="active">
+			<th>排名</th>
+                        <th>搜索词/筛选</th>
+                        <th>搜索次数</th>
+                        <th>占比</th>
+                    </tr>
+                </thead>
+                <tbody class="table-list">
+                <? foreach ($list as $k => $v) {  ?>
+                <tr>
+					<td><?=($k+1)?></td>
+                    <td><?=$v['keyword']?></td>
+					<td><?=$v['counts']?></td>
+					<td><?=round(($v['counts']/$counts)*100,2)?>%</td>
+                </tr>
+                <? } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="page" align="center"><?=$pageBar?></div>
+</div>
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $(".mj-sBtn").click(function(){
+			var index = layer.load(1, {
+				shade: [0.5,'#fff'] //0.1透明度的白色背景
+			});
+            $("#visitlogForm").submit();
+        });
+        
+        $(".seach_ul li").click(function(){
+			var index = layer.load(1, {
+				shade: [0.5,'#fff'] //0.1透明度的白色背景
+			});
+                        $("#types").val($(this).data("type"));
+            $("#visitlogForm").submit();
+        });
+    });
+    </script>
+<? require(ViewDir.'/footer.html'); ?>

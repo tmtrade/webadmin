@@ -1,0 +1,96 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>站内信配置</li>
+    </ul>
+</div>
+<div class="wrap">
+    <div class="wrap-content">
+		<p class="text-left" style="float:left;margin-top:20px;padding:0 5px 0 5px;background-color:#FFFF99;border:1px solid #dadada;">系统站内信</p>
+        <br>
+		<br>
+		<br>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                    <tr class="active">
+						<th>触发条件</th>
+                        <th>标题</th>
+                        <th>有无详情</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody class="table-list">
+                <? foreach ($data as $k => $v):  ?>
+                <tr>
+					<td><?=$v['desc']?></td>
+                    <td><?=$v['title']?></td>
+					<td><?=($v['type']==1?'有':'无')?></td>
+                    <td>
+						<a href="javascript:void(0);" onclick="delMsg(<?=$v['id']?>);">删除</a>
+						<a href="javascript:void(0);" class="editMsg">编辑</a>
+                        <input type="hidden" mtype="<?=$v['desc']?>" mvalue="<?=$v['url']?>-<?=$v['title']?>" mcontent="$v['content']">
+                    </td>
+                </tr>
+                <? endforeach; ?>
+                </tbody>
+            </table>
+        </div>   
+		<br>
+		<div class="btn-group">
+            <button class="btn btn-danger add-msg" type="button">创建站内信</button>
+        </div>
+    </div>
+</div>
+
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function (){
+        //添加站内信模板
+        $(".add-msg").click(function(){
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '创建站内信',
+                area: ['750px','650px'],
+                content: '/messege/addpage/'
+            });
+        });
+    });
+//删除链接
+function delMsg(id){
+	if ( id <= 0 || id == '' ) return false;
+	layer.confirm('确认要删除此模板吗？<br>', {
+		btn: ['Yes','No'] //按钮
+	}, function(){
+		$.ajax({
+			type : 'post',
+			url  : '/messege/delete/',
+			data : {'id':id},
+			dataType : 'json',
+			success : function (data){
+				if (data.code==0){
+					layer.msg('操作成功', {
+						time: 1000 //2秒关闭（如果不配置，默认是3秒）
+					}, function(){
+						window.location.reload();
+					});
+				}else{
+					layer.msg(data.msg, {
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+				}
+			},
+			error : function (data){
+				layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
+					time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				});
+			}
+		});
+	});
+}
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

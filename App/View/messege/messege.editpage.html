@@ -1,0 +1,68 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+
+<div id="tip_module" style="margin: 20px">
+    <form id="msgForm">
+        <style type="text/css">
+            .success_case_div label{
+                width: 180px;
+            }
+            .success_case_div input{
+                border: 1px solid #CCC;
+            }
+        </style>
+        <div class="success_case_div">
+            <ul>
+                <li>
+                    <label>触发条件：</label>
+                    <div style="margin:10px 50px">
+                        <? foreach($config as $item): ?>
+                        <p>
+                            <?=$item['title']?><span style="margin: 0 40px 0 20px">|</span>
+                            <? foreach($item['data'] as $v): ?>
+                            <label><input type="radio" name="url" value="<?=$v['url']?>---<?=$v['title']?>"><?=$v['title']?></label>
+                            <?endforeach;?>
+                        </p>
+                        <?endforeach;?>
+                    </div>
+                </li>
+                <li>
+                    <label>短信标题：</label>
+                    <input type="text" name="title" size="80"/>
+                </li>
+                <li>
+                    <label>是否需要详情：</label>
+                    <label><input type="radio" class="isNeed" name="type" value="1" checked="checked"/>需要(信类型)</label>
+                    <label><input type="radio" class="isNeed" name="type" value="2"/>不需要(链接类型)</label>
+                </li>
+                <li>
+                    <label>详情内容：</label>
+                    <textarea name="content" id="content" style="width:80%;height:200px;"></textarea><br/>(链接类型可不填此项,代表仅标题)
+                </li>
+            </ul>
+        </div>
+    </form>
+    <div class="mj-deiBlist">
+        <div class="mj-deiBtns">
+            <br>
+            <button class="btn btn-danger" id="msgSubmit">确定</button>
+        </div>
+    </div>
+</div>
+<script charset="utf-8" src="<?=StaticDir?>/editor/kindeditor.js"></script>
+<script charset="utf-8" src="<?=StaticDir?>/editor/lang/zh_CN.js"></script>
+<script type="text/javascript">
+    //富文本编辑器
+    KindEditor.ready(function(K) {
+        window.editor = K.create('#content', {
+            urlType:'domain',
+            afterBlur: function () { this.sync(); }
+        });
+    });
+    function closeAll(){
+        parent.layer.closeAll();
+    }
+</script>
+<? require(ViewDir.'/footer.html'); ?>
+

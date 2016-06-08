@@ -56,7 +56,7 @@ return $menu = array(
 					),
                                         '2' => array(
 						'title' => '站内信配置',
-						'url'   => '/messages/index/',
+						'url'   => '/messege/index/',
 						'auth'	=> '29',
 					),
                                         '3' => array(

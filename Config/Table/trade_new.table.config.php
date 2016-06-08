@@ -257,4 +257,9 @@ $tbl['tsessions'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+$tbl['messegeMonitor'] = array(
+	'name'		=> $prefix.'messege_monitor',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 ?>

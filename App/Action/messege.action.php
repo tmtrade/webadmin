@@ -38,9 +38,14 @@ class MessegeAction extends AppAction{
         $params['title'] = $this->input('title','string');
         $params['type'] = $this->input('type','int');
         $params['content'] = $this->input('content','text');
+        //简单验证不为空
+        if(!$params['url'] || !$params['title'] || !$params['type']){
+            $this->returnAjax(array('code'=>3,'msg'=>'数据不完整'));
+        }
         //添加数据
         $rst = $this->load('tmessege')->add($params);
         if($rst==1){
+            $this->clearMonitorCache();
             $this->returnAjax(array('code'=>0));
         }else if($rst==-1){
             $this->returnAjax(array('code'=>1,'msg'=>'已经有相同的触发条件'));
@@ -62,8 +67,8 @@ class MessegeAction extends AppAction{
         $config = $this->load('tmessege')->getConfig();
         $this->set('config',$config);
         //查询结果并渲染页面
-        $minitor = $this->load('tmessege')->getDetail($id);
-        $this->set('minitor',$minitor);
+        $monitor = $this->load('tmessege')->getDetail($id);
+        $this->set('monitor',$monitor);
         $this->display();
     }
 
@@ -78,9 +83,14 @@ class MessegeAction extends AppAction{
         $params['title'] = $this->input('title','string');
         $params['type'] = $this->input('type','int');
         $params['content'] = $this->input('content','text');
-        //添加数据
+        //简单验证不为空
+        if(!$params['url'] || !$params['title'] || !$params['type'] || !$params['id']){
+            $this->returnAjax(array('code'=>3,'msg'=>'数据不完整'));
+        }
+        //编辑数据
         $rst = $this->load('tmessege')->edit($params);
         if($rst==1){
+            $this->clearMonitorCache();
             $this->returnAjax(array('code'=>0));
         }else if($rst==-1){
             $this->returnAjax(array('code'=>1,'msg'=>'已经有相同的触发条件'));
@@ -96,9 +106,17 @@ class MessegeAction extends AppAction{
         $id = $this->input('id','int');
         $rst = $this->load('tmessege')->drop($id);
         if($rst){
+            $this->clearMonitorCache();
             $this->returnAjax(array('code'=>0));
         }else{
             $this->returnAjax(array('code'=>1,'msg'=>'删除失败'));
         }
+    }
+
+    /**
+     * 删除站内信监控的redis缓存
+     */
+    private function clearMonitorCache(){
+        $this->com('redisHtml')->remove('messege_monitor');//删除缓存
     }
 }

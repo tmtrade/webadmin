@@ -21,7 +21,7 @@
                         <p>
                             <?=$item['title']?><span style="margin: 0 40px 0 20px">|</span>
                             <? foreach($item['data'] as $v): ?>
-                            <label><input type="radio" name="url" value="<?=$v['url']?>---<?=$v['title']?>"><?=$v['title']?></label>
+                            <label><input class="url" type="radio" name="url" value="<?=$v['url']?>---<?=$v['title']?>"><?=$v['title']?></label>
                             <?endforeach;?>
                         </p>
                         <?endforeach;?>
@@ -29,7 +29,7 @@
                 </li>
                 <li>
                     <label>短信标题：</label>
-                    <input type="text" name="title" size="80"/>
+                    <input type="text" name="title" size="80" value="<?=$monitor['title']?>"/>
                 </li>
                 <li>
                     <label>是否需要详情：</label>
@@ -38,9 +38,10 @@
                 </li>
                 <li>
                     <label>详情内容：</label>
-                    <textarea name="content" id="content" style="width:80%;height:200px;"></textarea><br/>(链接类型可不填此项,代表仅标题)
+                    <textarea name="content" id="content" style="width:80%;height:200px;"><?=$monitor['content']?></textarea><br/>(链接类型可不填此项,代表仅标题)
                 </li>
             </ul>
+            <input type="hidden" name="id" value="<?=$monitor['id']?>">
         </div>
     </form>
     <div class="mj-deiBlist">
@@ -63,6 +64,29 @@
     function closeAll(){
         parent.layer.closeAll();
     }
+    $(function(){
+        //选中事件
+        $('.url').val(["<?=$monitor['url']?>---<?=$monitor['desc']?>"]);
+        $('.isNeed').val(["<?=$monitor['type']?>"]);
+        //提交事件
+        $('#msgSubmit').click(function(){
+            var url = '/messege/edit';
+            var data = $('#msgForm').serialize();
+            $.post(url,data,function(data){
+                if (data.code==0){
+                    layer.msg('操作成功！', {
+                        time: 1000
+                    }, function(){
+                        parent.location.reload();
+                    });
+                }else{
+                    layer.msg(data.msg, {
+                        time: 1000
+                    });
+                }
+            },'json');
+        });
+    });
 </script>
 <? require(ViewDir.'/footer.html'); ?>
 

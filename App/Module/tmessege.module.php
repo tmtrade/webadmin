@@ -54,6 +54,10 @@ class TmessegeModule extends AppModule
      */
     public function edit($params){
         $r = array();
+        $url = $params['url'];
+        $tmp = explode('---',$url);
+        $params['url'] = $tmp[0];//解析出url
+        $params['desc'] = $tmp[1];//解析出描述
         $r['eq']['url'] = $params['url'];
         $r['raw'] = 'id<>'.$params['id'];
         $rst = $this->import('messege_monitor')->find($r);

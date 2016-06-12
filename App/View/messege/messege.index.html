@@ -31,7 +31,7 @@
                     <td>
 						<a href="javascript:void(0);" onclick="delMsg(<?=$v['id']?>);">删除</a>
 						<a href="javascript:void(0);" class="editMsg">编辑</a>
-                        <input type="hidden" mtype="<?=$v['desc']?>" mvalue="<?=$v['url']?>-<?=$v['title']?>" mcontent="$v['content']">
+                        <input type="hidden" value="<?=$v['id']?>" class="editid">
                     </td>
                 </tr>
                 <? endforeach; ?>
@@ -56,6 +56,17 @@
                 title: '创建站内信',
                 area: ['750px','650px'],
                 content: '/messege/addpage/'
+            });
+        });
+        //编辑站内信模板
+        $(".editMsg").click(function(){
+            var id = $(this).closest('td').find('.editid').val();
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '编辑站内信',
+                area: ['750px','650px'],
+                content: '/messege/editpage/?id='+id
             });
         });
     });

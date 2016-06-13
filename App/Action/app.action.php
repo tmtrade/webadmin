@@ -14,7 +14,9 @@ abstract class AppAction extends Action
 	 * 每页显示多少行
 	 */
 	public $rowNum  = 20;
-	
+
+	public $msg = false;//是否发送站内信(操作成功后设置为true)
+
 	public $username = null;
 	
 	public $userId   = null;
@@ -77,7 +79,8 @@ abstract class AppAction extends Action
 	 */
 	public function after()
 	{
-		//自定义业务逻辑
+		//检测是否发送站内信
+		$this->checkMsg();
 	}
 
 	/**
@@ -92,7 +95,9 @@ abstract class AppAction extends Action
 	protected function returnAjax($data=array())
 	{
 		$jsonStr = json_encode($data);
-		exit($jsonStr);
+		echo $jsonStr;
+		return;
+		//exit($jsonStr);
 	}
 
 	private function getUser()
@@ -166,6 +171,32 @@ abstract class AppAction extends Action
 		return Session::get($action);
 	}
 
-
+	/**
+	 * 检测当前url地址(操作)是否发送站内信
+	 */
+	protected function checkMsg(){
+		if($this->msg==false){ //不发送站内信
+			return;
+		}
+		//得到当前url地址
+		$url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$this->mod.'/'.$this->action;
+		//得到监控触发的信息
+		$monitor = $this->load('messege')->getMonitor();
+		if($monitor){
+			//判断当前url是否发送信息
+			foreach($monitor as $item){
+				if(strpos($item['url'],$url)!==false){
+					$params = array();
+					$params['title'] = $item['title'];
+					$params['type'] = $item['type'];
+					$params['sendtype'] = 1;
+					$params['content'] = $item['content'];
+					$params['uids'] = $this->userId;//当前用户
+					$this->load('messege')->createMsg($params);
+					break;
+				}
+			}
+		}
+	}
 }
 ?>

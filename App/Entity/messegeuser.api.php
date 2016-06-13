@@ -9,12 +9,12 @@
  * @version 3.0
  +------------------------------------------------------------------------------
  */
-class MessegeMonitorApi extends Entity
+class MessegeUserApi extends Entity
 {
 	/**
 	 * 数据表键[表的唯一标识]
 	 */
-	public $tableKey = 'messegeMonitor';
+	public $tableKey = 'messegeUser';
 
 	/**
 	 * 数据表主键

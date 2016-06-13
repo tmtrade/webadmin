@@ -263,13 +263,33 @@ $tbl['ad'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+
 $tbl['exchange'] = array(
 	'name'		=> $prefix.'exchange',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+
+$tbl['messege'] = array(
+	'name'		=> $prefix.'messege',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
 $tbl['messegeMonitor'] = array(
 	'name'		=> $prefix.'messege_monitor',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
+$tbl['messegeUser'] = array(
+	'name'		=> $prefix.'messege_user',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
+$tbl['user'] = array(
+	'name'		=> $prefix.'user',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );

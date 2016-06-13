@@ -257,9 +257,21 @@ $tbl['tsessions'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+
+$tbl['ad'] = array(
+	'name'		=> $prefix.'ad',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+$tbl['exchange'] = array(
+	'name'		=> $prefix.'exchange',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 $tbl['messegeMonitor'] = array(
 	'name'		=> $prefix.'messege_monitor',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+
 ?>

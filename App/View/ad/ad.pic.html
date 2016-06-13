@@ -1,0 +1,205 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+
+<style type="text/css">
+    hr{width:100%;color: #ccc;}
+    .info-pic {
+        max-width: 250px;
+        max-height: 100px;
+    }
+    .pics{float: left; height: 85px;margin:8px;}
+    .form-input{
+        width: 35%;
+        margin: 5px;
+        height: 34px;
+        font-size: 14px;
+        line-height: 1.42857;
+        color: rgb(85, 85, 85);
+        background-color: rgb(255, 255, 255);
+        background-image: none;
+        border-image-source: initial;
+        border-image-slice: initial;
+        border-image-width: initial;
+        border-image-outset: initial;
+        border-image-repeat: initial;
+        box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px inset;
+        padding: 6px 12px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(204, 204, 204);
+        border-radius: 4px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;}
+</style>
+
+<!--出售信息弹层-->
+<div class="mj-infoM" style="width:99%;padding:10px;">
+<form name="setAd" id="setAd" >
+    <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;" role="alert">
+        
+        <b>当前该广告位有 <?=$total?> 条商品，截止<?=$info[1]['enddate']>$info[0]['enddate']?date('Y-m-d',$info[1]['enddate']):date('Y-m-d',$info[0]['enddate']);?>日</b>
+        广告图片建议尺寸为 ( 235 ) x ( 140 )，文件最大不超过500kb，当前支持jpg,bmp,png格式文件
+        
+    </div>
+    <hr>
+    <input type="hidden" name="id1" value="<?=$info[0]['id']?>" />
+    <input type="hidden" name="id2" value="<?=$info[1]['id']?>" />
+    <input type="hidden" name="pic1" class="bzpic1" value="<?=$info[0]['pic']?>" />
+    <input type="hidden" name="pic2" class="bzpic2" value="<?=$info[1]['pic']?>" />
+    <div id="show_<?=$info[0]['id']?>">
+       <div class="bzform pics" id="bzform1" style="border:5px solid #333;width:150px;">
+            <img id="bzpic1" class="info-pic" width="140" height="75" onerror="this.src='/Static/1.2/images/u143.png'" onclick="bzfile1.click();" title="点击修改" src="<?=$info[0]['pic']?$info[0]['pic']:'error'?>" >
+            <input type="hidden" name="size" value="500" style="display: none;"/>
+            <input type="file" id="bzfile1" onchange="uplouadPic(1)" name="fileName" style="display: none;"/>
+        </div>
+       
+        <div class="pics" style="width:550px;">
+            <label>展示时间：</label>
+                <input type="input" class="form-input" value="<?=date('Y-m-d',$info[0]['startdate'])?>"> - <input type="input" class="form-input" value="<?=date('Y-m-d',$info[0]['enddate'])?>""><br>
+            <label>广告链接：</label>
+            <input type="input" class="form-input" name="link1" value="<?=$info[0]['link']?>">   ALT描述:<input type="input" class="form-input" name="alt1" value="<?=$info[0]['alt']?>"><br/>
+        </div>
+        
+         <div class="pics" style="width:200px;">
+            <button type="button" onclick="delAd(<?=$info[0]['id']?>)" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;删除&nbsp;&nbsp;&nbsp;&nbsp;</button>
+            <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
+            <?=$info[0]['isUse']==2?$info[0]['note']:'';?>
+            </div>
+         </div>
+    </div>
+    <hr>
+    <?if(!empty($info[1]['id'])){?>
+    <div id="show_<?=$info[1]['id']?>">
+        <div class="bzform pics" id="bzform2" style="border:5px solid #333;width:150px;">
+            <img id="bzpic2" class="info-pic" width="140" height="75" onerror="this.src='/Static/1.2/images/u143.png'" onclick="bzfile2.click();" title="点击修改" src="<?=$info[1]['pic']?$info[1]['pic']:'error'?>" >
+            <input type="hidden" name="size" value="500" style="display: none;"/>
+            <input type="file" id="bzfile2" onchange="uplouadPic(2)" name="fileName" style="display: none;"/>
+        </div>
+        
+        <div class="pics" style="width:550px;">
+            <label>展示时间：</label>
+                <input type="input" class="form-input" value="<?=date('Y-m-d',$info[1]['startdate'])?>"> - <input type="input" class="form-input" value="<?=date('Y-m-d',$info[1]['enddate'])?>""><br>
+            <label>广告链接：</label>
+            <input type="input" class="form-input" name="link2" value="<?=$info[1]['link']?>">   ALT描述:<input type="input" class="form-input" name="alt2" value="<?=$info[1]['alt']?>"><br/>
+        </div>
+        
+         <div class="pics" style="width:200px;">
+            <button type="button" onclick="delAd(<?=$info[1]['id']?>)" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;删除&nbsp;&nbsp;&nbsp;&nbsp;</button>
+            <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
+            <?=$info[1]['isUse']==2?$info[1]['note']:'';?>
+            </div>
+         </div>
+    </div>
+    <hr>
+    <?}?>
+    
+    
+    
+    <div style="bottom:15px;position: fixed;">
+        <button type="button" id="myButton" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;确定&nbsp;&nbsp;&nbsp;&nbsp;</button>
+        <button type="button" onclick="closeAll();" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;取消&nbsp;&nbsp;&nbsp;&nbsp;</button>
+    </div>
+    
+</form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".mj-infoM").show();
+        $("#bzform1").wrap("<form id='bzformupload1' action='/ad/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        $("#bzform2").wrap("<form id='bzformupload2' action='/ad/ajaxUploadPic/' method='post' enctype='multipart/form-data'></form>");
+        
+        //提交选中的图片
+        $("#myButton").on('click', function (){
+            var _this = $(this);
+            var data = $("#setAd").serialize();
+            _this.attr('disabled', true)
+            $.ajax({
+                type : 'post',
+                url  : '/ad/setAd/',
+                data : data,
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            parent.window.location.reload();
+                        });
+                    }else{
+                        layer.msg(data.msg, {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        },function(){ _this.attr('disabled', false) });
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    },function(){ _this.attr('disabled', false) });
+                }
+            });
+        });
+
+    });
+
+    function closeAll()
+    {
+        parent.layer.closeAll();
+    }
+    
+    function uplouadPic(types){
+            $("#bzformupload"+types).ajaxSubmit({
+                dataType:  'json',
+                success: function(data) {
+                    if (data.code == 1){
+                        $('.bzpic'+types).val(data.img);
+                        $('#bzpic'+types).attr('src', data.img);
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error:function(xhr){
+                    alert('图片格式不正确或图片过大，请重新上传！');
+                }
+            });
+        };
+        
+//删除广告
+function delAd(id)
+{	
+	if ( id <= 0 || id == '' ) return false;
+
+	layer.confirm('确认要删除此广告吗？<br>', {
+		btn: ['删了','算了'] //按钮
+	}, function(){
+		$.ajax({
+			type : 'post',
+			url  : '/ad/delAd/',
+			data : {'id':id},
+			dataType : 'json',
+			success : function (data){
+				if (data.code==1){
+					layer.msg('操作成功', {
+						time: 1000 //2秒关闭（如果不配置，默认是3秒）
+					}, function(){
+						$('#show_'+id).remove();
+					});
+				}else{
+					var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+					layer.msg(msg, {
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+				}
+			},
+			error : function (data){
+				layer.msg('操作失败，请确认内容后重新尝试', {
+					time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				});
+			}
+		});
+	});
+}
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

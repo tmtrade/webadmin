@@ -1,0 +1,137 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<style>
+    td{border: 1px solid #dadada;}
+    .seach_ul li{
+        border: 1px solid #DDDDDD;
+        float: left;
+        padding: 7px 15px;
+        color: #999999;
+        cursor: pointer;
+        background-color: #F2F2F2;
+        margin-right: 5px;
+    }
+    .module_ul li{
+        border: 1px solid #DDDDDD;
+        float: left;
+        padding: 3px 8px;
+        color: #999999;
+        cursor: pointer;
+        background-color: #F2F2F2;
+        margin-right: 5px;
+    }
+   .seach_ul .on{color: #000; background-color: #FFF;}
+   .module_ul .on{color: #FFF; background-color:  #cc0000;}
+   .wrap-table b{float: left; margin: 5px 5px 0px 20px;}
+</style>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>出售者平台</li>
+        <li>广告管理</li>
+    </ul>
+</div>
+<div class="wrap">
+    <div class="mj-screening">
+        <div class="mj-seT f-clearfix">
+            <span>广告管理</span>
+        </div>
+        <form name="visitlogForm" id="visitlogForm" action="/ad/index/" method="GET">
+            <input type="hidden" value="<?=$s['pages']?>"  name="pages" id="types">
+            <input type="hidden" value="<?=$s['module']?>"  name="module" id="module">
+        </form>
+    </div>
+    <div class="wrap-content">
+		<br>
+        <div class="wrap-table">
+            <ul class="seach_ul">
+                <li data-type="1" data-module="0"<?if($s['pages']==1){echo 'class="on"';} ?>>首页</li>
+                <li data-type="2" data-module="59"<?if($s['pages']==2){echo 'class="on"';} ?>>通用菜单</li>
+                <li data-type="3" data-module="0"<?if($s['pages']==3){echo 'class="on"';} ?>>列表页右侧</li>
+            </ul>
+            <br>
+            <?if($s['pages']==2){?>
+                <br>
+                <b>通用菜单广告</b>
+
+                <br>
+                <br>
+                <ul class="module_ul">
+
+                     <? foreach ($module_type[2]['type'] as $k => $v) {  ?>
+                     <li data-type="2" data-module="<?=$k?>"<?if($s['module']==$k){echo 'class="on"';} ?>><?=$v?></li>
+                    <? } ?>
+                </ul>
+             <? } ?>
+             <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                    <tr class="active">
+			<th>序号</th>
+                        <th>当前有误展示广告</th>
+                        <th>最终截止时间</th>
+                        <th>有无草稿</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody class="table-list">
+                <? foreach ($list as $k => $v) {  ?>
+                <tr>
+                    <td><?=$v['sort']?></td>
+                    <td>有(<?=$v['counts']?>)条</td>
+                    <td><?=date("Y-m-d",$v['enddate'])?></td>
+                    <td><?=$v['isUse']==2?"有未处理草稿":"";?></td>
+                    <td>
+                        <span class="icon icon-editor">
+                            <a href="javascript:void(0);" onclick="showEdit(<?=$v['pages']?>,<?=$v['module']?>,<?=$v['sort']?>,<?=$v['counts']?>)"  class="btn-info">编辑</a>
+                        </span>
+                    </td>
+                </tr>
+                <? } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="page" align="center"><?=$pageBar?></div>
+</div>
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $(".mj-sBtn").click(function(){
+			var index = layer.load(1, {
+				shade: [0.5,'#fff'] //0.1透明度的白色背景
+			});
+            $("#visitlogForm").submit();
+        });
+        
+       
+         $(".wrap-table li").click(function(){
+			var index = layer.load(1, {
+				shade: [0.5,'#fff'] //0.1透明度的白色背景
+			});
+                        $("#types").val($(this).data("type"));
+                        $("#module").val($(this).data("module"));
+            $("#visitlogForm").submit();
+        });
+        
+    });
+    
+    //编辑广告弹出框
+    function showEdit(pages,module,sort,counts)
+    {
+        if ( pages == '' || pages == 0 || sort == '' || sort == 0) return false;
+        var width='360px';
+        if(counts==1){
+            width='260px';
+        }
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: '广告编辑',
+            area: ['1000px', width],
+
+            content: '/ad/editPic/?pages='+pages+'&module='+module+'&sort='+sort,
+        });
+    }
+    </script>
+<? require(ViewDir.'/footer.html'); ?>

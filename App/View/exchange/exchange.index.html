@@ -24,43 +24,75 @@
 <div class="wrap">
     <div class="mj-screening">
         <div class="mj-seT f-clearfix">
-            <span>热门搜索统计</span>
+            <span>兑换信息列表</span>
         </div>
-        <form name="visitlogForm" id="visitlogForm" action="/visitlog/search/" method="GET">
-        <dl>
+        
+        <form name="visitlogForm" id="visitlogForm" action="/Exchange/index/" method="GET">
+       <?if($s['isUse']==1){?>
+            <dl>
             <dd>
-               <label> 我要统计从<?=$s['dateStart']?>：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
-                <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input type="text" name="dateEnd" value="<?=$s['dateEnd']?>" class="input input-sm" readonly onclick="laydate()" />
+                <label> 资源类型：</label>
+                <select name="pages" class="input input-sm">
+                    <option value="0">--请选择--</option>
+                    <option value="1" <?if($s['pages']==1){echo 'selected';} ?>>首页轮播</option>
+                    <option value="2" <?if($s['pages']==2){echo 'selected';} ?>>通用菜单</option>
+                    <option value="3" <?if($s['pages']==3){echo 'selected';} ?>>列表页右侧</option>
+                </select>
                 
+                <label> 申请时间<?=$s['dateStart']?>：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
+                <label>&nbsp;&nbsp;-&nbsp;&nbsp;</label> <input type="text" name="dateEnd" value="<?=$s['dateEnd']?>" class="input input-sm" readonly onclick="laydate()" />
+                
+                <label>联系电话：</label> <input type="text" name="phone" value="<?=$s['phone']?>" class="input input-sm"/> 
                 <a href="javascript:void(0);" class="mj-sBtn mj-sBtn-search" style="display:inline-block;margin-left:50px;">搜索</a>
             </dd>
         </dl>
-            <input type="hidden" value="<?=$s['type']?>"  name="type" id="types">
+       <?}?>
+            <input type="hidden" value="<?=$s['isUse']?>"  name="isUse" id="types">
         </form>
+        
     </div>
     <div class="wrap-content">
-		<br>
+        <br>
         <div class="wrap-table">
             <ul class="seach_ul">
-                <li data-type="1" <?if($s['type']==1){echo 'class="on"';} ?>>下月兑换信息</li>
-                <li data-type="2" <?if($s['type']==2){echo 'class="on"';} ?>>历史兑换信息</li>
+                <li data-type="3" <?if($s['isUse']==3){echo 'class="on"';} ?>>未兑换信息</li>
+                <li data-type="1" <?if($s['isUse']==1){echo 'class="on"';} ?>>历史兑换信息</li>
             </ul>
              <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
                 <thead>
                     <tr class="active">
-			<th>排名</th>
-                        <th>搜索词/筛选</th>
-                        <th>搜索次数</th>
-                        <th>占比</th>
+			<th>兑换资源类型</th>
+                        <th>备注</th>
+                        <th>申请时间</th>
+                        <?if($s['isUse']==1){?>
+                            <th>展示时间</th>
+                            <th>审核状态</th>
+                        <?}?>
+                        <th>联系电话</th>
+                        <th>qq</th>
+                         <?if($s['isUse']==3){?>
+                            <th>操作</th>
+                        <?}?>
                     </tr>
                 </thead>
                 <tbody class="table-list">
                 <? foreach ($list as $k => $v) {  ?>
                 <tr>
-					<td><?=($k+1)?></td>
-                    <td><?=$v['keyword']?></td>
-					<td><?=$v['counts']?></td>
-					<td><?=round(($v['counts']/$counts)*100,2)?>%</td>
+                    <td><?=$module_type[$v['pages']]['name']?> <?if(!empty($v['module'])) echo "-- ".$module_type[$v['pages']]['type'][$v['module']];?></td>
+                    <td><?=$v['note']?></td>
+                    <td><?=$v['date']?></td>
+                    <?if($s['isUse']==1){?>
+                        <td><?=date("Y-m-10",strtotime($v['date']."+1 month"));?> - <?=date("Y-m-10",strtotime($v['date']."+2 month"));?></td>
+                        <td><?=$v['isUse']==1?"已通过":"未通过";?></td>
+                    <?}?>
+                    <td><?=$v['phone']?></td>
+                    <td><?=$v['qq']?></td>
+                    <?if($s['isUse']==3){?>
+                        <td>
+                        <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>);">通过</a>
+                        <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>);">取消</a>
+                        </td>
+                    <?}?>
                 </tr>
                 <? } ?>
                 </tbody>
@@ -87,5 +119,92 @@
             $("#visitlogForm").submit();
         });
     });
+    
+//通过审核
+function setVerify(id)
+{
+    if ($.trim(id) == '' ){
+        layer.msg('参数错误', {
+            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+        });
+        return false;
+    }
+    layer.confirm('通过后台会在相关广告位创建一个草稿信息，请确认！', {
+        btn: ['通过','再想想'] //按钮
+    }, function(){
+        $.ajax({
+            type : 'post',
+            url  : '/exchange/through/',
+            data : {'id':id},
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg('操作失败，请确认数据是否正确。', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    });
+}
+
+//取消
+function delVerify(id)
+{
+
+    if ( $.trim(id) == '' ){
+        layer.msg('参数错误', {
+            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+        });
+        return false;
+    }
+    layer.prompt({
+        formType: 2,
+        scrollbar: false,
+        value: '',
+        maxlength: 100,
+        title: '请输入取消广告兑换的原因'
+    }, function(value, index, elem){
+        if ( $.trim(value) == ''){
+            layer.tips('请输入原因',elem);
+            return false;
+        }else{
+            $.ajax({
+                type : 'post',
+                url  : '/exchange/cancel/',
+                data : {'id':id,'reason':value},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.reload();
+                        });
+                    }else{
+                        var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+                        layer.tips(msg,elem);
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            });
+        }
+    });
+}
     </script>
 <? require(ViewDir.'/footer.html'); ?>

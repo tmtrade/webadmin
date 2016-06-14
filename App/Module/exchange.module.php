@@ -77,7 +77,11 @@ class ExchangeModule extends AppModule
     
     //确认通过后添加一条草稿广告，并修改状态为通过审核
     public function addAd($data,$id)
-    {    
+    {   
+        $adCount = $this->load('ad')->getPagesCount($data['pages'], $data['module'], $data['sort']);
+        if($adCount>=2){//每个位置的广告最多两条
+            return false;
+        }
         $data['note'] = "客户".$data['phone']."的自动草稿";
         $data['startdate'] = strtotime(date("Y-m-10",strtotime($data['date']."+1 month")));
         $data['enddate'] = strtotime(date("Y-m-10",strtotime($data['date']."+2 month")));

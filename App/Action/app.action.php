@@ -15,13 +15,13 @@ abstract class AppAction extends Action
 	 */
 	public $rowNum  = 20;
 
-	public $msg = false;//是否发送站内信(操作成功后设置为true)
-
 	public $username = null;
 	
 	public $userId   = null;
 	
 	public $roleId   = null;
+        
+        public $msgUid   = null;
 	/**
 	 * 前置操作(框架自动调用)
 	 * @author	void
@@ -80,7 +80,7 @@ abstract class AppAction extends Action
 	public function after()
 	{
 		//检测是否发送站内信
-		$this->checkMsg();
+		//$this->checkMsg();
 	}
 
 	/**
@@ -95,9 +95,7 @@ abstract class AppAction extends Action
 	protected function returnAjax($data=array())
 	{
 		$jsonStr = json_encode($data);
-		echo $jsonStr;
-		return;
-		//exit($jsonStr);
+		exit($jsonStr);
 	}
 
 	private function getUser()
@@ -175,9 +173,6 @@ abstract class AppAction extends Action
 	 * 检测当前url地址(操作)是否发送站内信
 	 */
 	protected function checkMsg(){
-		if($this->msg==false){ //不发送站内信
-			return;
-		}
 		//得到当前url地址
 		$url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$this->mod.'/'.$this->action;
 		//得到监控触发的信息
@@ -191,7 +186,7 @@ abstract class AppAction extends Action
 					$params['type'] = $item['type'];
 					$params['sendtype'] = 1;
 					$params['content'] = $item['content'];
-					$params['uids'] = $this->userId;//当前用户
+					$params['uids'] = $this->msgUid;//当前用户
 					$this->load('messege')->createMsg($params);
 					break;
 				}

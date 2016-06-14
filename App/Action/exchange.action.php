@@ -45,16 +45,18 @@ class ExchangeAction extends AppAction
             $res = $this->load('exchange')->setCancel($id, $reason);
             if ( $res ){
                 //发送驳回的系统消息
-
+                $info = $this->load('exchange')->getExchangeInfo($id);
+                $this->msgUid = $info['uid'];
+                $this->checkMsg();
                 $this->returnAjax(array('code'=>1));
             }
             $this->returnAjax(array('code'=>2, 'msg'=>'驳回失败了'));
     }
     
-    //审核联系人
+    //审核通过兑换信息
     public function through()
     {
-            $id 	= $this->input('id', 'int', 0);
+            $id = $this->input('id', 'int', 0);
             if ($id <= 0 ){
                     $this->returnAjax(array('code'=>2)); 
             }
@@ -64,6 +66,8 @@ class ExchangeAction extends AppAction
             }
             $res = $this->load('exchange')->addAd($info,$id);
             if ( $res ){
+                $this->msgUid = $info['uid'];
+                $this->checkMsg();
                 $this->returnAjax(array('code'=>1));
             }
             $this->returnAjax(array('code'=>2));

@@ -85,14 +85,12 @@ class AdAction extends AppAction
                 }
                 
                 //第二张广告
-                $res2 = true;
 		if(!empty($pic2) || !empty($link2) || !empty($alt2)){
                     $data2 = array(
 				'pic'        => $pic2,
 				'link'       => $link2,
 				'alt'        => $alt2,
 				'isUse'      => 1,
-                    
 			);
                     $res2 = $this->load('ad')->setAd($data2, $id2);
                 }
@@ -106,13 +104,13 @@ class AdAction extends AppAction
         /**
 	 * 删除
 	 * 
-	 * @author	Jeany
-	 * @since	2016-02-18
+	 * @author	Far
+	 * @since	2016-06-13
 	 * @access	public
 	 * @return	void
 	 */
 	public function delAd()
-	{	
+	{
 		$id 	= $this->input('id', 'int', '0');
 		
 		$res  = $this->load('ad')->delAd($id);

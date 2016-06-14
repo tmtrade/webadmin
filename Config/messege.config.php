@@ -39,11 +39,11 @@ return array(
         'data'=>array(
             0=>array(
                 'title'=>'申请通过',
-                'url'=>TRADE_URL.'user/passApply',
+                'url'=>TRADE_URL.'exchange/cancel',
             ),
             1=>array(
                 'title'=>'申请拒绝',
-                'url'=>TRADE_URL.'user/refuseApply',
+                'url'=>TRADE_URL.'exchange/through',
             ),
         )
     ),

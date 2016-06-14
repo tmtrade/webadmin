@@ -1,7 +1,7 @@
 <?
 header("Content-type: text/html; charset=utf-8"); 
 /**
- * 首页模块设置
+ * 专题模块设置
  *
  * @package	Action
  * @author	Xuni

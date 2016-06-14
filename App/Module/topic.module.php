@@ -22,7 +22,7 @@ class TopicModule extends AppModule
         $r = array();
         $r['page']  = $page;
         $r['limit'] = $limit;
-        $r['order'] = array('sort'=>'asc');
+        $r['order'] = array('sort'=>'desc');
         $res = $this->import('topic')->findAll($r);
 		if($res){
 			foreach($res['rows'] as $k => $v){
@@ -70,7 +70,7 @@ class TopicModule extends AppModule
         $r = array();
 		$r['eq']['topicId'] = $topicId;
 		$r['limit'] = 100;
-        $r['order'] = array('sort'=>'asc');
+        $r['order'] = array('sort'=>'desc');
         $data = $this->import('topicitems')->findAll($r);
         return $data;
     }
@@ -108,7 +108,7 @@ class TopicModule extends AppModule
     }
 	
 	//对某类别中某项进行上下排序
-    //$updown 1：向上，2：向下
+    //$updown 1：向下，2：向上
     public function sortUpDown($id, $updown, $type, $where='')
     {
         if ( empty($id) ) return false;
@@ -128,8 +128,8 @@ class TopicModule extends AppModule
         if ( empty($res) ) return false;
 
         $order = $res['sort'];
-        $r['raw']   = $updown == 1 ? " `sort` > $order " : " `sort` < $order ";
-        $ord        = $updown == 1 ? 'asc' : 'desc';
+        $r['raw']   = $updown == 2 ? " `sort` > $order " : " `sort` < $order ";
+        $ord        = $updown == 2 ? 'asc' : 'desc';
         $r['order'] = array('sort'=>$ord);
         if($where){
             $r['eq'] = $where;

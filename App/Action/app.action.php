@@ -168,11 +168,17 @@ abstract class AppAction extends Action
 
 	/**
 	 * 检测当前url地址(操作)是否发送站内信
-	 * @param $uid int 站内信的发送对象
+	 * @param $uid int|string 站内信的发送对象(群发以逗号隔开)
+	 * @param $sendtype int 站内信的发送方式,默认对一,2对多,3全体
 	 */
-	protected function checkMsg($uid = null){
+	protected function checkMsg($uid = null,$sendtype=1){
+		//设置发送的对象
 		if(!$uid){
 			$uid = $this->userId;
+		}
+		//设置发送的类型
+		if(!in_array($sendtype,array(1,2,3))){
+			$sendtype = 1;
 		}
 		//得到当前url地址
 		$url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$this->mod.'/'.$this->action;
@@ -185,7 +191,7 @@ abstract class AppAction extends Action
 					$params = array();
 					$params['title'] = $item['title'];
 					$params['type'] = $item['type'];
-					$params['sendtype'] = 1;
+					$params['sendtype'] = $sendtype;
 					$params['content'] = $item['content'];
 					$params['uids'] = $uid;//当前用户
 					$this->load('messege')->createMsg($params);

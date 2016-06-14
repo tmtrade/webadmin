@@ -15,8 +15,6 @@ abstract class AppAction extends Action
 	 */
 	public $rowNum  = 20;
 
-	public $msg = false;//是否发送站内信(操作成功后设置为true)
-
 	public $username = null;
 	
 	public $userId   = null;
@@ -170,10 +168,11 @@ abstract class AppAction extends Action
 
 	/**
 	 * 检测当前url地址(操作)是否发送站内信
+	 * @param $uid int 站内信的发送对象
 	 */
-	protected function checkMsg(){
-		if($this->msg==false){ //不发送站内信
-			return;
+	protected function checkMsg($uid = null){
+		if(!$uid){
+			$uid = $this->userId;
 		}
 		//得到当前url地址
 		$url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$this->mod.'/'.$this->action;
@@ -188,7 +187,7 @@ abstract class AppAction extends Action
 					$params['type'] = $item['type'];
 					$params['sendtype'] = 1;
 					$params['content'] = $item['content'];
-					$params['uids'] = $this->userId;//当前用户
+					$params['uids'] = $uid;//当前用户
 					$this->load('messege')->createMsg($params);
 					break;
 				}

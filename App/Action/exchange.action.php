@@ -46,8 +46,7 @@ class ExchangeAction extends AppAction
             if ( $res ){
                 //发送驳回的系统消息
                 $info = $this->load('exchange')->getExchangeInfo($id);
-                $this->msgUid = $info['uid'];
-                $this->checkMsg();
+                $this->checkMsg($info['uid']);
                 $this->returnAjax(array('code'=>1));
             }
             $this->returnAjax(array('code'=>2, 'msg'=>'驳回失败了'));
@@ -66,8 +65,7 @@ class ExchangeAction extends AppAction
             }
             $res = $this->load('exchange')->addAd($info,$id);
             if ( $res ){
-                $this->msgUid = $info['uid'];
-                $this->checkMsg();
+                $this->checkMsg($info['uid']);
                 $this->returnAjax(array('code'=>1));
             }
             $this->returnAjax(array('code'=>2));

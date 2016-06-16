@@ -60,7 +60,7 @@ class AdAction extends AppAction
 	 * @since	2016-06-12
 	 */
 	public function setAd()
-	{       
+	{
                 $id1 	= $this->input('id1', 'int', '');
 		$pic1 	= $this->input('pic1', 'string', '');
 		$link1 	= $this->input('link1', 'string', '');
@@ -112,7 +112,6 @@ class AdAction extends AppAction
 	public function delAd()
 	{
 		$id 	= $this->input('id', 'int', '0');
-		
 		$res  = $this->load('ad')->delAd($id);
 		if ( $res ){
 			$this->returnAjax(array('code'=>1));

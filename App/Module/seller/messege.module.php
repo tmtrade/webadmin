@@ -74,12 +74,16 @@ class MessegeModule extends AppModule
 
     /**
      * 用户将对全员发送的消息取回(登录时操作,排除非活跃用户造成的数据及性能影响)
+     * @param $uid int 用户id
      * @return bool
      */
-    public function createSelfMsg(){
+    public function createSelfMsg($uid=0){
         //得到该用户的上次更新时间
         $r = array();
-        $r['eq']['id'] = UID;
+        if(!$uid){
+            $uid = UID;
+        }
+        $r['eq']['id'] = $uid;
         $r['col'] = array('mupdate');
         $res = $this->import('user')->find($r);
         if(!$res){
@@ -94,21 +98,11 @@ class MessegeModule extends AppModule
         $rst1 = $this->import('messege')->find($r);
         $flag = true;
         if($rst1){
-            //得到该用户的所有消息信息
-            $r = array();
-            $r['eq']['uid'] = UID;
-            $r['col'] = array('mid');
-            $rst2 = $this->import('messege_user')->find($r);
-            if($rst2){
-                $mids = array_diff($rst1,$rst2);//求数组差集(忽略键关系);
-            }else{
-                $mids = $rst1;
-            }
             //将公共消息保存到对应的用户消息关联表中
-            foreach($mids as $mid){
+            foreach($rst1 as $item){
                 $temp = array();
-                $temp['mid'] = $mid;
-                $temp['uid'] = UID;
+                $temp['mid'] = $item['id'];
+                $temp['uid'] = $uid;
                 $temp['date'] = time();
                 $res = $this->import('messege_user')->create($temp);//添加到关联表中
                 if(!$res){ //保存失败,终止操作
@@ -120,7 +114,7 @@ class MessegeModule extends AppModule
         //更新用户表对应的用户同步消息的时间
         if($flag){ //操作成功才更新用户表的最新更细时间
             $r = array();
-            $r['eq']['id'] = UID;
+            $r['eq']['id'] = $uid;
             $ttt = array('mupdate'=>time());
             $this->import('user')->modify($ttt,$r);
         }

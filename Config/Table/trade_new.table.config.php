@@ -1,5 +1,6 @@
 <?
 $prefix		= 't_';
+$prefixs	= 's_'; //出售者平台
 $dbId		= 'trade_new';
 $configFile	= array( ConfigDir.'/Db/trade_new.master.config.php' );
 
@@ -259,31 +260,31 @@ $tbl['tsessions'] = array(
 );
 
 $tbl['ad'] = array(
-	'name'		=> $prefix.'ad',
+	'name'		=> $prefixs.'ad',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
 
 $tbl['exchange'] = array(
-	'name'		=> $prefix.'exchange',
+	'name'		=> $prefixs.'exchange',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
 
 $tbl['messege'] = array(
-	'name'		=> $prefix.'messege',
+	'name'		=> $prefixs.'messege',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
 
 $tbl['messegeMonitor'] = array(
-	'name'		=> $prefix.'messege_monitor',
+	'name'		=> $prefixs.'messege_monitor',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
 
 $tbl['messegeUser'] = array(
-	'name'		=> $prefix.'messege_user',
+	'name'		=> $prefixs.'messege_user',
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );

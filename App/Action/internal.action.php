@@ -70,6 +70,60 @@ class internalAction extends AppAction
 		$this->display();
 	}
 
+	/**
+	 * 完成交易的弹出页面
+	 */
+	public function complate(){
+		$id = $this->input('id','int',0);
+		//得到id对应的联系人信息
+		$contact = $this->load('internal')->getSaleContact($id);
+		$this->set('contact',$contact);
+
+		$this->set('saleId', $id);
+		$this->set('type', 0);
+		$this->display();
+	}
+
+	/**
+	 * 完成交易操作
+	 */
+	public function complateSale(){
+		//得到相关参数
+		$saleId = $this->input('saleId', 'int', 0);
+		if($saleId==0) $this->returnAjax(array('code'=>1,'msg'=>'参数错误'));
+
+		$price = $this->input('price', 'string', 0);
+		$type = $this->input('type', 'int', 0);
+		$uid = $this->input('uid', 'int', 0);
+		$date = $this->input('date', 'string', '');
+		if($date){
+			$date = strtotime($date);
+		}else{
+			$date = time();
+		}
+		//保存到数据库中
+		$data = array(
+			'saleId'=>$saleId,
+			'price'=>$price,
+			'type'=>$type,
+			'uid'=>$uid,
+			'date'=>$date,
+		);
+		$rst = $this->load('internal')->complateSale($data,$this->userId);
+		//返回结果
+		if($rst==0){
+			$this->returnAjax(array('code'=>0));
+		}else if($rst==1){
+			$this->returnAjax(array('code'=>1,'msg'=>'参数错误'));
+		}else if($rst==2){
+			$this->returnAjax(array('code'=>2,'msg'=>'保存收益表错误'));
+		}else if($rst==3){
+			$this->returnAjax(array('code'=>3,'msg'=>'保存用户出售信息出错'));
+		}else if($rst==4){
+			$this->returnAjax(array('code'=>4,'msg'=>'删除相关信息出错'));
+		}
+	}
+
 	//删除商品
 	public function delete()
 	{

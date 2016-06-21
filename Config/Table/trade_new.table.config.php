@@ -189,6 +189,12 @@ $tbl['case'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['income'] = array(
+	'name'		=> $prefix.'income',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
 $tbl['patent'] = array(
 	'name'		=> $prefix.'patent',
 	'dbId'		=> $dbId,

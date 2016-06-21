@@ -258,6 +258,9 @@
                         <span class="icon icon-editor">
                         <a href="/patent/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>
                         </span>
+                        <span class="icon icon-editor">
+                        <a href="javascript:;" class="btn-info" onclick="complateSale(<?=$v['id']?>)">交易完成</a>
+                        </span>
                     </td>
                 </tr>
                 <? } ?>
@@ -477,6 +480,18 @@
                 });
             }
         });
+    }
+
+    function complateSale(id){
+        layer.open({
+            type: 2,
+            title: '交易信息登记',
+            scrollbar: false,
+            closeBtn: false,
+            area: ['520px', '333px'],
+            content: '/patent/complate/?id='+id
+        });
+        return false;
     }
 
     function delMoreSale()

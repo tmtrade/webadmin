@@ -9,8 +9,8 @@
     <input type="hidden" name="saleId" id="saleId" value="<?=$saleId?>">
     <ul>
         <li><label>删除原因：</label>
-            <input type="radio" name="reason" class="reason" value="2">无效删除&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="reason" class="reason" value="1">交易成功
+            <input type="radio" name="reason" class="reason" value="2" checked="checked">无效删除&nbsp;&nbsp;&nbsp;&nbsp;
+            <!--<input type="radio" name="reason" class="reason" value="1">交易成功-->
         </li>        
         <li id="saleTime"><label>出售时间：</label><input type="text" name="saleDate" id="saleDate" readonly onclick="laydate()" /><em>(仅交易成功填写)</em></li>
        <li><label>剔除黑名单：</label>

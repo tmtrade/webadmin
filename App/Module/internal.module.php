@@ -15,6 +15,7 @@ class InternalModule extends AppModule
         'contact'           => 'saleContact',
         'tminfo'            => 'saleTminfo',
         'history'           => 'saleHistory',
+        'income'           => 'income',
         'userSaleHistory'   => 'userSaleHistory',
     );
     
@@ -928,6 +929,64 @@ class InternalModule extends AppModule
         }
         $this->rollBack('sale');
         return false;
+    }
+
+    /**
+     * 交易完成操作
+     * @param $params
+     * @param $uid int 用户id
+     * @return int 0成功,1参数错误,2保存收益表错误,3保存用户出售信息出错,4删除相关信息出错
+     */
+    public function complateSale($params,$uid){
+        $this->begin('income');
+        $sale = $this->getSaleInfo($params['saleId']);
+        if(!$sale){
+            $this->rollBack('income');
+            return 1;
+        }
+        if($params['uid']){ //保存到收益表中
+            //保存到收益表中
+            $rst = $this->import('income')->create($params);
+            if(!$rst){
+                $this->rollBack('income');
+                return 2;
+            }
+        }
+        //保存操作记录
+        $r = array(
+            'saleId'    => $params['saleId'],
+            'number'    => $sale['number'],
+            'type'      => 1,
+            'memberId'  => $uid,
+            'data'      => serialize($sale),
+            'date'      => time(),
+            'saleDate'  => $params['date'],
+            'memo'      => '交易成功(自动添加)',
+        );
+        //创建商品历史记录
+        $hisId = $this->import('history')->create($r);
+        //处理用户出售信息历史记录
+        foreach ($sale['contact'] as $k => $v) {
+            $addUserHistory = $this->addUserHistory($v, $sale, 1);
+            if ( !$addUserHistory ){
+                $this->rollBack('income');
+                return 3;
+            }
+        }
+        $r = array();
+        $r['eq']    = array('id'=>$params['saleId']);
+        $delSale    = $this->import('sale')->remove($r);//删除商品
+        $r = array();
+        $r['eq']   = array('saleId'=>$params['saleId']);
+        $delContact = $this->import('contact')->remove($r);//删除联系人
+        $delTminfo  = $this->import('tminfo')->remove($r);//删除包装信息
+        if ( $hisId <= 0 || !$delSale || !$delContact || !$delTminfo ){
+            $this->rollBack('income');
+            return 4;
+        }
+        $this->load('log')->addSaleLog($params['saleId'], 16, "商品：".$sale['number'].",商品ID：".$params['saleId']." 已删除", serialize($sale));//记录日志
+        $this->commit('income');
+        return 0;
     }
 }
 ?>

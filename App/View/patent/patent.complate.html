@@ -1,0 +1,87 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+
+<!--出售信息弹层-->
+<div class="mj-infoM">
+    <span class="ms-close mj-close"></span>
+<form name="complateForm" id="complateForm" >
+    <input type="hidden" name="saleId" value="<?=$saleId?>">
+    <input type="hidden" name="type" value="<?=$type?>">
+    <ul>
+        <li><label>交易价格：</label>
+            <input type="text" name="price" class="price" placeholder="请填写交易价格">
+        </li>
+        <li id="saleTime"><label>出售时间：</label>
+            <input type="text" name="date" id="date" readonly onclick="laydate()" /><em>(默认为当前时间)</em>
+        </li>
+       <li><label>交易出售人：</label>
+            <select name="uid">
+                <option value="0">其他</option>
+                <? foreach($contact as $item): ?>
+                <option value="<?=$item['uid']?>"><?=($item['name'].'('.$item['phone'].')')?></option>
+                <? endforeach; ?>
+            </select>
+        </li>
+        </li>
+        <li><label> </label>
+            <a href="javascript:void(0);" class="mj-liBtns" onclick="complateSale();">确定</a>
+            <a href="javascript:void(0);" class="mj-liBtns mj-abgcg" onclick="closeAll();">取消</a>
+        </li>
+    </ul>
+</form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $('.mj-infoM').show();
+
+        $(".mj-close").on("click",function(){
+            closeAll();
+        });
+    });
+
+    function closeAll()
+    {
+        parent.layer.closeAll();
+    }
+
+    function complateSale()
+    {
+        var price      = $.trim( $('.price').val() );
+        if ( !price ){
+            layer.msg('请填写交易价格', {
+                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        var data = $("#complateForm").serialize();
+        $.ajax({
+            type : 'post',
+            url  : '/patent/complateSale/',
+            data : data,
+            dataType : 'json',
+            success : function (data){
+                if (data.code==0){
+                    layer.msg('操作成功！', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        parent.window.location.reload();
+                    });
+                }else{
+                    layer.msg(data.msg, {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

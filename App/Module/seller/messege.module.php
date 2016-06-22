@@ -91,9 +91,8 @@ class MessegeModule extends AppModule
         }
         //得到所有的对全员的群发消息
         $r = array();
-        $r['eq']['sendtype'] = 3;
         $r['col'] = array('id');
-        $r['raw'] = '`date`>'.$res['mupdate'];//时间需大于改用户上次的更新时间
+        $r['raw'] = '`date`> '.$res['mupdate'].' and `sendtype`=3';//时间需大于改用户上次的更新时间
         $r['limit'] = $this->limit;
         $rst1 = $this->import('messege')->find($r);
         $flag = true;
@@ -127,6 +126,8 @@ class MessegeModule extends AppModule
      * @return bool
      */
     public function deleteMsg($mid){
+        $this->begin('messege');
+        $flag = true;
         //删除关联表的信息
         $r = array();
         $r['eq']['uid'] = UID;
@@ -140,7 +141,10 @@ class MessegeModule extends AppModule
             $rst2 = $this->import('messege')->find($r);
             if($rst2){
                 if($rst2['sendtype'] == 1){//1对1的消息---删除
-                    $this->import('messege')->remove(array('eq'=>array('id'=>$mid)));
+                    $res = $this->import('messege')->remove(array('eq'=>array('id'=>$mid)));
+                    if(!$res){
+                        $flag = false;
+                    }
                 }else if($rst2['sendtype'] == 2){//多对一(群发)消息
                     //查看是否是最后一个该消息的对象----删除
                     $r = array();
@@ -148,10 +152,20 @@ class MessegeModule extends AppModule
                     $r['col'] = array('id');
                     $rst3 = $this->import('messege_user')->find($r);
                     if(!$rst3){
-                        $this->import('messege')->remove(array('eq'=>array('id'=>$mid)));
+                        $res = $this->import('messege')->remove(array('eq'=>array('id'=>$mid)));
+                        if(!$res){
+                            $flag = false;
+                        }
                     }
                 }
             }
+        }else{
+            $flag = false;
+        }
+        if($flag){
+            $this->commit('messege');
+        }else{
+            $this->rollBack('messege');
         }
         return $rst;
     }

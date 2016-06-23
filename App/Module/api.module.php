@@ -17,6 +17,7 @@ class ApiModule extends AppModule
         '1'     => '11',//用户中心
         '2'     => '10',//一只蝉
         '3'     => '3',//其他
+        '4'     => '12',//出售者平台
         );
 
 	/**
@@ -50,6 +51,8 @@ class ApiModule extends AppModule
             $isHas = $this->load('internal')->existContact($number, $params['phone']);
         }
         if ( $isHas ) return '109';//如果已经存在，直接返回正确
+        //如果商标出售状态在“销售中”，直接审核通过
+        $isVerify = $this->load('internal')->isSaleUp($saleId) ? 1 : 2;
 
         $contact = array(
             'source'        => $source,
@@ -60,14 +63,14 @@ class ApiModule extends AppModule
             'name'          => $params['contact'],
             'price'         => $params['price'],
             'saleType'      => $params['type'],
-            'isVerify'      => 2,
+            'isVerify'      => $isVerify,
             'date'          => time(),
             'memo'          => $memo,
             );
 
         $flag = $this->load('internal')->addContact($contact, $saleId);
         if ( $flag ){
-            $this->load('log')->addSaleLog($saleId, 8, "来自用户中心，联系人ID:$flag(新增)", serialize($contact));//记录日志
+            $this->load('log')->addSaleLog($saleId, 8, "来自接口，联系人ID:$flag(新增)", serialize($contact));//记录日志
             return '999';//成功
         }
         return '904';//添加失败
@@ -100,7 +103,7 @@ class ApiModule extends AppModule
             );        
         $res = $this->load('internal')->updateContact($data, $cid);
         if ( $res ){
-            $this->load('log')->addSaleLog($contact['saleId'], 9, "来自用户中心，联系人ID:$cid(修改价格)", serialize($contact));//记录日志
+            $this->load('log')->addSaleLog($contact['saleId'], 9, "来自接口，联系人ID:$cid(修改价格)", serialize($contact));//记录日志
             return '999';
         }
         return '904';
@@ -149,7 +152,7 @@ class ApiModule extends AppModule
         }
 
         if ( $res ){
-            $this->load('log')->addSaleLog($saleId, 13, "联系人ID：$id 被删除了（ 来自用户中心接口uid:$uid ）", serialize($contact));//删除联系人
+            $this->load('log')->addSaleLog($saleId, 13, "联系人ID：$id 被删除了（ 来自接口uid:$uid ）", serialize($contact));//删除联系人
             return '999';
         }
         return '904';

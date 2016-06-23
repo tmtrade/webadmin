@@ -29,7 +29,7 @@ class OpenApiAction extends RpcServer {
     public function request($params=array())
     {
         //TODO 判断调用的IP地址是否为内网IP
-        $this->keys     = C('OPENAPI_KEY');
+        $this->keys     = C('OPENAPI_KEYS');
         $this->users    = C('OPENAPI_USERS');
         $this->msg      = $this->msgConfig();
 

@@ -12,6 +12,14 @@ class SystemApiAction extends RpcServer
 {
 	protected $msg;//返回信息
 	protected $users;//接口用户
+    protected $keys;//接口用户
+    //来源定义
+    protected $sourceList = array(
+        '1'     => 1,   //用户中心
+        '2'     => 2,   //一只蝉
+        '3'     => 3,   //其他
+        '4'     => 4,   //出售者平台
+        );
 
 	public function index($params)
 	{
@@ -53,7 +61,7 @@ class SystemApiAction extends RpcServer
             return $this->getMsg('104', $params, $type);
         }
         //来源是否正确（1：用户中心，2：一只蝉，3：其他）
-        if ( !in_array($data['source'], array(1,2,3)) ){
+        if ( !in_array($data['source'], $this->sourceList) ){
             return $this->getMsg('105', $params, $type);
         }
         //出售状态是否正确
@@ -142,6 +150,8 @@ class SystemApiAction extends RpcServer
     {
     	//TODO 判断调用的IP地址是否为内网IP
         $this->users    = C('API_USERS');
+        //TODO 判断调用的IP地址是否为内网IP
+        $this->keys     = C('API_KEYS');
         $this->msg 		= $this->messageList();
 
     	$user = empty($params['user']) ? '' : $params['user'];
@@ -153,7 +163,7 @@ class SystemApiAction extends RpcServer
     	if ( !in_array($user, $this->users) )  return $this->getMsg('110', $params, $type);
         //判断签名是否正确
         if ( empty($sign) ) return $this->getMsg('902', $params, $type);
-        if ( $sign != $this->sign($data) ) return $this->getMsg('111', $params, $type);
+        if ( $sign != $this->sign($data, $user) ) return $this->getMsg('111', $params, $type);
         //判断数据是否正确
         if ( empty($data) ) return $this->getMsg('903', $params, $type);
 
@@ -239,11 +249,11 @@ class SystemApiAction extends RpcServer
      * @copyright 	CHOFN
      * @since    	2016-03-01
      */
-    protected function sign($data)
+    protected function sign($data, $user)
     {
         ksort($data, SORT_STRING);
-    	$apiKey = C('SYS_API_KEY');
-        $sign 	= md5( md5(serialize($data)).$apiKey );
+        $apiKey = $this->keys[$user] ? $this->keys[$user] : 'nobody';
+        $sign   = md5( md5(serialize($data)).$apiKey );
         return $sign;
     }
 

@@ -4,12 +4,17 @@
  */
 $define = array(
 
-    'SYS_API_KEY' => 'JyZyZcXmChOfN2016ZxWlQkF',//api 加密 key
+    //'SYS_API_KEY' => 'JyZyZcXmChOfN2016ZxWlQkF',//api 加密 key
     'API_USERS' => array(
-        'UserCenter' => 'api1010',//用户中心
+        'UserCenter'    => 'api1010',//用户中心
+        'Seller'        => 'api1011',//出售者平台
+    ),
+    'API_KEYS' => array(
+        'api1010' => 'JyZyZcXmChOfN2016ZxWlQkFkEyYhZx',//用户中心
+        'api1011' => 'JyZyZcXmChOfN2016ZxWlQkFkEyCsZpT',//用户中心
     ),
 
-    'OPENAPI_KEY' => array(
+    'OPENAPI_KEYS' => array(
         'api1001' => 'JyZgJxMcHoFn2015ZxKfKeYsBxT',
     ),
     'OPENAPI_USERS' => array(

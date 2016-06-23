@@ -70,7 +70,8 @@ class ApiModule extends AppModule
 
         $flag = $this->load('internal')->addContact($contact, $saleId);
         if ( $flag ){
-            $this->load('log')->addSaleLog($saleId, 8, "来自接口，联系人ID:$flag(新增)", serialize($contact));//记录日志
+            $_memo = "来自接口，联系人ID:$flag(新增)".($isVerify == 1 ? '(审核通过)' : '(待审核)');
+            $this->load('log')->addSaleLog($saleId, 8, $_memo, serialize($contact));//记录日志
             return '999';//成功
         }
         return '904';//添加失败

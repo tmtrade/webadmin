@@ -939,13 +939,17 @@ class InternalModule extends AppModule
      */
     public function complateSale($params,$uid){
         $this->begin('income');
-        $sale = $this->getSaleInfo($params['saleId']);
+        $saleId = $params['saleId'];
+        $sale = $this->getSaleInfo($saleId);
         if(!$sale){
             $this->rollBack('income');
             return 1;
         }
         if($params['uid']){ //保存到收益表中
             //保存到收益表中
+            unset($params['saleId']);
+            $params['name'] = $sale['name']?$sale['name']:'暂无名称';
+            $params['number'] = $sale['number'];
             $rst = $this->import('income')->create($params);
             if(!$rst){
                 $this->rollBack('income');
@@ -954,7 +958,7 @@ class InternalModule extends AppModule
         }
         //保存操作记录
         $r = array(
-            'saleId'    => $params['saleId'],
+            'saleId'    => $saleId,
             'number'    => $sale['number'],
             'type'      => 1,
             'memberId'  => $uid,
@@ -974,17 +978,17 @@ class InternalModule extends AppModule
             }
         }
         $r = array();
-        $r['eq']    = array('id'=>$params['saleId']);
+        $r['eq']    = array('id'=>$saleId);
         $delSale    = $this->import('sale')->remove($r);//删除商品
         $r = array();
-        $r['eq']   = array('saleId'=>$params['saleId']);
+        $r['eq']   = array('saleId'=>$saleId);
         $delContact = $this->import('contact')->remove($r);//删除联系人
         $delTminfo  = $this->import('tminfo')->remove($r);//删除包装信息
         if ( $hisId <= 0 || !$delSale || !$delContact || !$delTminfo ){
             $this->rollBack('income');
             return 4;
         }
-        $this->load('log')->addSaleLog($params['saleId'], 16, "商品：".$sale['number'].",商品ID：".$params['saleId']." 已删除", serialize($sale));//记录日志
+        $this->load('log')->addSaleLog($saleId, 16, "商品：".$sale['number'].",商品ID：".$saleId." 已删除", serialize($sale));//记录日志
         $this->commit('income');
         return 0;
     }

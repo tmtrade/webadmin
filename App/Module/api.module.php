@@ -44,7 +44,7 @@ class ApiModule extends AppModule
             $saleId = $this->load('internal')->addDefault($number, $memo);
         }
         //如果是用户中心来的数据，需要使用uid判断重复
-        if ( $source == 11 ){
+        if ( $source == 11 || $source == 12 ){
             if ( $params['uid'] <= 0 ) return '108';
             $isHas = $this->load('internal')->existContact($number, '', $params['uid']);
         }else{

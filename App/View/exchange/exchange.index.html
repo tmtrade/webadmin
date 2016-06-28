@@ -78,7 +78,7 @@
                 <tbody class="table-list">
                 <? foreach ($list as $k => $v) {  ?>
                 <tr>
-                    <td><?=$module_type[$v['pages']]['name']?> <?if(!empty($v['module'])) echo "-- ".$module_type[$v['pages']]['type'][$v['module']];?></td>
+                    <td><?=$module_type[$v['pages']]['name']?></td>
                     <td><?=$v['note']?></td>
                     <td><?=$v['date']?></td>
                     <?if($s['isUse']==1){?>

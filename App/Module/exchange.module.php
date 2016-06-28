@@ -69,7 +69,7 @@ class ExchangeModule extends AppModule
     public function getExchangeInfo($id)
     {    
          $r['eq']    = array('id'=>$id,"isUse"=>3);
-         $r['col'] = array("uid","pages","module","sort","phone","date");
+         $r['col'] = array("uid","pages","sort","phone","date");
          $res = $this->import('exchange')->find($r);
          return $res;
 		
@@ -77,7 +77,16 @@ class ExchangeModule extends AppModule
     
     //确认通过后添加一条草稿广告，并修改状态为通过审核
     public function addAd($data,$id)
-    {   
+    {
+	if($data['pages']==2){ //通栏菜单根据排序获取属于哪个菜单的广告
+	    $m = C("AD_MODULE_TYPE");
+	    foreach ($m as $k=>$v){
+		if(in_array($data['sort'], $v)){
+		    $data['module'] = $k;
+		    break;
+		}
+	    }
+	}
         $adCount = $this->load('ad')->getPagesCount($data['pages'], $data['module'], $data['sort']);
         if($adCount>=2){//每个位置的广告最多两条
             return false;
@@ -89,6 +98,8 @@ class ExchangeModule extends AppModule
         unset($data['uid']);
         unset($data['date']);
         $this->begin('exchange');
+	
+	
         $res = $this->import('ad')->create($data);
         if($res){
             $r['eq']    = array('id'=>$id);

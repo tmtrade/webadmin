@@ -32,7 +32,7 @@ class ApiModule extends AppModule
         //获取对应来源值，没有则为3：其他
         $source = $this->sourceList[$params['source']] ? $this->sourceList[$params['source']] : 3;
         $number = $params['number'];
-        $memo   = '添加出售信息接口默认创建商品';
+        $memo   = $params['memo']?$params['memo']:'添加出售信息接口默认创建商品';
         //判断商标号是否正确
         $info = $this->load('trademark')->getInfo($number, array('id','auto as `tid`'));
         if ( empty($info['id']) ) return '107';

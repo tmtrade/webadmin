@@ -611,7 +611,7 @@ class InternalModule extends AppModule
     }
 
     //删除联系人
-    public function delContact($id, $saleId, $type)
+    public function delContact($id, $saleId, $type,$memo="后台删除")
     {
         if ( empty($id) || empty($saleId) ) return false;
 
@@ -630,6 +630,21 @@ class InternalModule extends AppModule
 
         //处理联系人为前台提交的数据，保存相应日志记录
         $res    = $this->addUserHistory($contact, '', $type);
+	if($res['uid']>0){
+	    //保存操作记录
+	    $r = array(
+		'saleId'    => $saleId,
+		'number'    => $res['number'],
+		'type'      => 2,
+		'memberId'  => $this->userId,
+		'data'      => serialize($res),
+		'date'      => time(),
+		'memo'      => $memo,
+	    );
+	    //创建商品历史记录
+	    $hisId = $this->import('history')->create($r);
+	}
+	
         $res2   = $this->import('contact')->remove($role);
         if ( !$res || !$res2 ){
             $this->rollBack('sale');
@@ -679,11 +694,11 @@ class InternalModule extends AppModule
     }
 
     //驳回联系人
-    public function delVerify($id, $saleId)
+    public function delVerify($id, $saleId, $memo="")
     {
         if ( empty($id) || empty($saleId) ) return false;
         
-        return $this->delContact($id, $saleId, 3);
+        return $this->delContact($id, $saleId, 3, $memo);
     }
 
     //判断商品是否上架

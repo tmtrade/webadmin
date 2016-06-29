@@ -17,6 +17,9 @@ define('TRADE_URL', 'http://tr2.chofn.net/');
 //一只蝉域名
 define('SITE_URL', 'http://t.chofn.net/');
 //define('SITE_URL', 'http://www.yizhchan.com/');
+//出售者平台域名
+define('SELLER_URL', 'http://seller.chofn.net/');
+//define('SELLER_URL', 'http://seller.yizhchan.com/');
 
 //万向云
 define('WANGXIANG_URL', 'http://wanxiang.chaofan.wang/');

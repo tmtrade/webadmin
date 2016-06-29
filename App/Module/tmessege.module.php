@@ -31,7 +31,7 @@ class TmessegeModule extends AppModule
         $r = array();
         $url = $params['url'];
         $tmp = explode('---',$url);
-        $params['url'] = $tmp[0];
+        $params['url'] = strtolower($tmp[0]);//转化为小写
         $params['desc'] = $tmp[1];
         $r['eq']['url'] = $params['url'];
         $rst = $this->import('messege_monitor')->find($r);

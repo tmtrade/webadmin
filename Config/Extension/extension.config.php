@@ -49,6 +49,20 @@ $configs[] = array(
     'configFile' => ConfigDir.'/qcache.redis.config.php',
 ));
 
+//Redis 队列键值操作
+$configs[] = array(
+'id'        => 'redisQc',
+'enable'    => true,
+'source'    => LibDir.'/Util/Cache/RedisCache.php',
+'className' => 'RedisCache',
+'import'    => array(LibDir.'/Util/Cache/ICache.php'),
+'property'  => array(
+    'expire'     => 1800,
+    'configFile' => ConfigDir.'/redisq.config.php',
+    'objRef'     => array('encoding' => 'encoding'),
+));
+
+
 //Redis队列操作(队列配置，勿清)
 $configs[] = array(
 'id'        => 'redisQ',

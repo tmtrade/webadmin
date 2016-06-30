@@ -11,13 +11,17 @@
  */
 class RunAction extends QueueCommonAction
 {
-    private $cacheType      = 'redis';//缓存类型
+    private $cacheType      = 'redisQc';//缓存类型
     //进程管理设置
     private $runName    = array(
-                array(
-                    'path' => '/queue/index/',
-                    'name' => 'tradeQueueCache',//用于重复进程判断，需要在执行时设置缓存值为true
-                    ),
+                // array(
+                //     'path' => '/queue/index/',
+                //     'name' => 'tradeQueueCache',//用于重复进程判断，需要在执行时设置缓存值为true
+                //     ),
+                 array(
+                     'path' => '/cron/run/',
+                     'name' => 'tradeCronCache',//用于重复进程判断，需要在执行时设置缓存值为true
+                     ),
                 );
 
     /**
@@ -31,7 +35,7 @@ class RunAction extends QueueCommonAction
         is_array($this->runName) || die('nothing to do');
         //$objRs = $this->com($this->cacheType);//获取缓存资源
         foreach ($this->runName as $course) {
-            $cmd = PHPPath." ".WebDir."/cmd.php ".$course['path'];
+            $cmd = PHPPath." ".CmdDir."/cmd.php ".$course['path'];
             $this->execInBg($cmd);
         }
     }

@@ -13,7 +13,7 @@
             <input type="text" name="price" class="price" placeholder="请填写交易价格">
         </li>
         <li id="saleTime"><label>出售时间：</label>
-            <input type="text" name="date" id="date" readonly onclick="laydate()" /><em>(默认为当前时间)</em>
+            <input type="text" name="date" id="date" readonly onclick="laydate({istime: true,max: laydate.now()})" /><em>(默认为当前时间)</em>
         </li>
        <li><label>交易出售人：</label>
             <select name="uid">

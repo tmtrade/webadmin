@@ -131,25 +131,28 @@ class ApiModule extends AppModule
 
         $id     = $contact['id'];
         $saleId = $contact['saleId'];
-
-        if ( $this->load('internal')->isSaleUp($saleId) ){
+        $isUp   = $this->load('internal')->isSaleUp($saleId);
+        if ( $isUp ){
             $r['eq']['isVerify']    = 1;
         }
         $r['eq']['saleId']  = $saleId;
         $r['raw']           = " id != $id ";
         $r['col']           = array('id');
         $r['limit']         = 100;
-        $list = $this->load('internal')->findContact($r);
-        if ( count($list) < 1 ) {
+        $list   = $this->load('internal')->findContact($r);
+        $ids    = array_filter(arrayColumn($list, 'id'));
+        if ( count($ids) < 1 ) {
             //只有一个联系人时，先下架，再删除
-            $reason = '前台用户取消出售，下架商品并删除联系人';
+            $reason = '前台用户取消出售，系统自动下架商品并删除联系人';
+            $memo   = '用户自行取消报价';
             $flag   = $this->load('internal')->saleDown($saleId, $reason);
             if ( !$flag ) return '904';
 
-            $res = $this->load('internal')->_delContact($id, $contact, 4);
+            $res = $this->load('internal')->_delContact($id, $contact, 4, $memo);
         }else{
+            $memo   = '用户自行取消报价';
             //用户中心用户自行取消
-            $res = $this->load('internal')->delContact($id, $saleId, 4);
+            $res = $this->load('internal')->delContact($id, $saleId, 4, $memo);
         }
 
         if ( $res ){

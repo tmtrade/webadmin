@@ -611,7 +611,7 @@ class InternalModule extends AppModule
     }
 
     //删除联系人
-    public function delContact($id, $saleId, $type,$memo="后台删除")
+    public function delContact($id, $saleId, $type, $memo="后台删除")
     {
         if ( empty($id) || empty($saleId) ) return false;
 
@@ -629,22 +629,7 @@ class InternalModule extends AppModule
         $contact = $this->findContact($role);
 
         //处理联系人为前台提交的数据，保存相应日志记录
-        $res    = $this->addUserHistory($contact, '', $type);
-	if($res['uid']>0){
-	    //保存操作记录
-	    $r = array(
-		'saleId'    => $saleId,
-		'number'    => $res['number'],
-		'type'      => 2,
-		'memberId'  => $this->userId,
-		'data'      => serialize($res),
-		'date'      => time(),
-		'memo'      => $memo,
-	    );
-	    //创建商品历史记录
-	    $hisId = $this->import('history')->create($r);
-	}
-	
+        $res    = $this->addUserHistory($contact, '', $type, $memo);
         $res2   = $this->import('contact')->remove($role);
         if ( !$res || !$res2 ){
             $this->rollBack('sale');
@@ -654,7 +639,7 @@ class InternalModule extends AppModule
     }
 
     //记录用户商品历史数据
-    public function addUserHistory($contact, $saleInfo='', $type)
+    public function addUserHistory($contact, $saleInfo='', $type, $memo)
     {
         if ( empty($contact) || empty($type) ) return false;
         //不需要保存的数据，直接返回正确
@@ -674,6 +659,7 @@ class InternalModule extends AppModule
             'price'     => $contact['price'],
             'data'      => serialize($saleInfo),
             'date'      => time(),
+            'memo'      => $memo,
             );
         return $this->import('userSaleHistory')->create($data);
     }
@@ -694,7 +680,7 @@ class InternalModule extends AppModule
     }
 
     //驳回联系人
-    public function delVerify($id, $saleId, $memo="")
+    public function delVerify($id, $saleId, $memo="后台驳回报价")
     {
         if ( empty($id) || empty($saleId) ) return false;
         
@@ -931,14 +917,14 @@ class InternalModule extends AppModule
     }
 
     //无条件删除联系人，慎用！！！
-    public function _delContact($id, $contact, $type)
+    public function _delContact($id, $contact, $type, $memo='删除信息')
     {
         if ( empty($id) ) return false;
 
         $this->begin('sale');
         $r['eq'] = array('id'=>$id);
         $res = $this->import('contact')->remove($r);        
-        $flag = $this->addUserHistory($contact, '', $type);
+        $flag = $this->addUserHistory($contact, '', $type, $memo);
         if ( $res && $flag ){
             return $this->commit('sale');
         }
@@ -986,7 +972,7 @@ class InternalModule extends AppModule
         $hisId = $this->import('history')->create($r);
         //处理用户出售信息历史记录
         foreach ($sale['contact'] as $k => $v) {
-            $addUserHistory = $this->addUserHistory($v, $sale, 1);
+            $addUserHistory = $this->addUserHistory($v, $sale, 1, '交易成功');
             if ( !$addUserHistory ){
                 $this->rollBack('income');
                 return 3;

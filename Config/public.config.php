@@ -709,7 +709,7 @@ $define = array(
         ),
     ),
     
-    'AD_MODULE_TYPE' => array(//获取兑换的广告属于哪个菜单
+    'AD_MODULE_TYPE' => array(//配置兑换的广告位属于哪个菜单
 		'59' 	=> array(1,2,3),
                 '53' 	=> array(4,5,6),
                 '54' 	=> array(7,8,9),

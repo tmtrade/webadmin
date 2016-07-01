@@ -301,4 +301,15 @@ $tbl['user'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['total'] = array(
+	'name'		=> $prefixs.'total',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+$tbl['totalLog'] = array(
+	'name'		=> $prefixs.'total_log',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
 ?>

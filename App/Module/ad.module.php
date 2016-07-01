@@ -97,5 +97,24 @@ class AdModule extends AppModule
         $r['eq'] = array('id'=>$id);
         return $this->import('ad')->remove($r);
     }
+    
+    
+    //删除过期广告
+    public function delPastAd()
+    {
+	$r = array();
+	$r['raw'] = "enddate <=".time();
+        $list = $this->import('ad')->findAll($r);
+	
+	$res = $this->import('ad')->remove($r);
+	if($res){
+	    Log::write(serialize($list['rows']), date('Y-m-d').'-cronjob-ad.log');
+	    return true;
+	}else{
+	    return false;
+	}
+	
+	
+    }
 }
 ?>

@@ -6,7 +6,7 @@
     <form id="msgForm">
         <style type="text/css">
             .success_case_div label{
-                width: 180px;
+                width: 150px;
             }
             .success_case_div input{
                 border: 1px solid #CCC;
@@ -21,7 +21,7 @@
                         <p>
                             <?=$item['title']?><span style="margin: 0 40px 0 20px">|</span>
                             <? foreach($item['data'] as $v): ?>
-                            <label><input class="url" type="radio" name="url" value="<?=$v['url']?>---<?=$v['title']?>"><?=$v['title']?></label>
+                            <label style="width:150px;"><input class="url" type="radio" name="url" value="<?=$v['url']?>---<?=$v['title']?>"><?=$v['title']?></label>
                             <?endforeach;?>
                         </p>
                         <?endforeach;?>

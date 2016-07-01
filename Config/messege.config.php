@@ -29,8 +29,16 @@ return array(
         'title'=>'订单相关',
         'data'=>array(
             0=>array(
-                'title'=>'产生订单',
-                'url'=>TRADE_URL.'user/orderChange',
+                'title'=>'交易完成',
+                'url'=>TRADE_URL.'internal/complateSale/',
+            ),
+	    1=>array(
+                'title'=>'通过联系人',
+                'url'=>TRADE_URL.'internal/setVerify/',
+            ),
+	    2=>array(
+                'title'=>'驳回联系人',
+                'url'=>TRADE_URL.'internal/delVerify/',
             ),
         )
     ),
@@ -39,11 +47,11 @@ return array(
         'data'=>array(
             0=>array(
                 'title'=>'申请通过',
-                'url'=>TRADE_URL.'exchange/cancel',
+                'url'=>TRADE_URL.'exchange/through',
             ),
             1=>array(
                 'title'=>'申请拒绝',
-                'url'=>TRADE_URL.'exchange/through',
+                'url'=>TRADE_URL.'exchange/cancel',
             ),
         )
     ),

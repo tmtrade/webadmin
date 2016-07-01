@@ -87,7 +87,7 @@
                     <?}?>
                     <td><?=$v['phone']?></td>
                     <td><?=$v['qq']?></td>
-                    <?if($s['isUse']==3){?>
+                    <?if($s['isUse']==3 && $k==0){?>
                         <td>
                         <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>);">通过</a>
                         <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>);">取消</a>
@@ -145,7 +145,7 @@ function setVerify(id)
                         window.location.reload();
                     });
                 }else{
-                    layer.msg('操作失败，请确认数据是否正确。', {
+                    layer.msg(data.msg, {
                         time: 1000 //2秒关闭（如果不配置，默认是3秒）
                     });
                 }

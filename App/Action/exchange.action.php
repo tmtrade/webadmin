@@ -45,7 +45,7 @@ class ExchangeAction extends AppAction
             $res = $this->load('exchange')->setCancel($id, $reason);
             if ( $res ){
                 //发送驳回的系统消息
-                $info = $this->load('exchange')->getExchangeInfo($id);
+                $info = $this->load('exchange')->getInfoById($id);
                 $this->checkMsg($info['uid']);
                 $this->returnAjax(array('code'=>1));
             }
@@ -57,18 +57,18 @@ class ExchangeAction extends AppAction
     {
             $id = $this->input('id', 'int', 0);
             if ($id <= 0 ){
-                    $this->returnAjax(array('code'=>2)); 
+                    $this->returnAjax(array('code'=>2,'msg'=>'数据错误')); 
             }
             $info = $this->load('exchange')->getExchangeInfo($id);
             if ( empty($info) ){
                     $this->returnAjax(array('code'=>2,'msg'=>'该条信息不存在')); 
             }
             $res = $this->load('exchange')->addAd($info,$id);
-            if ( $res ){
+            if ( $res['code']==1 ){
                 $this->checkMsg($info['uid']);
                 $this->returnAjax(array('code'=>1));
             }
-            $this->returnAjax(array('code'=>2));
+            $this->returnAjax($res);
     }
 
         

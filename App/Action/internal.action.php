@@ -111,6 +111,8 @@ class internalAction extends AppAction {
 	$rst = $this->load('internal')->complateSale($data, $this->userId);
 	//返回结果
 	if ($rst == 0) {
+	    $this->checkMsg($uid);
+	    $this->load('total')->upTotal($uid,1,10,"一条商品交易完成"); //完成交易加10豆豆
 	    $this->returnAjax(array('code' => 0));
 	} else if ($rst == 1) {
 	    $this->returnAjax(array('code' => 1, 'msg' => '参数错误'));
@@ -501,6 +503,9 @@ class internalAction extends AppAction {
 	}
 	$res = $this->load('internal')->setVerify($id, $saleId);
 	if ($res) {
+	    if(!empty($contact['uid'])){
+		$this->checkMsg($contact['uid']);//发送消息给用户
+	    }
 	    $this->load('log')->addSaleLog($saleId, 14, "联系人ID：$id 审核通过", serialize($contact)); //联系人审核通过
 	    $this->returnAjax(array('code' => 1));
 	}
@@ -525,6 +530,9 @@ class internalAction extends AppAction {
 	}
 	$res = $this->load('internal')->delVerify($id, $contact['saleId'], $reason);
 	if ($res) {
+	    if(!empty($contact['uid'])){
+		$this->checkMsg($contact['uid']);//发送消息给用户
+	    }
 	    $this->load('log')->addSaleLog($contact['saleId'], 15, "联系人ID：$id 被驳回并删除了(原因：$reason)", serialize($contact)); //联系人审核通过
 	    $this->returnAjax(array('code' => 1));
 	}

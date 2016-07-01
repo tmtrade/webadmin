@@ -45,13 +45,13 @@ class ExchangeModule extends AppModule
         if ( !empty($params['dateEnd']) ){
             $r['raw'] .= " AND unix_timestamp(date) < ".(strtotime($params['dateEnd'])+24*3600);
         }
-        $r['order'] = array('date' => 'desc');
+        $r['order'] = array('date' => 'asc');
         $r['page']  = $page;
         $r['limit'] = $limit;
         $res = $this->import('exchange')->findAll($r);
         return $res;
     }
-	
+
     //未通过审核
     public function setCancel($id, $reason)
     {
@@ -59,25 +59,46 @@ class ExchangeModule extends AppModule
 
         $r['eq']    = array('id'=>$id);
         $data       = array('isUse'=>2,'reason'=>$reason);
+	$this->begin('exchange');
         $res = $this->import('exchange')->modify($data, $r);
-        if ( !$res ) return false;
-        return true;
-    }
+	if($res){
+	    $info = $this->getInfoById($id);
+	    $result = $this->load("total")->upTotal($info["uid"],1,$info['amount'],"广告兑换驳回");
+	    if($result){
+		$this->commit('exchange');
+		return $result;
+	    }else{
+		$this->rollBack('exchange');
+	    }
+	}
+        return $res;
+    }	
 	
-	
-    //获取广告的待审核信息
+    //获取广告的信息
     public function getExchangeInfo($id)
     {    
          $r['eq']    = array('id'=>$id,"isUse"=>3);
-         $r['col'] = array("uid","pages","sort","phone","date");
+         $r['col'] = array("uid","pages","phone","amount","date");
          $res = $this->import('exchange')->find($r);
          return $res;
-		
+    }
+    
+    //获取广告的待审核信息
+    public function getInfoById($id)
+    {    
+         $r['eq']    = array('id'=>$id);
+         $r['col'] = array("uid","pages","phone","amount","date");
+         $res = $this->import('exchange')->find($r);
+         return $res;
     }
     
     //确认通过后添加一条草稿广告，并修改状态为通过审核
     public function addAd($data,$id)
     {
+        $data['startdate'] = strtotime(date("Y-m-10",strtotime($data['date']."+1 month")));
+        $data['enddate'] = strtotime(date("Y-m-10",strtotime($data['date']."+2 month")));
+	$sort = $this->getMaxSort($data['pages'], $data['startdate'], $data['enddate']);
+	$data['sort'] = $sort+1;
 	if($data['pages']==2){ //通栏菜单根据排序获取属于哪个菜单的广告
 	    $m = C("AD_MODULE_TYPE");
 	    foreach ($m as $k=>$v){
@@ -89,11 +110,9 @@ class ExchangeModule extends AppModule
 	}
         $adCount = $this->load('ad')->getPagesCount($data['pages'], $data['module'], $data['sort']);
         if($adCount>=2){//每个位置的广告最多两条
-            return false;
+            return array('code'=>2,'msg'=>'每个位置的广告最多两条');
         }
         $data['note'] = "客户".$data['phone']."的自动草稿";
-        $data['startdate'] = strtotime(date("Y-m-10",strtotime($data['date']."+1 month")));
-        $data['enddate'] = strtotime(date("Y-m-10",strtotime($data['date']."+2 month")));
         unset($data['phone']);
         unset($data['uid']);
         unset($data['date']);
@@ -106,11 +125,23 @@ class ExchangeModule extends AppModule
             $datas       = array('isUse'=>1);
             $eres = $this->import('exchange')->modify($datas, $r);
             $this->commit('exchange');
-            return $eres;
+            return array('code'=>1);
         }
         $this->rollBack('exchange');
-        return false;
+        return array('code'=>2,'msg'=>'创建广告位失败');
     }
-
+    
+    
+    /**
+     * 获取页面广告最大兑换排序值
+     * @param array $data
+     */
+    public function getMaxSort($pages, $start, $end){
+	$r['raw'] = " startdate >={$start} and enddate <={$end}";
+	$r['col']   = array('max(sort)as sort');
+	$r['eq'] = array('pages'=>$pages);
+        $res = $this->import('ad')->find($r);
+	return $res['sort']?$res['sort']:0;
+    }
 }
 ?>

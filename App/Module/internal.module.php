@@ -588,7 +588,7 @@ class InternalModule extends AppModule
             }
             //处理用户出售信息历史记录
             foreach ($sale['contact'] as $k => $v) {
-                $addUserHistory = $this->addUserHistory($v, $sale, $type);
+                $addUserHistory = $this->addUserHistory($v, $sale, $type, $memo);
                 if ( !$addUserHistory ){
                     $this->rollBack('sale');
                     return false;
@@ -673,6 +673,11 @@ class InternalModule extends AppModule
         $data       = array('isVerify'=>1,'updated'=>time());
         $res = $this->import('contact')->modify($data, $r);
         if ( !$res ) return false;
+	
+	$info = $this->getSaleContact($saleId, $id);
+	if($info['uid']>0){
+	    $this->load('total')->updatePassCount($info['uid'], 1);//增加通过记录数
+	}
         if ( $this->isSaleUp($saleId) )  return true;
 
         $memo = '联系人审核通过并上架商品';

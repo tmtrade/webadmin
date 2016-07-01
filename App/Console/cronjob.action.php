@@ -23,6 +23,22 @@ class CronjobAction extends QueueCommonAction
     {
     	Log::write('hello world', date('Y-m-d').'-cronjob-test.log');
     }
+    
+    
+    /**
+    * 执行删除过期的广告
+    * @author	Far
+    * @since	2015-06-30
+    * 每月10号凌晨执行
+    * @access	public
+    * @return	boolean
+    */
+    public function delAd(){
+	$res = $this->load('ad')->delPastAd();
+	if(!$res){
+	    $this->delAd();
+	}
+    }
 
 }
 ?>

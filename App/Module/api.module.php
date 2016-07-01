@@ -43,16 +43,19 @@ class ApiModule extends AppModule
         }else{
             $saleId = $this->load('internal')->addDefault($number, $memo);
         }
+	
+        //如果商标出售状态在“销售中”，直接审核通过
+        $isVerify = $this->load('internal')->isSaleUp($saleId) ? 1 : 2;
+	
         //如果是用户中心来的数据，需要使用uid判断重复
         if ( $source == 11 || $source == 12 ){
             if ( $params['uid'] <= 0 ) return '108';
             $isHas = $this->load('internal')->existContact($number, '', $params['uid']);
+	    $this->load('total')->updatePassCount($params['uid'], 1);//增加通过记录数
         }else{
             $isHas = $this->load('internal')->existContact($number, $params['phone']);
         }
         if ( $isHas ) return '109';//如果已经存在，直接返回正确
-        //如果商标出售状态在“销售中”，直接审核通过
-        $isVerify = $this->load('internal')->isSaleUp($saleId) ? 1 : 2;
 
         $contact = array(
             'source'        => $source,

@@ -16,6 +16,47 @@ class OpenApiModule extends AppModule
         'class'     => 'tmclass',
     );
 
+    /**
+     * 获取出售商标的包装图片
+     * 
+     * @author  Xuni
+     * @since   2016-07-04
+     *
+     * @return  array
+     */
+    public function getSaleImg($number)
+    {
+        $list = array_filter(explode(',', $number));
+        if ( empty($list) ) return array();
+        $data = array();
+        foreach ($list as $v) {
+            $data[$v] = $this->saleImg($v);
+        }
+        return $data;
+    }
+
+    //获取单条商标包装图片
+    protected function saleImg($number)
+    {
+        $saleId = $this->load('internal')->existsale($number);
+
+        if ( $saleId ) {
+            return $this->getViewImg($saleId);
+        }
+
+        return $this->load('trademark')->getImg($data['number']);
+    }
+
+    /**
+     * 获取随机的出售信息
+     *
+     * 通过分类，获取不同分类的商标出售信息
+     * 
+     * @author  Xuni
+     * @since   2016-03-08
+     *
+     * @return  array
+     */
     public function getRandSale(array $params=array() )
     {
         $class = $params['class'];
@@ -25,7 +66,7 @@ class OpenApiModule extends AppModule
         $code   = rand(0,9);
         $time   = 600;//10分钟
         $name   = 'getRandomTm_'.$class.'_'.$limit;
-        $random = (array)unserialize($this->com('redisHtml')->get($name));
+        $random = $this->com('redisHtml')->get($name);
         //return count($random);
         if ( !empty($random) && is_array($random) ){            
             if ( !empty($random[$code]) ) return $random[$code];
@@ -40,7 +81,15 @@ class OpenApiModule extends AppModule
         $res    = $this->import('sale')->find($r);
         $list   = $this->doRand($list, $res, $limit);
         if ( empty($list) ) return array();
-        list($_class, $_group) = $this->getClassGroup(0,0);
+        $titles = $this->com('redisHtml')->get('ClassGroupTitle');
+        if ( is_array($titles) ){
+            list($_class, $_group) = $titles;
+        }else{
+            $titles = $this->getClassGroup(0,0);
+            list($_class, $_group) = $titles;
+            $this->com('redisHtml')->set('ClassGroupTitle', $titles, $time);
+        }
+        
         foreach ($list as $k => $v) {
             //获取商标图片
             $_url = $this->getViewImg($v['id']);
@@ -50,7 +99,7 @@ class OpenApiModule extends AppModule
             unset($list[$k]['id'],$list[$k]['pid']);
         }
         $random[$code] = $list;
-        $this->com('redisHtml')->set($name, serialize($random), $time);
+        $this->com('redisHtml')->set($name, $random, $time);
         return $list;
     }
 
@@ -87,7 +136,6 @@ class OpenApiModule extends AppModule
         }
         return $url;
     }
-
 
     /**
      * 获取商标分类与群组相关标题

@@ -6,19 +6,21 @@ $define = array(
 
     //'SYS_API_KEY' => 'JyZyZcXmChOfN2016ZxWlQkF',//api 加密 key
     'API_USERS' => array(
-        'UserCenter'    => 'api1010',//用户中心
-        'Seller'        => 'api1011',//出售者平台
+        'MyCenter'  => 'api1010',//我的用户
+        'Seller'    => 'api1011',//出售者平台
     ),
     'API_KEYS' => array(
-        'api1010' => 'JyZyZcXmChOfN2016ZxWlQkFkEyYhZx',//用户中心
-        'api1011' => 'JyZyZcXmChOfN2016ZxWlQkFkEyCsZpT',//用户中心
+        'api1010' => 'JyZyZcXmChOfN2016ZxWlQkFkEyYhZx',//我的用户
+        'api1011' => 'JyZyZcXmChOfN2016ZxWlQkFkEyCsZpT',//出售者平台
     ),
 
     'OPENAPI_KEYS' => array(
-        'api1001' => 'JyZgJxMcHoFn2015ZxKfKeYsBxT',
+        'api1001' => 'JyZgJxMcHoFn2015ZxKfKeYsBxT',//商标系统
+        'api1010' => 'JyZyZcXmChOfN2016ZxWlQkFkEyYhZx',//我的用户
     ),
     'OPENAPI_USERS' => array(
         'TmSystem' => 'api1001',//商标系统
+        'MyCenter' => 'api1010',//我的用户
     ),
 
     'ISTOP_LIST' => array(

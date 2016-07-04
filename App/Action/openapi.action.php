@@ -83,6 +83,28 @@ class OpenApiAction extends RpcServer {
         return $msg;
     }
 
+    /**
+     * 获取商品包装图片
+     *
+     * @author      xuni
+     * @since       2016-07-04
+     *
+     * @access      public
+     * @param       array   $params     接口参数（参考接口文档）
+     * @return      array
+     */
+    protected function getSaleImg($params)
+    {
+        $msg    = $this->getMsg(101);
+        $number = $params['number'];
+
+        if ( empty($number) ) return $msg;
+
+        $data   = $this->load('openapi')->getSaleImg( $number );
+        $msg['data'] = $data;
+        return $msg;
+    }
+
 
     /**
      * 获取相应返回信息

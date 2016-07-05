@@ -96,7 +96,7 @@ class SystemApiAction extends RpcServer
             return $this->getMsg('110', $params, $type);
         }
         //参数不能小于0
-        if ( $data['price'] < 0 ){
+        if ( $data['price'] <= 0 ){
             return $this->getMsg('111', $params, $type);
         }
 

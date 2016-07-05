@@ -138,6 +138,7 @@ class ApiModule extends AppModule
         if ( $isUp ){
             $r['eq']['isVerify']    = 1;
         }
+        $r = array();
         $r['eq']['saleId']  = $saleId;
         $r['raw']           = " id != $id ";
         $r['col']           = array('id');

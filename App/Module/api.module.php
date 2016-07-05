@@ -89,8 +89,8 @@ class ApiModule extends AppModule
      */
     public function updateContactPrice($params)
     {
-        $cid    = $params['cid'];
-        $price  = $params['price'];
+        $cid    = intval($params['cid']);
+        $price  = intval($params['price']);
 
         $r['eq'] = array('id'=>$cid);
         $contact = $this->load('internal')->findContact($r);

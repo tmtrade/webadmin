@@ -87,12 +87,11 @@
                     <?}?>
                     <td><?=$v['phone']?></td>
                     <td><?=$v['qq']?></td>
-                    <?if($s['isUse']==3 && $k==0){?>
-                        <td>
-                        <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>);">通过</a>
-                        <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>);">取消</a>
-                        </td>
-                    <?}?>
+		    <td>
+			<a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>);">通过</a>
+			<a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>);">取消</a>
+		    </td>
+                    
                 </tr>
                 <? } ?>
                 </tbody>

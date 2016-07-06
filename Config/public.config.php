@@ -709,6 +709,12 @@ $define = array(
         '3'  => array(
                 "name"=>"列表页右侧",
         ),
+	'4' => array(
+	    "name" => "商标美化",
+	),
+	'5' => array(
+	    "name" => "专题制作",
+	),
     ),
     
     'AD_MODULE_TYPE' => array(//配置兑换的广告位属于哪个菜单

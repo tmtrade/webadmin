@@ -95,40 +95,46 @@ class ExchangeModule extends AppModule
     //确认通过后添加一条草稿广告，并修改状态为通过审核
     public function addAd($data,$id)
     {
-        $data['startdate'] = strtotime(date("Y-m-10",strtotime($data['date']."+1 month")));
-        $data['enddate'] = strtotime(date("Y-m-10",strtotime($data['date']."+2 month")));
-	$sort = $this->getMaxSort($data['pages'], $data['startdate'], $data['enddate']);
-	$data['sort'] = $sort+1;
-	if($data['pages']==2){ //通栏菜单根据排序获取属于哪个菜单的广告
-	    $m = C("AD_MODULE_TYPE");
-	    foreach ($m as $k=>$v){
-		if(in_array($data['sort'], $v)){
-		    $data['module'] = $k;
-		    break;
+	if($data['pages']!=4 && $data['pages']!=5){
+	    $data['startdate'] = strtotime(date("Y-m-10",strtotime($data['date']."+1 month")));
+	    $data['enddate'] = strtotime(date("Y-m-10",strtotime($data['date']."+2 month")));
+	    $sort = $this->getMaxSort($data['pages'], $data['startdate'], $data['enddate']);
+	    $data['sort'] = $sort+1;
+	    if($data['pages']==2){ //通栏菜单根据排序获取属于哪个菜单的广告
+		$m = C("AD_MODULE_TYPE");
+		foreach ($m as $k=>$v){
+		    if(in_array($data['sort'], $v)){
+			$data['module'] = $k;
+			break;
+		    }
 		}
 	    }
+
+	    $adCount = $this->load('ad')->getPagesCount($data['pages'], $data['module'], $data['sort']);
+	    if($adCount>=2){//每个位置的广告最多两条
+		return array('code'=>2,'msg'=>'每个位置的广告最多两条');
+	    }
+	    $data['note'] = "客户".$data['phone']."的自动草稿";
+	    unset($data['phone']);
+	    unset($data['uid']);
+	    unset($data['date']);
+	    $this->begin('exchange');
+
+
+	    $res = $this->import('ad')->create($data);
+	    if($res){
+		$this->commit('exchange');
+	    }
+	    $this->rollBack('exchange');
 	}
-        $adCount = $this->load('ad')->getPagesCount($data['pages'], $data['module'], $data['sort']);
-        if($adCount>=2){//每个位置的广告最多两条
-            return array('code'=>2,'msg'=>'每个位置的广告最多两条');
-        }
-        $data['note'] = "客户".$data['phone']."的自动草稿";
-        unset($data['phone']);
-        unset($data['uid']);
-        unset($data['date']);
-        $this->begin('exchange');
-	
-	
-        $res = $this->import('ad')->create($data);
-        if($res){
-            $r['eq']    = array('id'=>$id);
-            $datas       = array('isUse'=>1);
-            $eres = $this->import('exchange')->modify($datas, $r);
-            $this->commit('exchange');
-            return array('code'=>1);
-        }
-        $this->rollBack('exchange');
-        return array('code'=>2,'msg'=>'创建广告位失败');
+	$r['eq']    = array('id'=>$id);
+	$datas       = array('isUse'=>1);
+	$result = $this->import('exchange')->modify($datas, $r);
+	if($result){
+	    return array('code'=>1);
+	}else{
+	    return array('code'=>2,'msg'=>'操作失败');
+	}
     }
     
     

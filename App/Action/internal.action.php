@@ -98,7 +98,7 @@ class internalAction extends AppAction {
 	if ($date) {
 	    $date = strtotime($date);
 	} else {
-	    $date = time();
+	    $date = strtotime(date('Y-m-d'));//当天零时
 	}
 	//保存到数据库中
 	$data = array(

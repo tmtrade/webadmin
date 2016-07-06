@@ -172,10 +172,6 @@ abstract class AppAction extends Action
 	 * @param $sendtype int 站内信的发送方式,默认对一,2对多,3全体
 	 */
 	protected function checkMsg($uid = null,$sendtype=1){
-		//设置发送的对象
-		if(!$uid){
-			$uid = $this->userId;
-		}
 		if(!$uid) return;//用户为空,直接返回
 		//设置发送的类型
 		if(!in_array($sendtype,array(1,2,3))){

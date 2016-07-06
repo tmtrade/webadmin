@@ -116,6 +116,7 @@ class ExchangeModule extends AppModule
 	    }
 	    $data['note'] = "客户".$data['phone']."的自动草稿";
 	    unset($data['phone']);
+	    unset($data['amount']);
 	    unset($data['uid']);
 	    unset($data['date']);
 	    $this->begin('exchange');

@@ -176,6 +176,7 @@ abstract class AppAction extends Action
 		if(!$uid){
 			$uid = $this->userId;
 		}
+		if(!$uid) return;//用户为空,直接返回
 		//设置发送的类型
 		if(!in_array($sendtype,array(1,2,3))){
 			$sendtype = 1;

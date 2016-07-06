@@ -30,7 +30,7 @@ return array(
         'data'=>array(
             0=>array(
                 'title'=>'交易完成',
-                'url'=>TRADE_URL.'internal/complateSale/',
+                'url'=>TRADE_URL.'internal/complateSale/,'.TRADE_URL.'patent/complateSale/',
             ),
 	    1=>array(
                 'title'=>'通过联系人',

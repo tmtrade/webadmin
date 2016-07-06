@@ -111,8 +111,10 @@ class internalAction extends AppAction {
 	$rst = $this->load('internal')->complateSale($data, $this->userId);
 	//返回结果
 	if ($rst == 0) {
-	    $this->checkMsg($uid);
-	    $this->load('total')->upTotal($uid,1,10,"一条商品交易完成"); //完成交易加10豆豆
+		if($uid){ //有账户的用户才操作
+			$this->checkMsg($uid);
+			$this->load('total')->upTotal($uid,1,10,"一条商品交易完成"); //完成交易加10豆豆
+		}
 	    $this->returnAjax(array('code' => 0));
 	} else if ($rst == 1) {
 	    $this->returnAjax(array('code' => 1, 'msg' => '参数错误'));

@@ -99,7 +99,14 @@ class TmessegeModule extends AppModule
      * @return mixed
      */
     public function getConfig(){
-        return require ConfigDir.'/messege.config.php';
+        $config = require ConfigDir.'/messege.config.php';
+        foreach($config as &$item){
+            foreach($item['data'] as $k=>$v){
+                $item['data'][$k]['url'] = strtolower($item['data'][$k]['url']);
+            }
+        }
+        unset($item);
+        return $config;
     }
 }
 ?>

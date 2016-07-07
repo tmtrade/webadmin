@@ -26,18 +26,36 @@ class CronAction extends QueueCommonAction
     private function taskList()
     {
         $list = array(
+            //每隔什么时间（秒）
             array(
-                'type' => 'once',//设置时间执行一次
-                'time' => '15:00',//24小时制时间如：08:30（表示早上8点半）
+                'type' => 'time',//设置间隔时间执行
+                'time' => 600,//格式为秒
                 'func' => 'test',
-                'name' => 'test1500',//设置执行文件唯一标识（每个task执行名称需不同）
+                'name' => 'test600',//设置执行文件唯一标识（每个task执行名称需不同）
                 ),
+            //每天什么时段
             array(
-            	'type' => 'many',//设置间隔时间执行
-            	'time' => 600,//格式为秒
-            	'func' => 'test',
-            	'name' => 'test600',//设置执行文件唯一标识（每个task执行名称需不同）
-            	),
+                'type' => 'day',//设置时间执行一次
+                'time' => '10:11',//24小时制时间如：08:30（表示早上8点半）
+                'func' => 'test',
+                'name' => 'testday1500',//设置执行文件唯一标识（每个task执行名称需不同）
+                ),
+            //每周什么时段（）
+            array(
+                'type' => 'week',//设置时间执行一次
+                'day'  => '4',// 1~7 （周一到周日）
+                'time' => '10:11',//24小时制时间如：08:30（表示早上8点半）
+                'func' => 'test',
+                'name' => 'testweek1500',//设置执行文件唯一标识（每个task执行名称需不同）
+                ),
+            //每月什么时段
+            array(
+                'type' => 'month',//设置时间执行一次
+                'day'  => '7',// 1~28、29、30、31 （每月几号）
+                'time' => '10:11',//24小时制时间如：08:30（表示早上8点半）
+                'func' => 'test',
+                'name' => 'testmonth1500',//设置执行文件唯一标识（每个task执行名称需不同）
+                ),
             );
 
         return $list;
@@ -62,21 +80,25 @@ class CronAction extends QueueCommonAction
 
     private function doRun($params)
     {
-        $type = $params['type'];
-        $time = $params['time'];
-        $func = $params['func'];
-        $name = $params['name'];
+        $type   = $params['type'];
+        $day    = $params['day'] ? $params['day'] : 1;
+        $time   = $params['time'];
+        $func   = $params['func'];
+        $name   = $params['name'];
 
-        if ( $type == 'once' ) return $this->doOnce($time, $func, $name, $params);
-        if ( $type == 'many' ) return $this->doMany($time, $func, $name, $params);
+        if ( $type == 'day' ) return $this->doDay($time, $func, $name, $params);
+        if ( $type == 'time' ) return $this->doTime($time, $func, $name, $params);
+        if ( $type == 'week' ) return $this->doWeek($day, $time, $func, $name, $params);
+        if ( $type == 'month' ) return $this->doMonth($day, $time, $func, $name, $params);
         return false;
     }
 
-    private function doOnce($time, $func, $name, $params)
+    //每天什么时间执行
+    private function doDay($time, $func, $name, $params)
     {
         $objRs = $this->com($this->cacheType);//获取缓存资源
         $cache = $objRs->get($name);//获取进程标识
-        if ( $cache ) return false;        
+        if ( $cache ) return false; 
         if ( $time != date('H:i') ) return false;//是否为当前设置时间
         $objRs->set($name, true, 62);//设置60秒为效，保证此方法只执行一次。
         //执行相关文件
@@ -90,10 +112,12 @@ class CronAction extends QueueCommonAction
             'memo'      => $time,
         );
         //$this->load('log')->writeLog($log);
+        Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doDay.log');
         return $res;
     }
 
-    private function doMany($time, $func, $name, $params)
+    //每隔什么时间执行（秒）
+    private function doTime($time, $func, $name, $params)
     {
         $objRs = $this->com($this->cacheType);//获取缓存资源
         $cache = $objRs->get($name);//获取进程标识
@@ -110,9 +134,62 @@ class CronAction extends QueueCommonAction
             'memo'      => $time,
         );
         //$this->load('log')->writeLog($log);
+        Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doTime.log');
         return $res;
     }
     
+    //每周几什么时段执行
+    private function doWeek($day, $time, $func, $name, $params)
+    {
+        $objRs = $this->com($this->cacheType);//获取缓存资源
+        $cache = $objRs->get($name);//获取进程标识
+
+        if ( $day == 7 ) $day = 0;
+        //判断周几是否正确
+        if (  $day != date('w') ) return false;
+        if ( $time != date('H:i') ) return false;//是否为当前设置时间
+        $objRs->set($name, true, 62);//设置60秒为效，保证每间隔多少时间执行一次。
+        //执行相关文件
+        $res = $this->doQueue($func);
+        $log = array(
+            'type'      => '5',
+            'action'    => '45',
+            'data'      => $params,
+            'status'    => $res==true?1:2,
+            'desc'      => $name,
+            'memo'      => $time,
+        );
+        //$this->load('log')->writeLog($log);
+        Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doWeek.log');
+        return $res;
+    }
+
+    //每月什么日期什么时间执行
+    private function doMonth($day, $time, $func, $name, $params)
+    {
+        $objRs = $this->com($this->cacheType);//获取缓存资源
+        $cache = $objRs->get($name);//获取进程标识
+
+        //判断日期是否正确
+        if (  $day != date('j') ) return false;
+        if ( $time != date('H:i') ) return false;//是否为当前设置时间
+
+        $objRs->set($name, true, 62);//设置60秒为效，保证每间隔多少时间执行一次。
+        //执行相关文件
+        $res = $this->doQueue($func);
+        $log = array(
+            'type'      => '5',
+            'action'    => '45',
+            'data'      => $params,
+            'status'    => $res==true?1:2,
+            'desc'      => $name,
+            'memo'      => $time,
+        );
+        //$this->load('log')->writeLog($log);
+        Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doMonth.log');
+        return $res;
+    }
+
     /**
      * 执行文件
      *

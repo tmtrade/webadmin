@@ -12,7 +12,7 @@ return array(
         'data'=>array(
             0=>array(
                 'title'=>'首次登陆',
-                'url'=>SELLER_URL.'login/verifyCode,'.SELLER_URL.'login/login',
+                'url'=>SELLER_URL.'index/index'
             ),
         )
     ),

@@ -28,16 +28,16 @@
                     </div>
                 </li>
                 <li>
-                    <label>短信标题：</label>
+                    <label>标题：</label>
                     <input type="text" name="title" size="80" value="<?=$monitor['title']?>"/>
                 </li>
                 <li>
                     <label>是否需要详情：</label>
-                    <label><input type="radio" class="isNeed" name="type" value="1"/>需要(信类型)</label>
-                    <label><input type="radio" class="isNeed" name="type" value="2" checked="checked"/>不需要(链接类型)</label>
+                    <label><input type="radio" class="isNeed" name="type" value="1"/>需要</label>
+                    <label><input type="radio" class="isNeed" name="type" value="2" checked="checked"/>不需要</label>
                 </li>
                 <li>
-                    <label>详情内容：</label>
+                    <label></label>
                     <textarea name="content" id="content" style="width:80%;height:200px;"><?=$monitor['content']?></textarea><br/>(链接类型可不填此项,代表仅标题)
                 </li>
             </ul>

@@ -1,7 +1,8 @@
 <? require(ViewDir.'/header.html');?>
 <link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
 <style>
-    td{border: 1px solid #dadada;}
+    td{border: 1px solid #dadada;word-break: break-all; word-wrap:break-word;}
+    table{table-layout: fixed;}
     .seach_ul li{
         border: 1px solid #DDDDDD;
         float: left;
@@ -58,20 +59,20 @@
                 <li data-type="3" <?if($s['isUse']==3){echo 'class="on"';} ?>>未兑换信息</li>
                 <li data-type="1" <?if($s['isUse']==1){echo 'class="on"';} ?>>历史兑换信息</li>
             </ul>
-             <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+             <table class="table table-hover" width="99%" style="border: 1px solid #dadada;margin-bottom: 0">
                 <thead>
                     <tr class="active">
-			<th>兑换资源类型</th>
-                        <th>备注</th>
-                        <th>申请时间</th>
+			<th width="10%">兑换资源类型</th>
+                        <th width="30%">备注</th>
+                        <th width="15%">申请时间</th>
                         <?if($s['isUse']==1){?>
-                            <th>展示时间</th>
-                            <th>审核状态</th>
+                            <th width="18%">展示时间</th>
+                            <th width="8%">审核状态</th>
                         <?}?>
-                        <th>联系电话</th>
-                        <th>qq</th>
+                        <th width="10%">联系电话</th>
+                        <th width="10%">qq</th>
                          <?if($s['isUse']==3){?>
-                            <th>操作</th>
+                            <th width="10%">操作</th>
                         <?}?>
                     </tr>
                 </thead>
@@ -79,7 +80,7 @@
                 <? foreach ($list as $k => $v) {  ?>
                 <tr>
                     <td><?=$module_type[$v['pages']]['name']?></td>
-                    <td><?=$v['note']?></td>
+                    <td ><?=$v['note']?></td>
                     <td><?=$v['date']?></td>
                     <?if($s['isUse']==1){?>
                         <td><?=date("Y-m-10",strtotime($v['date']."+1 month"));?> - <?=date("Y-m-10",strtotime($v['date']."+2 month"));?></td>

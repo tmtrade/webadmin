@@ -51,9 +51,9 @@ class CronAction extends QueueCommonAction
             //每月什么时段
             array(
                 'type' => 'month',//设置时间执行一次
-                'day'  => '7',// 1~28、29、30、31 （每月几号）
-                'time' => '10:11',//24小时制时间如：08:30（表示早上8点半）
-                'func' => 'test',
+                'day'  => '10',// 1~28、29、30、31 （每月几号）
+                'time' => '00:00',//24小时制时间如：08:30（表示早上8点半）
+                'func' => 'delAd',
                 'name' => 'testmonth1500',//设置执行文件唯一标识（每个task执行名称需不同）
                 ),
             );

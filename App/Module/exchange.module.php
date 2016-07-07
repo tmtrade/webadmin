@@ -29,8 +29,10 @@ class ExchangeModule extends AppModule
         $r['raw']  = 1;
         if($params['isUse']==3){
             $r['eq']['isUse']    = $params['isUse'];
+	    $r['order'] = array('date' => 'asc');
         }else{
             $r['raw'] .= " AND isUse != 3";
+	    $r['order'] = array('date' => 'desc');
         }
         
         if ( !empty($params['pages']) ){
@@ -45,7 +47,6 @@ class ExchangeModule extends AppModule
         if ( !empty($params['dateEnd']) ){
             $r['raw'] .= " AND unix_timestamp(date) < ".(strtotime($params['dateEnd'])+24*3600);
         }
-        $r['order'] = array('date' => 'asc');
         $r['page']  = $page;
         $r['limit'] = $limit;
         $res = $this->import('exchange')->findAll($r);

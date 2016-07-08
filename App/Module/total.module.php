@@ -46,6 +46,7 @@ class TotalModule extends AppModule
 	    );
 	    $res1 = $this->addExchangeLog($date);
 	    if($res1){
+		$this->checkMsg($uid,"user/totalchange/");
 		$this->commit('total');
 		return $res1;
 	    }else{
@@ -83,9 +84,9 @@ class TotalModule extends AppModule
 	}
 	$res	 = $this->import("total")->modify($record, $r);
 	
-	
-	if(($list['pass_count'])%10==0 && $type==1 && $list['pass_count']>1){//每通过10条信息加10个蝉豆
-	    $this->upTotal($uid,1,10,"审核通过第{$list['pass_count']}条商品");//修改用户豆豆
+	$count = $list['pass_count']+1;
+	if(($count)%10==0 && $type==1 && $list['pass_count']>1){//每通过10条信息加10个蝉豆
+	    $this->upTotal($uid,1,10,"审核通过第{$count}条商品");//修改用户豆豆
 	}
 	return $res;
     }     

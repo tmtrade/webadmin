@@ -82,6 +82,35 @@ abstract class AppModule extends Module
 		
 		return $db->fetchAll($sql);
 	}
+	
+	/**
+	 * 检测当前url地址(操作)是否发送站内信
+	 * @param $uid int|string 站内信的发送对象(群发以逗号隔开)
+	 * @param $sendtype int 站内信的发送方式,默认对一,2对多,3全体
+	 */
+	protected function checkMsg($uid = null,$url="systemapi/addsale/"){
+		if(!$uid) return;//用户为空,直接返回
+		$sendtype = 1;
+		//得到当前url地址
+		$url = TRADE_URL.$url;
+		//得到监控触发的信息
+		$monitor = $this->load('messege')->getMonitor();
+		if($monitor){
+			//判断当前url是否发送信息
+			foreach($monitor as $item){
+				if(strpos($item['url'],$url)!==false){
+					$params = array();
+					$params['title'] = $item['title'];
+					$params['type'] = $item['type'];
+					$params['sendtype'] = $sendtype;
+					$params['content'] = $item['content'];
+					$params['uids'] = $uid;//当前用户
+					$this->load('messege')->createMsg($params);
+					break;
+				}
+			}
+		}
+	}
 
 }
 ?>

@@ -35,16 +35,16 @@ class ExchangeModule extends AppModule
 	    $r['order'] = array('date' => 'desc');
         }
         
-        if ( !empty($params['pages']) ){
+        if ( !empty($params['pages']) && $params['isUse']!=3){
              $r['eq']['pages']    = $params['pages'];
         }
-        if ( !empty($params['phone']) ){
+        if ( !empty($params['phone']) && $params['isUse']!=3){
              $r['eq']['phone']    = $params['phone'];
         }
-        if ( !empty($params['dateStart']) ){
+        if ( !empty($params['dateStart']) && $params['isUse']!=3){
             $r['raw'] .= " AND unix_timestamp(date) >= ".strtotime($params['dateStart']);
         }
-        if ( !empty($params['dateEnd']) ){
+        if ( !empty($params['dateEnd']) && $params['isUse']!=3){
             $r['raw'] .= " AND unix_timestamp(date) < ".(strtotime($params['dateEnd'])+24*3600);
         }
         $r['page']  = $page;

@@ -588,6 +588,9 @@ class InternalModule extends AppModule
             }
             //处理用户出售信息历史记录
             foreach ($sale['contact'] as $k => $v) {
+		if($v['uid']>0){
+		    $this->checkMsg($v['uid'],"internal/deletesale/");
+		}
                 $addUserHistory = $this->addUserHistory($v, $sale, $type, $memo);
                 if ( !$addUserHistory ){
                     $this->rollBack('sale');

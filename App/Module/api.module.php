@@ -51,7 +51,10 @@ class ApiModule extends AppModule
         if ( $source == 11 || $source == 12 ){
             if ( $params['uid'] <= 0 ) return '108';
             $isHas = $this->load('internal')->existContact($number, '', $params['uid']);
-	    $this->load('total')->updatePassCount($params['uid'], 1);//增加通过记录数
+	    if($isVerify==1){
+		$this->load('total')->updatePassCount($params['uid'], 1);//自动通过增加通过记录数
+		$this->checkMsg($params['uid']);
+	    }
         }else{
             $isHas = $this->load('internal')->existContact($number, $params['phone']);
         }

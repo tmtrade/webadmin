@@ -17,11 +17,11 @@ return array(
         )
     ),
     1=>array(
-        'title'=>'积分相关',
+        'title'=>'蝉豆相关',
         'data'=>array(
             0=>array(
-                'title'=>'积分变化',
-                'url'=>TRADE_URL.'user/pointChange',
+                'title'=>'蝉豆变化',
+                'url'=>TRADE_URL.'user/totalchange/',
             ),
         )
     ),
@@ -30,15 +30,23 @@ return array(
         'data'=>array(
             0=>array(
                 'title'=>'交易完成',
-                'url'=>TRADE_URL.'internal/complateSale/,'.TRADE_URL.'patent/complateSale/',
+                'url'=>TRADE_URL.'internal/complatesale/,'.TRADE_URL.'patent/complatesale/',
             ),
 	    1=>array(
                 'title'=>'通过联系人',
-                'url'=>TRADE_URL.'internal/setVerify/',
+                'url'=>TRADE_URL.'internal/setverify/',
             ),
 	    2=>array(
                 'title'=>'驳回联系人',
-                'url'=>TRADE_URL.'internal/delVerify/',
+                'url'=>TRADE_URL.'internal/delverify/',
+            ),
+	    3=>array(
+                'title'=>'自动通过联系人',
+                'url'=>TRADE_URL.'systemapi/addsale/',
+            ),
+	    4=>array(
+                'title'=>'删除商品',
+                'url'=>TRADE_URL.'internal/deletesale/',
             ),
         )
     ),
@@ -47,11 +55,11 @@ return array(
         'data'=>array(
             0=>array(
                 'title'=>'申请通过',
-                'url'=>TRADE_URL.'exchange/through',
+                'url'=>TRADE_URL.'exchange/through/',
             ),
             1=>array(
                 'title'=>'申请拒绝',
-                'url'=>TRADE_URL.'exchange/cancel',
+                'url'=>TRADE_URL.'exchange/cancel/',
             ),
         )
     ),

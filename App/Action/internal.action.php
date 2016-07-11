@@ -679,7 +679,10 @@ class internalAction extends AppAction {
     public function excel() {
 	$params = $this->getFormData();
 	$list = $this->load('internal')->getExcelList($params);
-
+	if($list['total']>5000){
+	    $this->redirect('导出数据超出5000条，请斟酌筛选条件！', '/internal/index');
+	    exit;
+	}
 	$result = array();
 
 	//获取所有联系人

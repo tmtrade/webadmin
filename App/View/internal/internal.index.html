@@ -322,14 +322,14 @@
 		<h1>导出商品</h1>
 	</div>
 	<div class="loading borderBtmCd" style="height:70px;padding-top:25px;">
-		<em>当前共&nbsp;<?=$total?>&nbsp;条商品。如导出商品过多 ，请先通过筛选功能筛选后再进行导出。</em>
+		<em>当前共&nbsp;<?=$total?>&nbsp;条商品。导出条数限制为5000条以下，条数过多请先通过筛选功能筛选后再进行导出。！</em>
 	</div>
 	<br>
 	<p><em>请选择您需要导出的数据</em></p>
 	<br>
 	<div class="check borderBtmCd mb10">
 		<iframe name="excelpost" style="display:none;"></iframe>
-		<form name="saleSearchForm" action="/internal/excel/" method="post" id="excelpost" target="excelpost">
+		<form name="saleSearchForm" action="/internal/excel/" method="post" id="excelpost" >
 		<?php
 		if($s){
 			foreach($s as $k => $v){

@@ -638,11 +638,17 @@ class ExcelModule extends AppModule
 				}elseif($item['isLicense'] == 1){
 					$saleTypeStr =  $saleType[2];
 				}
+				$contact = "";
+				$advisor = "";
+				$source  = "";
+				$price	 = "";
 				if(count($item['contact']) > 1){
-					$advisor = '多顾问';
-					$contact = '多联系方式';
-					$source  = '多渠道';
-					$price = '多底价';
+					foreach($item['contact'] as $v){
+					    $contact .= $v['name'].'-'.$v['phone']."\r\n";
+					    $advisor .= $v['advisor'].'-'.$v['department']."\r\n";
+					    $source  .= $saleSource[$v['source']]."\r\n";
+					    $price .= $v['price']."\r\n";
+					}
 				}else{
 					$ct=current($item['contact']);
 					$contact = $ct['name'].'-'.$ct['phone'];

@@ -122,7 +122,6 @@ class ExchangeModule extends AppModule
 	    unset($data['date']);
 	    $this->begin('exchange');
 
-
 	    $res = $this->import('ad')->create($data);
 	    if($res){
 		$this->commit('exchange');

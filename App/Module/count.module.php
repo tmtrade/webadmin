@@ -34,6 +34,7 @@ class CountModule extends AppModule
         //添加到访问日志表
         $data  = array(
             'sid' => $sid,
+            'userId'=>isset($params['userid'])?$params['userid']:0,
             's_url' => isset($params['referrer'])?$params['referrer']:'',
             'url' => $params['url'],
             'device' => isset($params['device'])?$params['device']:0,
@@ -54,6 +55,7 @@ class CountModule extends AppModule
             }
             $data  = array(
                 'sid' => $sid,
+                'userId'=>isset($params['userid'])?$params['userid']:0,
                 's_url' => isset($params['referrer'])?$params['referrer']:'',
                 's_ip' => $params['ip'],
                 's_dateline' => $time,
@@ -77,6 +79,9 @@ class CountModule extends AppModule
             );
             if(isset($params['tel'])){
                 $data['tel'] = $params['tel'];//保存账户
+            }
+            if(isset($params['userid'])){
+                $data['userId'] = $params['userid'];//保存用户id
             }
             if($isnew){
                 $data['logids'] = $id;//--直接添加id

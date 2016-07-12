@@ -33,6 +33,10 @@ class ApiModule extends AppModule
         $source = $this->sourceList[$params['source']] ? $this->sourceList[$params['source']] : 3;
         $number = $params['number'];
         $memo   = $params['memo']?$params['memo']:'添加出售信息接口默认创建商品';
+	
+	$first = $this->load('trademark')->getFirst($number, 'n');
+	if ($first == 3) return '113'; //商标已无效
+	    //
         //判断商标号是否正确
         $info = $this->load('trademark')->getInfo($number, array('id','auto as `tid`'));
         if ( empty($info['id']) ) return '107';

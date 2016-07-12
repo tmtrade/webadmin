@@ -449,7 +449,7 @@ class internalAction extends AppAction {
 	if (!$this->load('trademark')->existTm($number))
 	    $this->returnAjax(array('code' => 4)); //无商标信息
 
-	$first = $this->load('trademark')->getFirst($tm['tid'], 'n');
+	$first = $this->load('trademark')->getFirst($number, 'n');
 	if ($first == 3)
 	    $this->returnAjax(array('code' => 5)); //商标已无效
 

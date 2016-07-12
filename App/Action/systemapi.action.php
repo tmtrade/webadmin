@@ -339,6 +339,10 @@ class SystemApiAction extends RpcServer
                         'code'  => '112',
                         'msg'   => 'contact info not exist',
                         ),
+	    '113' => array(
+                        'code'  => '113',
+                        'msg'   => '该商标已失效',
+                        ),
         );
         return $list;
     }

@@ -12,11 +12,6 @@ class CountAction extends Action
 	 * 统计
 	 */
 	public function index(){
-		//域名验证
-		$url = parse_url($_SERVER['HTTP_REFERER'],PHP_URL_HOST);
-		if(strpos(SITE_URL,$url) === false){
-			return;
-		}
 		$yzc = $this->input('yzc','int',0);
 		if(!in_array($yzc,array(1,2,3))){
 			return;

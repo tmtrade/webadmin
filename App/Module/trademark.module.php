@@ -166,7 +166,7 @@ class TrademarkModule extends AppModule
         $info['class']          = array_filter( explode(',', $info['strclass']) );
         $info['imgUrl']         = $this->getImg($number);
         $info['group']          = $this->groupReplace($info['group']);
-        $info['status']         = $this->getFirst($info['tid']);
+        $info['status']         = $this->getFirst($number);
         $info['second']         = $this->getSecond($info['tid']);
         $proposer               = $this->load('proposer')->getNew($info['pid']);
         $info['proName']        = empty($proposer['cnName']) ? '' : $proposer['cnName'];
@@ -279,11 +279,11 @@ class TrademarkModule extends AppModule
         return empty($img) ? $default : $img['url'];
     }
 
-    public function getFirst($tid, $type='c')
+    public function getFirst($number, $type='c')
     {
-        if ( intval($tid) <= 0 ) return '';
+        if ( intval($number) <= 0 ) return '';
 
-        $r['eq']    = array('tid'=>$tid);
+        $r['eq']    = array('trademark_id'=>$number);
         $r['col']   = array('three_status');
         $second     = $this->import('second')->find($r);
         //返回数字

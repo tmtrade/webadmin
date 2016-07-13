@@ -341,7 +341,7 @@ class SystemApiAction extends RpcServer
                         ),
 	    '113' => array(
                         'code'  => '113',
-                        'msg'   => '该商标已失效',
+                        'msg'   => '商标已无效',
                         ),
         );
         return $list;

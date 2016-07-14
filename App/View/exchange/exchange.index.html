@@ -35,9 +35,11 @@
                 <label> 资源类型：</label>
                 <select name="pages" class="input input-sm">
                     <option value="0">--请选择--</option>
-                    <option value="1" <?if($s['pages']==1){echo 'selected';} ?>>首页轮播</option>
-                    <option value="2" <?if($s['pages']==2){echo 'selected';} ?>>通用菜单</option>
-                    <option value="3" <?if($s['pages']==3){echo 'selected';} ?>>列表页右侧</option>
+                    <option value="1" <?if($s['pages']==1){echo 'selected';} ?>>首页轮播广告</option>
+                    <option value="2" <?if($s['pages']==2){echo 'selected';} ?>>通用分类广告</option>
+                    <option value="3" <?if($s['pages']==3){echo 'selected';} ?>>列表页右侧浮动广告</option>
+		    <option value="4" <?if($s['pages']==2){echo 'selected';} ?>>商标美化</option>
+                    <option value="5" <?if($s['pages']==3){echo 'selected';} ?>>专题聚合页</option>
                 </select>
                 
                 <label> 申请时间：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 

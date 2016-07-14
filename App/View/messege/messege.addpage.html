@@ -55,13 +55,6 @@
 <script charset="utf-8" src="<?=StaticDir?>/editor/kindeditor.js"></script>
 <script charset="utf-8" src="<?=StaticDir?>/editor/lang/zh_CN.js"></script>
 <script type="text/javascript">
-    if($(".need").attr("checked")==true){
-       $("#ch-text").html('<textarea name="content" id="content" style="width:80%;height:200px;"></textarea><br/>(链接类型可不填此项,代表仅标题)');
-    }
-    if($(".no-need").attr("checked")==true){
-        $("#ch-text").html(' <input type="text" style="width:80%;height:30px;"/><br/>(链接类型可不填此项,代表仅标题)');
-    }
-
     //富文本编辑器
     KindEditor.ready(function(K) {
         window.editor = K.create('#content', {

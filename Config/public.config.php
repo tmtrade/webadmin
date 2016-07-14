@@ -687,10 +687,10 @@ $define = array(
     
     'MODULE_TYPE' => array(
         '1'  => array(
-            "name"=>"首页",
+            "name"=>"首页轮播广告",
             ),
         '2'  => array(
-                "name"=>"通用菜单",
+                "name"=>"通用分类广告",
                 "type"=>array(
                 '59' 	=> '服装/鞋帽/箱包',
                 '53' 	=> '钟表/珠宝/饰品',
@@ -707,13 +707,13 @@ $define = array(
                 ),
             ),
         '3'  => array(
-                "name"=>"列表页右侧",
+                "name"=>"列表页右侧浮动广告",
         ),
 	'4' => array(
 	    "name" => "商标美化",
 	),
 	'5' => array(
-	    "name" => "专题制作",
+	    "name" => "专题聚合页",
 	),
     ),
     

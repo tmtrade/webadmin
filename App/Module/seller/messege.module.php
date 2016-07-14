@@ -37,7 +37,6 @@ class MessegeModule extends AppModule
         }
         $ids = explode(',',$params['uids']);
         unset($params['uids']);
-        $this->begin('Messege');//开启事务
         $rst = $this->import('messege')->create($params);//添加到消息表
         if($rst){
             if($params['sendtype']!=3){
@@ -55,18 +54,11 @@ class MessegeModule extends AppModule
                     }
                 }
                 if($flag){
-                    $this->commit('Messege');//提交事务
                     return $rst;
                 }else{
-                    $this->rollBack('Messege');//回滚事务
                     return 0;
                 }
             }
-        }
-        if($rst){
-            $this->commit('Messege');//提交事务
-        }else{
-            $this->rollBack('Messege');//回滚事务
         }
         return $rst;
 

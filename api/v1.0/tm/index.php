@@ -30,7 +30,7 @@ $app->get('/', function ($request, $response, $args) {
 
         //include Spring framework (webadmin)
         $obj    = require_once( AppResourceDir.'/include.php' );
-        $result = spring::out('openapi')->request( $params );
+        $result = Spring::out('openapi')->request( $params );
 
         $flag   = json_encode( $result );
         //return $response->withStatus(200)->withHeader('Content-type', 'application/json')->write( $flag );

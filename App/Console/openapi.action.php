@@ -1,13 +1,12 @@
-<?php
+<?
 /**
- * 网站地图功能
+ * 公共RPC类
  *
- * @package Action
- * @author  Dower
- * @since   2016-04-26
+ * @author    Xuni
+ * @copyright CHOFN
  */
-class OpenApiAction extends IncludeAction{
-    
+class OpenApiAction extends IncludeAction {
+
     protected $msg;//返回信息
     protected $users;//接口用户
     protected $key;//接口签名key
@@ -30,7 +29,7 @@ class OpenApiAction extends IncludeAction{
     public function request($params=array())
     {
         //TODO 判断调用的IP地址是否为内网IP
-        $this->keys     = C('OPENAPI_KEY');
+        $this->keys     = C('OPENAPI_KEYS');
         $this->users    = C('OPENAPI_USERS');
         $this->msg      = $this->msgConfig();
 
@@ -80,6 +79,28 @@ class OpenApiAction extends IncludeAction{
             'limit' => $limit,
             );
         $data   = $this->load('openapi')->getRandSale( $_data );
+        $msg['data'] = $data;
+        return $msg;
+    }
+
+    /**
+     * 获取商品包装图片
+     *
+     * @author      xuni
+     * @since       2016-07-04
+     *
+     * @access      public
+     * @param       array   $params     接口参数（参考接口文档）
+     * @return      array
+     */
+    protected function getSaleImg($params)
+    {
+        $msg    = $this->getMsg(101);
+        $number = $params['number'];
+
+        if ( empty($number) ) return $msg;
+
+        $data   = $this->load('openapi')->getSaleImg( $number );
         $msg['data'] = $data;
         return $msg;
     }

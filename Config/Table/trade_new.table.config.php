@@ -177,6 +177,12 @@ $tbl['apiLog'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['systemLog'] = array(
+	'name'		=> $prefix.'system_log',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
 $tbl['userSaleHistory'] = array(
 	'name'		=> $prefix.'user_sale_history',
 	'dbId'		=> $dbId,
@@ -311,5 +317,6 @@ $tbl['totalLog'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+
 
 ?>

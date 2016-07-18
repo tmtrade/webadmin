@@ -27,34 +27,34 @@ class CronAction extends QueueCommonAction
     {
         $list = array(
             //每隔什么时间（秒）
-            array(
-                'type' => 'time',//设置间隔时间执行
-                'time' => 600,//格式为秒
-                'func' => 'test',
-                'name' => 'test600',//设置执行文件唯一标识（每个task执行名称需不同）
-                ),
-            //每天什么时段
-            array(
-                'type' => 'day',//设置时间执行一次
-                'time' => '10:11',//24小时制时间如：08:30（表示早上8点半）
-                'func' => 'test',
-                'name' => 'testday1500',//设置执行文件唯一标识（每个task执行名称需不同）
-                ),
-            //每周什么时段（）
-            array(
-                'type' => 'week',//设置时间执行一次
-                'day'  => '4',// 1~7 （周一到周日）
-                'time' => '10:11',//24小时制时间如：08:30（表示早上8点半）
-                'func' => 'test',
-                'name' => 'testweek1500',//设置执行文件唯一标识（每个task执行名称需不同）
-                ),
+            // array(
+            //     'type' => 'time',//设置间隔时间执行
+            //     'time' => 600,//格式为秒
+            //     'func' => 'test',
+            //     'name' => 'test600',//设置执行文件唯一标识（每个task执行名称需不同）
+            //     ),
+            // //每天什么时段
+            // array(
+            //     'type' => 'day',//设置时间执行一次
+            //     'time' => '10:11',//24小时制时间如：08:30（表示早上8点半）
+            //     'func' => 'test',
+            //     'name' => 'testday1500',//设置执行文件唯一标识（每个task执行名称需不同）
+            //     ),
+            // //每周什么时段（）
+            // array(
+            //     'type' => 'week',//设置时间执行一次
+            //     'day'  => '4',// 1~7 （周一到周日）
+            //     'time' => '10:11',//24小时制时间如：08:30（表示早上8点半）
+            //     'func' => 'test',
+            //     'name' => 'testweek1500',//设置执行文件唯一标识（每个task执行名称需不同）
+            //     ),
             //每月什么时段
             array(
                 'type' => 'month',//设置时间执行一次
                 'day'  => '10',// 1~28、29、30、31 （每月几号）
                 'time' => '00:00',//24小时制时间如：08:30（表示早上8点半）
                 'func' => 'delAd',
-                'name' => 'testmonth1500',//设置执行文件唯一标识（每个task执行名称需不同）
+                'name' => 'Ad_month_cron',//设置执行文件唯一标识（每个task执行名称需不同）
                 ),
             );
 
@@ -93,6 +93,28 @@ class CronAction extends QueueCommonAction
         return false;
     }
 
+    //每隔什么时间执行（秒）
+    private function doTime($time, $func, $name, $params)
+    {
+        $objRs = $this->com($this->cacheType);//获取缓存资源
+        $cache = $objRs->get($name);//获取进程标识
+        if (  $time <= 0 || $cache ) return false;
+        $objRs->set($name, true, $time);//设置60秒为效，保证每间隔多少时间执行一次。
+        //执行相关文件
+        $res = $this->doQueue($func);
+        $log = array(
+            'type'      => '4',
+            'action'    => '50',
+            'data'      => $params,
+            'status'    => $res==true?1:2,
+            'desc'      => $name,
+            'memo'      => 'doTime-'.$time,
+        );
+        $this->load('log')->addSystemLog($log);
+        //Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doTime.log');
+        return $res;
+    }
+
     //每天什么时间执行
     private function doDay($time, $func, $name, $params)
     {
@@ -104,37 +126,15 @@ class CronAction extends QueueCommonAction
         //执行相关文件
         $res = $this->doQueue($func);
         $log = array(
-            'type'      => '5',
-            'action'    => '44',
+            'type'      => '4',
+            'action'    => '51',
             'data'      => $params,
             'status'    => $res==true?1:2,
             'desc'      => $name,
-            'memo'      => $time,
+            'memo'      => 'doDay-'.$time,
         );
-        //$this->load('log')->writeLog($log);
-        Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doDay.log');
-        return $res;
-    }
-
-    //每隔什么时间执行（秒）
-    private function doTime($time, $func, $name, $params)
-    {
-        $objRs = $this->com($this->cacheType);//获取缓存资源
-        $cache = $objRs->get($name);//获取进程标识
-        if (  $time <= 0 || $cache ) return false;
-        $objRs->set($name, true, $time);//设置60秒为效，保证每间隔多少时间执行一次。
-        //执行相关文件
-        $res = $this->doQueue($func);
-        $log = array(
-            'type'      => '5',
-            'action'    => '45',
-            'data'      => $params,
-            'status'    => $res==true?1:2,
-            'desc'      => $name,
-            'memo'      => $time,
-        );
-        //$this->load('log')->writeLog($log);
-        Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doTime.log');
+        $this->load('log')->addSystemLog($log);
+        //Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doDay.log');
         return $res;
     }
     
@@ -152,15 +152,15 @@ class CronAction extends QueueCommonAction
         //执行相关文件
         $res = $this->doQueue($func);
         $log = array(
-            'type'      => '5',
-            'action'    => '45',
+            'type'      => '4',
+            'action'    => '52',
             'data'      => $params,
             'status'    => $res==true?1:2,
             'desc'      => $name,
-            'memo'      => $time,
+            'memo'      => 'doWeek-'.$day.'-'.$time,
         );
-        //$this->load('log')->writeLog($log);
-        Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doWeek.log');
+        $this->load('log')->addSystemLog($log);
+        //Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doWeek.log');
         return $res;
     }
 
@@ -178,15 +178,15 @@ class CronAction extends QueueCommonAction
         //执行相关文件
         $res = $this->doQueue($func);
         $log = array(
-            'type'      => '5',
-            'action'    => '45',
+            'type'      => '4',
+            'action'    => '53',
             'data'      => $params,
             'status'    => $res==true?1:2,
             'desc'      => $name,
-            'memo'      => $time,
+            'memo'      => 'doMonth-'.$day.'-'.$time,
         );
-        //$this->load('log')->writeLog($log);
-        Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doMonth.log');
+        $this->load('log')->addSystemLog($log);
+        //Log::write(print_r($log,1), date('Y-m-d').'-cronjob-doMonth.log');
         return $res;
     }
 

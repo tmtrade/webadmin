@@ -12,8 +12,9 @@ class LogModule extends AppModule
 {
     public $models = array(
         'saleLog'   => 'saleLog',
-        'patentLog'   => 'patentLog',
+        'patentLog' => 'patentLog',
         'api'       => 'apiLog',
+        'system'    => 'systemLog',
     );
 
     //添加国内商标出售日志
@@ -183,6 +184,31 @@ class LogModule extends AppModule
             );
 
         return $this->import('api')->create($log);
+    }
+
+    public function addSystemLog($params)
+    {
+        $msg        = empty($params['desc']) ? '' : $params['desc'];
+        $memo       = empty($params['memo']) ? '' : $params['memo'];
+        $type       = empty($params['type']) ? '0' : $params['type'];
+        $action     = empty($params['action']) ? '0' : $params['action'];
+        $status     = empty($params['status']) ? '1' : $params['status'];
+        $data       = empty($params['data']) ? '' : $params['data'];
+
+        $data       = is_array($data) ? serialize($data) : $data;
+        $memo       = is_array($memo) ? serialize($memo) : $memo;
+
+        $log = array(
+            'type'      => $type,
+            'action'    => $action,
+            'status'    => $status,
+            'data'      => $data,
+            'desc'      => $msg,
+            'created'   => time(),
+            'memo'      => $memo,
+            );
+
+        $this->import('system')->create($log);
     }
 
 }

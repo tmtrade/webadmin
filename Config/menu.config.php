@@ -52,17 +52,17 @@ return $menu = array(
 					'1' => array(
 						'title' => '兑换信息列表',
 						'url'   => '/exchange/index/',
-						'auth'	=> '28',
+						'auth'	=> '33',
 					),
                                         '2' => array(
 						'title' => '站内信配置',
 						'url'   => '/messege/index/',
-						'auth'	=> '29',
+						'auth'	=> '34',
 					),
                                         '3' => array(
 						'title' => '广告管理',
 						'url'   => '/ad/index/',
-						'auth'	=> '30',
+						'auth'	=> '35',
 					),
 		),
 	),

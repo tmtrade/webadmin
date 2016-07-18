@@ -242,7 +242,7 @@ $define = array(
 				),
 			),
 		),
-                '4' => array(
+        '4' => array(
 			'label' => '数据跟踪',
 			'child' => array(
 				'28' => array(
@@ -254,12 +254,12 @@ $define = array(
 				'30' => array(
 					'label' => '模块走势图',
 				),
-                                '31' => array(
+                '31' => array(
 					'label' => '热门搜索 筛选页',
 				),
 			),
 		),
-            '5' => array(
+        '5' => array(
 			'label' => '出售者平台',
 			'child' => array(
 				'33' => array(

@@ -1,7 +1,4 @@
 <?php
-
-namespace Webadmin;
-
 /**
  * 项目入口
  */
@@ -14,6 +11,6 @@ define('ActionDir', $webDir.'/App/Console');                //定义控制器存
 require($libDir.'/Spring.php');                             //载入框架入口文件
 require(ConfigDir.'/app.config.php');                       //载入应用全局配置
 
-return \Spring::out();
+return Spring::out();
 
 ?>

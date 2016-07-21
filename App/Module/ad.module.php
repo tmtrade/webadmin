@@ -107,13 +107,16 @@ class AdModule extends AppModule
         $list = $this->import('ad')->findAll($r);
 	
 	$res = $this->import('ad')->remove($r);
-	if($res){
-	    Log::write(serialize($list['rows']), date('Y-m-d').'-cronjob-ad.log');
-	    return true;
-	}else{
-	    return false;
-	}
-	
+	$log = array(
+            'type'      => '1',
+            'action'    => '53',
+            'data'      => serialize($list['rows'],
+            'status'    => $res==true?1:2,
+            'desc'      => "广告".date("m")."月自动删除任务",
+            'memo'      => 'doTime-'.$time,
+        );
+	$this->load('log')->addSystemLog($log);
+	return true;
 	
     }
 }

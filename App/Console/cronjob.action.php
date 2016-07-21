@@ -34,10 +34,7 @@ class CronjobAction extends QueueCommonAction
     * @return	boolean
     */
     public function delAd(){
-	$res = $this->load('ad')->delPastAd();
-	if(!$res){
-	    $this->delAd();
-	}
+	return $res = $this->load('ad')->delPastAd();
     }
 
 }

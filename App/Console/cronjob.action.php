@@ -21,7 +21,8 @@ class CronjobAction extends QueueCommonAction
 	 */
     public function test()
     {
-    	Log::write('hello world', date('Y-m-d').'-cronjob-test.log');
+        return true;
+    	//Log::write('hello world', date('Y-m-d').'-cronjob-test.log');
     }
     
     
@@ -34,7 +35,7 @@ class CronjobAction extends QueueCommonAction
     * @return	boolean
     */
     public function delAd(){
-	return $res = $this->load('ad')->delPastAd();
+	   return $this->load('ad')->delPastAd();
     }
 
 }

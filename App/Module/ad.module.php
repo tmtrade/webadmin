@@ -102,21 +102,22 @@ class AdModule extends AppModule
     //删除过期广告
     public function delPastAd()
     {
-	$r = array();
-	$r['raw'] = "enddate <=".time();
-        $list = $this->import('ad')->findAll($r);
-	
-	$res = $this->import('ad')->remove($r);
-	$log = array(
+    	$r = array();
+    	$r['raw']      = "enddate <=".time();
+        $r['limit']    = 1000;
+        $list = $this->import('ad')->find($r);
+    	
+    	$res = $this->import('ad')->remove($r);
+    	$log = array(
             'type'      => '1',
-            'action'    => '53',
-            'data'      => serialize($list['rows']),
+            'action'    => '1',
+            'data'      => $list,
             'status'    => $res==true?1:2,
-            'desc'      => "广告".date("m")."月自动删除任务",
-            'memo'      => 'doTime-'.$time,
+            'desc'      => 'by month',
+            'memo'      => "广告".date("m")."月自动删除任务",
         );
-	$this->load('log')->addSystemLog($log);
-	return true;
+    	$this->load('log')->addSystemLog($log);
+    	return true;
 	
     }
 }

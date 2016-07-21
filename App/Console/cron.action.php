@@ -27,12 +27,12 @@ class CronAction extends QueueCommonAction
     {
         $list = array(
             //每隔什么时间（秒）
-            // array(
-            //     'type' => 'time',//设置间隔时间执行
-            //     'time' => 600,//格式为秒
-            //     'func' => 'test',
-            //     'name' => 'test600',//设置执行文件唯一标识（每个task执行名称需不同）
-            //     ),
+            array(
+                'type' => 'time',//设置间隔时间执行
+                'time' => 600,//格式为秒
+                'func' => 'test',
+                'name' => 'test600',//设置执行文件唯一标识（每个task执行名称需不同）
+                ),
             // //每天什么时段
             // array(
             //     'type' => 'day',//设置时间执行一次
@@ -67,14 +67,17 @@ class CronAction extends QueueCommonAction
         $objRs = $this->com($this->cacheType);//获取缓存资源
         //$cache = $objRs->get($this->cacheName);//获取队列管理管理进程标识
 
-        if ( !is_object($objRs) ) exit('cron cache error');
+        if ( !is_object($objRs) ) {
+            $this->errorLog('', 'reids server client error');
+            exit('cron cache error');
+        }
         //$cache && exit('task running');//处理中时，不再处理
         //$objRs->set($this->cacheName, true, 2);//设置60秒为效，保证此方法只执行一次。
         $list = $this->taskList();
         foreach ($list as $k => $v) {
             $res = $this->doRun($v);
         }
-        $objRs->remove($this->cacheName);
+        //$objRs->remove($this->cacheName);
         exit('task finished');
     }
 
@@ -99,7 +102,13 @@ class CronAction extends QueueCommonAction
         $objRs = $this->com($this->cacheType);//获取缓存资源
         $cache = $objRs->get($name);//获取进程标识
         if (  $time <= 0 || $cache ) return false;
-        $objRs->set($name, true, $time);//设置60秒为效，保证每间隔多少时间执行一次。
+
+        $flag = $objRs->set($name, true, $time);//设置60秒为效，保证每间隔多少时间执行一次。
+        if ( !$flag ){
+            $this->errorLog($params);
+            return false;
+        }
+
         //执行相关文件
         $res = $this->doQueue($func);
         $log = array(
@@ -120,9 +129,16 @@ class CronAction extends QueueCommonAction
     {
         $objRs = $this->com($this->cacheType);//获取缓存资源
         $cache = $objRs->get($name);//获取进程标识
+
         if ( $cache ) return false; 
         if ( $time != date('H:i') ) return false;//是否为当前设置时间
-        $objRs->set($name, true, 62);//设置60秒为效，保证此方法只执行一次。
+        
+        $flag = $objRs->set($name, true, 62);//设置60秒为效，保证此方法只执行一次。
+        if ( !$flag ){
+            $this->errorLog($params);
+            return false;
+        }
+
         //执行相关文件
         $res = $this->doQueue($func);
         $log = array(
@@ -144,11 +160,18 @@ class CronAction extends QueueCommonAction
         $objRs = $this->com($this->cacheType);//获取缓存资源
         $cache = $objRs->get($name);//获取进程标识
 
+        if ( $cache ) return false; 
         if ( $day == 7 ) $day = 0;
         //判断周几是否正确
         if (  $day != date('w') ) return false;
         if ( $time != date('H:i') ) return false;//是否为当前设置时间
-        $objRs->set($name, true, 62);//设置60秒为效，保证每间隔多少时间执行一次。
+        
+        $flag = $objRs->set($name, true, 62);//设置60秒为效，保证此方法只执行一次。
+        if ( !$flag ){
+            $this->errorLog($params);
+            return false;
+        }
+
         //执行相关文件
         $res = $this->doQueue($func);
         $log = array(
@@ -169,12 +192,18 @@ class CronAction extends QueueCommonAction
     {
         $objRs = $this->com($this->cacheType);//获取缓存资源
         $cache = $objRs->get($name);//获取进程标识
+        if ( $cache ) return false; 
 
         //判断日期是否正确
         if (  $day != date('j') ) return false;
         if ( $time != date('H:i') ) return false;//是否为当前设置时间
 
-        $objRs->set($name, true, 62);//设置60秒为效，保证每间隔多少时间执行一次。
+        $flag = $objRs->set($name, true, 62);//设置60秒为效，保证此方法只执行一次。
+        if ( !$flag ){
+            $this->errorLog($params);
+            return false;
+        }
+
         //执行相关文件
         $res = $this->doQueue($func);
         $log = array(
@@ -205,6 +234,19 @@ class CronAction extends QueueCommonAction
         $thread     = proc_open($cmd, $resouce, $tmp);
         $res        = is_resource($thread) ? true : false;
         return $res;
+    }
+
+    private function errorLog($params, $memo='redis cache can not set anymore')
+    {
+        $log = array(
+            'type'      => '4',
+            'action'    => '60',
+            'data'      => $params,
+            'status'    => 2,
+            'desc'      => 'redis error',
+            'memo'      => $memo,
+        );
+        $this->load('log')->addSystemLog($log);
     }
 
 }

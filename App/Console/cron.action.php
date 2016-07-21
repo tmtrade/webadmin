@@ -29,9 +29,9 @@ class CronAction extends QueueCommonAction
             //每隔什么时间（秒）
             array(
                 'type' => 'time',//设置间隔时间执行
-                'time' => 600,//格式为秒
+                'time' => 3600,//格式为秒
                 'func' => 'test',
-                'name' => 'test600',//设置执行文件唯一标识（每个task执行名称需不同）
+                'name' => 'test-3600-check-cron',//设置执行文件唯一标识（每个task执行名称需不同）
                 ),
             // //每天什么时段
             // array(

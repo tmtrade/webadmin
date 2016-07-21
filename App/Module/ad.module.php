@@ -107,17 +107,6 @@ class AdModule extends AppModule
         $list = $this->import('ad')->findAll($r);
 	
 	$res = $this->import('ad')->remove($r);
-	if($res){
-	    Log::write(), date('Y-m-d').'-cronjob-ad.log');
-	    return true;
-	}else{
-	    return false;
-	}
-	
-	$r = array();
-	$r['raw'] = "enddate <=".time();
-        $list = $this->import('ad')->findAll($r);
-	
 	$log = array(
             'type'      => '1',
             'action'    => '53',

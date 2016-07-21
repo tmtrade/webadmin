@@ -15,6 +15,7 @@ class TotalModule extends AppModule
     public $models = array(
         'total'		    => 'total',
         'totalLog'          => 'totalLog',
+	'passSale'          => 'passSale',
     );
 
     /**
@@ -62,39 +63,57 @@ class TotalModule extends AppModule
      * @param type $type 1:增加 2：减少
      * @return $res
      */
-    public function updatePassCount($uid,$type){
+    public function updatePassCount($uid,$type,$number){
 	$r['eq'] = array('uid'=>$uid);
 	$list = $this->import('total')->find($r);
 	if(empty($list['uid'])){
-	    $date = array(
+	    $data = array(
 		'uid'	    => $uid,
 		'amount'    => 0,
 		'pass_count'=> 0,
-	    );
-	    $this->addTotal($date);
+            );
+	    $this->addTotal($data);
 	}
 	if($type==1){
-	    $record = array(
-		'pass_count'    => array('pass_count', 1),
-	    );
+	    //判断原始有无通过
+	    $p['eq'] = array('uid'=>$uid,'number'=>$number);
+	    $pass_count = $this->import('passSale')->count($p);
+	    if( $pass_count>0 ){
+		return true;
+	    }else{
+		$data= array(
+		    'uid'       => $uid,
+		    'number'    => $number,
+		);
+		$this->addPassSale($data);
+	    }           
+            $count = $list['pass_count']+1;
+            if( $count==10 || (($count)%10==0 && $count >= 0)){
+                $record = array(
+                    'pass_count'    =>0,
+                );
+            }else{                
+                $record = array(
+                    'pass_count'    => array('pass_count', 1),
+                );
+            }
 	}else{
-	    $record = array(
-		'pass_count'    => array('pass_count', -1),
-	    );
+	    if( $list['pass_count'] <= 0 ){ 
+                $record = array(
+                    'pass_count'    => 0,
+                );                
+            }else{                
+                $record = array(
+                    'pass_count'    => array('pass_count', -1),
+                );
+            }
 	}
-	
-	$count = $list['pass_count']+1;
-	if( $count==10 || (($count)%10==0 && $count >= 0)){
-	    $record = array(
-		'pass_count'    =>0,
-	    );
+        
+	$res	 = $this->import("total")->modify($record, $r);	
+	if( $type == 1 && ($count)%10 == 0 && $count > 0 ){//每通过10条信息加10个蝉豆
+	    $res2 = $this->upTotal($uid, 1, 10, "审核通过第{$count}条商品");//修改用户豆豆
 	}
-	$res	 = $this->import("total")->modify($record, $r);
-	
-	if( ($count)%10==0 && $type==1 && $count > 0 ){//每通过10条信息加10个蝉豆
-	    $this->upTotal($uid,1,10,"审核通过第{$count}条商品");//修改用户豆豆
-	}
-	return $res;
+	return ($res && $res2) ? true : false;
     }     
     
     /**
@@ -113,6 +132,15 @@ class TotalModule extends AppModule
      */
     public function addTotal($data){
 	$res = $this->import('total')->create($data);
+	return $res;
+    }
+    
+    /**
+     * 添加用户通过商品记录
+     * @param array $data
+     */
+    public function addPassSale($data){
+	$res = $this->import('passSale')->create($data);
 	return $res;
     }
 }

@@ -679,7 +679,7 @@ class InternalModule extends AppModule
 	
 	$info = $this->getSaleContact($saleId, $id);
 	if($info['uid']>0){
-	    $this->load('total')->updatePassCount($info['uid'], 1);//增加通过记录数
+	    $this->load('total')->updatePassCount($info['uid'], 1, $info['number']);//增加通过记录数
 	}
         if ( $this->isSaleUp($saleId) )  return true;
 

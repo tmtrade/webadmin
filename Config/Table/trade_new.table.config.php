@@ -317,6 +317,10 @@ $tbl['totalLog'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
-
+$tbl['passSale'] = array(
+	'name'		=> $prefixs.'pass_sale',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 
 ?>

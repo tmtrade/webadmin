@@ -2,15 +2,62 @@
 class RunModule extends AppModule
 {
     public $models = array(
-        'ts'        => 'tsale',
-        'tst'       => 'tsaleTrademark',
+        //'ts'        => 'tsale',
+        //'tst'       => 'tsaleTrademark',
         'sale'      => 'sale',
+        'contact'   => 'saleContact',
         'patent'    => 'patent',
         'ptinfo'    => 'patentInfo',
         'ptlist'    => 'patentList',
         'ptcontact' => 'patentContact',
         'test'      => 'test',
     );
+
+    public function deleteNoPhoneContact($saleId=0)
+    {
+        $r = array();
+        $r['raw']   = " saleId > $saleId ";
+        $r['eq']    = array('source'=>'9','phone'=>'');
+        $r['group'] = array('saleId'=>'asc');
+        $r['col']   = array('saleId','count(id) as num','group_concat(id) as ids');
+        $r['limit'] = '10000';
+        $data = $this->import('contact')->find($r);
+        $success = $faild = array();
+        $_saleId = '';
+        foreach ($data as $k => $v) {
+            $rl         = array();
+            $rl['eq']   = array('saleId'=>$v['saleId']);
+
+            $count = $this->import('contact')->count($rl);
+
+            if ( $count > $v['num'] ){
+                $success[$v['saleId']] = $v['ids'];
+                $role = array('in'=>array('id'=>array_filter(explode(',', $v['ids']))));
+                $this->import('contact')->remove($role);
+            }else{
+                $faild[$v['saleId']] = $v['ids'];
+            }
+
+            if ( $k == (count($data)-1) ){
+                echo "\n saleId = ".$v['saleId'];
+            }
+        }
+        echo "<pre>";
+        echo "\n success Data: \n";
+        print_r($success);
+
+        echo "\n faild Data: \n";
+        print_r($faild);
+
+        $_log = array(
+            'saleId'    => $_saleId,
+            'success'   => $success,
+            'faild'     => $faild,
+        );
+        $name = 'deleteContact-'.date('Y-m-d-H-i').randCode(4).'.log';
+
+        Log::write(print_r($_log,1), $name);
+    }
 
     // public function importOp()
     // {

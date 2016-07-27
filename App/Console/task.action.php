@@ -48,7 +48,7 @@ class TaskAction extends QueueCommonAction
 
     public function importPt()
     {
-        $this->load('run')->importPt();
+        //$this->load('run')->importPt();
     }
 
 
@@ -64,6 +64,11 @@ class TaskAction extends QueueCommonAction
     // {
     //     $this->load('run')->importOp();
     // }
+
+    public function deleteContact()
+    {
+        $this->load('run')->deleteNoPhoneContact();
+    }
 
 }
 ?>

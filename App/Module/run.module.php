@@ -458,7 +458,7 @@ class RunModule extends AppModule
         }
     }
 
-    public function runRegDate()
+    public function runRegDate($type=1)
     {
         $id     = 0;
         $num    = 0;
@@ -474,7 +474,7 @@ class RunModule extends AppModule
                 $p      = intval($num/1000) > 0 ? intval($num/1000) + 1 : 1;
                 $end    = $this->msectime() - $start;
                 if ( empty($succList) && empty($faildList) ){
-                    exit('no data to update');
+                    if ($type==1) exit('no data to update');
                 }
                 $this->commit('sale');
 
@@ -495,7 +495,7 @@ class RunModule extends AppModule
                     $name = 'update'.date("Y-m-d")."($rand)-list$p-----faild.log";
                     Log::write(print_r($_log,1), $name);
                 }
-                exit('no data to update');
+                if ($type==1) exit('no data to update');
             }
 
             $id         = $sale['id'];
@@ -540,11 +540,12 @@ class RunModule extends AppModule
                     $name = 'update'.date("Y-m-d")."($rand)-list$p-----faild.log";
                     Log::write(print_r($_log,1), $name);
                 }
-                echo "list-$p finish...\n";
+                if ($type==1) echo "list-$p finish...\n";
                 $succList   = $faildList = array();
                 $this->begin('sale');
             }
         }
+        return true;
     }
 
     private function getRegDate($id=0)

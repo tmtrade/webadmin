@@ -33,6 +33,14 @@ class CronAction extends QueueCommonAction
                 'func' => 'test',
                 'name' => 'test-3600-check-cron',//设置执行文件唯一标识（每个task执行名称需不同）
                 ),
+             //每周什么时段
+            array(
+                'type' => 'week',//设置时间执行一次
+                'day'  => '5',// 1~7 （周一到周日）
+                'time' => '23:23',//24小时制时间如：08:30（表示早上8点半）
+                'func' => 'updateRegDate',
+                'name' => 'trade_update_regDate_cron',//设置执行文件唯一标识（每个task执行名称需不同）
+                ),
             // //每天什么时段
             // array(
             //     'type' => 'day',//设置时间执行一次

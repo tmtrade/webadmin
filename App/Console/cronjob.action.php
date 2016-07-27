@@ -38,5 +38,18 @@ class CronjobAction extends QueueCommonAction
 	   return $this->load('ad')->delPastAd();
     }
 
+    /**
+    * 更新注册日期
+    * @author   Xuni
+    * @since    2016-07-27
+    * 每周五午夜23点23分执行
+    * @access   public
+    * @return   boolean
+    */
+    public function updateRegDate(){
+       return $this->load('run')->runRegDate(0);
+    }
+
+
 }
 ?>

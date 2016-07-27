@@ -6,6 +6,7 @@ class RunModule extends AppModule
         //'tst'       => 'tsaleTrademark',
         'sale'      => 'sale',
         'contact'   => 'saleContact',
+        'tminfo'    => 'saleTminfo',
         'patent'    => 'patent',
         'ptinfo'    => 'patentInfo',
         'ptlist'    => 'patentList',
@@ -20,8 +21,9 @@ class RunModule extends AppModule
         $r['eq']    = array('source'=>'9','phone'=>'');
         $r['group'] = array('saleId'=>'asc');
         $r['col']   = array('saleId','count(id) as num','group_concat(id) as ids');
-        $r['limit'] = '10000';
+        $r['limit'] = '5000';
         $data = $this->import('contact')->find($r);
+        if ( empty($data) ) exit('no data can delete!');
         $success = $faild = array();
         $_saleId = '';
         foreach ($data as $k => $v) {
@@ -36,18 +38,23 @@ class RunModule extends AppModule
                 $this->import('contact')->remove($role);
             }else{
                 $faild[$v['saleId']] = $v['ids'];
+                $role = array('eq'=>array('saleId'=>$v['saleId']));
+                $role1 = array('eq'=>array('id'=>$v['saleId']));
+                $this->import('sale')->remove($role1);
+                $this->import('contact')->remove($role);
+                $this->import('tminfo')->remove($role);
             }
 
             if ( $k == (count($data)-1) ){
-                echo "\n saleId = ".$v['saleId'];
+                //echo "\n saleId = ".$v['saleId'];
             }
         }
-        echo "<pre>";
-        echo "\n success Data: \n";
-        print_r($success);
+        // echo "<pre>";
+        // echo "\n success Data: \n";
+        // print_r($success);
 
-        echo "\n faild Data: \n";
-        print_r($faild);
+        // echo "\n faild Data: \n";
+        // print_r($faild);
 
         $_log = array(
             'saleId'    => $_saleId,
@@ -57,6 +64,7 @@ class RunModule extends AppModule
         $name = 'deleteContact-'.date('Y-m-d-H-i').randCode(4).'.log';
 
         Log::write(print_r($_log,1), $name);
+        exit('finished!!!');
     }
 
     // public function importOp()

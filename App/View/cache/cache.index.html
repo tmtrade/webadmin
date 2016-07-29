@@ -45,6 +45,13 @@
         <button class="btn btn-info" id="cls-other" type="button" <?if($otherSize<=0){echo 'disabled="disabled"';}?>>清除</button>
     </div>
 
+    <div class="margin-sx-10">
+        <label>一只蝉客服上线：<?=$isOnline=='yzc'?'上线中':'已下线'?>(状态)
+        </label>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-danger" id="cls-online" ctype="<?=$isOnline?>" type="button"><?=($isOnline=='yzc')?'下线':'上线'?></button>
+    </div>
+
 
 </div>
 
@@ -57,6 +64,41 @@
 
         $("#cls-other").click(function(){
             cancel(6);
+        });
+
+        $("#cls-online").click(function(){
+            var type = $(this).attr('ctype');
+            if ( type == 'yzc' ){
+                var _str = '确定要下线吗？';
+            }else{
+                var _str = '要上线了吗？';
+            }
+            layer.confirm(_str, {
+                btn: ['是的','算了'], //按钮
+                scrollbar: false,
+            }, function(){
+                $.ajax({
+                    type : 'post',
+                    url  : '/cache/online/',
+                    data : {ctype:type},
+                    dataType : 'json',
+                    success : function (data){
+                        if (data.code==1){
+                            layer.msg('操作成功', {
+                                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            var msg = data.msg == undefined ? '操作失败' : data.msg;
+                            layer.msg(msg);
+                        }
+                    },
+                    error : function (data){
+                        layer.msg('操作失败，请稍后重试。');
+                    }
+                });
+            });
         });
 
     });

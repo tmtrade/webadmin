@@ -9,6 +9,7 @@
 class CacheAction extends AppAction
 {
 //	public $debug = true;
+	protected $onlineName = 'YzCoNlInE';
 	
 	/**
 	 * 缓存管理
@@ -27,6 +28,7 @@ class CacheAction extends AppAction
 
 		$this->set('indexSize', $indexSize);
 		$this->set('otherSize', $otherSize);
+		$this->set('isOnline', $this->com('redisQc')->get($this->onlineName));
 		$this->display();
 	}
 
@@ -41,6 +43,19 @@ class CacheAction extends AppAction
 		//清除缓存（注意：清除前要关闭缓存配置，否则不会执行到这里）
 		$this->com('qcache')->select($cid)->clear();
 		$this->returnAjax(array('code'=>1));
+	}
+
+	public function online()
+	{
+		$ctype = $this->input('ctype', 'string', '');
+		if ( $ctype == 'yzc' ){
+			$res = $this->com('redisQc')->set($this->onlineName, 'leyu');
+		}else{
+			$res = $this->com('redisQc')->set($this->onlineName, 'yzc');
+		}
+
+		if ($res) $this->returnAjax(array('code'=>1));
+		$this->returnAjax(array('code'=>2,'msg'=>'操作未成功,请稍后再试!'));
 	}
 
 

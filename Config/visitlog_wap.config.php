@@ -3,9 +3,9 @@
  * 定义页面和页面模块的属性ID
  */
 return $frequency = array(
-    "1" => array(
+    "201" => array(
         'title' => '首页',
-        "web_type" => "1",
+        "web_type" => "201",
         'view' => array(
             '1' => array(
                 'title' => 'BANNER',
@@ -57,9 +57,9 @@ return $frequency = array(
             ),
         ),
     ),
-    "2" => array(
+    "202" => array(
         'title' => '商标筛选页',
-        "web_type" => "2",
+        "web_type" => "202",
         'view' => array(
             '1' => array(
                 'title' => '筛选分类',
@@ -83,9 +83,9 @@ return $frequency = array(
             ),
         ),
     ),
-    "3" => array(
+    "203" => array(
         'title' => '专利筛选页',
-        "web_type" => "3",
+        "web_type" => "203",
         'view' => array(
             '1' => array(
                 'title' => '专利类型',
@@ -105,9 +105,9 @@ return $frequency = array(
             ),
         ),
     ),
-    "4" => array(
+    "204" => array(
         'title' => '商标详情页',
-        "web_type" => "4",
+        "web_type" => "204",
         'view' => array(
             '1' => array(
                 'title' => '推荐模块',
@@ -127,9 +127,9 @@ return $frequency = array(
             ),
         ),
     ),
-    "5" => array(
+    "205" => array(
         'title' => '专利详情页',
-        "web_type" => "5",
+        "web_type" => "205",
         'view' => array(
             '1' => array(
                 'title' => '推荐模块',
@@ -150,45 +150,45 @@ return $frequency = array(
         ),
     ),
     
-    "100" => array(
+    "200" => array(
         'title' => '通用',
-        "web_type" => "100",
+        "web_type" => "200",
         'view' => array(
-            '100' => array(
+            '200' => array(
                 'title' => '导航商标',
-                'web_id' => '100',
+                'web_id' => '200',
             ),
-            '101' => array(
+            '201' => array(
                 'title' => '导航专利',
-                'web_id' => '101',
+                'web_id' => '201',
             ),
-            '102' => array(
+            '202' => array(
                 'title' => '导航客服',
-                'web_id' => '102',
+                'web_id' => '202',
             ),
-            '103' => array(
+            '203' => array(
                 'title' => '导航菜单',
-                'web_id' => '103',
+                'web_id' => '203',
             ),
-            '104' => array(
+            '204' => array(
                 'title' => '一只蝉首页',
-                'web_id' => '104',
+                'web_id' => '204',
             ),
-            '105' => array(
+            '205' => array(
                 'title' => '我要出售 ',
-                'web_id' => '105',
+                'web_id' => '205',
             ),
-            '106' => array(
+            '206' => array(
                 'title' => '购买登记',
-                'web_id' => '106',
+                'web_id' => '206',
             ),
-            '107' => array(
+            '207' => array(
                 'title' => '我的蝉窝',
-                'web_id' => '107',
+                'web_id' => '207',
             ),
-            '108' => array(
+            '208' => array(
                 'title' => '出售者平台',
-                'web_id' => '108',
+                'web_id' => '208',
             ),
         ),
     ),

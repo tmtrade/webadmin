@@ -27,16 +27,17 @@ class VisitlogModule extends AppModule
 		if($this->configData){
 			$data = $this->configData;
 		}else{
-			$data = require ConfigDir.'/visitlog.config.php';
+			$data1 = require ConfigDir.'/visitlog.config.php';
+			$data2 = require ConfigDir.'/visitlog_wap.config.php';
+			$data = $data1+$data2;
 			$this->configData = $data;
 		}
 		if($type){
+			$temp = $data[100]['view']+$data[200]['view'];
+			unset($data[100]);
+			unset($data[200]);
 			foreach($data as $k=>$v){ //将通用的追加到每个页面
-				if($k!=100){
-					$data[$k]['view'] += $data[100]['view'];
-				}else{
-					unset($data['100']);
-				}
+				$data[$k]['view'] += $temp;
 			}
 		}
 		return $data;

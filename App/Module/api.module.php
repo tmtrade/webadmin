@@ -4,9 +4,9 @@
  *
  * 处理API接口方法
  * 
- * @package	Module
- * @author	Xuni
- * @since	2016-03-01
+ * @package    Module
+ * @author    Xuni
+ * @since    2016-03-01
  */
 class ApiModule extends AppModule
 {   
@@ -18,25 +18,26 @@ class ApiModule extends AppModule
         '2'     => '10',//一只蝉
         '3'     => '3',//其他
         '4'     => '12',//出售者平台
+        '5'     => '13',//移动端
         );
 
-	/**
-	 * 添加出售信息
-	 * @author	Xuni
-	 * @since	2016-03-01
-	 * @param	array		$param		接口数据包
-	 * @return	boolean
-	 */
-	public function addSale($params)
-	{
+    /**
+     * 添加出售信息
+     * @author    Xuni
+     * @since    2016-03-01
+     * @param    array        $param        接口数据包
+     * @return    boolean
+     */
+    public function addSale($params)
+    {
         //获取对应来源值，没有则为3：其他
         $source = $this->sourceList[$params['source']] ? $this->sourceList[$params['source']] : 3;
         $number = $params['number'];
         $memo   = $params['memo']?$params['memo']:'添加出售信息接口默认创建商品';
-	
-	$first = $this->load('trademark')->getFirst($number, 'n');
-	if ($first == 3) return '113'; //商标已无效
-	    //
+    
+        $first = $this->load('trademark')->getFirst($number, 'n');
+        if ($first == 3) return '113'; //商标已无效
+        //
         //判断商标号是否正确
         $info = $this->load('trademark')->getInfo($number, array('id','auto as `tid`'));
         if ( empty($info['id']) ) return '107';
@@ -47,20 +48,21 @@ class ApiModule extends AppModule
         }else{
             $saleId = $this->load('internal')->addDefault($number, $memo);
         }
-	
+    
         //如果商标出售状态在“销售中”，直接审核通过
         $isVerify = $this->load('internal')->isSaleUp($saleId) ? 1 : 2;
-	
+    
         //如果是用户中心来的数据，需要使用uid判断重复
         if ( $source == 11 || $source == 12 ){
             if ( $params['uid'] <= 0 ) return '108';
             $isHas = $this->load('internal')->existContact($number, '', $params['uid']);
-	    if($isVerify==1){
-		$this->load('total')->updatePassCount($params['uid'], 1, $number);//自动通过增加通过记录数
-		$this->checkMsg($params['uid']);
-	    }
+            if($isVerify==1){
+                $this->load('total')->updatePassCount($params['uid'], 1, $number);//自动通过增加通过记录数
+                $this->checkMsg($params['uid']);
+            }
         }else{
-            $isHas = $this->load('internal')->existContact($number, $params['phone']);
+            $isVerify   = 2;
+            $isHas      = $this->load('internal')->existContact($number, $params['phone']);
         }
         if ( $isHas ) return '109';//如果已经存在，直接返回正确
 
@@ -85,7 +87,7 @@ class ApiModule extends AppModule
             return '999';//成功
         }
         return '904';//添加失败
-	}
+    }
 
     /**
      * 修正联系人价格

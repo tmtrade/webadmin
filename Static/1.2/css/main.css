@@ -28,7 +28,7 @@
     float: left;
     margin-top:40px;
 }
-.spzl span{
+.spzl span.show-pic{
     display:inline-block;
     width: 164px;
     height: 106px;
@@ -39,17 +39,17 @@
     vertical-align: middle;
     border:1px  solid #dddddd;
 }
-.spzl span img{
+.spzl span.show-pic img{
     display: inline-block;
     max-width: 162px;
     max-height: 102px;
     vertical-align: middle;
 }
 @media all and (max-width: 1300px){
-    .spzl span img{
+    .spzl span.show-pic img{
         max-width: 124px;
     }
-    .spzl span{
+    .spzl span.show-pic{
         width:42.6%;
 
     }

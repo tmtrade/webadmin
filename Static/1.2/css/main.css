@@ -2,6 +2,70 @@
     padding: 0;
     border: 0;
 }
+.table-hover {
+    min-width: 1240px;
+}
+.table-hover tr td{
+    width:7%;
+    vertical-align: middle !important;
+}
+.sbzl-tit input{
+    margin-right: 10px;
+    vertical-align: middle;
+    margin-top:1px;
+}
+.spzl{
+    min-width: 300px !important;
+    width:22% !important;
+    padding-right: 0px !important;
+}
+.opera{
+    width:15% !important;
+    padding-right: 0px !important;
+}
+.spzl input{
+    display: inline-block;
+    float: left;
+    margin-top:40px;
+}
+.spzl span{
+    display: inline-block;
+    max-width: 164px;
+    float: left;
+    margin-left: 10px;
+}
+.spzl span img{
+    max-width: 164px;
+    max-height: 106px;
+}
+@media all and (max-width: 1400px){
+    .spzl span img{
+        max-width: 124px;
+    }
+    .spzl span{
+        width:42.6%;
+
+    }
+}
+
+.spzl p{
+    float: left;
+    max-width: 37%;
+    margin-left: 5px;
+    margin-top:8px;
+    font-weight: normal;
+}
+
+.spzl p b{
+    font-size: 14px;
+    font-weight: normal;
+}
+.spzl p label{
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 22px;
+    margin-top: 8px;
+}
 .wrap{
     width: 96%;
     margin:0 auto;

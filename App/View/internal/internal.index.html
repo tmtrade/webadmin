@@ -177,26 +177,54 @@
             <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
                 <thead>
                     <tr class="active">
-                        <th><input type="checkbox" id="chkAll"></th>
-                        <th>商标号</th>
-                        <th>销售<br>状态</th>
-                        <th>出售<br>时间</th>
-                        <th>商标名</th>
-                        <th>交易<br>类型</th>
-                        <th>类别</th>
-                        <th>顾问<br>部门</th>
-                        <th>来源<br>渠道</th>
+                        <th class="sbzl-tit"><input type="checkbox" id="chkAll">商品资料</th>
+                        <th>出售时间</th>
+                        <th>商品状态</th>
+                        <th>来源渠道</th>
+                        <th>顾问部门</th>
                         <th>联系方式</th>
                         <th>底价</th>
                         <th>售价</th>
-                        <th>操作</th>
+                        <th>当前客户跟进</th>
+                        <th style="text-indent: 25px;">商品操作</th>
                     </tr>
                 </thead>
                 <tbody class="table-list">
                 <? foreach ($saleList as $k => $v) {  ?>
                 <tr>
-                    <td><input type="checkbox" name="chkId[]" class="chklist" value="<?=$v['id']?>"></td>
-                    <td><?=$v['number']?></td>
+                    <!--商品资料-->
+                    <td class="spzl">
+                        <input type="checkbox" name="chkId[]" class="chklist" value="<?=$v['id']?>">
+                        <span class="show-pic">
+                            <img src="<?=StaticDir?>1.2/images/pic.jpg">
+                        </span>
+                        <p>
+                            <b title="<?=$v['name']?>">商标名：
+                        <?if(mb_strlen($v['name'],'utf8') > 15)
+                        {echo mb_substr($v['name'],0,12,'utf8')."...";}
+                        else{echo $v['name'];}?>
+
+                             </b>
+                            <label>商标号：<?=$v['number']?><br/>
+                                    商标类别：
+                                <?if(count(explode(',', $v['class'])) > 1){?>
+                        <span class="classMore">多类
+                        <div class="more" >
+                            <ul style=" max-height: 150px;  overflow-y: auto;width: 80px;">
+                                <? foreach (explode(',', $v['class']) as $cls) {
+                                    echo "<li>$cls 类</li>";
+                                }?>
+                                </ul>
+                        </div></span>
+                                <?}else{echo $v['class']."类";}?>
+                            </label>
+                        </p>
+                    </td>
+                    <!--出售时间-->
+                    <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?>
+                        <?if( !empty($v['tminfo']['embellish'])){?><span class="blue">包</span><?}?>
+                    </td>
+                    <!--商品状态-->
                     <td><span <?if ($v['status']==1){
                             echo 'class="blue"';
                         }elseif ($v['status']==2){
@@ -204,88 +232,77 @@
                         }else{
                             echo 'class="yellow"';
                         }
-                        ?> ><?=$saleStatus[$v['status']]?></span></td>
-                    <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?>
-                    <?if( !empty($v['tminfo']['embellish'])){?><span class="blue">包</span><?}?></td>
-                    <td title="<?=$v['name']?>"><?if(mb_strlen($v['name'],'utf8') > 15)
-                    {echo mb_substr($v['name'],0,12,'utf8')."...";}
-                    else{echo $v['name'];}?></td>
-                    <td><? if ($v['isSale'] == 1 && $v['isLicense'] == 1) {
-                            echo $saleType[3];
-                        }elseif($v['isSale'] == 1){
-                            echo $saleType[1];
-                        }elseif($v['isLicense'] == 1){
-                            echo $saleType[2];
-                        }?></td>
-                    <td><?if(count(explode(',', $v['class'])) > 1){?>
-                        <span class="classMore">多类
-                        <div class="more" >
-                            <ol style=" max-height: 150px;  overflow-y: auto;width: 80px;">
-                                <? foreach (explode(',', $v['class']) as $cls) {
-                                    echo "<li>$cls 类</li>";
-                                }?>
-                            </ul>
-                        </div></span>
-                    <?}else{echo $v['class']."类";}?></td>
-                    <td class="showMore"><?if(count($v['contact']) > 1){echo "多顾问";}else
-                    {$ct=current($v['contact']);echo $ct['advisor'].'-'.$ct['department'];} ?>
+                        ?> ><?=$saleStatus[$v['status']]?></span>
                     </td>
+                    <!--来源渠道-->
                     <td class="showMore"><?if(count($v['contact']) > 1){echo '多渠道';}
-                    else{$ct=current($v['contact']);echo $saleSource[$ct['source']];} ?>
+                        else{$ct=current($v['contact']);echo $saleSource[$ct['source']];} ?>
                     </td>
-                    <td class="showMore"> 
-                    <?if(count($v['contact']) > 1){?>
+                    <!--顾问部门-->
+                    <td class="showMore"><?if(count($v['contact']) > 1){echo "多顾问";}else
+                        {$ct=current($v['contact']);echo $ct['advisor'].'-'.$ct['department'];} ?>
+                    </td>
+                    <!--联系方式-->
+                    <td class="showMore">
+                        <?if(count($v['contact']) > 1){?>
                         <span>多联系人</span>
                         <div class="more">
                             <ul <?if($k>10){echo 'style="bottom:0px;top:inherit"';}?> >
                             <?foreach ($v['contact'] as $key => $value) { ?>
-                                <li><table width="99%"><tr align="center">
+                            <li><table width="99%"><tr align="center">
                                 <td width="20%"><?=$value['advisor'].'-'.$value['department']?></td>
                                 <td width="15%"><?=$saleSource[$value['source']]?></td>
                                 <td width="35%">
-                                <?if($value['isVerify'] == 2){?><span class="red">审</span><?}?>
-                                <?php echo mbSub( $value['name'] , 0, 3);?>-<?=$value['phone']?></td>
+                                    <?if($value['isVerify'] == 2){?><span class="red">审</span><?}?>
+                                    <?php echo mbSub( $value['name'] , 0, 3);?>-<?=$value['phone']?></td>
                                 <td width="15%"><?=$value['price']?></td>
                                 <td width="15%">
                                     <?if ( $value['isVerify'] != 1 ) {?>
-                                        <? if( in_array('21', $_role_) ){ ?>
-                                        <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>, <?=$value['id']?>);">通过</a>
-                                        <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>, <?=$value['id']?>, <?=count($v['contact'])?>);">驳回</a>
-                                        <? } ?>
+                                    <? if( in_array('21', $_role_) ){ ?>
+                                    <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>, <?=$value['id']?>);">通过</a>
+                                    <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>, <?=$value['id']?>, <?=count($v['contact'])?>);">驳回</a>
+                                    <? } ?>
                                     <?}?>
                                 </td>
-                                </tr></table>
-                            <?}?>
-                            </ul>
+                            </tr></table>
+                                <?}?>
+                                </ul>
                         </div>
-                    <? }elseif(count($v['contact']) == 1){ ?>
+                        <? }elseif(count($v['contact']) == 1){ ?>
                         <?$ct=current($v['contact']);
                         if($ct['isVerify'] == 2){echo '<font class="red">审</font>';}
                         echo mbSub( $ct['name'] , 0, 3)."-".$ct['phone'];?>
-                    <div class="more" style="min-weight:150px;">
-                        <?if ( $ct['isVerify'] != 1 ) {?>                         
+                        <div class="more" style="min-weight:150px;">
+                            <?if ( $ct['isVerify'] != 1 ) {?>
                             <ol class="singleVerify"><li>
-                            <? if( in_array('21', $_role_) ){ ?>
-                            <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>, <?=$ct['id']?>);">通过</a>
-                            <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>, <?=$ct['id']?>, <?=count($v['contact'])?>);">驳回</a>
+                                <? if( in_array('21', $_role_) ){ ?>
+                                <a href="javascript:void(0);" onclick="setVerify(<?=$v['id']?>, <?=$ct['id']?>);">通过</a>
+                                <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>, <?=$ct['id']?>, <?=count($v['contact'])?>);">驳回</a>
                             </li></ol>
                             <? } ?>
-                        <?}?>                        
-                    <?}?>
+                            <?}?>
+                            <?}?>
                     </td>
+                    <!--底价-->
                     <td class="showMore">
-                    <?if(count($v['contact']) > 1){echo '多底价';}else{$ct=current($v['contact']);echo $ct['price'];} ?>
+                        <?if(count($v['contact']) > 1){echo '多底价';}else{$ct=current($v['contact']);echo $ct['price'];} ?>
                     </td>
+                    <!--售价-->
                     <td><?if($v['priceType']==2){echo "议价";}else{if(($v['isOffprice']==1 && $v['salePriceDate']>time()) || ($v['isOffprice']==1 && $v['salePriceDate']==0) ){echo $v['salePrice'];}else{echo $v['price'];}}?></td>
-                    <td>
+                    <!--当前客户更进-->
+                   <td>
+                       需要套程序
+                   </td>
+                    <!--商品操作-->
+                    <td class="opera">
                         <span class="icon icon-delete">
                         <?if($v['status']==1){?>
                             <? if( in_array('2', $_role_) || (in_array('26', $_role_) && $v['isTop'] == 0 && $v['listSort'] == 0) ){ ?>
                             <a href="javascript:;" class="btn-warning" onclick="doDown(<?=$v['id']?>);">下架</a>
                             <? } ?>
-                        <?}elseif($v['status']==2 && count($v['contact']) > 0){?>
+                            <?}elseif($v['status']==2 && count($v['contact']) > 0){?>
                             <a href="javascript:;" class="btn-success" onclick="doUp(<?=$v['id']?>);">上架</a>
-                        <?}?></span>
+                            <?}?></span>
                         <span class="icon icon-editor">
                         <a href="/internal/edit/?id=<?=$v['id']?>" class="btn-info">编辑</a>
                         </span>
@@ -293,6 +310,7 @@
                         <a href="javascript:;" class="btn-info" onclick="complateSale(<?=$v['id']?>)">交易完成</a>
                         </span>
                     </td>
+
                 </tr>
                 <? } ?>
                 </tbody>

@@ -196,7 +196,7 @@
                     <td class="spzl">
                         <input type="checkbox" name="chkId[]" class="chklist" value="<?=$v['id']?>">
                         <span class="show-pic">
-                            <img src="<?=StaticDir?>1.2/images/pic.jpg">
+                            <img src="<?=$v['imgUrl']?>" onerror='this.src="<?=StaticDir?>1.2/images/pic.jpg"'>
                         </span>
                         <p>
                             <b title="<?=$v['name']?>">商标名：
@@ -291,7 +291,7 @@
                     <td><?if($v['priceType']==2){echo "议价";}else{if(($v['isOffprice']==1 && $v['salePriceDate']>time()) || ($v['isOffprice']==1 && $v['salePriceDate']==0) ){echo $v['salePrice'];}else{echo $v['price'];}}?></td>
                     <!--当前客户更进-->
                    <td>
-                       需要套程序
+                       --
                    </td>
                     <!--商品操作-->
                     <td class="opera">

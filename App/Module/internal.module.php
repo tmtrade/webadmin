@@ -1001,5 +1001,34 @@ class InternalModule extends AppModule
         $this->commit('income');
         return 0;
     }
+
+    //获取单条商标包装图片
+    public function saleImg($number)
+    {
+        $saleId = $this->load('internal')->existsale($number);
+
+        if ( $saleId ) {
+            return $this->getViewImg($saleId);
+        }
+
+        return $this->load('trademark')->getImg($data['number']);
+    }
+
+    //获取详情图片
+    public function getViewImg($id)
+    {   
+        if ( $id <= 0 ) return '';
+
+        $r['eq']    = array('saleId'=>$id);
+        $r['col']   = array('embellish','number');
+        $data       = $this->import("tminfo")->find($r);
+        if( empty($data['embellish']) ){
+            if ( empty($data['number']) ) return '';
+            $url = $this->load('trademark')->getImg($data['number']);
+        }else{
+            $url = TRADE_URL.$data['embellish'];
+        }
+        return $url;
+    }
 }
 ?>

@@ -21,30 +21,31 @@ class internalAction extends AppAction {
      * @return	void
      */
     public function index() {
-	$this->getSetting();
-	//参数
-	$params = $this->getFormData();
-	$page = $this->input('page', 'int', '1');
+		$this->getSetting();
+		//参数
+		$params = $this->getFormData();
+		$page = $this->input('page', 'int', '1');
 
-	$res = $this->load('internal')->getList($params, $page, $this->rowNum);
+		$res = $this->load('internal')->getList($params, $page, $this->rowNum);
 
-	$total = empty($res['total']) ? 0 : $res['total'];
-	$list = empty($res['rows']) ? array() : $res['rows'];
+		$total = empty($res['total']) ? 0 : $res['total'];
+		$list = empty($res['rows']) ? array() : $res['rows'];
 
-	$pager = $this->pager($total, $this->rowNum);
-	$pageBar = empty($list) ? '' : getPageBar($pager);
+		$pager = $this->pager($total, $this->rowNum);
+		$pageBar = empty($list) ? '' : getPageBar($pager);
 
-	$result = array();
-	//获取所有联系人
-	foreach ($list as $k => $v) {
-	    $result[$k] = $this->load('internal')->getSaleInfo($v['id']);
-	}
-	$this->set("allTotal", $this->load('internal')->countSale());
-	$this->set('total', $total);
-	$this->set("pageBar", $pageBar);
-	$this->set('s', $params);
-	$this->set('saleList', $result);
-	$this->display();
+		$result = array();
+		//获取所有联系人
+		foreach ($list as $k => $v) {
+		    $result[$k] = $this->load('internal')->getSaleInfo($v['id']);
+		    $result[$k]['imgUrl'] = $this->load('internal')->saleImg($result[$k]['number']);
+		}
+		$this->set("allTotal", $this->load('internal')->countSale());
+		$this->set('total', $total);
+		$this->set("pageBar", $pageBar);
+		$this->set('s', $params);
+		$this->set('saleList', $result);
+		$this->display();
     }
 
     /**

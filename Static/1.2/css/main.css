@@ -29,16 +29,23 @@
     margin-top:40px;
 }
 .spzl span{
-    display: inline-block;
-    max-width: 164px;
+    display:inline-block;
+    width: 164px;
+    height: 106px;
+    line-height: 100px;
     float: left;
     margin-left: 10px;
+    text-align: center;
+    vertical-align: middle;
+    border:1px  solid #dddddd;
 }
 .spzl span img{
-    max-width: 164px;
-    max-height: 106px;
+    display: inline-block;
+    max-width: 162px;
+    max-height: 102px;
+    vertical-align: middle;
 }
-@media all and (max-width: 1400px){
+@media all and (max-width: 1300px){
     .spzl span img{
         max-width: 124px;
     }
@@ -50,7 +57,7 @@
 
 .spzl p{
     float: left;
-    max-width: 37%;
+    max-width:40%;
     margin-left: 5px;
     margin-top:8px;
     font-weight: normal;

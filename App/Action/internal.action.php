@@ -94,19 +94,21 @@ class internalAction extends AppAction {
 
 	$price = $this->input('price', 'string', 0);
 	$type = $this->input('type', 'int', 0);
-	$uid = $this->input('uid', 'int', 0);
+	$uids = $this->input('uid', 'string', '');
 	$date = $this->input('date', 'string', '');
 	if ($date) {
 	    $date = strtotime($date);
 	} else {
 	    $date = strtotime(date('Y-m-d'));//当天零时
 	}
+        $uids = explode("|", $uids);
 	//保存到数据库中
 	$data = array(
 	    'saleId' => $saleId,
 	    'price' => $price,
 	    'type' => $type,
-	    'uid' => $uid,
+	    'uid' => $uids[1],
+            'cid' => $uids[0],
 	    'date' => $date,
 	);
 	$rst = $this->load('internal')->complateSale($data, $this->userId);
@@ -693,6 +695,39 @@ class internalAction extends AppAction {
 
 	$excelTable = $params['excelTable'];
 	$data['filepath'] = $this->load('excel')->downloadExcel($result, $excelTable);
+    }
+    
+    /*
+     * 历史交易列表
+     * 
+     */
+    public function history() {
+		$this->getSetting();
+		//参数
+		$page = $this->input('page', 'int', '1');
+                $params['type']         = $this->input('type', 'int', '0');
+                $params['dateStart']    = $this->input('dateStart', 'string', '');
+                $params['dateEnd']      = $this->input('dateEnd', 'string', '');
+
+		$res = $this->load('internal')->getHistoryList($params, $page, $this->rowNum);
+
+		$total = empty($res['total']) ? 0 : $res['total'];
+		$list = empty($res['rows']) ? array() : $res['rows'];
+
+		$pager = $this->pager($total, $this->rowNum);
+		$pageBar = empty($list) ? '' : getPageBar($pager);
+
+		
+		//获取所有联系人
+		foreach ($list as $k => &$v) {
+		    $v['info'] = unserialize($v['data']);
+		    $v['imgUrl'] = $this->load('internal')->saleImg($v['number']);
+                    $v['member'] = $this->load("member")->getMemberById($v['memberId']);
+		}
+		$this->set("pageBar", $pageBar);
+		$this->set('s', $params);
+		$this->set('saleList', $list);
+		$this->display();
     }
 
 }

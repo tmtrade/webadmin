@@ -11,6 +11,11 @@ return $menu = array(
 						'auth'	=> '1',
 					),
                                         '2' => array(
+						'title' => '商标交易历史',
+						'url'   => '/internal/history/',
+						'auth'	=> '36',
+					),
+                                        '3' => array(
 						'title' => '专利列表',
 						'url'   => '/patent/index/',
 						'auth'	=> '27',

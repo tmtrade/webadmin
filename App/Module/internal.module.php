@@ -954,7 +954,9 @@ class InternalModule extends AppModule
             $this->rollBack('income');
             return 1;
         }
+        $cid = $params['cid'];
         if($params['uid']){ //保存到收益表中
+            unset($params['cid']);
             //保存到收益表中
             unset($params['saleId']);
             $params['name'] = $sale['name']?$sale['name']:'暂无名称';
@@ -966,6 +968,8 @@ class InternalModule extends AppModule
             }
         }
         //保存操作记录
+        $sale['income']['cid'] = $cid;
+        $sale['income']['price'] = $params['price'];
         $r = array(
             'saleId'    => $saleId,
             'number'    => $sale['number'],
@@ -1011,7 +1015,7 @@ class InternalModule extends AppModule
             return $this->getViewImg($saleId);
         }
 
-        return $this->load('trademark')->getImg($data['number']);
+        return $this->load('trademark')->getImg($number);
     }
 
     //获取详情图片
@@ -1029,6 +1033,35 @@ class InternalModule extends AppModule
             $url = TRADE_URL.$data['embellish'];
         }
         return $url;
+    }
+    
+    
+    /*
+     * 获取历史记录列表
+     */
+    public function getHistoryList($params, $page, $limit=20)
+    {
+        $r = array();
+        $r['page']  = $page;
+        $r['limit'] = $limit;
+        $r['raw'] = ' 1 ';
+        
+        if ( !empty($params['type']) ){
+            $r['eq']['type'] = $params['type'];
+        }
+        
+        if ( !empty($params['dateStart']) ){
+            $r['raw'] .= " AND date >= ".strtotime($params['dateStart']);
+        }
+        if ( !empty($params['dateEnd']) ){
+            $r['raw'] .= " AND date <= ".(strtotime($params['dateEnd'])+24*3600);
+        }
+
+       
+        $r['order'] = array('date'=>'desc');
+        $res = $this->import('history')->findAll($r);
+        return $res;
+        
     }
 }
 ?>

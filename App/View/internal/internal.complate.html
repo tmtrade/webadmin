@@ -19,10 +19,9 @@
             <select name="uid">
                 <option value="0">其他</option>
                 <? foreach($contact as $item): ?>
-                <option value="<?=$item['uid']?>"><?=($item['name'].'('.$item['phone'].')')?></option>
+                <option value="<?=$item['id'].'|'.$item['uid']?>"><?=($item['name'].'('.$item['phone'].')')?></option>
                 <? endforeach; ?>
             </select>
-        </li>
         </li>
         <li><label> </label>
             <a href="javascript:void(0);" class="mj-liBtns" onclick="complateSale();">确定</a>

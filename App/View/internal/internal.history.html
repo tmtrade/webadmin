@@ -1,0 +1,185 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>商历史记录列表</li>
+    </ul>
+    <!-- <span style="float:right;margin-right:20px;color:red;">在售商标总数：<?=$total ?></span> -->
+</div>
+<div class="wrap">
+    <div class="mj-screening">
+        <div class="mj-seT f-clearfix">
+            <span>商标筛选</span>
+            <!-- <a href="javascript:void(0)">设置我的筛选偏好</a>-->
+        </div>
+        <form name="saleSearchForm" id="saleSearchForm" action="/internal/history/" method="GET">
+        <dl>
+            <dd>
+                <label> 销售状态：</label>
+                <select name="type" class="input input-sm">
+                    <option value="0">--请选择--</option>
+		    <option value="1" <?if($s['tyype']==1){echo 'selected';} ?> >交易完成</option>
+		    <option value="2" <?if($s['tyype']==2){echo 'selected';} ?> >无效删除</option>
+		    <option value="3" <?if($s['tyype']==3){echo 'selected';} ?> >驳回删除</option>
+                </select>
+                <label> 出售时间：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
+                <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input type="text" name="dateEnd" value="<?=$s['dateEnd']?>" class="input input-sm" readonly onclick="laydate()" />
+                
+            </dd>
+            <dd style="height: 35px;">
+                <a href="javascript:void(0);" style="margin: 10px;float: left;" class="mj-sBtn" id="mj-sBtn">搜索</a>
+            </dd>
+        </dl>
+        </form>
+    </div>
+    <div class="wrap-content">
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                    <tr class="active">
+                        <th class="sbzl-tit">商品资料</th>
+                        <th>操作时间</th>
+                        <th>来源渠道</th>
+                        <th>联系方式</th>
+                        <th>底价</th>
+                        <th>售价</th>
+			<th>历史类型</th>
+			<th>交易价格</th>
+			<th>操作人</th>
+			<th>备注</th>
+                    </tr>
+                </thead>
+                <tbody class="table-list">
+                <? foreach ($saleList as $k => $v) {  ?>
+                <tr>
+                    <!--商品资料-->
+                    <td class="spzl">
+                        <span class="show-pic">
+                            <img src="<?=$v['imgUrl']?>" onerror='this.src="<?=StaticDir?>1.2/images/pic.jpg"'>
+                        </span>
+                        <p>
+                            <b title="<?=$v['info']['name']?>">商标名：
+                        <?if(mb_strlen($v['info']['name'],'utf8') > 15)
+                        {echo mb_substr($v['info']['name'],0,12,'utf8')."...";}
+                        else{echo $v['info']['name'];}?>
+
+                             </b>
+                            <label>商标号：<?=$v['number']?><br/>
+                                    商标类别：
+                                <?if(count(explode(',', $v['info']['class'])) > 1){?>
+                        <span class="classMore">多类
+                        <div class="more" >
+                            <ul style=" max-height: 150px;  overflow-y: auto;width: 80px;">
+                                <? foreach (explode(',', $v['info']['class']) as $cls) {
+                                    echo "<li>$cls 类</li>";
+                                }?>
+                                </ul>
+                        </div></span>
+                                <?}else{echo $v['info']['class']."类";}?>
+                            </label>
+                        </p>
+                    </td>
+                    <!--出售时间-->
+                    <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?>
+                        <?if( !empty($v['info']['tminfo']['embellish'])){?><span class="blue">包</span><?}?>
+                    </td>
+                    <!--来源渠道-->
+                    <td class="showMore"><?if(count($v['info']['contact']) > 1){echo '多渠道';}
+                        else{$ct=current($v['info']['contact']);echo $saleSource[$ct['source']];} ?>
+                    </td>
+                    <!--联系方式-->
+                    <td class="showMore">
+                        <?if(count($v['info']['contact']) > 1){?>
+                        <span>多联系人</span>
+                        <div class="more">
+                            <ul <?if($k>10){echo 'style="bottom:0px;top:inherit"';}?> >
+                            <?foreach ($v['info']['contact'] as $key => $value) { ?>
+                            <li><table width="99%" ><tr align="center">
+                                <td width="20%"><?=$value['advisor'].'-'.$value['department']?></td>
+                                <td width="15%"><?=$saleSource[$value['source']]?></td>
+                                <td width="35%" <?if($value['id']==$v['info']['income']['cid']){?>style="background-color: red;" <?}?>>
+                                    <?php echo mbSub( $value['name'] , 0, 3);?>-<?=$value['phone']?></td>
+                                <td width="15%"><?=$value['price']?></td>
+                            </tr></table>
+                                <?}?>
+                                </ul>
+                        </div>
+                        <? }elseif(count($v['info']['contact']) == 1){ ?>
+                        <?$ct=current($v['info']['contact']);
+			if($v['info']['contact'][0]['id']==$v['info']['income']['cid']) {
+			    echo "<font color='red'>".mbSub( $ct['name'] , 0, 3)."-".$ct['phone']."</font>";
+			}else{
+			    echo mbSub( $ct['name'] , 0, 3)."-".$ct['phone'];
+			}
+                        ?>
+                        <div class="more" style="min-weight:150px;">
+                            
+                            <?}?>
+                    </td>
+                    <!--底价-->
+                    <td class="showMore">
+                        <?if(count($v['info']['contact']) > 1){echo '多底价';}else{$ct=current($v['info']['contact']);echo $ct['price'];} ?>
+                    </td>
+                    <!--售价-->
+                    <td><?if($v['info']['priceType']==2){echo "议价";}else{if(($v['info']['isOffprice']==1 && $v['info']['salePriceDate']>time()) || ($v['info']['isOffprice']==1 && $v['info']['salePriceDate']==0) ){echo $v['info']['salePrice'];}else{echo $v['info']['price'];}}?></td>
+                    <td>
+                     <?
+		    switch ($v['type']){
+			case 1: echo "交易完成"; break;
+			case 2: echo "无效删除"; break;
+			case 3: echo "驳回删除"; break;
+		    }
+		      ?></td>
+		    <td>
+                        <?=$v['info']['income']['price']?>
+                    </td>
+		    <td>
+                        <?=$v['member']['name']?>
+                    </td>
+		    <td>
+                        <?=$v['memo']?>
+                    </td>
+
+                </tr>
+                <? } ?>
+                </tbody>
+            </table>
+        </div>    
+<div id="page" align="center"><?=$pageBar?></div>  
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".mj-screening .btn").click(function(){
+            $(".mj-ddList").toggle();
+        });
+        $("#mj-sBtn").click(function(){
+			var index = layer.load(1, {
+				shade: [0.5,'#fff'] //0.1透明度的白色背景
+			});
+            $("#saleSearchForm").submit();
+        });
+	$(".table .classMore").hover(function(){
+            $(this).find('.more > ol').show();
+        },function(){
+            $(this).find('.more > ol').hide();
+        });
+
+        $(".table tr td.showMore").hover(function(){
+            $(this).parent('tr').find('.more > ul').show();
+            $(this).parent('tr').find('.singleVerify').show();
+        },function(){
+            $(this).parent('tr').find('.more > ul').hide();
+            $(this).parent('tr').find('.singleVerify').hide();
+        });
+
+        
+   });    
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

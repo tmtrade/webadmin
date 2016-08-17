@@ -705,6 +705,7 @@ class internalAction extends AppAction {
 		$this->getSetting();
 		//参数
 		$page = $this->input('page', 'int', '1');
+                $params['tmNumber']     = $this->input('tmNumber', 'string', '');
                 $params['type']         = $this->input('type', 'int', '0');
                 $params['dateStart']    = $this->input('dateStart', 'string', '');
                 $params['dateEnd']      = $this->input('dateEnd', 'string', '');

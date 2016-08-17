@@ -1050,6 +1050,9 @@ class InternalModule extends AppModule
             $r['eq']['type'] = $params['type'];
         }
         
+        if ( !empty($params['tmNumber']) ){
+            $r['eq']['number'] = $params['tmNumber'];
+        }
         if ( !empty($params['dateStart']) ){
             $r['raw'] .= " AND date >= ".strtotime($params['dateStart']);
         }

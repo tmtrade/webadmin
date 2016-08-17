@@ -19,6 +19,8 @@
         <form name="saleSearchForm" id="saleSearchForm" action="/internal/history/" method="GET">
         <dl>
             <dd>
+		<label>商标号：</label><input type="text" name="tmNumber" value="<?=$s['tmNumber']?>" class="input input-sm"/>
+                
                 <label> 销售状态：</label>
                 <select name="type" class="input input-sm">
                     <option value="0">--请选择--</option>

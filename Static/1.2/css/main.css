@@ -146,7 +146,8 @@
     z-index: 1100;
     width: 530px;
     position: absolute;
-    left: -250px;
+    left: 254px;
+    top: 77px;
     border: 2px solid #ff9933;
     list-style: none;
     background: #fff;

@@ -284,7 +284,7 @@
                             <?}?>
                     </td>
                     <!--底价-->
-                    <td class="showMore">
+                    <td class="">
                         <?if(count($v['contact']) > 1){echo '多底价';}else{$ct=current($v['contact']);echo $ct['price'];} ?>
                     </td>
                     <!--售价-->
@@ -435,9 +435,10 @@
         });
         
         $(".table .classMore").hover(function(){
-            $(this).find('.more > ol').show();
+
+            $(this).parents().parents("p").siblings(".more").find("ul").show();
         },function(){
-            $(this).find('.more > ol').hide();
+            $(this).parents().parents("p").siblings(".more").find("ul").hide();
         });
 
         $(".table tr td.showMore").hover(function(){

@@ -198,27 +198,30 @@
                         <span class="show-pic">
                             <img src="<?=$v['imgUrl']?>" onerror='this.src="<?=StaticDir?>1.2/images/pic.jpg"'>
                         </span>
-                        <p>
-                            <b title="<?=$v['name']?>">商标名：
-                        <?if(mb_strlen($v['name'],'utf8') > 15)
-                        {echo mb_substr($v['name'],0,12,'utf8')."...";}
-                        else{echo $v['name'];}?>
+                        <div class="cl-mr">
+                            <p>
+                                <b title="<?=$v['name']?>">商标名：
+                                    <?if(mb_strlen($v['name'],'utf8') > 15)
+                                    {echo mb_substr($v['name'],0,12,'utf8')."...";}
+                                    else{echo $v['name'];}?>
 
-                             </b>
-                            <label>商标号：<?=$v['number']?><br/>
+                                </b>
+                                <label>商标号：<?=$v['number']?><br/>
                                     商标类别：
-                                <?if(count(explode(',', $v['class'])) > 1){?>
+                                    <?if(count(explode(',', $v['class'])) > 1){?>
                         <span class="classMore">多类
-                        <div class="more" >
-                            <ul style=" max-height: 150px;  overflow-y: auto;width: 80px;">
+                        <div class="more cl-me" >
+                            <ol style=" max-height: 100px; left: 211px;top: -40px; overflow-y: auto;width: 80px;">
                                 <? foreach (explode(',', $v['class']) as $cls) {
                                     echo "<li>$cls 类</li>";
                                 }?>
-                                </ul>
+                            </ol>
                         </div></span>
-                                <?}else{echo $v['class']."类";}?>
-                            </label>
-                        </p>
+                                    <?}else{echo $v['class']."类";}?>
+                                </label>
+                            </p>
+                        </div>
+
                     </td>
                     <!--出售时间-->
                     <td><?if($v['date']==0){echo '-';}else{echo date("Y-m-d", $v['date']);}?>
@@ -246,10 +249,11 @@
                     <td class="showMore">
                         <?if(count($v['contact']) > 1){?>
                         <span>多联系人</span>
-                        <div class="more">
+                        <div class="more sh-me">
                             <ul <?if($k>10){echo 'style="bottom:0px;top:inherit"';}?> >
                             <?foreach ($v['contact'] as $key => $value) { ?>
-                            <li><table width="99%"><tr align="center">
+                            <li>
+                                <table width="99%"><tr align="center">
                                 <td width="20%"><?=$value['advisor'].'-'.$value['department']?></td>
                                 <td width="15%"><?=$saleSource[$value['source']]?></td>
                                 <td width="35%">
@@ -265,6 +269,7 @@
                                     <?}?>
                                 </td>
                             </tr></table>
+                            </li>
                                 <?}?>
                                 </ul>
                         </div>
@@ -272,7 +277,7 @@
                         <?$ct=current($v['contact']);
                         if($ct['isVerify'] == 2){echo '<font class="red">审</font>';}
                         echo mbSub( $ct['name'] , 0, 3)."-".$ct['phone'];?>
-                        <div class="more" style="min-weight:150px;">
+                        <div class="more sh-me" style="min-weight:150px;">
                             <?if ( $ct['isVerify'] != 1 ) {?>
                             <ol class="singleVerify"><li>
                                 <? if( in_array('21', $_role_) ){ ?>
@@ -280,6 +285,7 @@
                                 <a href="javascript:void(0);" onclick="delVerify(<?=$v['id']?>, <?=$ct['id']?>, <?=count($v['contact'])?>);">驳回</a>
                             </li></ol>
                             <? } ?>
+                            </div>
                             <?}?>
                             <?}?>
                     </td>
@@ -434,18 +440,21 @@
             }
         });
         
-        $(".table .classMore").hover(function(){
+//        $(".table .classMore").mouseover(function(){
+//
+//            $(".cl-me").show();
+//
+//            $(".cl-me").mouseout(function(){
+//                $(this).hide();
+//            })
+//        });
 
-            $(this).parents().parents("p").siblings(".more").find("ul").show();
-        },function(){
-            $(this).parents().parents("p").siblings(".more").find("ul").hide();
-        });
-
+        $(".cl-mr").hover(function(){$(".cl-me ol").show();},function(){$(".cl-me ol").hide();})
         $(".table tr td.showMore").hover(function(){
-            $(this).parent('tr').find('.more > ul').show();
+            $(this).parent('tr').find('.sh-me > ul').show();
             $(this).parent('tr').find('.singleVerify').show();
         },function(){
-            $(this).parent('tr').find('.more > ul').hide();
+            $(this).parent('tr').find('.sh-me > ul').hide();
             $(this).parent('tr').find('.singleVerify').hide();
         });
 

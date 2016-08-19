@@ -16,7 +16,7 @@
 }
 .spzl{
     min-width: 300px !important;
-    width:22% !important;
+    width:25% !important;
     padding-right: 0px !important;
 }
 .opera{
@@ -144,10 +144,11 @@
 }*/
 .more ul{
     z-index: 1100;
-    width: 530px;
+    width: 540px;
     position: absolute;
-    left: 254px;
-    top: 77px;
+    left: -346px;
+    top: 7px;
+    top: 7px;
     border: 2px solid #ff9933;
     list-style: none;
     background: #fff;

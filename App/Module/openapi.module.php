@@ -17,7 +17,7 @@ class OpenApiModule extends AppModule
     );
 
     /**
-     * 获取商品出售状态
+     * 获取商品是否出售
      * 
      * @author  Xuni
      * @since   2016-08-22
@@ -30,7 +30,12 @@ class OpenApiModule extends AppModule
         if ( empty($list) ) return array();
         $data = array();
         foreach ($list as $v) {
-            $data[$v] = $this->load('internal')->existSale($v);
+            $saleId     = $this->load('internal')->existSale($v);
+            if ( $saleId <= 0 ) {
+                $data[$v] = false;
+                continue;
+            }
+            $data[$v] = $this->load('internal')->isSaleUp($saleId);
         }
         return $data;
     }

@@ -63,6 +63,8 @@ abstract class AppAction extends Action
 				$this->redirect('', '/role/error');
 			}
 		}
+		
+        $this->set('static_version', 11456);//静态文件版本号>>控制js,css缓存
 		$this->set('username' , $this->username);
 		$this->set('userId'   , $this->userId);
 	}

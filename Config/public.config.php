@@ -548,6 +548,7 @@ $define = array(
                 'internal/setMemo'      => '22',
                 'internal/setPrice'     => '25',//修改普通价格
                 'internal/doDown'       => '26',//下架普通商品
+                'internal/history'       => '36',//下架普通商品
             
                 'patent/index/' 			=> '27',
                 'visitlog/userlist/' 			=> '28',

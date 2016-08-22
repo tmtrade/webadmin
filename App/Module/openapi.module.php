@@ -17,6 +17,24 @@ class OpenApiModule extends AppModule
     );
 
     /**
+     * 获取商品出售状态
+     * 
+     * @author  Xuni
+     * @since   2016-08-22
+     *
+     * @return  array
+     */
+    public function isSale($number)
+    {
+        $list = array_filter(explode(',', $number));
+        if ( empty($list) ) return array();
+        $data = array();
+        foreach ($list as $v) {
+            $data[$v] = $this->load('internal')->existSale($v);
+        }
+        return $data;
+    }
+    /**
      * 获取出售商标的包装图片
      * 
      * @author  Xuni

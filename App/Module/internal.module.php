@@ -722,7 +722,7 @@ class InternalModule extends AppModule
         $r['eq']    = array('number'=>$number);
         $r['col']   = array('id');
         $res = $this->import('sale')->find($r);
-        if ( empty($res) ) return false;
+        if ( empty($res) || $res['id'] <= 0 ) return false;
         return $res['id'];
     }
 

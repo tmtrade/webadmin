@@ -17,10 +17,12 @@ $define = array(
     'OPENAPI_KEYS' => array(
         'api1001' => 'JyZgJxMcHoFn2015ZxKfKeYsBxT',//商标系统
         'api1010' => 'JyZyZcXmChOfN2016ZxWlQkFkEyYhZx',//我的用户
+        'api1090' => 'JyZyZcXmChOfN2016ZxDdWzZbKfKeYtGyM',//推广页面
     ),
     'OPENAPI_USERS' => array(
-        'TmSystem' => 'api1001',//商标系统
-        'MyCenter' => 'api1010',//我的用户
+        'TmSystem'  => 'api1001',//商标系统
+        'MyCenter'  => 'api1010',//我的用户
+        'TGpage'    => 'api1090',//推广页面
     ),
 
     'ISTOP_LIST' => array(

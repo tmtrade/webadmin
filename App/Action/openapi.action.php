@@ -105,6 +105,29 @@ class OpenApiAction extends RpcServer {
         return $msg;
     }
 
+    /**
+     * 获取商品是否出售
+     *
+     * 商品状态在销售中的才返回真
+     * @author      xuni
+     * @since       2016-08-22
+     *
+     * @access      public
+     * @param       array   $params     接口参数（参考接口文档）
+     * @return      array
+     */
+    protected function isSale($params)
+    {
+        $msg    = $this->getMsg(101);
+        $number = $params['number'];
+
+        if ( empty($number) ) return $msg;
+
+        $data   = $this->load('openapi')->isSale( $number );
+        $msg['data'] = $data;
+        return $msg;
+    }
+
 
     /**
      * 获取相应返回信息

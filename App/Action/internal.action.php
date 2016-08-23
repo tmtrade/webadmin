@@ -730,6 +730,46 @@ class internalAction extends AppAction {
 		$this->set('saleList', $list);
 		$this->display();
     }
+    
+    /**
+     *历史交易的弹出页面
+     */
+    public function upcomplate() {
+	$id = $this->input('id', 'int', 0);
+	//得到id对应的联系人信息
+	$res = $this->load('internal')->historyInfo($id);
+	$this->set('list', unserialize($res['data']));
+
+	$this->set('id', $id);
+	$this->display();
+    }
+    
+     /**
+     * 修改历史交易人信息
+     */
+    public function updateHistory() {
+	//得到相关参数
+	$id= $this->input('id', 'int', 0);
+	if ($id == 0)
+	    $this->returnAjax(array('code' => 1, 'msg' => '参数错误'));
+
+	$cid = $this->input('cid', 'int', 0);
+        
+        $info = $this->load('internal')->historyInfo($id);
+        $data  = unserialize($info['data']);
+        $data['income']['cid'] = $cid;
+	//保存到数据库中
+	$datas = array(
+	    'data' => serialize($data),
+	);
+	$rst = $this->load('internal')->updateHistory($datas, $id);
+	//返回结果
+	if ($rst) {
+	    $this->returnAjax(array('code' => 0));
+	} else{
+	    $this->returnAjax(array('code' => 1, 'msg' => '操作失败'));
+	} 
+    }
 
 }
 

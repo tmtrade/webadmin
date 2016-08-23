@@ -1066,5 +1066,22 @@ class InternalModule extends AppModule
         return $res;
         
     }
+    
+    //获取历史纪录信息
+    public function historyInfo($id)
+    {
+        if ( empty($id) ) return false;
+        $r['eq'] = array('id'=>$id);
+        $res = $this->import('history')->find($r);
+        if ( empty($res) ) return false;
+        return $res;
+    }
+    
+    //修改历史纪录
+    public function updateHistory($data, $id)
+    {
+        $r['eq'] = array('id'=>$id);
+        return $this->import('history')->modify($data, $r);
+    }
 }
 ?>

@@ -24,9 +24,9 @@
                 <label> 销售状态：</label>
                 <select name="type" class="input input-sm">
                     <option value="0">--请选择--</option>
-		    <option value="1" <?if($s['tyype']==1){echo 'selected';} ?> >交易完成</option>
-		    <option value="2" <?if($s['tyype']==2){echo 'selected';} ?> >无效删除</option>
-		    <option value="3" <?if($s['tyype']==3){echo 'selected';} ?> >驳回删除</option>
+		    <option value="1" <?if($s['type']==1){echo 'selected';} ?> >交易完成</option>
+		    <option value="2" <?if($s['type']==2){echo 'selected';} ?> >无效删除</option>
+		    <option value="3" <?if($s['type']==3){echo 'selected';} ?> >驳回删除</option>
                 </select>
                 <label> 出售时间：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
                 <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input type="text" name="dateEnd" value="<?=$s['dateEnd']?>" class="input input-sm" readonly onclick="laydate()" />
@@ -53,6 +53,7 @@
 			<th>交易价格</th>
 			<th>操作人</th>
 			<th>备注</th>
+			<th>操作</th>
                     </tr>
                 </thead>
                 <tbody class="table-list">
@@ -145,6 +146,9 @@
 		    <td>
                         <?=$v['memo']?>
                     </td>
+		    <td>
+			<a href="javascript:;" class="btn-info" onclick="complateSale(<?=$v['id']?>)">编辑</a>	
+		    </td>
 
                 </tr>
                 <? } ?>
@@ -182,6 +186,18 @@
 
         
    });    
+   
+   function complateSale(id){
+        layer.open({
+            type: 2,
+            title: '交易信息登记',
+            scrollbar: false,
+            closeBtn: false,
+            area: ['520px', '333px'],
+            content: '/internal/upcomplate/?id='+id
+        });
+        return false;
+    }
 </script>
 
 <? require(ViewDir.'/footer.html'); ?>

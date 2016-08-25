@@ -10,7 +10,7 @@
     <input type="hidden" name="type" value="<?=$type?>">
     <ul>
         <li><label>交易价格：</label>
-            <input type="text" name="price" class="price" placeholder="请填写交易价格">
+            <input type="text" name="price" class="price" placeholder="请填写交易价格">(大于0的整数)
         </li>
         <li id="saleTime"><label>出售时间：</label>
             <input type="text" name="date" id="date" readonly onclick="laydate({max: laydate.now()})" /><em>(默认为当前时间)</em>
@@ -50,7 +50,13 @@
         var price      = $.trim( $('.price').val() );
         if ( !price ){
             layer.msg('请填写交易价格', {
-                time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        if (/[1-9]\d*/.test(price)==false){
+            layer.msg('交易价格为大于0的整数', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
             });
             return false;
         }

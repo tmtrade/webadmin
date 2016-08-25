@@ -147,7 +147,7 @@
                         <?=$v['memo']?>
                     </td>
 		    <td>
-			<a href="javascript:;" class="btn-info" onclick="complateSale(<?=$v['id']?>)">编辑</a>	
+			<?if($v['type']==1){?><a href="javascript:;" class="btn-info" onclick="complateSale(<?=$v['id']?>)">编辑</a><?}?>	
 		    </td>
 
                 </tr>

@@ -165,6 +165,9 @@
             <button class="btn btn-danger" onclick="Import();" type="button">导入商品</button>
             <? } ?>
             <button class="btn btn-info" onclick="download();" type="button" type="button">导出表格EXCEL</button>
+            <? if( in_array('37', $_role_) ){ ?>
+            <button type="button" class="btn btn-success" onclick="batchVerify();">批量审核</button>
+            <? } ?>
             <? if( in_array('2', $_role_) ){ ?>
             <button type="button" class="btn btn-info" onclick="setMoreDown();">批量下架</button>
             <? } ?>
@@ -588,6 +591,19 @@
             area: ['560px', '350px'],
 
             content: '/internal/create/'
+        });
+    }
+
+    function batchVerify()
+    {
+        layer.open({
+            type: 2,
+            title: false,
+            scrollbar: false,
+            closeBtn: false,
+            area: ['631px', '230px'],
+
+            content: '/internal/batchVerify/'
         });
     }
 	

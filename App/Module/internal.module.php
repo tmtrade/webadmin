@@ -588,9 +588,9 @@ class InternalModule extends AppModule
             }
             //处理用户出售信息历史记录
             foreach ($sale['contact'] as $k => $v) {
-		if($v['uid']>0){
-		    $this->checkMsg($v['uid'],"internal/deletesale/");
-		}
+        		if($v['uid']>0){
+        		    $this->checkMsg($v['uid'],"internal/deletesale/");
+        		}
                 $addUserHistory = $this->addUserHistory($v, $sale, $type, $memo);
                 if ( !$addUserHistory ){
                     $this->rollBack('sale');
@@ -677,10 +677,10 @@ class InternalModule extends AppModule
         $res = $this->import('contact')->modify($data, $r);
         if ( !$res ) return false;
 	
-	$info = $this->getSaleContact($saleId, $id);
-	if($info['uid']>0){
-	    $this->load('total')->updatePassCount($info['uid'], 1, $info['number']);//增加通过记录数
-	}
+    	$info = $this->getSaleContact($saleId, $id);
+    	if($info['uid']>0){
+    	    $this->load('total')->updatePassCount($info['uid'], 1, $info['number']);//增加通过记录数
+    	}
         if ( $this->isSaleUp($saleId) )  return true;
 
         $memo = '联系人审核通过并上架商品';
@@ -767,9 +767,16 @@ class InternalModule extends AppModule
     }
 
     //统计所有商品数量
-    public function countSale()
+    public function countSale($r=array())
     {
-        return $this->import('sale')->count();
+        return $this->import('sale')->count($r);
+    }
+
+    //获取商品list
+    public function findSale($r=array())
+    {
+        if ( empty($r['limit']) ) $r['limit'] = 1000000;
+        return $this->import('sale')->find($r);
     }
 
     //更新包装信息
@@ -1082,6 +1089,41 @@ class InternalModule extends AppModule
     {
         $r['eq'] = array('id'=>$id);
         return $this->import('history')->modify($data, $r);
+    }
+
+    public function countContact($r)
+    {
+        if ( empty($r) ) return 0;
+        return $this->import('contact')->count($r);
+    }
+
+    //批量审核联系人
+    public function batchVerify($uid)
+    {
+        if ( !is_numeric($uid) || $uid <= 0 ) return false;
+
+        $r['eq']    = array('status' => 3);
+        $r['raw']   = " id IN (SELECT saleId FROM t_sale_contact WHERE uid = $uid && source = 12 && isVerify = 2) ";
+        $r['col']   = array('id');
+        $list       = $this->load('internal')->findSale($r);
+
+        if ( empty($list) ) return false;
+        foreach ($list as $k => $v) {
+            $r = array();
+            $r['eq'] = array(
+                'saleId'    => $v['id'],
+                'uid'       => $uid,
+                'source'    => 12,
+                'isVerify'  => 2,
+                );
+            $contact = $this->findContact($r);
+            if ( empty($contact) ) continue;
+            //审核联系人
+            if ( $this->setVerify($contact['id'], $v['id']) ){                
+                $this->load('log')->addSaleLog($v['id'], 14, "联系人ID：$id 审核通过(批量审核)", serialize($contact)); //联系人审核通过
+            }
+        }
+        return true;
     }
 }
 ?>

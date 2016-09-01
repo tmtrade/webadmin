@@ -1,0 +1,106 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css" />
+	
+<div class="im-wrap" id="loadForm">
+	<div class="im-title borderBtmCd">
+		<em><span class="im-title-span"><img src="<?=StaticDir?>1.2/images/u30.gif" alt="">关闭</span></em>
+		<h1>批量审核</h1>
+	</div>
+	<div class="commodity borderBtmCd">
+	<input type="hidden" name="uid" id="uid" />
+	<input type="hidden" name="mobile" id="mobile" />
+	<input type="hidden" name="count" id="count" />
+		<div class="commodity-l">将账号</div>
+		<div class="commodity-r">
+			<p><input type="text" name="strNum" id="strNum" />
+			<span>&nbsp;&nbsp;当前未审核的商品：&nbsp;&nbsp;
+				<select name="type" id="stype">
+					<option value="1">通过审核</option>
+				</select>
+			</span>
+			</p>
+			<p class="c013267" id="userCount" style="display:inline-block;"></p>
+			
+		</div>
+		<p class="iBlock blockFFFFCD cFF6701 f14">
+			注意：手机必须为登录账号的手机号码！非提交信息的手机号码！
+			</p>
+	</div>
+	
+	<a href="javascript:void(0)" class="nexta" id="nextpt">确定</a><a href="javascript:void(0)" class="cancela">取消</a>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".im-title-span,.cancela,.closed").on("click",function(){
+            parent.layer.closeAll();
+        });
+		
+		$("#strNum").on("blur",function(){
+			var _str = $.trim( $(this).val() );
+			if ( _str == '' || _str == undefined ) return ;
+			$.ajax({
+				type: "post",
+				url: "/internal/checkUser/",
+				data: {str:_str},
+				dataType: "json",
+				success: function(data){
+					if (data.code == 1){
+						_str = '用户ID：'+data.uid+';手机号：'+data.mobile+';未审核数量：'+data.count+';';
+						$('#userCount').text(_str);
+						$("#uid").val(data.uid);
+						$("#mobile").val(data.mobile);
+						$("#count").val(data.count);
+						return true;
+					}
+					_str = '未找到相关数据';
+					$('#userCount').text(_str);
+					$("#uid").val('');
+					$("#mobile").val('');
+					$("#count").val('0');
+					$('#userCount').show();
+				}
+			});
+        });
+
+        $("#nextpt").on('click', function(){
+        	var _count = $("#count").val();
+        	if ( _count <= 0 || _count == '' ) {
+        		layer.msg('不需要审核');
+        		return ;
+        	}
+        	//var _type 		= $('#stype option:selected').val();
+        	var _typeStr 	= $('#stype option:selected').text();
+        	var _uid		= $("#uid").val();
+        	
+        	layer.confirm('请确定选择 <span class="cFF0000">'+_typeStr+'</span> 是否正确！', {
+		        btn: ['确定','算了'] //按钮
+		    }, function(){
+		    	var _index = layer.load(1, {
+				  shade: [0.2,'#000'] //0.1透明度的白色背景
+				});
+		    	$.ajax({
+					type: "post",
+					url: "/internal/setBatchVerify/",
+					data: {uid:_uid},
+					dataType: "json",
+					success: function(data){
+						if (data.code == 1){
+							layer.msg('操作成功', function(){
+								parent.window.location.reload();
+							});
+						}else{
+							var _msg = data.msg ? data.msg : '参数错误';
+							layer.msg(_msg);
+						}
+						layer.close(_index);
+					}
+				});
+		    });
+		});
+    });
+
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

@@ -196,6 +196,9 @@ $define = array(
                 '26' => array(
                     'label' => '下架普通商品',
                 ),
+                '37' => array(
+                    'label' => '批量审核',
+                ),
 			),
 		),
             
@@ -456,6 +459,11 @@ $define = array(
             'up'    => '1',
             'label' => '商标交易历史',
         ),
+        '37' => array(
+            'id'    => '37',
+            'up'    => '1',
+            'label' => '批量审核',
+        ),
     ),
     
         //SEO列表配置项
@@ -550,7 +558,8 @@ $define = array(
                 'internal/setMemo'      => '22',
                 'internal/setPrice'     => '25',//修改普通价格
                 'internal/doDown'       => '26',//下架普通商品
-                'internal/history'       => '36',//下架普通商品
+                'internal/history'      => '36',//
+                'internal/batchVerify'  => '37',//批量审核
             
                 'patent/index/' 			=> '27',
                 'visitlog/userlist/' 			=> '28',

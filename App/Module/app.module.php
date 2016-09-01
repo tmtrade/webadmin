@@ -64,7 +64,7 @@ abstract class AppModule extends Module
 		return true;
 	}
         
-        /**
+  	/**
 	 * 执行原生sql语句
 	 * @author	void
 	 * @since	2015-06-19
@@ -75,7 +75,7 @@ abstract class AppModule extends Module
 	 */
 	protected function fetchAll($dbName, $sql)
 	{
-                static $db = null;
+		static $db = null;
 		if ( $db == null ) {
 			$db = new DbQuery($dbName);
 		}
@@ -90,21 +90,21 @@ abstract class AppModule extends Module
 	 */
 	protected function checkMsg($uid = null,$url="systemapi/addsale/"){
 		if(!$uid) return;//用户为空,直接返回
-		$sendtype = 1;
+		$sendtype 	= 1;
 		//得到当前url地址
-		$url = TRADE_URL.$url;
+		$url 		= TRADE_URL.$url;
 		//得到监控触发的信息
-		$monitor = $this->load('messege')->getMonitor();
+		$monitor 	= $this->load('messege')->getMonitor();
 		if($monitor){
 			//判断当前url是否发送信息
 			foreach($monitor as $item){
 				if(strpos($item['url'],$url)!==false){
 					$params = array();
-					$params['title'] = $item['title'];
-					$params['type'] = $item['type'];
+					$params['title'] 	= $item['title'];
+					$params['type'] 	= $item['type'];
 					$params['sendtype'] = $sendtype;
-					$params['content'] = $item['content'];
-					$params['uids'] = $uid;//当前用户
+					$params['content'] 	= $item['content'];
+					$params['uids'] 	= $uid;//当前用户
 					$this->load('messege')->createMsg($params);
 					break;
 				}

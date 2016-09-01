@@ -12,7 +12,7 @@
 class UserCenterModule extends AppModule
 {
     public $models = array(
-        
+        'myuser'    => 'user',
     );
 
     /**
@@ -32,6 +32,30 @@ class UserCenterModule extends AppModule
     {
         if ( empty($number) ) return false;
         return $this->importBi('usercenter')->pushTmPrice($number, $oldInfo, $newInfo);
+    }
+
+    //判断用户是否存在，返回uid
+    public function existUser($mobile)
+    {
+        if ( empty($mobile) || isCheck($mobile) != 2 ) return 0;
+
+        $r['eq']    = array('mobile'=>$mobile);
+        $r['col']   = array('id');
+        $r['limit'] = 1;
+
+        $info   = $this->import('myuser')->find($r);
+        if ( empty($info) || $info['id'] <= 0 ) return 0;
+        return $info['id'];
+    }
+
+    public function getUser($uid)
+    {
+        if ( !is_numeric($uid) || $uid <= 0 ) return array();
+
+        $r['eq']    = array('id'=>$uid);
+        $r['limit'] = 1;
+
+        return $this->import('myuser')->find($r);
     }
 }
 ?>

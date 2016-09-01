@@ -301,12 +301,6 @@ $tbl['messegeUser'] = array(
 	'configFile'=> $configFile,
 );
 
-$tbl['user'] = array(
-	'name'		=> $prefix.'user',
-	'dbId'		=> $dbId,
-	'configFile'=> $configFile,
-);
-
 $tbl['total'] = array(
 	'name'		=> $prefixs.'total',
 	'dbId'		=> $dbId,

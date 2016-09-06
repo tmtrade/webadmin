@@ -299,8 +299,17 @@
                     <!--售价-->
                     <td><?if($v['priceType']==2){echo "议价";}else{if(($v['isOffprice']==1 && $v['salePriceDate']>time()) || ($v['isOffprice']==1 && $v['salePriceDate']==0) ){echo $v['salePrice'];}else{echo $v['price'];}}?></td>
                     <!--当前客户更进-->
-                   <td>
-                       --
+                    <td  <?if(count($v['qitem'])>0) echo 'class="showQuotation"';?>>
+                       <?=count($v['qitem'])?>条
+                    <div class="more sh-me" style="min-weight:150px;">
+                        <ol class="quotation_list" style="width:416px;left: -150px;">
+                            <?foreach ($v['qitem'] as $key => $value) { ?>
+                            <li>
+                                <p><?=$value['content']?>  报价: <font color="red"><?=$value['price']?></font><p/>
+                         </li>
+                         <?}?>
+                        </ol>
+                           </div>
                    </td>
                     <!--商品操作-->
                     <td class="opera">
@@ -459,6 +468,12 @@
         },function(){
             $(this).parent('tr').find('.sh-me > ul').hide();
             $(this).parent('tr').find('.singleVerify').hide();
+        });
+        
+        $(".table tr td.showQuotation").hover(function(){
+            $(this).parent('tr').find('.quotation_list').show();
+        },function(){
+            $(this).parent('tr').find('.quotation_list').hide();
         });
 
         $('#chkAll').click(function(){ 

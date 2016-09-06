@@ -316,5 +316,9 @@ $tbl['passSale'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
-
+$tbl['quotationItems'] = array(
+	'name'		=> $prefixs.'quotation_items',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 ?>

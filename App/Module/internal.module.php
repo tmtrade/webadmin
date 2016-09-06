@@ -17,6 +17,7 @@ class InternalModule extends AppModule
         'history'           => 'saleHistory',
         'income'           => 'income',
         'userSaleHistory'   => 'userSaleHistory',
+        'quotationItems'    => 'quotationItems',
     );
     
     public function getList($params, $page, $limit=20)
@@ -1091,6 +1092,21 @@ class InternalModule extends AppModule
         return $this->import('history')->modify($data, $r);
     }
 
+    /**
+     * 得到报价单商标信息
+     * @param $id
+     * @return string
+     */
+    public function getQuotationItemList($number){
+        $r = array();
+        $r['eq'] = array('number'=>$number);
+        $r['col'] = array('price',"(select GROUP_CONCAT(contact,'  电话:',phone,'  时间:',updated) from s_quotation where id=s_quotation_items.qid)  as content");
+        $r['limit'] = 20;
+        $r['order'] = array('id'=>'asc');
+        $rst =  $this->import('quotationItems')->findAll($r);
+        return $rst['rows'];
+    }
+
     public function countContact($r)
     {
         if ( empty($r) ) return 0;
@@ -1125,5 +1141,6 @@ class InternalModule extends AppModule
         }
         return true;
     }
+
 }
 ?>

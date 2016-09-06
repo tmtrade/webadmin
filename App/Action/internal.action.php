@@ -32,12 +32,12 @@ class internalAction extends AppAction {
 
         $pager = $this->pager($total, $this->rowNum);
         $pageBar = empty($list) ? '' : getPageBar($pager);
-
         $result = array();
         //获取所有联系人
         foreach ($list as $k => $v) {
             $result[$k] = $this->load('internal')->getSaleInfo($v['id']);
             $result[$k]['imgUrl'] = $this->load('internal')->saleImg($result[$k]['number']);
+            $result[$k]['qitem'] = $this->load('internal')->getQuotationItemList($result[$k]['number']);
         }
         $this->set("allTotal", $this->load('internal')->countSale());
         $this->set('total', $total);
@@ -45,6 +45,7 @@ class internalAction extends AppAction {
         $this->set('s', $params);
         $this->set('saleList', $result);
         $this->display();
+
     }
 
     /**

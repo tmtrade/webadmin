@@ -1,0 +1,136 @@
+<? require(ViewDir.'/header.html');?>
+<script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+<script src="http://cdn.hcharts.cn/highcharts/highcharts-3d.js"></script>
+<script src="http://cdn.hcharts.cn/highcharts/modules/exporting.js"></script>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<script type="text/javascript">
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45,
+                beta: 0
+            }
+        },
+        title: {
+            text: '商标出售数据分析'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                depth: 35,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}'
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: '百分比例',
+            data: <?=$data['date']?>
+        }]
+    });
+});
+</script>
+<style>
+    td{border: 1px solid #dadada;}
+    #container {
+        height: 500px; 
+        width:1000px;
+    }
+    .mj-screening .bt{
+        background-color:  #FFF;
+        color: #000;
+        border: 1px solid #CCC;
+        width:50px;
+        padding: 0px;
+        margin: -5px;
+    }
+    .mj-screening .on_bt{
+        background-color:  #000;
+        color: #FFF;
+        border: 1px solid #CCC;
+        width:50px;
+        padding: 0px;
+        margin: -5px;
+    }
+    .seach_ul li{
+        border: 1px solid #DDDDDD;
+        float: left;
+        padding: 7px 15px;
+        border-bottom: 0px;
+        color: #999999;
+        cursor: pointer;
+        background-color: #F2F2F2;
+    }
+    .seach_ul .on{color: #000; background-color: #FFF;}
+</style>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>出售数据分析</li>
+    </ul>
+</div>
+<div class="wrap">
+    <div class="mj-screening">
+        <div class="mj-seT f-clearfix">
+            <span>出售数据分析</span>
+        </div>
+        <form name="visitlogForm" id="visitlogForm" action="/dataAnalyze/index/" method="GET">
+            <dl>
+                <dd>
+                    <label> 我要统计从：</label><input type="text" name="dateStart" value="<?=$s['dateStart']?>" class="input input-sm" readonly onclick="laydate()" /> 
+                    <label>&nbsp;&nbsp;至&nbsp;&nbsp;</label> <input type="text" name="dateEnd" value="<?=$s['dateEnd']?>" class="input input-sm" readonly onclick="laydate()" />
+
+                    <a href="javascript:void(0);" class="mj-sBtn mj-sBtn-search" style="display:inline-block;margin-left:50px;">搜索</a>
+                </dd>
+            </dl>
+            <input type="hidden" value="<?=$s['type']?>"  name="type" id="types">
+        </form>
+    </div>
+    <div class="wrap-content">
+        <br>
+        <div class="wrap-table">
+            <ul class="seach_ul">
+                <li data-type="1" <?if($s['type']==1){echo 'class="on"';} ?>>价格区间</li>
+                <li data-type="2" <?if($s['type']==2){echo 'class="on"';} ?>>包装比例</li>
+                <li data-type="3" <?if($s['type']==3){echo 'class="on"';} ?>>商标来源</li>
+                <li data-type="4" <?if($s['type']==4){echo 'class="on"';} ?>>分类情况</li>
+                <li data-type="5" <?if($s['type']==5){echo 'class="on"';} ?>>活动类型</li>
+            </ul>
+        </div>
+    </div>
+    <div class="wrap-content">
+        <br>
+        <div class="wrap-table">
+            <div id="container"></div>
+        </div>
+    </div>
+</div>
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(function(){
+    $(".mj-sBtn").click(function(){
+        var index = layer.load(1, {
+        shade: [0.5, '#fff'] //0.1透明度的白色背景
+        });
+        $("#visitlogForm").submit();
+    });
+    $(".seach_ul li").click(function(){
+        var index = layer.load(1, {
+        shade: [0.5, '#fff'] //0.1透明度的白色背景
+        });
+        $("#types").val($(this).data("type"));
+        $("#visitlogForm").submit();
+    });
+});
+</script>
+<? require(ViewDir.'/footer.html'); ?>

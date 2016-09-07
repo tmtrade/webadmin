@@ -154,10 +154,13 @@ $define = array(
 				'1' => array(
 					'label' => '国内商标列表',
 				),
-                                '36' => array(
+                '36' => array(
 					'label' => '商标交易历史',
 				),
-                                '27' => array(
+                '38' => array(
+					'label' => '出售数据分析',
+				),
+                '27' => array(
 					'label' => '专利列表',
 				),
 				'2' => array(
@@ -464,6 +467,11 @@ $define = array(
             'up'    => '1',
             'label' => '批量审核',
         ),
+        '38' => array(
+            'id'    => '38',
+            'up'    => '1',
+            'label' => '出售数据分析',
+        ),
     ),
     
         //SEO列表配置项
@@ -560,6 +568,8 @@ $define = array(
                 'internal/doDown'       => '26',//下架普通商品
                 'internal/history'      => '36',//
                 'internal/batchVerify'  => '37',//批量审核
+        
+                'dataanalyze/index'  => '38',//数据分析
             
                 'patent/index/' 			=> '27',
                 'visitlog/userlist/' 			=> '28',

@@ -18,14 +18,14 @@ class LogModule extends AppModule
     );
 
     //添加国内商标出售日志
-    public function addSaleLog($saleId, $type=0, $memo='', $desc='')
+    public function addSaleLog($saleId, $type=0, $memo='', $desc='', $system='')
     {
         if ( empty($saleId) ) return false;
 
         if ( empty($this->userId) ){
             $member = array(
                 'roleId'    => 0,
-                'name'      => '系统（接口）',
+                'name'      => empty($system) ? '系统（接口）' : $system,
                 );
         }else{
             $member = $this->load('member')->getMemberById($this->userId);

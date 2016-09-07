@@ -8,7 +8,7 @@ header("Content-type: text/html; charset=utf-8");
  * @author  Xuni
  * @since   2016-01-8
  */
-class internalAction extends AppAction {
+class InternalAction extends AppAction {
 //  public $debug = true;
 
     /**

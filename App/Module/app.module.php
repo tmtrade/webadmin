@@ -52,7 +52,7 @@ abstract class AppModule extends Module
 		$userinfo = Session::get(COOKIE_USER);
 		if ( empty($userinfo) ){
 			$this->username = '';
-			$this->userId 	= '';
+			$this->userId 	= '0';
 			$this->isLogin 	= false;
 			return false;
 		}else{

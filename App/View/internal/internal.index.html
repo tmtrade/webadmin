@@ -201,7 +201,7 @@
                         <span class="show-pic">
                             <img src="<?=$v['imgUrl']?>" onerror='this.src="<?=StaticDir?>1.2/images/pic.jpg"'>
                         </span>
-                        <div class="cl-mr">
+                        <div >
                             <p>
                                 <b title="<?=$v['name']?>">商标名：
                                     <?if(mb_strlen($v['name'],'utf8') > 15)
@@ -212,14 +212,15 @@
                                 <label>商标号：<?=$v['number']?><br/>
                                     商标类别：
                                     <?if(count(explode(',', $v['class'])) > 1){?>
-                        <span class="classMore">多类
-                        <div class="more cl-me" >
-                            <ol style=" max-height: 100px; left: 211px;top: -40px; overflow-y: auto;width: 80px;">
-                                <? foreach (explode(',', $v['class']) as $cls) {
-                                    echo "<li>$cls 类</li>";
-                                }?>
-                            </ol>
-                        </div></span>
+                        <span class="cl-mr">多类
+                            <div class="more cl-me" >
+                                <ol style=" max-height: 100px; left: 211px;top:0px; overflow-y: auto;width: 80px;">
+                                    <? foreach (explode(',', $v['class']) as $cls) {
+                                        echo "<li>$cls 类</li>";
+                                    }?>
+                                </ol>
+                            </div>
+                        </span>
                                     <?}else{echo $v['class']."类";}?>
                                 </label>
                             </p>
@@ -461,7 +462,11 @@
 //            })
 //        });
 
-        $(".cl-mr").hover(function(){$(".cl-me ol").show();},function(){$(".cl-me ol").hide();})
+        $(".table tr td .cl-mr").hover(function(){
+           $(this).parent().parent().parent().parent().parent('tr').find(".cl-me ol").show();
+        },function(){
+           $(this).parent().parent().parent().parent().parent('tr').find(".cl-me ol").hide();
+        })
         $(".table tr td.showMore").hover(function(){
             $(this).parent('tr').find('.sh-me > ul').show();
             $(this).parent('tr').find('.singleVerify').show();

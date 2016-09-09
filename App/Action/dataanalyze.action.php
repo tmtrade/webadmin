@@ -19,8 +19,15 @@ class DataAnalyzeAction extends AppAction
         $dateStart 	= $this->input('dateStart', 'string');
         $dateEnd 	= $this->input('dateEnd', 'string');
         
-        $dateStart  = empty($dateStart) ? "" : strtotime($dateStart);
-        $dateEnd    = empty($dateEnd) ? "" : strtotime($dateEnd)+86399;//结束时间为一天的最后
+        if($dateStart=="" && $dateEnd==""){
+                $d = date("Y-m-d");
+                $dateStart  = strtotime("$oneDay -6 day");
+                $dateEnd    = strtotime($d)+86399;
+            }else{
+                $dateStart  = empty($dateStart) ? "" : strtotime($dateStart);
+                $dateEnd    = empty($dateEnd) ? "" : strtotime($dateEnd)+86399;//结束时间为一天的最后
+            }
+        
         
         $list = $this->load('dataanalyze')->dataAnalyze($dateStart,$dateEnd);
         

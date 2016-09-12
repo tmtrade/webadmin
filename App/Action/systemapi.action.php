@@ -20,6 +20,7 @@ class SystemApiAction extends RpcServer
         '3'     => 3,   //其他
         '4'     => 4,   //出售者平台
         '5'     => 5,   //移动端
+        '6'     => 6,   //报价单
         );
 
 	public function index($params)

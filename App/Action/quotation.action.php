@@ -39,11 +39,7 @@ class QuotationAction extends AppAction
         $uid 	= $this->input('uid', 'int');
         if(!$id || !$uid) $this->returnAjax(array('code'=>1,'msg'=>'参数错误'));
         $res = $this->load('quotation')->delete($id,$uid);
-        if($res===true){
-            $this->returnAjax(array('code'=>0,'msg'=>'操作成功'));
-        }else{
-            $this->returnAjax(array('code'=>1,'msg'=>'删除失败'));
-        }
+        $this->returnAjax($res);
     }
 
 }

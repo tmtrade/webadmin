@@ -64,15 +64,20 @@ return $menu = array(
 						'url'   => '/exchange/index/',
 						'auth'	=> '33',
 					),
-                                        '2' => array(
+					'2' => array(
 						'title' => '站内信配置',
 						'url'   => '/messege/index/',
 						'auth'	=> '34',
 					),
-                                        '3' => array(
+					'3' => array(
 						'title' => '广告管理',
 						'url'   => '/ad/index/',
 						'auth'	=> '35',
+					),
+					'4' => array(
+						'title' => '报价单管理',
+						'url'   => '/quotation/index/',
+						'auth'	=> '304',
 					),
 		),
 	),

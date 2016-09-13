@@ -284,6 +284,9 @@ $define = array(
 				'35' => array(
 					'label' => '广告管理',
 				),
+				'304' => array(
+					'label' => '报价单管理',
+				),
 			),
 		),
 	),
@@ -473,6 +476,11 @@ $define = array(
             'up'    => '1',
             'label' => '出售数据分析',
         ),
+		'304' => array(
+			'id'    => '304',
+			'up'    => '1',
+			'label' => '报价单管理',
+		),
     ),
     
         //SEO列表配置项
@@ -589,6 +597,7 @@ $define = array(
 		'tmclass/index' 		=> '11',
 		'case/index' 			=> '23',
 		'seo/index' 			=> '24',
+		'quotation/index' 			=> '304',
 	),
 
 

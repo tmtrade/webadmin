@@ -321,4 +321,9 @@ $tbl['quotationItems'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+$tbl['quotation'] = array(
+	'name'		=> $prefixs.'quotation',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 ?>

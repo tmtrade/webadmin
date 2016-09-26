@@ -212,7 +212,6 @@ class BasicAction extends AppAction
 		}
 
 		$info = $this->load('basic')->getBasic($id);
-
 		$this->set('id', $id);
 		$this->set('info', $info);
 		$this->display('basic/basic.slide.html');
@@ -229,6 +228,8 @@ class BasicAction extends AppAction
 		$pic 	= $this->input('pic', 'string', '');
 		$link 	= $this->input('link', 'string', '');
 		$alt 	= $this->input('alt', 'string', '');
+		$desc 	= $this->input('desc', 'string', '');
+		$text 	= $this->input('text', 'string', '');
 		$id 	= $this->input('id', 'int', '');
 
 		if ( empty($pic) ){
@@ -240,6 +241,8 @@ class BasicAction extends AppAction
 				'pic'		=> $pic,
 				'link'  	=> $link,
 				'alt'  	    => $alt,
+				'desc'  	=> $desc,
+				'text'  	=> $text,
 			);
 	        $res = $this->load('basic')->setBasic($data, $id);
 		}else{
@@ -251,6 +254,8 @@ class BasicAction extends AppAction
 				'link'   	=> $link,
 				'alt'   	=> $alt,
 				'sort'    	=> $order,
+				'desc'  	=> $desc,
+				'text'  	=> $text,
 			);
 	        $res = $this->load('basic')->addBasic($data);
 		}
@@ -321,6 +326,80 @@ class BasicAction extends AppAction
             $this->returnAjax(array('code'=>1));
         }
         $this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
+	}
+
+	/**
+	 * 创建成功案例
+	 *
+	 * @author	dower
+	 * @since	2016-09-26
+	 */
+	public function addCase()
+	{
+		$this->display('basic/basic.case.html');
+	}
+
+	/**
+	 * 编辑成功案例
+	 *
+	 * @author	dower
+	 * @since	2016-09-26
+	 */
+	public function editCase()
+	{
+		$id = $this->input('id', 'int', '');
+
+		if ( empty($id) ){
+			MessageBox::halt('参数错误');
+		}
+
+		$info = $this->load('basic')->getBasic($id);
+
+		$this->set('id', $id);
+		$this->set('info', $info);
+		$this->display('basic/basic.case.html');
+	}
+
+	/**
+	 * 创建或编辑成功案例
+	 *
+	 * @author	dower
+	 * @since	2016-09-26
+	 */
+	public function setCase()
+	{
+		$pic 	= $this->input('pic', 'string', '');
+		$link 	= $this->input('link', 'string', '');
+		$alt 	= $this->input('alt', 'string', '');
+		$id 	= $this->input('id', 'int', '');
+
+		if ( empty($pic) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请上传图片'));
+		}
+		if ( $id ){
+			$data = array(
+				'type'   	=> 5,
+				'pic'		=> $pic,
+				'link'  	=> $link,
+				'alt'  	    => $alt,
+			);
+			$res = $this->load('basic')->setBasic($data, $id);
+		}else{
+			$order = $this->load('basic')->getLastOrder(5);
+			$order = $order + rand(2,5);
+			$data = array(
+				'type'    	=> 5,
+				'pic'    	=> $pic,
+				'link'   	=> $link,
+				'alt'   	=> $alt,
+				'sort'    	=> $order,
+			);
+			$res = $this->load('basic')->addBasic($data);
+		}
+		if ( $res ){
+			$this->returnAjax(array('code'=>1));
+		}
+		$this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
 	}
 
 	

@@ -37,7 +37,7 @@ class BasicModule extends AppModule
     //获取所有的设置
     public function getAllSetting()
     {
-        $r['in']    = array('type'=>array(1,2,3,4));
+        $r['in']    = array('type'=>array(1,2,3,4,5));
         $r['order'] = array('type'=>'asc');
         $r['limit'] = 1000;
 

@@ -156,7 +156,9 @@
             <thead>
                 <tr class="active">
                     <th width="20%">广告图</th>
-                    <th width="30%">ALT描述</th>
+                    <th width="10%">标题</th>
+                    <th width="10%">描述</th>
+                    <th width="10%">ALT描述</th>
                     <th width="30%">链接</th>
                     <th width="20%">操作</th>
                 </tr>
@@ -166,6 +168,8 @@
                 <tr>
                     <td align="center" style="vertical-align:middle">
                     <img class="info-pic" src="<?=empty($v['pic'])?'error':$v['pic']?>" onerror="this.src='/Static/1.2/images/u143.png'" /></td>
+                    <td style="vertical-align:middle"><?=empty($v['desc'])?'无':$v['desc']?></td>
+                    <td style="vertical-align:middle"><?=empty($v['text'])?'无':$v['text']?></td>
                     <td style="vertical-align:middle"><?=empty($v['alt'])?'无':$v['alt']?></td>
                     <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
                     <td style="vertical-align:middle">
@@ -230,6 +234,54 @@
             </tbody>
         </table>
     </div>
+<div class="wrap-top">
+    <h4>成功案例设置<img class="info-icon" src="<?=StaticDir?>1.2/images/u253.gif"></h4><span></span>
+</div>
+<div class="alert alert-warning" style="padding:2px;margin-bottom:10px;" role="alert">
+    最多可以创建3条。
+</div>
+<div class="wrap-table">
+    <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+        <thead>
+        <tr class="active">
+            <th width="20%">案例图</th>
+            <th width="30%">ALT描述</th>
+            <th width="30%">链接</th>
+            <th width="20%">操作</th>
+        </tr>
+        </thead>
+        <tbody class="table-list">
+        <? foreach ($list[5] as $k => $v) { ?>
+        <tr>
+            <td align="center" style="vertical-align:middle">
+                <img class="info-pic" src="<?=empty($v['pic'])?'error':$v['pic']?>" onerror="this.src='/Static/1.2/images/u143.png'" /></td>
+            <td style="vertical-align:middle"><?=empty($v['alt'])?'无':$v['alt']?></td>
+            <td style="vertical-align:middle"><?=empty($v['link'])?'无':$v['link']?></td>
+            <td style="vertical-align:middle">
+                        <span class="icon icon-delete">
+                            <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
+                        </span>
+                        <span class="icon icon-editor">
+                        <a href="javascript:void(0);" onclick="caseEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
+                        </span>
+                &nbsp;&nbsp;
+                        <span onclick="orderBasic(<?=$v['id']?>, 1, 5)">
+                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
+                        </span>
+                &nbsp;
+                        <span class="img-flip" onclick="orderBasic(<?=$v['id']?>, 2, 5)">
+                            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
+                        </span>
+            </td>
+        </tr>
+        <? } ?>
+        </tbody>
+    </table>
+</div>
+
+<div class="margin-sx-10">
+    <button class="btn btn-danger" id="add-case" type="button" <?if(count($list[5])>=3){echo 'disabled="disabled"';}?>>创建成功案例</button>
+</div>
     <br>
     <br>
 </div>
@@ -278,9 +330,20 @@
                 type: 2,
                 scrollbar: false,
                 title: '创建滑动广告图',
-                area: ['650px', '500px'],
+                area: ['650px', '550px'],
 
                 content: '/basic/addSlide/'
+            });
+        });
+
+        $("#add-case").click(function(){
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '创建成功案例',
+                area: ['650px', '500px'],
+
+                content: '/basic/addCase/'
             });
         });
     });
@@ -347,9 +410,22 @@
             type: 2,
             scrollbar: false,
             title: '修改滑动广告图',
-            area: ['600px', '500px'],
+            area: ['600px', '600px'],
 
             content: '/basic/editSlide/?id='+id
+        });
+    }
+
+    function caseEdit(id)
+    {
+        if ( id == '' || id == 0 ) return false;
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: '修改成功案例',
+            area: ['600px', '500px'],
+
+            content: '/basic/editCase/?id='+id
         });
     }
 

@@ -21,20 +21,16 @@
     </div> 
     
     <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
-    广告图片建议尺寸为 ( 235 ) x ( 140 )，文件最大不超过500kb，当前支持jpg,bmp,png格式文件
+    案例图片建议尺寸为 ( 235 ) x ( 140 )----等确认，文件最大不超过500kb，当前支持jpg,bmp,png格式文件
     </div>
     <label>图片链接：</label>
     <input type="input" class="form-control" name="link" value="<?=$info['link']?>">
 
     <div class="alert alert-warning" style="padding:2px;margin-bottom:10px;margin-top:10px;" role="alert">
-    请输入该广告链接，未输入链接则该图片不可点击。
+    请输入该案例链接，未输入链接则该图片不可点击。
     </div>
     <label>ALT描述：</label>
     <input type="input" class="form-control" name="alt" value="<?=$info['alt']?>">
-    <label>标题：</label>
-    <input type="input" class="form-control" name="desc" value="<?=$info['desc']?>">
-    <label>描述：</label>
-    <input type="input" class="form-control" name="text" value="<?=$info['text']?>">
     <div style="bottom:15px;position: fixed;">
         <button type="button" id="myButton" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;确定&nbsp;&nbsp;&nbsp;&nbsp;</button>
         <button type="button" onclick="closeAll();" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;取消&nbsp;&nbsp;&nbsp;&nbsp;</button>
@@ -72,7 +68,7 @@
             _this.attr('disabled', true)
             $.ajax({
                 type : 'post',
-                url  : '/basic/setSlide/',
+                url  : '/basic/setCase/',
                 data : data,
                 dataType : 'json',
                 success : function (data){

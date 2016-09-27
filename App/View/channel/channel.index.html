@@ -31,6 +31,10 @@
     .z-index2000 {
         z-index: 2000;
     }
+    .cg-pir{
+        height: 30px;
+        border: 1px solid #46b8da;
+    }
 </style>
 <div class="place">
     <span>位置：</span>
@@ -131,14 +135,10 @@
             <button class="btn btn-danger" id="add-ad" type="button" <?if(count($info['items'][1])>=5){echo 'disabled="disabled"';}?> >创建广告图</button>
         </div>
     </div>
-
+    <br/>
+    
     <div class="wrap-top">
-        <h4>置顶商品列表
-        </h4>
-        <select name="isTop" class="input selectChange">
-            <option <?if($info['isTop']==1){echo 'selected';}?> value="1">启用</option>
-            <option <?if($info['isTop']==2){echo 'selected';}?> value="2">禁用</option>
-        </select>
+        <h4>精品特卖设置</h4>
         <span></span>
     </div>
     
@@ -146,16 +146,68 @@
         <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0;width:800px;">
             <thead>
                 <tr class="active">
-                    <th width="30%">商标号</th>
-                    <th width="30%">商品名称</th>
-                    <th width="40%">操作</th>
+                    <th width="20%">特卖时间</th>
+                    <th width="20%">商标号</th>
+                    <th width="20%">商品名称</th>
+                    <th width="20%">商品分类</th>
+                    <th width="20%">操作</th>
                 </tr>
             </thead>
             <tbody class="table-list">
-            <? foreach ($info['items'][2] as $k => $v) { ?>
+                <tr>
+                    <td style="vertical-align:middle">当前特卖</td>
+                    <td style="vertical-align:middle" class="numbers"><?=$info['items'][4][1]['pic']?></td>
+                    <td style="vertical-align:middle"><?=$info['items'][4][1]['link']?></td>
+                    <td style="vertical-align:middle"><?=$info['items'][4][1]['desc']?>类</td>
+                    <td style="vertical-align:middle" class="updates">
+                        <span class="icon icon-editor">
+                            <a href="javascript:void(0);" data-number="<?=$info['items'][4][1]['pic']?>" class="btn-info revise">编辑</a>
+                            <a href="javascript:void(0);" data-number="<?=$info['items'][4][1]['pic']?>" ></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle">即将开始</td>
+                    <td style="vertical-align:middle"><?=$info['items'][4][2]['pic']?></td>
+                    <td style="vertical-align:middle"><?=$info['items'][4][2]['link']?></td>
+                    <td style="vertical-align:middle"><?=$info['items'][4][2]['desc']?>类</td>
+                    <td style="vertical-align:middle">
+                        <span class="icon icon-editor">
+                            <a href="javascript:void(0);" onclick="adEdit(<?=$info['items'][4][2]['pic']?>)" class="btn-info">编辑</a>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <div class="wrap-top">
+        <h4>天天低价设置</h4>
+        <font style="color: #666666">(为保证页面效果，请保持商品条数为4的倍数)</font>
+        
+<!--        <select name="isTop" class="input selectChange">
+            <option <?if($info['isTop']==1){echo 'selected';}?> value="1">启用</option>
+            <option <?if($info['isTop']==2){echo 'selected';}?> value="2">禁用</option>
+        </select>-->
+        <span></span>
+    </div>
+    
+    <div class="wrap-table" id="is-top" >
+        <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0;width:800px;">
+            <thead>
+                <tr class="active">
+                    <th width="25%">商标号</th>
+                    <th width="25%">商品名称</th>
+                    <th width="25%">商品分类</th>
+                    <th width="25%">操作</th>
+                </tr>
+            </thead>
+            <tbody class="table-list">
+            <? foreach ($info['items'][3] as $k => $v) { ?>
                 <tr>
                     <td style="vertical-align:middle"><?=$v['pic']?></td>
                     <td style="vertical-align:middle"><?=$v['link']?></td>
+                    <td style="vertical-align:middle"><?=$v['desc']?>类</td>
                     <td style="vertical-align:middle">
                         <span class="icon icon-delete">
                             <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
@@ -174,7 +226,7 @@
             </tbody>
         </table>
         <div class="margin-sx-10">
-            <button class="btn btn-danger" id="add-top" type="button">创建置项商品</button>
+            <button class="btn btn-danger" id="add-top" type="button">添加天天低价</button>
         </div>
     </div>
     <br>
@@ -182,7 +234,7 @@
 <? } ?>
 
 <script type="text/javascript">
-    $(function(){
+$(function(){
         
         $(".selectChange").change(function(){
             var _this   = $(this);
@@ -335,6 +387,71 @@
             });
         });
     }
+    
+    //精品特卖点击编辑
+    $('.table-list').on('click', '.revise', function() {
+        var number = $(this).data("number");
+        $(this).html('确定');
+        $(this).siblings("a").html('取消');
+        $(this).siblings("a").addClass("btn btn-info qx");
+        $(this).addClass("btn btn-danger srue");
+        $(this).removeClass("revise");
+        $(this).parent().parent().parent().find(".numbers").html('<input type="text" class="cg-pir n-'+number+'" value="'+number+'" />');
+
+    });
+    
+    //精品特卖设置确定修改商标号
+    $('.table-list').on('click', '.srue', function() {
+    var obj = $(this);
+    var number = obj.data("number");
+    var price = $(".n-"+number).val();
+    if(price==number){
+        return false;
+    }
+    
+    $.ajax({
+                type : 'post',
+                url  : '/channel/setGoodsSale/',
+                data: "old_number="+number+"&number="+price+"&cId=2&type=4",
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            obj.parent().parent().parent().find(".numbers").html(price);
+                            obj.siblings("a").html('');
+                            obj.siblings("a").removeClass("btn btn-info qx");
+                            obj.addClass("revise");
+                            obj.html('编辑');
+                            obj.removeClass("btn btn-danger srue");
+                        });
+                    }else{
+                        layer.msg(data.msg, {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    },function(){ _this.attr('disabled', false) });
+                }
+        });
+    
+   // ajaxsubmit("updatePrice",number,price,0,0);
+});
+
+//取消
+$('.table-list .updates').on('click', '.qx', function() {
+    var number = $(this).data("number");
+    $(this).parent().parent().parent().find(".numbers").html(number);
+    $(this).html('');
+    $(this).removeClass("btn btn-info qx");
+    $(this).siblings("a").addClass("revise");
+    $(this).siblings("a").html('编辑');
+    $(this).siblings("a").removeClass("btn btn-danger srue");
+});
 </script>
 
 <? require(ViewDir.'/footer.html'); ?>

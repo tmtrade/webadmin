@@ -17,7 +17,7 @@ class ChannelAction extends AppAction
 	 * @since	2016-02-18
 	 */
 	public function index()
-	{	
+	{
 		$id = $this->input('id', 'int','');
 
 		if ( empty($id) ){
@@ -25,7 +25,6 @@ class ChannelAction extends AppAction
 			exit;
 		}
 		$info = $this->load('channel')->getChannel($id);
-
         $this->set('info', $info);
 		$this->display();
 	}
@@ -172,7 +171,7 @@ class ChannelAction extends AppAction
 	}
 	
 	/**
-	 * 上传banner图
+	 * 天天低价模板
 	 * 
 	 * @author	Xuni
 	 * @since	2016-02-23
@@ -188,7 +187,7 @@ class ChannelAction extends AppAction
 	}
 
 	/**
-	 * 创建或编辑广告图
+	 * 创建天天低价
 	 * 
 	 * @author	Xuni
 	 * @since	2016-02-23
@@ -197,6 +196,7 @@ class ChannelAction extends AppAction
 	{
 		$number = $this->input('number', 'string', '');
 		$cId 	= $this->input('cId', 'int', '');
+        $type 	= $this->input('type', 'int', '');
 
 		if ( empty($cId) ){
 			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
@@ -214,7 +214,7 @@ class ChannelAction extends AppAction
 			$this->returnAjax(array('code'=>2,'msg'=>'下列商标未出售或不在销售中：'.implode(',', $hasnot)));
 		}
 
-        $res = $this->load('channel')->addTops($numbers, $cId);
+        $res = $this->load('channel')->addTops($numbers, $cId, $type);
         if ( $res ){
             $this->returnAjax(array('code'=>1));
         }
@@ -290,5 +290,40 @@ class ChannelAction extends AppAction
         $this->returnAjax(array('code'=>2,'msg'=>'删除失败'));
 	}
 
+    /**
+	 * 修改精品特卖
+	 * 
+	 * @author	Xuni
+	 * @since	2016-02-23
+	 */
+	public function setGoodsSale()
+	{
+		$old_number = $this->input('old_number', 'string', '');
+		$cId 	= $this->input('cId', 'int', '');
+        $type 	= $this->input('type', 'int', '');
+        $number 	= $this->input('number', 'int', '');
+
+		if ( empty($cId) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
+		}
+		if ( empty($number) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请填写商标号'));
+		}
+		$numbers = array_filter( explode(',', $number) );
+		if ( empty($numbers) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'请填写正确的商标号'));
+		}
+		$ishas 	= $this->load('channel')->existSale($numbers);
+		$hasnot = array_diff($numbers, $ishas);
+		if ( !empty($hasnot) ){
+			$this->returnAjax(array('code'=>2,'msg'=>'下列商标未出售或不在销售中：'.implode(',', $hasnot)));
+		}
+
+        $res = $this->load('channel')->updateGoodsSale($old_number,$number, $cId, $type);
+        if ( $res ){
+            $this->returnAjax(array('code'=>1));
+        }
+        $this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
+	}
 }
 ?>

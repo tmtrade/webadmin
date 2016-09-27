@@ -13,6 +13,7 @@
 <div class="mj-infoM" style="width:99%">
 <form name="setTop" id="setTop" >
     <input type="hidden" name="cId" value="<?=$cId?>" />
+    <input type="hidden" name="type" value="3" />
 
     <label>商标号：</label>
     <textarea style="width:500px;height:200px;" name="number"></textarea>
@@ -55,7 +56,7 @@
         $("#myButton").on('click', function (){
             var _this = $(this);
             var data = $("#setTop").serialize();
-            _this.attr('disabled', true)
+            _this.attr('disabled', true);
             $.ajax({
                 type : 'post',
                 url  : '/channel/setTop/',

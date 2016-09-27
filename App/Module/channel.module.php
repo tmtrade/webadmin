@@ -55,19 +55,21 @@ class ChannelModule extends AppModule
         if ( empty($channelId) ) return false;
 
         $r['eq']    = array('channelId'=>$channelId);
-        $r['order'] = array('type'=>'asc');
+        $r['order'] = array('type'=>'asc','sort'=>'asc');
         $r['limit'] = 1000;
 
         $res    = $this->import('items')->find($r);
         $list = array(
             '1' => array(),
             '2' => array(),
+            '3' => array(),
+            '4' => array(),
+            
         );
         if ( empty($res) ) return $list;
         
         foreach ($res as $k => $v) {
             if ( $v['type'] ) $list[$v['type']][$v['sort']] = $v;
-            ksort($list[$v['type']]);
         }
         return $list;
     }
@@ -200,22 +202,23 @@ class ChannelModule extends AppModule
         return $ids;
     }
 
-    //添加置顶商品
-    public function addTops($ids, $cid)
+    //添加天天低价
+    public function addTops($ids, $cid, $type)
     {
         if ( empty($ids) || !is_array($ids) ) return false;
         $order = $this->getLastOrder($cid, 2);
         $this->begin('channel');
         foreach ($ids as $number) {
-            if ( $this->existTop($number, $cid) ) continue;
+            if ( $this->existTop($number, $cid, $type) ) continue;
             
-            $info   = $this->load('trademark')->getInfo($number, array('`trademark` as `name`'));
+            $info   = $this->load('trademark')->getInfo($number, array('`trademark` as `name`,`class`'));
             $order  = $order + rand(2,5);
             $data   = array(
                 'channelId' => $cid,
-                'type'      => 2,
+                'type'      => $type,
                 'pic'       => $number,
                 'link'      => $info['name'],
+                'desc'      => $info['class'],
                 'sort'      => $order,
                 'date'      => time(),
             );
@@ -229,16 +232,34 @@ class ChannelModule extends AppModule
     }
 
     //判断置顶商品是否已存在
-    public function existTop($number, $cid)
+    public function existTop($number, $cid, $type)
     {
         if ( empty($number) || empty($cid) ) return false;
 
         $r['eq'] = array(
             'channelId' => $cid,
+            'type'      => $type,
             'pic'       => $number,
         );
         $num = $this->import('items')->count($r);
         return $num > 0 ? true : false;
+    }
+    
+    //添加天天低价
+    public function updateGoodsSale($old_number,$number, $cid, $type)
+    {
+        if ( empty($number)) return false;
+        if ( $this->existTop($number, $cid, $type) ) return false;
+            
+            $info   = $this->load('trademark')->getInfo($number, array('`trademark` as `name`,`class`'));
+            $data   = array(
+                'pic'       => $number,
+                'link'      => $info['name'],
+                'desc'      => $info['class'],
+            );
+        $r['eq'] = array('channelId'=>$cid,'type'=>$type,'pic'=>$old_number);
+
+        return $this->import('items')->modify($data, $r);
     }
 
 }

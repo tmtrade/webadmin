@@ -194,7 +194,7 @@ class ChannelModule extends AppModule
         if ( empty($number) || !is_array($number) ) return array();
 
         $r['in']    = array('number'=>$number);
-        $r['eq']    = array('status'=>1);
+        $r['eq']    = array('status'=>1,'priceType'=>1);
         $r['limit'] = 10000;
         $r['col']   = array('number');
         $res = $this->import('sale')->find($r);

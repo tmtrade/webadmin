@@ -1,0 +1,136 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<style>
+    .img-flip {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+</style>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>商标专利列表</li>
+        <li>商标打包配置</li>
+    </ul>
+</div>
+<div class="wrap">
+    <div class="wrap-content">
+        <p class="text-left"
+           style="float:left;margin-top:20px;padding:0 5px 0 5px;border:1px solid #dadada;">
+            共有 <b class="red"><?=$total?></b> 条数据</p>
+        <div class="wrap-tittle">
+            <a href="/package/add" class="btn btn-danger add-case">添加打包</a>
+            <button type="button" class="btn btn-info" onclick="delMoreSale();">批量删除</button>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                <tr class="active">
+                    <th><input type="checkbox" id="chkAll">    商品打包标题</th>
+                    <th>包含商标</th>
+                    <th>添加时间</th>
+                    <th>添加者</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody class="table-list">
+                <? foreach ($list as $k => $v) { ?>
+                <tr>
+                    <td><input type="checkbox" name="chkId[]" class="chklist" value="<?=$v['id']?>">    <?=$v['title']?></td>
+                    <td><?=$v['count']?></td>
+                    <td><?=date('Y-m-d', $v['created'])?></td>
+                    <td><?=$v['username']?></td>
+                    <td>
+                        <a href="javascript:void(0);" onclick="delCase(<?=$v['id']?>);">删除</a>
+                        <a href="/package/add/?id=<?=$v['id']?>">编辑</a>
+                    </td>
+                </tr>
+                <? } ?>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div class="btn-group">
+                <a href="/package/add" class="btn btn-danger add-case">添加打包商品</a>
+        </div>
+        <div id="page" align="center"><?=$pageBar?></div>
+    </div>
+</div>
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    //删除链接
+    function delCase(id) {
+        if (id <= 0 || id == '') return false;
+        layer.confirm('确认要执行删除操作？<br>', {
+            btn: ['删了', '算了'] //按钮
+        }, function () {
+            $.ajax({
+                type: 'post',
+                url: '/package/remove/',
+                data: {'id': id},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 0) {
+                        layer.msg('操作成功', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        var msg = data.msg == undefined ? '操作失败，请确认数据是否正确。' : data.msg;
+                        layer.msg(msg, {
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                },
+                error: function (data) {
+                    layer.msg('操作失败，请检查您输入的内容是否正确后重新尝试', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            });
+        });
+    }
+    
+    //选中商品
+    $('#chkAll').click(function(){ 
+        $('.chklist').prop("checked",this.checked);
+    });
+    
+    //批量删除
+    function delMoreSale()
+    {
+        var chkId = getChecked();
+        if ( chkId == '' ) {
+            layer.msg('请选择至少一个商品', {
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            return false;
+        }
+        delCase(chkId);
+        return false;
+    }
+
+    function getChecked()
+    {
+        var strId = '';
+        $('.chklist').each(function(){
+            if($(this).prop('checked')){
+                strId += ","+$(this).val();
+            }
+        });
+        strId = strId ? strId.substr(1) : '';
+        return strId;
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

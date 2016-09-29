@@ -11,16 +11,21 @@ return $menu = array(
 						'auth'	=> '1',
 					),
                     '2' => array(
+						'title' => '商标打包配置',
+						'url'   => '/package/index/',
+						'auth'	=> '39',
+					),
+                    '3' => array(
 						'title' => '商标交易历史',
 						'url'   => '/internal/history/',
 						'auth'	=> '36',
 					),
-                    '3' => array(
+                    '4' => array(
 						'title' => '出售数据分析',
 						'url'   => '/dataanalyze/index/',
 						'auth'	=> '38',
 					),
-                    '4' => array(
+                    '5' => array(
 						'title' => '专利列表',
 						'url'   => '/patent/index/',
 						'auth'	=> '27',

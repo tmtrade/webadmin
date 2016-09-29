@@ -717,14 +717,24 @@ class InternalModule extends AppModule
     }
 
     //判断是否出售基础信息是否存在
-    public function existSale($number)
+    public function existSale($number,$status="")
     {
         if ( empty($number) ) return false;
-        $r['eq']    = array('number'=>$number);
-        $r['col']   = array('id');
+        if(empty($status)){
+            $r['eq']    = array('number'=>$number);
+        }else{
+            $r['eq']    = array('number'=>$number,'status'=>1);
+        }
+        $r['col']   = array('id','class','name');
         $res = $this->import('sale')->find($r);
         if ( empty($res) || $res['id'] <= 0 ) return false;
-        return $res['id'];
+        
+        if(empty($status)){
+            return $res['id'];
+        }else{
+            return $res;
+        }
+        
     }
 
     //判断是否商标包装信息是否存在

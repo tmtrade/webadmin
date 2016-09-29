@@ -1,0 +1,21 @@
+<tr>
+    <td align="left">
+        <img class="info-pic"  src="<?=$info['img']?>" onerror="this.src='/Static/1.2/images/u143.png'" style="max-width: 100px;max-height: 70px;"/></td>
+    <td align="left">商标号:<font class="number"><?=$info['number']?></font></td>
+    <input type="hidden" name="number[]" value="<?=$info['number']?>">
+    <td align="left">商标名称:<?=$info['name']?></td>
+    <td align="left" title="<?=$info['class_str']?>">商标分类:  第<?=$info['thum']?>类</td>
+    <td >
+        <a href="javascript:void(0);" class="remove">删除</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp
+        <!-- 向下  -->
+        <span class="z-down">
+            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif" >
+        </span>
+        &nbsp;
+        <!-- 向上  -->
+        <span class="img-flip z-up" >
+            <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
+        </span>
+    </td>
+</tr>

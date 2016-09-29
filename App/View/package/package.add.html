@@ -1,0 +1,372 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/blacklist.css">
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css" />
+<script charset="utf-8" src="<?=StaticDir?>/editor/kindeditor.js"></script>
+<script charset="utf-8" src="<?=StaticDir?>/editor/lang/zh_CN.js"></script>
+<script>
+        KindEditor.ready(function(K) {
+            window.editor = K.create('#desc', {
+                afterBlur: function () { this.sync(); }
+            });
+        });
+		
+</script>
+<style>
+    input,select,textarea{
+        border: 1px #CCC solid;
+    }
+    input[type=text],select{
+        height: 26px;
+    }
+    .mj-ztBar{
+        padding: 5px 0px;
+        background: #FFF;
+    }
+    .img-flip {
+        position: absolute;
+        width: 16px;
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+</style>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>站点管理</li>
+        <li>首页基本配置</li>
+    </ul>
+    <!-- <span style="float:right;margin-right:20px;color:red;">在售商标总数：<?=$total ?></span> -->
+</div>
+<div class="wrap">
+    <div class="mj-ztBar f-clearfix">
+        <div class="mj-deiBlist">
+            <form action='/package/addNumber/' method='post' id="submit_number">
+                <input type="hidden" name="id"  value="<?=$id?$id:0;?>"/>
+                <table class="mj-table" style="border:0px">
+                    <tbody>
+                        <tr>
+                            <td class="f-clearfix">
+                                <div class="fl">
+                                    <label for="tdi1">页面标题:</label>
+                                    <input type="text" name="title"  style="width:450px;" value="<?=$info['title']?>"/>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="f-clearfix">
+                                <div class="fl">
+                                    <label for="tdi1">价值分析:</label>
+                                    <input type="text" name="value"  style="width:450px;" value="<?=$info['value']?>"/>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="f-clearfix" style="background-color: #eeeeee">
+                                <div class="fl">
+                                    <label for="tdi1">请输入商标号:</label>
+                                    <input type="text" id="add_number" style="width:425px;"/>
+                                    <a class="btn btn-success" id="addPackage">添加商品</a>
+                                    <br/><p style="margin-left: 54px;">每个商品包最多可添加 45 条商品，商标号之间可以空格进行区分，例如：123456 231456</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="mj-table">
+                                <div class="wrap-table">
+                                    <table class="table table-hover">
+                                        <tbody class="table-list" id="list_body">
+                                            
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="f-clearfix mj-table" >
+                                <div class="fl">
+                                    <label for="tdi1">打包价:</label>
+                                    <input type="text" name="price"  style="width:450px;" value="<?=$info['price']?>"/>  元
+                                    <br/>
+                                    <span style="margin-left: 54px;">
+                                        <input type="radio"  name="isAll" value="1" <?if($info['isAll']==1) echo "checked='checked'";?> />仅可打包销售  
+                                               <input type="radio"  name="isAll" value="2" <?if($info['isAll']==2) echo "checked='checked'";?> />允许单卖
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="f-clearfix mj-table" >
+                                <div class="fl">
+                                    <label>商标标签：</label>
+                                    <input type="hidden" id="label" name="label" value="<?=$info['label']?>">
+                                    <? foreach ($tmLabel as $k => $v) {?>
+                                    <div class="mj-checkbox">
+                                        <input type="checkbox" tname="label" 
+                                               <?if(!empty($info['label']) && in_array($k, array_filter(explode(',',$info['label'])))){
+                                               echo 'checked';} ?> value="<?=$k?>" class="ck_label" />
+                                               <label for="bq<?=$k?>"><?=$v?></label>
+                                    </div>
+                                    <? } ?>
+                                    <div class="mj-checkbox">
+                                        <label for="bq9">置顶：</label>
+                                        <select name="isTop">
+                                            <? foreach ($tmTop as $k => $v) { ?>
+                                            <option value="<?=$k?>" <?if($info['isTop']==$k){echo 'selected';}?>>
+                                                    <?=$v?></option>
+                                            <? } ?>
+                                        </select>                    
+                                    </div>
+                                    <br>
+                                    <br>
+                                    <label for="tdi1">包装信息:</label>
+                                    <textarea name="desc" cols="92" rows="18" id="desc"><?=$info['desc']?></textarea>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="f-clearfix mj-table" >
+                                <div class="fl">
+                                    <label>展示电话：</label>
+                                    <select name="viewPhone" id="viewPhone">
+                                        <?if($info['viewPhone']==0 || !in_array($info['viewPhone'], $allphone)){?> <option value="0" selected>请选择号码</option><?}?>
+                                        <? foreach ($allphone as $phone) { ?>
+                                        <option value="<?=$phone?>" <?if($info['viewPhone']==$phone){echo 'selected';}?>><?=$phone?></option>
+                                        <? } ?>
+                                    </select>
+                                    <hr/>
+                                    <? require(ViewDir.'/seo/seo.set.html');?>
+                                   
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+
+    <div class="margin-sx-10">
+        <div class="mj-deiBtns">
+            <a href="javascript:void(0);" id="add_goods">确定</a>
+            <a href="/package/index">取消</a>
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    var pid = '<?=$id?>';
+    $(function(){
+        //删除
+        $('#list_body').on('click', '.remove', function() {
+            $(this).parent().parent().remove();
+        });
+
+        //通过点击向上向下操作
+        $('#list_body').on('click', '.z-down', function() {
+            var n = $(this).parent().parent().next();
+            $(this).parent().parent().before(n);
+        });
+
+        $('#list_body').on('click', '.z-up', function() {
+            var p = $(this).parent().parent().prev();
+            $(this).parent().parent().after(p);
+        });
+        
+        //多选处理
+        $('input[type="checkbox"]').click(function(){
+            var strClass = '';
+            var id = $(this).attr('tname');
+            $('.ck_'+id).each(function(){
+                if($(this).prop('checked')){
+                    strClass += ","+$(this).val();
+                }
+            });
+            strClass = strClass ? strClass.substr(1) : '';
+            $('#'+id).val(strClass);
+        });
+    });
+    
+    //添加商标事件
+    $('#addPackage').bind("click",function() {
+        layer.load(1, {
+            shade: [0.1, '#fff'] //0.1透明度的白色背景
+        });
+        var number = $.trim($('#add_number').val());
+        var arr= number.split(' ');//注split可以用字符或字符串分割
+        var number_num = arr.length;
+        if(number==""){
+            layer.msg('请输入商标号', {
+                    time: 1500
+                });
+            layer.closeAll('loading');
+        }
+        for(var i=0;i<number_num;i++)
+        {
+            if ($.trim(arr[i]) == '' || arr[i]=="") {
+                continue;
+            }
+            
+            //商标数不能大于20
+            var num = $('#list_body tr').length;
+            var num_str = false;
+            if (num >= 45) {
+                num_str = true;
+            }
+            if (num_str) {
+                layer.msg('亲，最多只能添加45条商品哦！', {time: 1500});
+                layer.closeAll('loading');
+                return false;
+            }
+            
+            //检查列表中是否有此商标
+            var numbers = $('#list_body .number');
+            var tmp = '';
+            var flag = true;
+            numbers.each(function(i) {
+                tmp = $.trim($(this).text());
+                if (tmp == arr[i]) {
+                    flag = false;
+                    return false;
+                }
+            });
+            if (!flag) {
+                layer.msg(arr[i]+'该商标已在列表中', {
+                    time: 1500
+                });
+                layer.closeAll('loading');
+                return false;
+            }
+            //提交到服务器检查
+            $.post('/package/getTminfo', {'number': arr[i]}, function(data) {
+                if (data.code != 0) {
+                    layer.msg(data.msg, {
+                        time: 1500
+                    });
+                } else {
+                    $('#list_body').append(data.msg);
+                    $('#add_number').val('');//清空输入框
+                }
+            }, 'json');
+        }
+        
+        layer.closeAll('loading');
+    });
+
+//提交商品事件
+    $('#add_goods').click(function() {
+        //商标数判断
+        var num = $('#list_body tr').length;
+        if (num <= 0) {
+            layer.msg('请补充打包的商品', {
+                time: 1500
+            });
+            layer.closeAll('loading');
+            return false;
+        }
+
+        //表单信息验证
+        var title = $('.mj-table input[name=title]').val();
+        if (title === "") {
+            layer.msg('请填写标题!', { 
+                time: 1500
+            });
+            return false;
+        }
+        if (title.length>30) {
+            layer.msg('商品单名称太长啦!', {
+                time: 1500
+            });
+            return false;
+        }
+
+        var price = $('.mj-table input[name=price]').val();
+        var tmp = parseInt($.trim(price));
+            if (tmp<=0 || tmp.length>10 || price=="") {
+                layer.msg('请填写正确的打包价格!', {
+                    time: 1500
+                });
+                return false;
+        }
+            
+        var isAll = $('.mj-table input[name=isAll]:checked ').val();
+        if (isAll === undefined) {
+            layer.msg('请选择打包出售方式!', {
+                time: 1500
+            });
+            return false;
+        }
+
+        var viewPhone = $('#viewPhone').val();
+        if (viewPhone === undefined || viewPhone==0) {
+            layer.msg('请选择联系电话!', {
+                time: 1500
+            });
+            return false;
+        }
+        
+        //序列化表单数据
+        var data = $('#submit_number').serialize();
+        
+        layer.load(1, {
+            shade: [0.1, '#fff'] //0.1透明度的白色背景
+        });
+        //提交数据
+        $.post('/package/addNumber', data, function(dd) {
+            layer.closeAll('loading');
+            if (dd.code != 1) {
+                layer.msg('保存成功', {
+                    time: 1500
+                }, function() {
+                    if (pid) {
+                        location.href = '/package/add/?id=' + dd.code;
+                    } else {
+                        location.href = '/package/index/';
+                    }
+                });
+            } else {
+                var msg = dd.msg;
+                layer.msg(msg, {
+                    time: 1500
+                });
+            }
+        }, 'json');
+    });
+    
+    //修改商品
+    var numbers = '<?=$number_list?>';
+    if (numbers) {
+        var _numbers = eval(numbers);
+        var strs = "";
+        jQuery.each(_numbers, function(i, field) {
+            $.ajax({
+                async: false,
+                type: 'post',
+                url: '/package/getTminfo',
+                data: 'number=' + field.number + '&pid=' + pid,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.code != 0) {
+                        layer.msg(data.msg, {
+                            time: 1500
+                        });
+                    } else {
+                        strs += data.msg;
+                    }
+                }
+            });
+        });
+        $('#list_body').append(strs);
+        var otabh= $('#list_body').outerHeight();
+    }
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>

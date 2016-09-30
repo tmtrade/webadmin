@@ -482,6 +482,38 @@ class InternalModule extends AppModule
         return $this->import('sale')->modify($data, $r);
     }
 
+    //根据商标号更新商品信息
+    public function updateByNumber($data, $number)
+    {
+        $r['eq'] = array('number'=>$number);
+        return $this->import('sale')->modify($data, $r);
+    }
+    
+    /**
+     *根据商标号更新商品信息
+     * @param type $number
+     * @param type $label 标签
+     * @param type $type  1修改  2删除
+     */
+    public function updateOffpriceLabel($number,$label,$type)
+    {
+        $info   = $this->load('internal')->existSale($number,1);
+        if($type==1){//修改
+            if(empty($info['offpriceLabel'])){
+                $updates       = array('offpriceLabel'=>$label);
+            }else{
+                $updates       = array('offpriceLabel'=>$info['offpriceLabel'].','.$label);
+            }
+        }else{//删除
+            $arr = explode(",", $info['offpriceLabel']);
+            unset($arr[array_search($label,$arr)]);
+            $str= implode(",", $arr);
+            $updates       = array('offpriceLabel'=>$str);
+        }
+        $r['eq'] = array('number'=>$number);
+        return $this->import('sale')->modify($updates, $r);
+    }
+    
     //更新联系人
     public function updateContact($data, $scId)
     {
@@ -725,7 +757,7 @@ class InternalModule extends AppModule
         }else{
             $r['eq']    = array('number'=>$number,'status'=>1);
         }
-        $r['col']   = array('id','class','name');
+        $r['col']   = array('id','class','name','offpriceLabel');
         $res = $this->import('sale')->find($r);
         if ( empty($res) || $res['id'] <= 0 ) return false;
         

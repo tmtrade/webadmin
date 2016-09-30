@@ -122,8 +122,16 @@ class PackageModule extends AppModule
                 'viewPhone'         => $data['viewPhone'],
             );
             $this->editPackage($tmp, $pkgId);
-            $this->delPackageItems($pkgId);
             
+            //去除多类转让标签属性
+            $rows_number = $this->getPackageItemByPid($pkgId);
+            $items = $rows_number['rows'];
+            foreach($items as $v){
+                $this->load('internal')->updateOffpriceLabel($v['number'], 4, 2);
+            }
+            
+            //删除数据
+            $this->delPackageItems($pkgId);
         }
         foreach($data['number'] as $k=>$v){
             //商品
@@ -136,7 +144,10 @@ class PackageModule extends AppModule
             $this->begin('packageitems');
             $rst = $this->addPackageItems($item);
             
-            if($rst){
+            //添加标签属性
+            $sale = $this->load('internal')->updateOffpriceLabel($v, 4, 1);
+            
+            if($rst && $sale){
                     $this->commit('packageitems');
             }else{
                 $this->rollBack('packageitems');
@@ -202,6 +213,7 @@ class PackageModule extends AppModule
 		return $res;
 	}
     
+    //获取打包里面的商标数量
     public function getPackageItemCount(){
         $r = array();
         $r['col'] = array('pkgId','count(pkgId) as count');
@@ -213,6 +225,17 @@ class PackageModule extends AppModule
             $arr[$v['pkgId']] = $v['count'];
         }
         return $arr;
+    }
+    
+    /**
+     * 得到报价单内商标类商标数量
+     * @param $id
+     * @return int
+     */
+    public function getNumberCount($number){
+        $r = array();
+        $r['eq'] = array('number'=>$number);
+        return $this->import('packageitems')->count($r);
     }
 }
 ?>

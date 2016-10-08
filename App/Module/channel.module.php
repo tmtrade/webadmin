@@ -245,21 +245,41 @@ class ChannelModule extends AppModule
         return $num > 0 ? true : false;
     }
     
-    //添加天天低价
-    public function updateGoodsSale($old_number,$number, $cid, $type)
+    //编辑精品特卖设置
+    public function updateGoodsSale($old_number,$number, $cid, $type, $sort)
     {
         if ( empty($number)) return false;
-        if ( $this->existTop($number, $cid, $type) ) return false;
-            
-            $info   = $this->load('trademark')->getInfo($number, array('`trademark` as `name`,`class`'));
+        //if ( $this->existTop($number, $cid, $type) ) return false;//判断是否可以重复商品
+        $info   = $this->load('trademark')->getInfo($number, array('`trademark` as `name`,`class`'));
+        
+        //判断商品是否存在
+        $rs['eq'] = array('channelId'=>$cid,'type'=>$type,'sort'=>$sort);
+        $num            = $this->import('items')->count($rs);
+        if($num>0){
             $data   = array(
                 'pic'       => $number,
                 'link'      => $info['name'],
                 'desc'      => $info['class'],
             );
-        $r['eq'] = array('channelId'=>$cid,'type'=>$type,'pic'=>$old_number);
-
-        return $this->import('items')->modify($data, $r);
+            $r['eq'] = array('channelId'=>$cid,'type'=>$type,'pic'=>$old_number,'sort'=>$sort);
+            $res = $this->import('items')->modify($data, $r);
+        }else{
+            $data   = array(
+                'channelId' => $cid,
+                'type'      => $type,
+                'pic'       => $number,
+                'link'      => $info['name'],
+                'desc'      => $info['class'],
+                'sort'      => $sort,
+            );
+            $res = $this->addItems($data);
+        }
+        
+        if($res){
+            return  array("name"=>$info['name'],"class"=>$info['class']);
+        }else{
+            return false;
+        }
     }
 
 }

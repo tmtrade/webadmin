@@ -211,7 +211,7 @@ class ChannelAction extends AppAction
 		$ishas 	= $this->load('channel')->existSale($numbers);
 		$hasnot = array_diff($numbers, $ishas);
 		if ( !empty($hasnot) ){
-			$this->returnAjax(array('code'=>2,'msg'=>'下列商标未出售或不在销售中：'.implode(',', $hasnot)));
+			$this->returnAjax(array('code'=>2,'msg'=>'下列商标未出售或商品价格为议价：'.implode(',', $hasnot)));
 		}
 
         $res = $this->load('channel')->addTops($numbers, $cId, $type);
@@ -301,6 +301,7 @@ class ChannelAction extends AppAction
 		$old_number = $this->input('old_number', 'string', '');
 		$cId 	= $this->input('cId', 'int', '');
         $type 	= $this->input('type', 'int', '');
+        $sort 	= $this->input('sort', 'int', '');
         $number 	= $this->input('number', 'int', '');
 
 		if ( empty($cId) ){
@@ -319,9 +320,9 @@ class ChannelAction extends AppAction
 			$this->returnAjax(array('code'=>2,'msg'=>'下列商标未在出售中或销售价格为议价!'.implode(',', $hasnot)));
 		}
 
-        $res = $this->load('channel')->updateGoodsSale($old_number,$number, $cId, $type);
+        $res = $this->load('channel')->updateGoodsSale($old_number,$number, $cId, $type,$sort);
         if ( $res ){
-            $this->returnAjax(array('code'=>1));
+            $this->returnAjax(array('code'=>1,'msg'=>array("name"=>$res['name'],"class"=>$res['class'])));
         }
         $this->returnAjax(array('code'=>2,'msg'=>'创建失败'));
 	}

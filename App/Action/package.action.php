@@ -69,6 +69,7 @@ class packageAction extends AppAction
     {
         $number	= $this->input("number","string");
         $pid	= $this->input("pid","int");
+        $up	= $this->input("up","int",0);//是否是修改页面获取数据
         
         if ( empty($number) ) $this->returnAjax(array('code'=>1,'msg'=>'商标号不能为空'));
         //判断商标是否存在
@@ -76,9 +77,11 @@ class packageAction extends AppAction
         if ( !$info) $this->returnAjax(array('code'=>3,'msg'=>$number.'对不起,该商标不在出售中'));
         
         //判断商标是否已打过包
-        $info_count   = $this->load('package')->getNumberCount($number);
-        if ($info_count>0) $this->returnAjax(array('code'=>3,'msg'=>$number.'对不起,该商标已打过包啦'));
-
+        if(empty($up)){
+            $info_count   = $this->load('package')->getNumberCount($number);
+            if ($info_count>0) $this->returnAjax(array('code'=>3,'msg'=>$number.'对不起,该商标已打过包啦'));
+        }
+        
         if(!empty($pid)){
             $itemInfo = $this->load('package')->getPackageItemInfo($pid,$number);
         }

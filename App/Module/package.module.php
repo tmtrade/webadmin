@@ -122,15 +122,7 @@ class PackageModule extends AppModule
                 'viewPhone'         => $data['viewPhone'],
             );
             $this->editPackage($tmp, $pkgId);
-            
-            //去除多类转让标签属性
-            $rows_number = $this->getPackageItemByPid($pkgId);
-            $items = $rows_number['rows'];
-            foreach($items as $v){
-                $this->load('internal')->updateOffpriceLabel($v['number'], 4, 2);
-            }
-            
-            //删除数据
+            //删除打包数据
             $this->delPackageItems($pkgId);
         }
         foreach($data['number'] as $k=>$v){
@@ -168,8 +160,8 @@ class PackageModule extends AppModule
     public function delete($id){
         //删除报价单详情
         $this->begin('package');
-        $rst = $this->import('packageitems')->remove(array('eq'=>array('pkgId'=>$id)));
-        if($rst){
+        $res = $this->delPackageItems($id);//删除打包里面的数据
+        if($res){
             //删除报价单表
             $rst = $this->import('package')->remove(array('eq'=>array('id'=>$id)));
             if($rst){
@@ -206,9 +198,16 @@ class PackageModule extends AppModule
 	}
 
 	//添加子分类 del  对应 items
-	public function delPackageItems($id)
+	public function delPackageItems($pkgId)
 	{
-		$rc['eq'] = array('pkgId' => $id);
+        //去除多类转让标签属性
+        $rows_number = $this->getPackageItemByPid($pkgId);
+        $items = $rows_number['rows'];
+        foreach($items as $v){
+            $this->load('internal')->updateOffpriceLabel($v['number'], 4, 2);
+        }
+            
+		$rc['eq'] = array('pkgId' => $pkgId);
 		$res      = $this->import('packageitems')->remove($rc);
 		return $res;
 	}

@@ -156,24 +156,37 @@
             <tbody class="table-list">
                 <tr>
                     <td style="vertical-align:middle">当前特卖</td>
-                    <td style="vertical-align:middle" class="numbers"><?=$info['items'][4][1]['pic']?></td>
-                    <td style="vertical-align:middle"><?=$info['items'][4][1]['link']?></td>
-                    <td style="vertical-align:middle"><?=$info['items'][4][1]['desc']?>类</td>
+                    <td style="vertical-align:middle" class="numbers"><?=$info['items'][3][1]['pic']?$info['items'][3][1]['pic']:未设置;?></td>
+                    <td style="vertical-align:middle" class="names"><?=$info['items'][3][1]['link']?></td>
+                    <td style="vertical-align:middle" class="classs"><?=$info['items'][3][1]['desc']?$info['items'][3][1]['desc'].'类':'';?></td>
                     <td style="vertical-align:middle" class="updates">
                         <span class="icon icon-editor">
-                            <a href="javascript:void(0);" data-number="<?=$info['items'][4][1]['pic']?>" class="btn-info revise">编辑</a>
-                            <a href="javascript:void(0);" data-number="<?=$info['items'][4][1]['pic']?>" ></a>
+                            <a href="javascript:void(0);" data-number="<?=$info['items'][3][1]['pic']?>" data-sort="1" class="btn-info revise">编辑</a>
+                            <a href="javascript:void(0);" data-number="<?=$info['items'][3][1]['pic']?>" ></a>
                         </span>
                     </td>
                 </tr>
                 <tr>
                     <td style="vertical-align:middle">即将开始</td>
-                    <td style="vertical-align:middle"><?=$info['items'][4][2]['pic']?></td>
-                    <td style="vertical-align:middle"><?=$info['items'][4][2]['link']?></td>
-                    <td style="vertical-align:middle"><?=$info['items'][4][2]['desc']?>类</td>
-                    <td style="vertical-align:middle">
-                        <span class="icon icon-editor">
-                            <a href="javascript:void(0);" onclick="adEdit(<?=$info['items'][4][2]['pic']?>)" class="btn-info">编辑</a>
+                    <td style="vertical-align:middle" class="numbers"><?=$info['items'][3][2]['pic']?$info['items'][3][2]['pic']:未设置;?></td>
+                    <td style="vertical-align:middle" class="names"><?=$info['items'][3][2]['link']?></td>
+                    <td style="vertical-align:middle" class="classs"><?=$info['items'][3][2]['desc']?$info['items'][3][2]['desc'].'类':'';?></td>
+                    <td style="vertical-align:middle" class="updates">
+                        <span class="icon icon-editor" >
+                            <a href="javascript:void(0);" data-number="<?=$info['items'][3][2]['pic']?>" data-sort="2" class="btn-info revise">编辑</a>
+                            <a href="javascript:void(0);" data-number="<?=$info['items'][3][2]['pic']?>" ></a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle">预备商品</td>
+                    <td style="vertical-align:middle" class="numbers"><?=$info['items'][3][3]['pic']?$info['items'][3][3]['pic']:未设置;?></td>
+                    <td style="vertical-align:middle" class="names"><?=$info['items'][3][3]['link']?></td>
+                    <td style="vertical-align:middle" class="classs"><?=$info['items'][3][3]['desc']?$info['items'][3][3]['desc'].'类':'';?></td>
+                    <td style="vertical-align:middle" class="updates">
+                        <span class="icon icon-editor" >
+                            <a href="javascript:void(0);" data-number="<?=$info['items'][3][3]['pic']?>" data-sort="3" class="btn-info revise">编辑</a>
+                            <a href="javascript:void(0);" data-number="<?=$info['items'][3][3]['pic']?>" ></a>
                         </span>
                     </td>
                 </tr>
@@ -203,7 +216,7 @@
                 </tr>
             </thead>
             <tbody class="table-list">
-            <? foreach ($info['items'][3] as $k => $v) { ?>
+            <? foreach ($info['items'][4] as $k => $v) { ?>
                 <tr>
                     <td style="vertical-align:middle"><?=$v['pic']?></td>
                     <td style="vertical-align:middle"><?=$v['link']?></td>
@@ -213,11 +226,11 @@
                             <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
                         </span>
                         &nbsp;&nbsp;
-                        <span onclick="orderChannel(<?=$v['id']?>, 1, 2, <?=$info['id']?>)">
+                        <span onclick="orderChannel(<?=$v['id']?>, 1, 4, <?=$info['id']?>)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                         &nbsp;
-                        <span class="img-flip" onclick="orderChannel(<?=$v['id']?>, 2, 2, <?=$info['id']?>)">
+                        <span class="img-flip" onclick="orderChannel(<?=$v['id']?>, 2, 4, <?=$info['id']?>)">
                             <img class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                     </td>
@@ -404,6 +417,7 @@ $(function(){
     $('.table-list').on('click', '.srue', function() {
     var obj = $(this);
     var number = obj.data("number");
+    var sort = obj.data("sort");
     var price = $(".n-"+number).val();
     if(price==number){
         return false;
@@ -412,7 +426,7 @@ $(function(){
     $.ajax({
                 type : 'post',
                 url  : '/channel/setGoodsSale/',
-                data: "old_number="+number+"&number="+price+"&cId=2&type=4",
+                data: "old_number="+number+"&number="+price+"&cId=2&type=3&sort="+sort,
                 dataType : 'json',
                 success : function (data){
                     if (data.code==1){
@@ -420,6 +434,8 @@ $(function(){
                             time: 1000 //2秒关闭（如果不配置，默认是3秒）
                         }, function(){
                             obj.parent().parent().parent().find(".numbers").html(price);
+                            obj.parent().parent().parent().find(".names").html(data.msg.name);
+                            obj.parent().parent().parent().find(".classs").html(data.msg.class+"类");
                             obj.siblings("a").html('');
                             obj.siblings("a").removeClass("btn btn-info qx");
                             obj.addClass("revise");
@@ -428,7 +444,7 @@ $(function(){
                         });
                     }else{
                         layer.msg(data.msg, {
-                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                            time:2000 //2秒关闭（如果不配置，默认是3秒）
                         });
                     }
                 },

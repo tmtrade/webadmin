@@ -351,7 +351,7 @@
                 async: false,
                 type: 'post',
                 url: '/package/getTminfo',
-                data: 'number=' + field.number + '&pid=' + pid,
+                data: 'number=' + field.number + '&pid=' + pid + '&up=1',
                 dataType: 'json',
                 success: function(data) {
                     if (data.code != 0) {

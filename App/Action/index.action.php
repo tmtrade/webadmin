@@ -56,7 +56,7 @@ class IndexAction extends AppAction
 	 */
 	public function left()
 	{
-		$menu = require ConfigDir.'/menu.config.php';
+		$menu 	= require_once ConfigDir.'/menu.config.php';
 		$user   = $this->load('member')->get($this->username);
 		$output = "";
 		if ( !empty($user) ){

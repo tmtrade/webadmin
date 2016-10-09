@@ -194,7 +194,7 @@ class ChannelModule extends AppModule
         if ( empty($number) || !is_array($number) ) return array();
 
         $r['in']    = array('number'=>$number);
-        $r['eq']    = array('status'=>1,'priceType'=>1);
+        $r['eq']    = array('status'=>1,'isOffprice'=>1);
         $r['limit'] = 10000;
         $r['col']   = array('number');
         $res = $this->import('sale')->find($r);
@@ -206,7 +206,7 @@ class ChannelModule extends AppModule
     public function addTops($ids, $cid, $type)
     {
         if ( empty($ids) || !is_array($ids) ) return false;
-        $order = $this->getLastOrder($cid, 2);
+        $order = $this->getLastOrder($cid, 4);
         $this->begin('channel');
         foreach ($ids as $number) {
             if ( $this->existTop($number, $cid, $type) ) continue;

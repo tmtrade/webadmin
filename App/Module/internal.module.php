@@ -497,20 +497,20 @@ class InternalModule extends AppModule
      * @param type $label 标签
      * @param type $type  1修改  2删除
      */
-    public function updateOffpriceLabel($number,$label,$type)
+    public function updateOffprice($number,$label,$type)
     {
         $info   = $this->load('internal')->existSale($number,1);
         if($type==1){//修改
-            if(empty($info['offpriceLabel'])){
-                $updates       = array('offpriceLabel'=>$label);
+            if(empty($info['offprice'])){
+                $updates       = array('offprice'=>$label);
             }else{
-                $updates       = array('offpriceLabel'=>$info['offpriceLabel'].','.$label);
+                $updates       = array('offprice'=>$info['offprice'].','.$label);
             }
         }else{//删除
-            $arr = explode(",", $info['offpriceLabel']);
+            $arr = explode(",", $info['offprice']);
             unset($arr[array_search($label,$arr)]);
             $str= implode(",", $arr);
-            $updates       = array('offpriceLabel'=>$str);
+            $updates       = array('offprice'=>$str);
         }
         $r['eq'] = array('number'=>$number);
         return $this->import('sale')->modify($updates, $r);
@@ -759,7 +759,7 @@ class InternalModule extends AppModule
         }else{
             $r['eq']    = array('number'=>$number,'status'=>1);
         }
-        $r['col']   = array('id','class','name','offpriceLabel');
+        $r['col']   = array('id','class','name','offprice');
         $res = $this->import('sale')->find($r);
         if ( empty($res) || $res['id'] <= 0 ) return false;
         

@@ -137,7 +137,7 @@ class PackageModule extends AppModule
             $rst = $this->addPackageItems($item);
             
             //添加标签属性
-            $sale = $this->load('internal')->updateOffpriceLabel($v, 4, 1);
+            $sale = $this->load('internal')->updateOffprice($v, 4, 1);
             
             if($rst && $sale){
                     $this->commit('packageitems');
@@ -204,7 +204,7 @@ class PackageModule extends AppModule
         $rows_number = $this->getPackageItemByPid($pkgId);
         $items = $rows_number['rows'];
         foreach($items as $v){
-            $this->load('internal')->updateOffpriceLabel($v['number'], 4, 2);
+            $this->load('internal')->updateOffprice($v['number'], 4, 2);
         }
             
 		$rc['eq'] = array('pkgId' => $pkgId);

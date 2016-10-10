@@ -12,7 +12,7 @@
 class CronAction extends QueueCommonAction
 {
     private $cacheType      = 'redisQc';//缓存类型
-    private $cacheName      = 'tradeCronCache';//进程的缓存标识，在本文件中判断重复会出现多进程！！！
+    //private $cacheName      = 'tradeCronCache';//进程的缓存标识，在本文件中判断重复会出现多进程！！！
     private $queueModule    = '/cronjob/%s/';//队列执行组件
 
     function __construct()
@@ -41,13 +41,26 @@ class CronAction extends QueueCommonAction
                 'func' => 'updateRegDate',
                 'name' => 'trade_update_regDate_cron',//设置执行文件唯一标识（每个task执行名称需不同）
                 ),
-            // //每天什么时段
-            // array(
-            //     'type' => 'day',//设置时间执行一次
-            //     'time' => '10:11',//24小时制时间如：08:30（表示早上8点半）
-            //     'func' => 'test',
-            //     'name' => 'testday1500',//设置执行文件唯一标识（每个task执行名称需不同）
-            //     ),
+            array(
+                'type' => 'week',//设置时间执行一次
+                'day'  => '6',// 1~7 （周一到周日）
+                'time' => '00:11',//24小时制时间如：08:30（表示早上8点半）
+                'func' => 'updateEndDate',
+                'name' => 'trade_update_endDate_cron',//设置执行文件唯一标识（每个task执行名称需不同）
+            ),
+            //每天什么时段
+            array(
+                'type' => 'day',//设置时间执行一次
+                'time' => '00:51',//24小时制时间如：08:30（表示早上8点半）
+                'func' => 'updateGoodsLessFive',
+                'name' => 'trade_update_goodsLessFive_cron',//设置执行文件唯一标识（每个task执行名称需不同）
+            ),
+            array(
+                'type' => 'day',//设置时间执行一次
+                'time' => '00:31',//24小时制时间如：08:30（表示早上8点半）
+                'func' => 'updateSoonFallDue',
+                'name' => 'trade_update_soonFallDue_cron',//设置执行文件唯一标识（每个task执行名称需不同）
+            ),
             // //每周什么时段（）
             // array(
             //     'type' => 'week',//设置时间执行一次

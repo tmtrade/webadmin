@@ -208,7 +208,7 @@ class LogModule extends AppModule
             'memo'      => $memo,
             );
 
-        $this->import('system')->create($log);
+        return $this->import('system')->create($log);
     }
 
 }

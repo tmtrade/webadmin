@@ -14,21 +14,27 @@ class QueueAction extends QueueCommonAction
     const TOTAL     = 20;//总进程数
     const SECOND    = 2;//超时秒数
 
-    private $cacheType      = 'redis';//缓存类型
+    private $cacheType      = 'redisQc';//缓存类型
     private $queueType      = 'redisQ';//队列类型
     private $courseNum      = self::TOTAL;
     private $cacheName      = 'tradeQueueCache';//进程的缓存标识，在本文件中判断重复会出现多进程！！！
     private $queueName      = 'tradeQueue';//队列名称
     private $queueMethod    = '/queuework/run/';//对应处理队列的方法
     private $thread;//进程列表
+    private $objC;//缓存资源
+    private $objQ;//队列资源
+    private $cmd;//框架cmd命令
 
-    function __construct()
+    public function before()
     {
         //可以在超时后执行，destruct无法执行。
         register_shutdown_function(array(&$this,'destroy'));
 
-        $this->cmd = sprintf("%s %s%s ",PHPPath, WebDir, "/cmd.php");
-        //$this->cacheName = $this->encodeCacheName($this->cacheName);
+        $this->cmd  = sprintf("%s %s%s ",PHPPath, WebDir, "/cmd.php");
+        $this->objC = $this->com($this->cacheType);//获取缓存资源
+        $this->objQ = $this->com($this->queueType);//获取队列资源
+
+        if ( !is_object($this->objC) || !is_object($this->objQ) ) exit('queue cache error');
     }
     
     /**
@@ -40,21 +46,18 @@ class QueueAction extends QueueCommonAction
     public function index()
     {
         set_time_limit(0);
-        $objRs = $this->com($this->cacheType);//获取缓存资源
-        $objRq = $this->com($this->queueType);//获取队列资源
-        $cache = $objRs->get($this->cacheName);//获取队列管理管理进程标识
+        $cache = $this->objC->get($this->cacheName);//获取队列管理管理进程标识
 
-        if ( !is_object($objRs) || !is_object($objRq) ) exit('queue cache error');
-        $cache && exit('queue running');
+        $cache && exit('queue running');//同时只能启动一个管理进程。
 
-        $objRq->name($this->queueName);//设置队列名称
         $num = 0;
         while (true) {
             //设置此管理进程的标识，同时只能启动一个管理进程。
             //(2秒超时，防止后台杀死进程后再无法启动进程)
-            $objRs->set($this->cacheName, true, self::SECOND);
+            $flag = $this->objC->set($this->cacheName, true, self::SECOND);
+            if ( !$flag ) exit('queue cache can not use');
 
-            $size = $objRq->size();
+            $size = $this->objQ->name($this->queueName)->size();//设置队列名称
             //队列无数据且无队列进程就退出
             if ($size == 0 && $this->courseNum >= self::TOTAL) break;
 
@@ -65,11 +68,11 @@ class QueueAction extends QueueCommonAction
                 if ( $this->doQueue() ) $this->courseNum -= 1;
             }
             
-            //如果进程已满，sleep 200毫秒//0.2秒
-            if ( $this->courseNum <= 0 ) usleep(200000);//200毫秒//0.2秒
+            //如果进程已满，sleep 100毫秒//0.1秒
+            if ( $this->courseNum <= 0 ) usleep(100000);//100毫秒//0.1秒
         }
         //执行完成后删除本队列管理进程标识。
-        $objRs->remove($this->cacheName);
+        $this->objC->remove($this->cacheName);
         exit('queue finished');
     }
 
@@ -142,7 +145,11 @@ class QueueAction extends QueueCommonAction
         //是否在退出时删除所有数量（进程数由courseNum控制）
         //异常退出时，关闭所有执行的进程（正常退出，表示队列已空。）
         $this->checkThreadList('yes');
+        $this->thread   = null;
+        $this->objC     = null;
+        $this->objQ     = null;
     }
+
 
 }
 ?>

@@ -10,12 +10,11 @@
  */
 class QueueCommonAction extends ConsoleAction
 {
-    
-    public function encodeCacheName($name)
+    protected $encoding;
+
+    public function before()
     {
-        //$res = md5($name);
-        $res = $name;
-        return $res;
+        $this->encoding = $this->com('encoding');
     }
 
     /**
@@ -24,9 +23,9 @@ class QueueCommonAction extends ConsoleAction
      * @param   string      $data   队列加密数据
      * @return  array
      */
-    public function decodeQueueData($data)
+    public function decode($data, $encoding=0)
     {
-        return unserialize($data);
+        return $this->encoding->decode($data, $encoding);
     }
 
     /**
@@ -35,9 +34,9 @@ class QueueCommonAction extends ConsoleAction
      * @param   array   $data   队列数据
      * @return  string
      */
-    public function encodeQueueData($data)
+    public function encode($data, $encoding=0)
     {
-        return serialize($data);
+        return $this->encoding->encode($data, $encoding);
     }
 
 }

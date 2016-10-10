@@ -10,18 +10,26 @@
  */
 class QueueWorkAction extends QueueCommonAction
 {
-    private $cacheType          = 'redis';
+    //private $cacheType          = 'redis';
     private $queueType          = 'redisQ';
     private $queueName          = 'tradeQueue';
     private $queueModuleName    = 'queue';
     private $queueModule;
 
-    function __construct()
+    function before()
     {
         //可以在超时后执行，destruct无法执行。
         register_shutdown_function(array(&$this,'shutdown'));
         //设置执行队列命令的表达式
         $this->queueModule = $this->load($this->queueModuleName);
+        //设置消息列表
+        $this->messageList = array(
+            '101' => 'model error or model is not object',
+            '102' => 'method error',
+            '103' => 'method has not',
+            '104' => 'execute failed',
+            '201' => 'execute success',
+        );
     }
     
     /**
@@ -34,7 +42,7 @@ class QueueWorkAction extends QueueCommonAction
     {
         $objRq = $this->com($this->queueType);//获取队列资源
         $objRq->name($this->queueName);//设置队列名称
-        $num = 0;
+
         while (true) {
             $size = $objRq->size();
             if ( $size == 0 ) break;
@@ -44,7 +52,7 @@ class QueueWorkAction extends QueueCommonAction
     }
 
     /**
-     * 数据入队
+     * 执行队列
      *
      * @access  public
      * @param   array   $queue      队列数据
@@ -69,16 +77,23 @@ class QueueWorkAction extends QueueCommonAction
             $res = $this->queueModule->$method($data);
             if ( $res ) return $this->writeLog(1, '201', $_data);
         }else{
-            return $this->writeLog('2', '103', $_data);
+            return $this->writeLog(2, '103', $_data);
         }
         
-        return $this->writeLog('2', '104', $_data);
+        return $this->writeLog(2, '104', $_data);
     }
 
+    /*
+     * 生成队列处理日志
+     *
+     * @param   int     $status     是否成功（1：成功，2：失败）
+     * @param   int     $key        消息ID
+     * @param   array   $_data      队列数据
+     */
     private function writeLog($status, $msgNo, $_data)
     {
         $method = empty($_data['method']) ? '': $_data['method'];//方法
-        $data   = empty($_data['data']) ? array(): $_data['data'];//数据包
+        //$data   = empty($_data['data']) ? array(): $_data['data'];//数据包
         $memo   = empty($_data['memo']) ? '': $_data['memo'];//备注（可作为测试用）
         if ( !empty($method) && array_key_exists($method, $this->queueModule->methodList) ){
             $action = $this->queueModule->methodList[$method];
@@ -94,19 +109,19 @@ class QueueWorkAction extends QueueCommonAction
             'desc'      => $desc,
             'memo'      => $memo,
             );
-        return $this->load('log')->writeLog($log);
+        return $this->load('log')->addSystemLog($log);
     }
 
+    /*
+     * 通过消息ID获取消息信息
+     *
+     * @param   int     $key    消息ID
+     */
     private function getMsgByNo($key)
     {
-        $message = array(
-            '101' => 'model error or model is not object',
-            '102' => 'method error',
-            '103' => 'method has not',
-            '104' => 'execute failed',
-            '201' => 'execute successfully',
-            );
-        return $message[$key];
+        if ( isset($this->messageList[$key]) ) return $this->messageList[$key];
+
+        return 'no message';
     }
 
     /**
@@ -118,6 +133,7 @@ class QueueWorkAction extends QueueCommonAction
     public function shutdown()
     {
         //处理异常退出的日志记录
+
     }
 
 }

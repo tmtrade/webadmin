@@ -13,6 +13,7 @@ class CronjobAction extends QueueCommonAction
 
 	/**
 	 * 定时任务（测试）
+     * 用于测试定时任务是否正常运行！
 	 * @author	xuni
 	 * @since	2015-06-26
 	 *
@@ -47,9 +48,46 @@ class CronjobAction extends QueueCommonAction
     * @return   boolean
     */
     public function updateRegDate(){
-       return $this->load('run')->runRegDate(0);
+       return $this->load('task')->runRegDate(0);
     }
 
+    /**
+     * 更新有效期截止日期
+     * @author   Xuni
+     * @since    2016-10-10
+     * 每周六凌晨0点11分执行
+     * @access   public
+     * @return   boolean
+     */
+    public function updateEndDate(){
+        return $this->load('task')->runEndDate(0);
+    }
+
+    /**
+     * 更新即将到期的数据
+     * @author   Xuni
+     * @since    2016-10-10
+     * 每天凌晨0点31分执行
+     * @access   public
+     * @return   boolean
+     */
+    public function updateSoonFallDue()
+    {
+        return $this->load('task')->runSoonFallDue(0);
+    }
+
+    /**
+     * 更新商品小于5项的数据
+     * @author   Xuni
+     * @since    2016-10-10
+     * 每天凌晨0点51分执行
+     * @access   public
+     * @return   boolean
+     */
+    public function updateGoodsLessFive()
+    {
+        return $this->load('task')->runGoodsLessFive(0);
+    }
 
 }
 ?>

@@ -281,6 +281,12 @@ $tbl['package'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['systemSetting'] = array(
+	'name'		=> $prefix.'system_setting',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
 //出售者平台数据
 $tbl['ad'] = array(
 	'name'		=> $prefixs.'ad',
@@ -337,6 +343,7 @@ $tbl['quotation'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
+
 
 
 ?>

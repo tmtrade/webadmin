@@ -17,6 +17,9 @@ class TaskAction extends QueueCommonAction
         //$page = $this->input('p','int','1');
 
         //$this->load('run')->run($page);
+        //$this->load('task')->runGoodsLessFive(1);
+        //$this->load('task')->runSoonFallDue(1);
+
         exit('function closed');
     }
 
@@ -35,6 +38,14 @@ class TaskAction extends QueueCommonAction
 
         //$this->load('run')->update($page);
         $this->load('run')->runRegDate();
+    }
+
+    public function updateEnd()
+    {
+        //$page = $this->input('p','int','1');
+
+        //$this->load('run')->update($page);
+        $this->load('task')->runEndDate();
     }
 
     public function updateName()
@@ -67,7 +78,7 @@ class TaskAction extends QueueCommonAction
 
     public function deleteContact()
     {
-        $this->load('run')->deleteNoPhoneContact();
+        //$this->load('run')->deleteNoPhoneContact();
     }
 
 }

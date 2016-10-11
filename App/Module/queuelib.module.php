@@ -83,7 +83,8 @@ class QueueLibModule extends AppModule
         }
         $offList    = explode(',', $sale['offprice']);
         $offList    = array_filter( array_unique($offList) );
-        if ( array_search('1', $offList) !== false ) unset(array_search('1', $offList));
+        $key        = array_search('1', $offList);
+        if ( $key !== false ) unset($offList[$key]);
         sort($offList);
 
         $data['offprice'] = implode(',', $offList);

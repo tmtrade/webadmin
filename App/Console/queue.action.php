@@ -30,7 +30,7 @@ class QueueAction extends QueueCommonAction
         //可以在超时后执行，destruct无法执行。
         register_shutdown_function(array(&$this,'destroy'));
 
-        $this->cmd  = sprintf("%s %s%s ",PHPPath, WebDir, "/cmd.php");
+        $this->cmd  = sprintf("%s %s%s ",PHPPath, CmdDir, "/cmd.php");
         $this->objC = $this->com($this->cacheType);//获取缓存资源
         $this->objQ = $this->com($this->queueType);//获取队列资源
 

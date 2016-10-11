@@ -18,10 +18,10 @@ class RunAction extends QueueCommonAction
                      'path' => '/cron/run/',
                      'name' => 'tradeCronCache',//用于重复进程判断，需要在执行时设置缓存值为true
                      ),
-//                 array(
-//                     'path' => '/queue/index/',
-//                     'name' => 'tradeQueueCache',//用于重复进程判断，需要在执行时设置缓存值为true
-//                     ),
+                 array(
+                     'path' => '/queue/index/',
+                     'name' => 'tradeQueueCache',//用于重复进程判断，需要在执行时设置缓存值为true
+                     ),
                 );
 
     /**

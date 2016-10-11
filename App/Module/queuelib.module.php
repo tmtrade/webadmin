@@ -69,6 +69,7 @@ class QueueLibModule extends AppModule
         $data = array(
             'isOffprice'    => 2,
             'salePriceDate' => 0,
+            'price'         => $sale['price'],
             'isSale'        => $sale['isSale'],
             'isLicense'     => $sale['isLicense'],
             'salePrice'     => $sale['salePrice'],
@@ -83,7 +84,7 @@ class QueueLibModule extends AppModule
         //更新商品信息
         $res = $this->load('internal')->update($data, $saleId);
         if ($res) {
-            $this->load('log')->addSaleLog($saleId, 10, '商品价格已修改(来自系统队列自动完成)', serialize($data)); //修改价格信息
+            $this->load('log')->addSaleLog($saleId, 10, '取消商品到期特价(来自系统队列自动完成)', serialize($data)); //修改价格信息
             $this->load('usercenter')->pushTmPrice($sale['number'], $sale, $data); //推送到用户
             return true;
         }

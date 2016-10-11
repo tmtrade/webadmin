@@ -97,7 +97,7 @@ class CronjobAction extends QueueCommonAction
      * @access   public
      * @return   boolean
      */
-    public function updateOffpriceGoods()
+    public function updateOffpriceDown()
     {
         return $this->load('task')->runOffpriceGoods(0);
     }

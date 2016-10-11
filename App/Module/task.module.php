@@ -558,6 +558,11 @@ class TaskModule extends AppModule
         return $this->import('sale')->find($r);
     }
 
+
+    /*
+     * 处理特价商品过期数据
+     * @author   Xuni
+     */
     public function runOffpriceGoods($type=0)
     {
         $list = $this->getOffpriceGoods();

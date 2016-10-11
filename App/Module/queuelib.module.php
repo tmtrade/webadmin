@@ -81,6 +81,12 @@ class QueueLibModule extends AppModule
         } else {
             $data['isTop'] = 2;
         }
+        $offList    = explode(',', $sale['offprice']);
+        $offList    = array_filter( array_unique($offList) );
+        if ( array_search('1', $offList) !== false ) unset(array_search('1', $offList));
+        sort($offList);
+
+        $data['offprice'] = implode(',', $offList);
         //更新商品信息
         $res = $this->load('internal')->update($data, $saleId);
         if ($res) {

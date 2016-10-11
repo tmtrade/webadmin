@@ -36,8 +36,8 @@ class CronAction extends QueueCommonAction
             array(
                 'type' => 'time',//设置间隔时间执行
                 'time' => 600,//格式为秒
-                'func' => 'updateOffpriceGoods',
-                'name' => 'trade_update_OffpriceGoods_cron',//设置执行文件唯一标识（每个task执行名称需不同）
+                'func' => 'updateOffpriceDown',
+                'name' => 'trade_update_OffpriceDown_cron',//设置执行文件唯一标识（每个task执行名称需不同）
             ),
              //每周什么时段
             array(

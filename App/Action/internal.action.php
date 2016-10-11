@@ -232,15 +232,15 @@ class InternalAction extends AppAction {
         if ($id <= 0) {
             MessageBox::halt('参数错误');
         }
-        $sale = $this->load('internal')->getSaleInfo($id);
-        $tminfo = $this->load('trademark')->getTminfo($sale['number']);
-        $log = $this->load('log')->getSaleLog($id);
-        $allphone = $this->load('phone')->getAllPhone();
-        $gjUrl = SEARCH_URL . 'trademark/detail/?id=' . $sale['tid'];
-        $referr = $this->getReferrUrl('internal_edit');
+        $sale       = $this->load('internal')->getSaleInfo($id);
+        $tminfo     = $this->load('trademark')->getTminfo($sale['number']);
+        $log        = $this->load('log')->getSaleLog($id);
+        $allphone   = $this->load('phone')->getAllPhone();
+        $gjUrl      = SEARCH_URL . 'trademark/detail/?id=' . $sale['tid'];
+        $referr     = $this->getReferrUrl('internal_edit');
 
         //获取SEO设置
-        $seoInfo = $this->load('seo')->getInfoByType(8, $sale['tid']);
+        $seoInfo    = $this->load('seo')->getInfoByType(8, $sale['tid']);
         $this->set('seoInfo', $seoInfo);
 
         $this->getSetting();
@@ -256,7 +256,7 @@ class InternalAction extends AppAction {
 
     //商品下架(可批量)
     public function doDown() {
-        $id = $this->input('id', 'string', '');
+        $id     = $this->input('id', 'string', '');
         $reason = $this->input('reason', 'string', '');
         if (empty($id)) {
             $this->returnAjax(array('code' => 2, 'msg' => '参数错误'));
@@ -304,35 +304,35 @@ class InternalAction extends AppAction {
         }
         $data = array();
         if ($isSale) {
-            $priceType = $this->input('priceType', 'int', 2);
-            $price = $this->input('price', 'int', 0);
-            $isOffprice = $this->input('isOffprice', 'int', 2);
-            $salePrice = $this->input('salePrice', 'int', 0);
-            $priceDate = $this->input('priceDate', 'int', 2);
-            $salePriceDate = $this->input('salePriceDate', 'text', '');
+            $priceType      = $this->input('priceType', 'int', 2);
+            $price          = $this->input('price', 'int', 0);
+            $isOffprice     = $this->input('isOffprice', 'int', 2);
+            $salePrice      = $this->input('salePrice', 'int', 0);
+            $priceDate      = $this->input('priceDate', 'int', 2);
+            $salePriceDate  = $this->input('salePriceDate', 'text', '');
             if ($priceType == 1) {//定价
-            if ($price <= 0) {//未填写销售价格
-                $this->returnAjax(array('code' => 2, 'msg' => '请输入销售价格'));
-            }
-            if ($isOffprice == 1 && $salePrice > $price) {
-                $this->returnAjax(array('code' => 2, 'msg' => '特价价格不能大于销售价格'));
-            }
-            if ($isOffprice == 1 && $salePrice <= 0) {//是特价但未填写特价价格
-                $this->returnAjax(array('code' => 2, 'msg' => '请输入特价价格'));
-            } elseif ($isOffprice == 1 && $priceDate == 1 && $salePriceDate == '') {//特价且限时未选择时间
-                $this->returnAjax(array('code' => 2, 'msg' => '请输入销售价格'));
-            } elseif ($isOffprice == 1) {
-                $data['isOffprice'] = 1;
-                $data['salePrice'] = $salePrice;
-                $data['salePriceDate'] = ($priceDate == 2) ? 0 : strtotime($salePriceDate);
-            } else {
-                $data['isOffprice'] = 2;
-            }
-            $data['price'] = $price;
-            $data['priceType'] = 1;
+                if ($price <= 0) {//未填写销售价格
+                    $this->returnAjax(array('code' => 2, 'msg' => '请输入销售价格'));
+                }
+                if ($isOffprice == 1 && $salePrice > $price) {
+                    $this->returnAjax(array('code' => 2, 'msg' => '特价价格不能大于销售价格'));
+                }
+                if ($isOffprice == 1 && $salePrice <= 0) {//是特价但未填写特价价格
+                    $this->returnAjax(array('code' => 2, 'msg' => '请输入特价价格'));
+                } elseif ($isOffprice == 1 && $priceDate == 1 && $salePriceDate == '') {//特价且限时未选择时间
+                    $this->returnAjax(array('code' => 2, 'msg' => '请输入销售价格'));
+                } elseif ($isOffprice == 1) {
+                    $data['isOffprice'] = 1;
+                    $data['salePrice'] = $salePrice;
+                    $data['salePriceDate'] = ($priceDate == 2) ? 0 : strtotime($salePriceDate);
+                } else {
+                    $data['isOffprice'] = 2;
+                }
+                $data['price'] = $price;
+                $data['priceType'] = 1;
             } else {//议价
-            $data['priceType'] = 2;
-            $data['isOffprice'] = 2;
+                $data['priceType'] = 2;
+                $data['isOffprice'] = 2;
             }
             $data['isSale'] = 1;
             $data['isLicense'] = $isLicense ? 1 : 2;
@@ -347,14 +347,14 @@ class InternalAction extends AppAction {
             $this->returnAjax(array('code' => 2, 'msg' => '出售信息不存在'));
         } else {
             if ($sale['isTop'] < 3 && $data['isOffprice'] == 1) {
-            $data['isTop'] = 3; //特价自动修改置项值
+                $data['isTop'] = 3; //特价自动修改置项值
             } elseif ($sale['isTop'] == 3 && $data['isOffprice'] != 1) {
-            //非特价还原置项值
-            if (empty($sale['tminfo']['embellish'])) {
-                $data['isTop'] = 0;
-            } else {
-                $data['isTop'] = 2;
-            }
+                //非特价还原置项值
+                if (empty($sale['tminfo']['embellish'])) {
+                    $data['isTop'] = 0;
+                } else {
+                    $data['isTop'] = 2;
+                }
             }
         }
         $res = $this->load('internal')->update($data, $saleId);
@@ -393,36 +393,36 @@ class InternalAction extends AppAction {
         if ($saleId <= 0) {
             $this->returnAjax(array('code' => 2, 'msg' => '参数错误'));
         }
-        $type = $this->input('type', 'text', '');
-        $label = $this->input('label', 'text', '');
-        $length = $this->input('length', 'text', '');
-        $plat = $this->input('platform', 'text', '');
-        $isTop = $this->input('isTop', 'int', 0);
-        $listSort = $this->input('listSort', 'int', 0);
-        $phone = $this->input('viewPhone', 'text', '');
+        $type       = $this->input('type', 'text', '');
+        $label      = $this->input('label', 'text', '');
+        $length     = $this->input('length', 'text', '');
+        $plat       = $this->input('platform', 'text', '');
+        $isTop      = $this->input('isTop', 'int', 0);
+        $listSort   = $this->input('listSort', 'int', 0);
+        $phone      = $this->input('viewPhone', 'text', '');
 
         $sale = array(
-            'type' => $type,
-            'label' => $label,
-            'length' => $length,
-            'platform' => $plat,
-            'isTop' => $isTop,
-            'listSort' => $listSort,
+            'type'      => $type,
+            'label'     => $label,
+            'length'    => $length,
+            'platform'  => $plat,
+            'isTop'     => $isTop,
+            'listSort'  => $listSort,
             'viewPhone' => $phone,
         );
-        $bzpic = $this->input('bzpic', 'text', '');
-        $alt1 = $this->input('alt1', 'text', '');
-        $alt2 = $this->input('alt2', 'text', '');
-        $tjpic = $this->input('tjpic', 'text', '');
-        $value = $this->input('value', 'text', '');
-        $intro = $this->input('intro', 'text', '');
+        $bzpic  = $this->input('bzpic', 'text', '');
+        $alt1   = $this->input('alt1', 'text', '');
+        $alt2   = $this->input('alt2', 'text', '');
+        $tjpic  = $this->input('tjpic', 'text', '');
+        $value  = $this->input('value', 'text', '');
+        $intro  = $this->input('intro', 'text', '');
         $tminfo = array(
             'embellish' => $bzpic,
-            'indexPic' => $tjpic,
-            'value' => $value,
-            'intro' => $intro,
-            'alt1' => $alt1,
-            'alt2' => $alt2,
+            'indexPic'  => $tjpic,
+            'value'     => $value,
+            'intro'     => $intro,
+            'alt1'      => $alt1,
+            'alt2'      => $alt2,
         );
         if ($isTop < 2 && !empty($tminfo['embellish'])) {
             $sale['isTop'] = 2; //有包装图片的置项值
@@ -434,13 +434,13 @@ class InternalAction extends AppAction {
         $res = $this->load('internal')->setEmbellish($saleId, $sale, $tminfo);
         if ($res) {
             //设置SEO的信息
-            $sid = $this->input('sid', 'int', '0');
-            $data['vid'] = $this->input('tid', 'int', '0');
-            $data['seotitle'] = $this->input('seo_title', 'string', '');
-            $data['keyword'] = $this->input('seo_keyword', 'string', '');
-            $data['description'] = $this->input('seo_description', 'string', '');
-            $data['isUse'] = $this->input('seo_isUse', 'int', '1');
-            $reArr = $this->load('seo')->viewSetSeo($sid, $data, 8);
+            $sid                    = $this->input('sid', 'int', '0');
+            $data['vid']            = $this->input('tid', 'int', '0');
+            $data['seotitle']       = $this->input('seo_title', 'string', '');
+            $data['keyword']        = $this->input('seo_keyword', 'string', '');
+            $data['description']    = $this->input('seo_description', 'string', '');
+            $data['isUse']          = $this->input('seo_isUse', 'int', '1');
+            $reArr                  = $this->load('seo')->viewSetSeo($sid, $data, 8);
             $this->returnAjax($reArr);
         }
         $this->returnAjax(array('code' => 2, 'msg' => '操作失败'));
@@ -449,7 +449,7 @@ class InternalAction extends AppAction {
     //检查商标是否可出售，可直接生成默认商品
     public function checkNumber() {
         $number = $this->input('number', 'text', '');
-        $isAdd = $this->input('add', 'int', 0);
+        $isAdd  = $this->input('add', 'int', 0);
         if (empty($number))
             $this->returnAjax(array('code' => 6));
 
@@ -473,6 +473,7 @@ class InternalAction extends AppAction {
             $saleId = $this->load('internal')->addDefault($number);
             if ($saleId)
             $this->returnAjax(array('code' => 1, 'id' => $saleId));
+
             $this->returnAjax(array('code' => 0));
         }
         $this->returnAjax(array('code' => -1));
@@ -481,7 +482,7 @@ class InternalAction extends AppAction {
     //删除联系人
     public function delContact() {
         $saleId = $this->input('saleId', 'int', 0);
-        $id = $this->input('id', 'int', 0);
+        $id     = $this->input('id', 'int', 0);
         if ($saleId <= 0 || $id <= 0) {
             $this->returnAjax(array('code' => 2, 'msg' => '参数错误'));
         }
@@ -501,7 +502,7 @@ class InternalAction extends AppAction {
     //审核联系人
     public function setVerify() {
         $saleId = $this->input('saleId', 'int', 0);
-        $id = $this->input('id', 'int', 0);
+        $id     = $this->input('id', 'int', 0);
         if ($saleId <= 0 || $id <= 0) {
             $this->returnAjax(array('code' => 2));
         }
@@ -513,7 +514,7 @@ class InternalAction extends AppAction {
         $res = $this->load('internal')->setVerify($id, $saleId);
         if ($res) {
             if(!empty($contact['uid'])){
-            $this->checkMsg($contact['uid']);//发送消息给用户
+                $this->checkMsg($contact['uid']);//发送消息给用户
             }
             $this->load('log')->addSaleLog($saleId, 14, "联系人ID：$id 审核通过", serialize($contact)); //联系人审核通过
             $this->returnAjax(array('code' => 1));
@@ -540,7 +541,7 @@ class InternalAction extends AppAction {
         $res = $this->load('internal')->delVerify($id, $contact['saleId'], $reason);
         if ($res) {
             if(!empty($contact['uid'])){
-            $this->checkMsg($contact['uid']);//发送消息给用户
+                $this->checkMsg($contact['uid']);//发送消息给用户
             }
             $this->load('log')->addSaleLog($contact['saleId'], 15, "联系人ID：$id 被驳回并删除了(原因：$reason)", serialize($contact)); //联系人审核通过
             $this->returnAjax(array('code' => 1));
@@ -549,15 +550,15 @@ class InternalAction extends AppAction {
     }
 
     protected function getSetting() {
-        $saleStatus = C("SALE_STATUS");
-        $saleSource = C("SOURCE");
-        $saleType = C("SALE_TYPE");
-        $tmNums = C("TM_NUMBER");
-        $tmLabel = C("TM_LABEL");
-        $tmType = C("TYPES");
-        $salePlat = C("SALE_PLATFORM");
-        $tmPrice = C("SEARCH_PRICE");
-        $tmClass = range(1, 45);
+        $saleStatus     = C("SALE_STATUS");
+        $saleSource     = C("SOURCE");
+        $saleType       = C("SALE_TYPE");
+        $tmNums         = C("TM_NUMBER");
+        $tmLabel        = C("TM_LABEL");
+        $tmType         = C("TYPES");
+        $salePlat       = C("SALE_PLATFORM");
+        $tmPrice        = C("SEARCH_PRICE");
+        $tmClass        = range(1, 45);
 
         $this->set('tmType', $tmType);
         $this->set('tmNums', $tmNums);
@@ -580,9 +581,9 @@ class InternalAction extends AppAction {
     //excel文件上传
     public function ajaxUploadExcel() {
         $msg = array(
-            'code' => 0,
-            'msg' => '',
-            'filename' => '',
+            'code'      => 0,
+            'msg'       => '',
+            'filename'  => '',
         );
         if (empty($_FILES) || empty($_FILES['fileName'])) {
             $msg['msg'] = '请上传EXCEL文件';
@@ -590,7 +591,7 @@ class InternalAction extends AppAction {
         }
         $obj = $this->load('upload')->uploadExcel('fileName', 'excel');
         if ($obj->fileurl) {
-            $msg['code'] = 1;
+            $msg['code']    = 1;
             $msg['fileurl'] = $obj->fileurl;
         } else {
             $msg['msg'] = $obj->msg;
@@ -600,81 +601,82 @@ class InternalAction extends AppAction {
 
     //导入数据提交操作
     public function importForm() {
-        $param['name'] = $this->input('name', 'text', '');
-        $param['phone'] = $this->input('phone', 'text', ''); //电话
-        $param['source'] = $this->input('source', 'text', ''); //来源
-        $filePath = $this->input('excelurl', 'text', ''); //来源
-        $result = $this->PHPExcelToArr($filePath, $param);
+        $param['name']      = $this->input('name', 'text', '');
+        $param['phone']     = $this->input('phone', 'text', ''); //电话
+        $param['source']    = $this->input('source', 'text', ''); //来源
+        $filePath           = $this->input('excelurl', 'text', ''); //来源
+        $result             = $this->PHPExcelToArr($filePath, $param);
+
         $this->returnAjax($result);
     }
 
     //把文件里面的数据读取出来，然后组成一个数组返回  
     public function PHPExcelToArr($filePath, $param) {
-        $SBarr = $this->load('excel')->PHPExcelToArr($filePath);
+        $SBarr      = $this->load('excel')->PHPExcelToArr($filePath);
         /*   * 商标已传的黑名单  不存在该商标      上传成功的  上传失败的 黑名单* */
         $saleExists = $saleNotHas = $saleSucess = $saleError = $saleNotContact = array();
         if ($SBarr) {
             if (isset($SBarr['statue']) && $SBarr['statue'] == 1) {
-            $data['code'] = 0;
-            $data['msg'] = '上传数量超过3000条';
+                $data['code']   = 0;
+                $data['msg']    = '上传数量超过3000条';
             } else {
-            foreach ($SBarr as $k => $item) {
-                if ((!$item['phone'] && !$param['phone']) || (!$item['name'] && !$param['name'])) {
-                    $saleNotContact[] = $item;
-                    continue;
-                }
-                $tmInfo = $this->load('trademark')->getTmInfo($item['number']);
-                if (!$tmInfo) {//不存在该商标
-                    $saleNotHas[] = $item;
-                    continue;
-                }
-                //商标已上传的
-                $saleB = $this->load('internal')->existSale($item['number']);
-                if ($saleB) {
-                    $saleExists[] = $item;
-                    if ($param['phone'] || $item['phone']) {
-                    $phone = $param['phone'] ? $param['phone'] : $item['phone'];
+                foreach ($SBarr as $k => $item) {
+                    if ((!$item['phone'] && !$param['phone']) || (!$item['name'] && !$param['name'])) {
+                        $saleNotContact[] = $item;
+                        continue;
                     }
-                    $saleBContact = $this->load('internal')->getSaleContactByPhone($item['number'], $phone);
-                    //如果没有这个联系人，就写入这个联系人信息
-                    if (!$saleBContact) {
-                        $dataContat = $item;
-                        $dataContat['date']     = time();
-                        $dataContat['phone']    = $param['phone'] ? $param['phone'] : $item['phone'];
-                        $dataContat['name']     = $param['name'] ? $param['name'] : $item['name'];
-                        $dataContat['number']   = $item['number'];
-                        $dataContat['source']   = $param['source'];
-                        $dataContat['saleType'] = 1;
-                        $dataContat['tid']      = $tmInfo['tid'];
-                        $dataContat['userId']   = 0;
-                        $dataContat['isVerify'] = 1;
-                        $dataContat['saleId']   = $saleB;
-                        $result = $this->load('internal')->addContact($dataContat, $saleB);
+                    $tmInfo = $this->load('trademark')->getTmInfo($item['number']);
+                    if (!$tmInfo) {//不存在该商标
+                        $saleNotHas[] = $item;
+                        continue;
                     }
-                    continue;
-                } else {
-                    //开始写入商标
-                    $result = $this->load('internal')->saleZZ($tmInfo, $item, $param);
-                    if ($result) {
-                    $saleSucess[] = $item;
+                    //商标已上传的
+                    $saleB = $this->load('internal')->existSale($item['number']);
+                    if ($saleB) {
+                        $saleExists[] = $item;
+                        if ($param['phone'] || $item['phone']) {
+                        $phone = $param['phone'] ? $param['phone'] : $item['phone'];
+                        }
+                        $saleBContact = $this->load('internal')->getSaleContactByPhone($item['number'], $phone);
+                        //如果没有这个联系人，就写入这个联系人信息
+                        if (!$saleBContact) {
+                            $dataContat = $item;
+                            $dataContat['date']     = time();
+                            $dataContat['phone']    = $param['phone'] ? $param['phone'] : $item['phone'];
+                            $dataContat['name']     = $param['name'] ? $param['name'] : $item['name'];
+                            $dataContat['number']   = $item['number'];
+                            $dataContat['source']   = $param['source'];
+                            $dataContat['saleType'] = 1;
+                            $dataContat['tid']      = $tmInfo['tid'];
+                            $dataContat['userId']   = 0;
+                            $dataContat['isVerify'] = 1;
+                            $dataContat['saleId']   = $saleB;
+                            $result = $this->load('internal')->addContact($dataContat, $saleB);
+                        }
+                        continue;
                     } else {
-                    $saleError[] = $item;
+                        //开始写入商标
+                        $result = $this->load('internal')->saleZZ($tmInfo, $item, $param);
+                        if ($result) {
+                        $saleSucess[] = $item;
+                        } else {
+                        $saleError[] = $item;
+                        }
                     }
                 }
-            }
-            $numSucess = count($saleSucess);
-            $data['code'] = 1;
-            $data['alldata'] = count($SBarr);
-            $data['sucdata'] = $numSucess;
-            $data['errdata'] = (count($SBarr) - $numSucess);
-            if ($data['errdata'] > 0) {
-                $data['filepath'] = $this->load('excel')->upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact);
-            }
+                $numSucess          = count($saleSucess);
+                $data['code']       = 1;
+                $data['alldata']    = count($SBarr);
+                $data['sucdata']    = $numSucess;
+                $data['errdata']    = (count($SBarr) - $numSucess);
+                if ($data['errdata'] > 0) {
+                    $data['filepath'] = $this->load('excel')->upErrorExcel($saleExists, $saleNotHas, $numSucess, $saleError, $saleNotContact);
+                }
             }
         } else {
             //没有商标数据
-            $data['code'] = 0;
-            $data['msg'] = '文件没有数据';
+            $data['code']   = 0;
+            $data['msg']    = '文件没有数据';
         }
 
         if (file_exists(FILEDIR . $filePath)) {
@@ -710,25 +712,26 @@ class InternalAction extends AppAction {
         $this->getSetting();
         //参数
         $page = $this->input('page', 'int', '1');
-                $params['tmNumber']     = $this->input('tmNumber', 'string', '');
-                $params['type']         = $this->input('type', 'int', '0');
-                $params['dateStart']    = $this->input('dateStart', 'string', '');
-                $params['dateEnd']      = $this->input('dateEnd', 'string', '');
 
-        $res = $this->load('internal')->getHistoryList($params, $page, $this->rowNum);
+        $params['tmNumber']     = $this->input('tmNumber', 'string', '');
+        $params['type']         = $this->input('type', 'int', '0');
+        $params['dateStart']    = $this->input('dateStart', 'string', '');
+        $params['dateEnd']      = $this->input('dateEnd', 'string', '');
 
-        $total = empty($res['total']) ? 0 : $res['total'];
-        $list = empty($res['rows']) ? array() : $res['rows'];
+        $res    = $this->load('internal')->getHistoryList($params, $page, $this->rowNum);
 
-        $pager = $this->pager($total, $this->rowNum);
-        $pageBar = empty($list) ? '' : getPageBar($pager);
+        $total  = empty($res['total']) ? 0 : $res['total'];
+        $list   = empty($res['rows']) ? array() : $res['rows'];
+
+        $pager      = $this->pager($total, $this->rowNum);
+        $pageBar    = empty($list) ? '' : getPageBar($pager);
 
         
         //获取所有联系人
         foreach ($list as $k => &$v) {
             $v['info'] = unserialize($v['data']);
             $v['imgUrl'] = $this->load('internal')->saleImg($v['number']);
-                    $v['member'] = $this->load("member")->getMemberById($v['memberId']);
+            $v['member'] = $this->load("member")->getMemberById($v['memberId']);
         }
         $this->set("pageBar", $pageBar);
         $this->set('s', $params);
@@ -740,9 +743,9 @@ class InternalAction extends AppAction {
      *历史交易的弹出页面
      */
     public function upcomplate() {
-        $id = $this->input('id', 'int', 0);
+        $id     = $this->input('id', 'int', 0);
         //得到id对应的联系人信息
-        $res = $this->load('internal')->historyInfo($id);
+        $res    = $this->load('internal')->historyInfo($id);
         $this->set('list', unserialize($res['data']));
 
         $this->set('id', $id);
@@ -758,11 +761,11 @@ class InternalAction extends AppAction {
         if ($id == 0)
             $this->returnAjax(array('code' => 1, 'msg' => '参数错误'));
 
-        $cid = $this->input('cid', 'int', 0);
+        $cid    = $this->input('cid', 'int', 0);
             
-            $info = $this->load('internal')->historyInfo($id);
-            $data  = unserialize($info['data']);
-            $data['income']['cid'] = $cid;
+        $info   = $this->load('internal')->historyInfo($id);
+        $data   = unserialize($info['data']);
+        $data['income']['cid'] = $cid;
         //保存到数据库中
         $datas = array(
             'data' => serialize($data),

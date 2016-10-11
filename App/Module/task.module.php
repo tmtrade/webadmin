@@ -558,6 +558,64 @@ class TaskModule extends AppModule
         return $this->import('sale')->find($r);
     }
 
+    public function runOffpriceGoods($type=0)
+    {
+        $list = $this->getOffpriceGoods();
+        if ( empty($list) ) {
+            $type == 1 && exit('no data');
+            return false;
+        }
+
+        $succList   = $faildList = array();
+        $start      = $this->msectime();
+        //$rand       = randCode(6);
+
+        foreach ($list as $info){
+            $data = array('id'=>$info['id']);
+            $flag = $this->load('queuelib')->addQueue('offpriceDown', $data, 'offpriceDown_'.$info['number']);
+            if ( $flag === false ){
+                $faildList[] = $info['number'];
+            }else{
+                $succList[] = $info['number'];
+            }
+        }
+        $end    = $this->msectime() - $start;
+        $message = array(
+            'succList'      => $succList,
+            'faildList'    => $faildList,
+            'opTime'        => $end,
+        );
+        $logs = array(
+            'type'      => 4,
+            'action'    => 21,
+            'status'    => 1,
+            'data'      => $message,
+            'desc'      => 'trade_runOffpriceGoods',
+            'created'   => time(),
+            'memo'      => '添加特价到期数据放入队列中',
+        );
+        $this->load('log')->addSystemLog($logs);
+
+        $type == 1 && exit('run finished');
+        return true;
+    }
+
+    /*
+     * 获取已到期的特价商品数据
+     */
+    private function getOffpriceGoods()
+    {
+        $time = time();
+        $r['eq'] = array(
+            'priceType'     => 1,
+            'isOffprice'    => 1,
+        );
+        $r['raw']   = " `salePriceDate` > 0 AND `salePriceDate` < $time ";
+        $r['limit'] = 2000;//特价不需要超过2000个
+        $r['col']   = array('id', 'number');
+        return $this->import('sale')->find($r);
+    }
+
     /*
      * 获取配置
      * @author   Xuni

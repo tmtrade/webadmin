@@ -19,7 +19,7 @@ class TaskAction extends QueueCommonAction
         //$this->load('run')->run($page);
         //$this->load('task')->runGoodsLessFive(1);
         //$this->load('task')->runSoonFallDue(1);
-
+        //$this->load('task')->runOffpriceGoods(1);
         exit('function closed');
     }
 

@@ -89,5 +89,18 @@ class CronjobAction extends QueueCommonAction
         return $this->load('task')->runGoodsLessFive(0);
     }
 
+    /**
+     * 获取特价到期数据，放入队列进行处理
+     * @author   Xuni
+     * @since    2016-10-11
+     * 每10分钟执行一次
+     * @access   public
+     * @return   boolean
+     */
+    public function updateOffpriceGoods()
+    {
+        return $this->load('task')->runOffpriceGoods(0);
+    }
+
 }
 ?>

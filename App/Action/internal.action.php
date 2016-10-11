@@ -717,15 +717,20 @@ class InternalAction extends AppAction {
         $params['type']         = $this->input('type', 'int', '0');
         $params['dateStart']    = $this->input('dateStart', 'string', '');
         $params['dateEnd']      = $this->input('dateEnd', 'string', '');
+        $is_export = $this->input('exports', 'int', '0');//是否导出
 
-        $res    = $this->load('internal')->getHistoryList($params, $page, $this->rowNum);
+        $res = $this->load('internal')->getHistoryList($params, $page, $this->rowNum, $is_export);
 
         $total  = empty($res['total']) ? 0 : $res['total'];
         $list   = empty($res['rows']) ? array() : $res['rows'];
-
         $pager      = $this->pager($total, $this->rowNum);
         $pageBar    = empty($list) ? '' : getPageBar($pager);
 
+        //导出数据
+        if($is_export==1){
+            $this->load('excel')->downloadHistoryExcel($list);
+            exit;
+        }
         
         //获取所有联系人
         foreach ($list as $k => &$v) {

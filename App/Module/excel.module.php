@@ -713,6 +713,151 @@ class ExcelModule extends AppModule
 		header("Expires: 0");
 		$objWriter->save('php://output');
 	}
+    
+    /**
+	 * 导出商标列表excel
+	 * @author    Jeany
+	 * @since     2016/1/22
+	 * @access    public
+	 * @param    array $data 求购信息
+	 * @return   array
+	 */
+	public function downloadHistoryExcel($data){
+		
+		require_once(FILEDIR."/App/Util/PHPExcel.php");	
+		$PHPExcel = new PHPExcel();
+		$PHPExcel->getActiveSheet()->setTitle('商标出售信息');
+		$PHPExcel->setActiveSheetIndex(0);
+		//合并单元格
+		$PHPExcel->getActiveSheet()->mergeCells('A1:C1');
+		$PHPExcel->getActiveSheet()->mergeCells('D1:L1');
+		$PHPExcel->getActiveSheet()->getStyle('A1:D1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+		$PHPExcel->getActiveSheet()->getStyle('A1:D1')->getFill()->getStartColor()->setRGB('e86b1d');
+		//设置居中
+		$PHPExcel->getActiveSheet()->getStyle('A1:D1')->getAlignment()->setHorizontal(
+			PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+		);
+		//所有垂直居中
+		$PHPExcel->getActiveSheet()->getStyle('A1:D1')->getAlignment()->setVertical(
+			PHPExcel_Style_Alignment::VERTICAL_CENTER
+		);
+		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setName('微软雅黑');
+		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
+		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+		//字体颜色
+		$PHPExcel->getActiveSheet()->getStyle('A1')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+		$PHPExcel->getActiveSheet()->setCellValue('A1', " 超凡-商标出售导出信息");
+		$PHPExcel->getActiveSheet()->getStyle('D1')->getAlignment()->setHorizontal(
+			PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
+		);
+		$PHPExcel->getActiveSheet()->getStyle('D1')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+		$PHPExcel->getActiveSheet()->getStyle('D1')->getFont()->setName('微软雅黑');
+        $PHPExcel->getActiveSheet()->setCellValue('D1',
+			"报告编号：" . date('Ymd', time()) . randCode(4, 'NUMBER') . '  导出时间：' . date('Y/m/d', time()) . "  "
+		);
+		$PHPExcel->getActiveSheet()->getStyle('D1')->getFont()->setSize(9);
+		
+		
+		//第二行-----------------------------------------------------------
+		//----------------全局---------------------------------------------
+		//设置单元格宽度
+		$PHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(10);
+		$PHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(12);
+		$PHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(12);
+		$PHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(15);
+		$PHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+		$PHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(12);
+		//设置单元格高度
+		$PHPExcel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(35);
+		//单元格样式
+		$style_obj   = new PHPExcel_Style();
+		$style_array = array(
+			'font'      => array(
+				'size' => 10.5,
+				'name' => '微软雅黑'
+			),
+			'borders'   => array(
+				'top'    => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+				'left'   => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+				'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+				'right'  => array('style' => PHPExcel_Style_Border::BORDER_THIN)
+			),
+			'alignment' => array(
+				'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+				'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+				'wrap'       => true
+			)
+		);
+		$style_obj->applyFromArray($style_array);
+		$b = array('a','b','c','d','e','f');
+		$title = array(
+			'1' => '商标号',
+            '2' => '商标名称',
+			'3' => '来源渠道',
+			'4' => '是否包装',
+			'5' => '售价',
+			'6' => '出售时间',
+		);
+        
+		foreach($title as $k => $v)
+		{
+			if($v){
+				$tab = $b[($k-1)]."2";
+				$PHPExcel->getActiveSheet()->setCellValue($tab,$v);
+			}
+			
+		}
+        
+		//第三行--------------------------------------------------------
+        $num = 3;
+		if($data){
+			$saleSource = C("SOURCE");
+			foreach($data as $key => $item ){
+                $info = unserialize($item['data']);
+				$source  = "";
+                $tminfo = "未包装";
+                
+                foreach($info['contact'] as $v){
+                    $source  .= $saleSource[$v['source']]."\r\n";
+                }
+
+                if(!empty($info['info']['tminfo']['embellish'])){
+                    $tminfo = "已包装";
+                }
+				$tableVal = array(
+					'1' => $item['number'],
+					'2' => $info['name'],
+					'3' => $source,
+					'4' => $tminfo,
+					'5' => $info['income']['price'],
+					'6' => date("Y-m-d", $item['date']),
+ 				);
+				foreach($title as $kl => $vl)
+				{
+					if($vl){
+						$tabv = $b[($kl-1)].$num;
+						$tv   = $tableVal[$kl]; 
+						$PHPExcel->getActiveSheet()->setCellValue($tabv,$tv);
+					}
+				}
+				
+				$num ++;
+			}
+		}
+		//--------------------------------------------------------------------------- 
+		$PHPExcel->setActiveSheetIndex(0);
+
+		$filename  = iconv('utf-8', 'gbk', "商标信息");
+		$filenames = "导出出售商标信息" . date('Ymd', time()) . $code; //防止乱码
+		$objWriter = new PHPExcel_Writer_Excel5($PHPExcel);
+		header("Content-type:application/octet-stream");
+		header("Accept-Ranges:bytes");
+		header("Content-type:application/vnd.ms-excel");
+		header("Content-Disposition:attachment;filename=" . $filenames . ".xls");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+		$objWriter->save('php://output');
+	}
 }
 
 ?>

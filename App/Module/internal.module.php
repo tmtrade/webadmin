@@ -1091,11 +1091,16 @@ class InternalModule extends AppModule
     /*
      * 获取历史记录列表
      */
-    public function getHistoryList($params, $page, $limit=20)
+    public function getHistoryList($params, $page, $limit=20,$is_export="")
     {
         $r = array();
-        $r['page']  = $page;
-        $r['limit'] = $limit;
+        if($is_export==1){
+            $r['limit'] = 5000;
+        }else{
+            $r['page']  = $page;
+            $r['limit'] = $limit;
+        }
+        
         $r['raw'] = ' 1 ';
         
         if ( !empty($params['type']) ){

@@ -17,6 +17,7 @@
             <!-- <a href="javascript:void(0)">设置我的筛选偏好</a>-->
         </div>
         <form name="saleSearchForm" id="saleSearchForm" action="/internal/history/" method="GET">
+            <input type="hidden" name="exports" value="0" id="is_exports">
         <dl>
             <dd>
 		<label>商标号：</label><input type="text" name="tmNumber" value="<?=$s['tmNumber']?>" class="input input-sm"/>
@@ -34,6 +35,7 @@
             </dd>
             <dd style="height: 35px;">
                 <a href="javascript:void(0);" style="margin: 10px;float: left;" class="mj-sBtn" id="mj-sBtn">搜索</a>
+                <a href="javascript:void(0);" style="margin: 10px;float: left;" class="mj-sBtn" id="export">导出结果</a>
             </dd>
         </dl>
         </form>
@@ -164,12 +166,21 @@
         $(".mj-screening .btn").click(function(){
             $(".mj-ddList").toggle();
         });
+        
+        //查询
         $("#mj-sBtn").click(function(){
 			var index = layer.load(1, {
 				shade: [0.5,'#fff'] //0.1透明度的白色背景
 			});
             $("#saleSearchForm").submit();
         });
+        
+        //导出
+        $("#export").click(function(){
+            $("#is_exports").val(1);
+            $("#saleSearchForm").submit();
+        });
+        
 	$(".table .classMore").hover(function(){
             $(this).find('.more > ol').show();
         },function(){

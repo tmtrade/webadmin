@@ -359,6 +359,14 @@ class InternalAction extends AppAction {
         }
         $res = $this->load('internal')->update($data, $saleId);
         if ($res) {
+            //修改标签
+             if ($isOffprice == 1 && $salePrice > 0) {
+                 $this->load('internal')->updateOffprice($sale['number'], 1, 1);
+             }else{
+                 $this->load('internal')->updateOffprice($sale['number'], 1, 2);
+             }
+            
+            
             $this->load('log')->addSaleLog($saleId, 10, '商品价格已修改', serialize($data)); //修改价格信息
             $this->load('usercenter')->pushTmPrice($sale['number'], $sale, $data); //推送到用户
             $this->returnAjax(array('code' => 1, 'msg' => '操作成功'));

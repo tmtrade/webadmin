@@ -67,14 +67,14 @@ class CronAction extends QueueCommonAction
                 'func' => 'updateSoonFallDue',
                 'name' => 'trade_update_soonFallDue_cron',//设置执行文件唯一标识（每个task执行名称需不同）
             ),
-            // //每周什么时段（）
-            // array(
-            //     'type' => 'week',//设置时间执行一次
-            //     'day'  => '4',// 1~7 （周一到周日）
-            //     'time' => '10:11',//24小时制时间如：08:30（表示早上8点半）
-            //     'func' => 'test',
-            //     'name' => 'testweek1500',//设置执行文件唯一标识（每个task执行名称需不同）
-            //     ),
+             //每周什么时段（）
+             array(
+                 'type' => 'week',//设置时间执行一次
+                 'day'  => '1',// 1~7 （周一到周日）
+                 'time' => '01:00',//24小时制时间如：08:30（表示早上8点半）
+                 'func' => 'delGoodsSale',
+                 'name' => 'testweek1500',//设置执行文件唯一标识（每个task执行名称需不同）
+                 ),
             //每月什么时段
             array(
                 'type' => 'month',//设置时间执行一次

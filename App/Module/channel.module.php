@@ -281,6 +281,40 @@ class ChannelModule extends AppModule
             return false;
         }
     }
+    
+    //每周一执行删除过期数据,后面数据往前靠
+    public function delGoodsSale()
+    {   
+        $r1 = $r2 = $r3 = $r4 = array();
+        $r1['eq']    = array('channelId'=>2,'type'=>3);
+        $list    = $this->import('items')->find($r1);
+        
+        //删除第一条
+    	$r2['eq']    = array('channelId'=>2,'type'=>3,'sort'=>1);
+    	$res2 = $this->import('items')->remove($r2);
+        
+        //修改第一条
+    	$r3['eq']    = array('channelId'=>2,'type'=>3,'sort'=>2);
+        $data1 = array('sort'=>1);
+    	$res3 =$this->import('items')->modify($data1, $r3);
+        
+        //修改第二条
+    	$r4['eq']    = array('channelId'=>2,'type'=>3,'sort'=>3);
+        $data2 = array('sort'=>2);
+    	$res4 =$this->import('items')->modify($data2, $r4);
+        
+    	$log = array(
+            'type'      => '4',
+            'action'    => '52',
+            'data'      => serialize($list),
+            'status'    => $res2==true?1:2,
+            'desc'      => 'by weeks',
+            'memo'      => "精品特卖第".date("W")."周自动删除任务",
+        );
+    	$this->load('log')->addSystemLog($log);
+    	return true;
+	
+    }
 
 }
 ?>

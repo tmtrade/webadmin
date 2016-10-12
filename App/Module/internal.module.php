@@ -499,16 +499,20 @@ class InternalModule extends AppModule
      */
     public function updateOffprice($number,$label,$type)
     {
-        $info   = $this->load('internal')->existSale($number,1);
+        $info = $this->load('internal')->existSale($number,1);
+        $arr = array();
         if($type==1){//修改
-            if(empty($info['offprice'])){
-                $updates       = array('offprice'=>$label);
-            }else{
-                $updates       = array('offprice'=>$info['offprice'].','.$label);
-            }
+            $arr    = explode(',', $info['offprice']);
+            $arr[]  = $label;
+            $arr    = array_filter( array_unique($arr) );
+            sort($arr);
+            $updates['offprice'] = implode(',', $arr);
         }else{//删除
-            $arr = explode(",", $info['offprice']);
-            unset($arr[array_search($label,$arr)]);
+            $arr    = explode(',', $info['offprice']);
+            $arr    = array_filter( array_unique($arr) );
+            $key        = array_search($label, $arr);
+            if ( $key !== false ) unset($arr[$key]);
+            sort($arr);
             $str= implode(",", $arr);
             $updates       = array('offprice'=>$str);
         }

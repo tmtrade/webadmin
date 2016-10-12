@@ -109,9 +109,9 @@ class AdModule extends AppModule
     	
     	$res = $this->import('ad')->remove($r);
     	$log = array(
-            'type'      => '1',
-            'action'    => '1',
-            'data'      => $list,
+            'type'      => '4',
+            'action'    => '53',
+            'data'      => serialize($list),
             'status'    => $res==true?1:2,
             'desc'      => 'by month',
             'memo'      => "广告".date("m")."月自动删除任务",

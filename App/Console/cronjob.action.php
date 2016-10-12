@@ -38,6 +38,19 @@ class CronjobAction extends QueueCommonAction
     public function delAd(){
 	   return $this->load('ad')->delPastAd();
     }
+    
+    /**
+    * 执行删除过期的精品特卖
+    * @author	Far
+    * @since	2015-10-11
+    * 每周一凌晨执行
+    * @access	public
+    * @return	boolean
+    */
+    public function delGoodsSale(){
+	   return $this->load('channel')->delGoodsSale();
+    }
+    
 
     /**
     * 更新注册日期

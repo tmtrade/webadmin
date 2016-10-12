@@ -601,7 +601,7 @@ class TaskModule extends AppModule
             'data'      => $message,
             'desc'      => 'trade_runOffpriceGoods',
             'created'   => time(),
-            'memo'      => '添加特价到期数据放入队列中',
+            'memo'      => 'runOffpriceGoods_'.count($succList).'_'.count($faildList),
         );
         $this->load('log')->addSystemLog($logs);
 

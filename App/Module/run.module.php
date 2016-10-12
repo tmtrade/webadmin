@@ -14,7 +14,7 @@ class RunModule extends AppModule
         'test'      => 'test',
     );
 
-    public function deleteNoPhoneContact($saleId=0)
+    private function deleteNoPhoneContact($saleId=0)
     {
         $r = array();
         $r['raw']   = " saleId > $saleId ";
@@ -847,9 +847,6 @@ class RunModule extends AppModule
         return $this->import('tst')->find($r);
     }
 
-    
-
-
     public function requests( $url, $type='GET', $params=array() )
     {
         $_type = ($type == 'POST') ? 'POST' : 'GET';
@@ -872,5 +869,108 @@ class RunModule extends AppModule
         return $res;
     }
 
+    /*
+     * 为特价商品打上标签
+     * @author   Xuni
+     */
+    public function runOffpriceLabel($type=1)
+    {
+        $id     = 0;
+        $num    = 0;
+        $succList   = $faildList = array();
+        $start      = $this->msectime();
+        $this->begin('sale');
+        $rand = randCode(6);
+        while ( true ) {
+            $num++;
+            $sale   = $this->getOffpriceList($id);
+
+            if ( empty($sale['id']) ){
+                $p      = intval($num/1000) > 0 ? intval($num/1000) + 1 : 1;
+                $end    = $this->msectime() - $start;
+                if ( empty($succList) && empty($faildList) ){
+                    if ($type==1) exit('no data to update');
+                }
+                $this->commit('sale');
+
+                $log = array(
+                    'useTime'   => $end,
+                );
+                if ( count($succList) > 0 ){
+                    $_log = $log;
+                    $_log['succ']       = count($succList);
+                    $_log['succList']   = $succList;
+                    $name = 'update_OffpriceLabel_'.date("Y-m-d")."($rand)-list$p-----success.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                if ( count($faildList) > 0 ){
+                    $_log = $log;
+                    $_log['faild']       = count($faildList);
+                    $_log['faildList']   = $faildList;
+                    $name = 'update_OffpriceLabel_'.date("Y-m-d")."($rand)-list$p-----faild.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                if ($type==1) exit('no data to update');
+                break;
+            }
+
+            $id         = $sale['id'];
+            $number     = $sale['number'];
+
+            $offList    = explode(',', $sale['offprice']);
+            $offList[]  = 1;
+            $offList    = array_filter( array_unique($offList) );
+            sort($offList);
+
+            $data['offprice'] = implode(',', $offList);
+            $r['eq']    = array('id'=>$id);
+            $flag       = $this->import('sale')->modify($data, $r);
+
+            if ( $flag ) {
+                $succList[] = $number;
+            }else{
+                $faildList[] = $number;
+            }
+
+            if ( $num % 1000 == 0 ){
+                $this->commit('sale');
+                $end    = $this->msectime() - $start;
+                $start  = $this->msectime();
+                $p      = intval($num/1000) > 0 ? intval($num/1000) : 1;
+
+                $log = array(
+                    'useTime'   => $end,
+                );
+                if ( count($succList) > 0 ){
+                    $_log = $log;
+                    $_log['succ']       = count($succList);
+                    $_log['succList']   = $succList;
+                    $name = 'update_OffpriceLabel_'.date("Y-m-d")."($rand)-list$p-----success.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                if ( count($faildList) > 0 ){
+                    $_log = $log;
+                    $_log['faild']       = count($faildList);
+                    $_log['faildList']   = $faildList;
+                    $name = 'update_OffpriceLabel_'.date("Y-m-d")."($rand)-list$p-----faild.log";
+                    Log::write(print_r($_log,1), $name);
+                }
+                if ($type==1) echo "list-$p finish...\n";
+                $succList   = $faildList = array();
+                $this->begin('sale');
+            }
+        }
+        return true;
+    }
+
+    private function getOffpriceList($id=0)
+    {
+        $r['limit'] = 1;
+        $r['order'] = array('id'=>'asc');
+        $r['eq']    = array('priceType'=>1,'isOffprice'=>1);
+        $r['raw']   = " id > $id AND NOT MATCH (`offprice`) AGAINST ('1') ";
+        $r['col']   = array('number','id', 'offprice');
+        return $this->import('sale')->find($r);
+    }
 }
 ?>

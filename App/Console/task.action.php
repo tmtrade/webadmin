@@ -20,6 +20,7 @@ class TaskAction extends QueueCommonAction
         //$this->load('task')->runGoodsLessFive(1);
         //$this->load('task')->runSoonFallDue(1);
         //$this->load('task')->runOffpriceGoods(1);
+        $this->load('run')->runOffpriceLabel(1);
         exit('function closed');
     }
 
@@ -29,6 +30,7 @@ class TaskAction extends QueueCommonAction
         //$debug  = $this->input('d', 'int', 0);
         //if ( empty($number) ) exit('no data.');
         //$this->load('run')->runSale($number, $debug);
+
         exit('function closed');
     }
 

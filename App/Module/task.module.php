@@ -587,7 +587,7 @@ class TaskModule extends AppModule
         $end    = $this->msectime() - $start;
         $message = array(
             'succList'      => $succList,
-            'faildList'    => $faildList,
+            'faildList'     => $faildList,
             'opTime'        => $end,
         );
         $logs = array(

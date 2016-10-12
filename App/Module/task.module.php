@@ -577,7 +577,11 @@ class TaskModule extends AppModule
 
         foreach ($list as $info){
             $data = array('id'=>$info['id']);
-            $flag = $this->load('queuelib')->addQueue('offpriceDown', $data, 'offpriceDown_'.$info['number']);
+            //暂时不走队列的形式 TODO 看数据量来进行处理
+            //$flag = $this->load('queuelib')->addQueue('offpriceDown', $data, 'offpriceDown_'.$info['number']);
+            //暂时循环执行，因为数据量不大
+            $flag = $this->load('queuelib')->offpriceDown($data);
+
             if ( $flag === false ){
                 $faildList[] = $info['number'];
             }else{

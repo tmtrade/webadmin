@@ -81,9 +81,8 @@ class InternalModule extends AppModule
             $r['like']['name'] = $params['tmName'];
         }
         if ( !empty($params['tmNumber']) ){
-            $tmNumber_arr = explode(" ", trim($params['tmNumber']));
-            $tmNumber = implode(",", array_filter($tmNumber_arr));
-            $r['raw'] .= " and number in({$tmNumber})";
+            $tmNumber_arr   = array_filter( explode(" ", trim($params['tmNumber'])) );
+            $r['in']        = array('number'=>$tmNumber_arr);
         }
         if ( !empty($params['saleStatus']) ){
             $r['eq']['status'] = $params['saleStatus'];

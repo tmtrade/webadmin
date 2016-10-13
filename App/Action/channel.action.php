@@ -137,7 +137,7 @@ class ChannelAction extends AppAction
 			$this->returnAjax(array('code'=>2,'msg'=>'请上传图片'));
 		}
 		$count = $this->load('channel')->countChannel(1, $cId);
-		if ( empty($id) && $count >= 5 ){
+		if ( empty($id) && $count >= 6 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'数量已达上限'));
 		}
 		if ( $id ){

@@ -10,7 +10,7 @@ header("Content-type: text/html; charset=utf-8");
  */
 class InternalAction extends AppAction {
 //  public $debug = true;
-
+    public $rowNum = 30;
     /**
      * 国内商标列表
      * 

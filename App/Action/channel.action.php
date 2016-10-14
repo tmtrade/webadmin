@@ -317,7 +317,7 @@ class ChannelAction extends AppAction
 		$ishas 	= $this->load('channel')->existSale($numbers);
 		$hasnot = array_diff($numbers, $ishas);
 		if ( !empty($hasnot) ){
-			$this->returnAjax(array('code'=>2,'msg'=>'下列商标未在出售中或销售价格为议价!'.implode(',', $hasnot)));
+			$this->returnAjax(array('code'=>2,'msg'=>'下列商标未在出售中或销售价格必须为特价!!'.implode(',', $hasnot)));
 		}
 
         $res = $this->load('channel')->updateGoodsSale($old_number,$number, $cId, $type,$sort);

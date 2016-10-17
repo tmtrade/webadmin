@@ -37,7 +37,7 @@ class CronAction extends QueueCommonAction
                 'type' => 'time',//设置间隔时间执行
                 'time' => 600,//格式为秒
                 'func' => 'updateOffpriceDown',
-                'name' => 'trade_update_OffpriceDown_cron',//设置执行文件唯一标识（每个task执行名称需不同）
+                'name' => 'trade_update_offpriceDown_cron',//设置执行文件唯一标识（每个task执行名称需不同）
             ),
              //每周什么时段
             array(
@@ -73,7 +73,7 @@ class CronAction extends QueueCommonAction
                  'day'  => '1',// 1~7 （周一到周日）
                  'time' => '01:00',//24小时制时间如：08:30（表示早上8点半）
                  'func' => 'delGoodsSale',
-                 'name' => 'testweek1500',//设置执行文件唯一标识（每个task执行名称需不同）
+                 'name' => 'trade_delete_goodsSale_cron',//设置执行文件唯一标识（每个task执行名称需不同）
                  ),
             //每月什么时段
             array(
@@ -81,7 +81,7 @@ class CronAction extends QueueCommonAction
                 'day'  => '10',// 1~28、29、30、31 （每月几号）
                 'time' => '00:00',//24小时制时间如：08:30（表示早上8点半）
                 'func' => 'delAd',
-                'name' => 'Ad_month_cron',//设置执行文件唯一标识（每个task执行名称需不同）
+                'name' => 'trade_delete_ad_cron',//设置执行文件唯一标识（每个task执行名称需不同）
                 ),
             );
 

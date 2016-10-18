@@ -79,8 +79,7 @@
 
     <br />-->
     <div class="wrap-top">
-        <h4>广告图设置
-        </h4>
+        <h4><?if($info['id']==1){echo "推荐商品设置";}else{ echo "广告图设置";}?></h4>
         <select name="isAd" class="input selectChange">
             <option <?if($info['isAd']==1){echo 'selected';}?> value="1">启用</option>
             <option <?if($info['isAd']==2){echo 'selected';}?> value="2">禁用</option>
@@ -135,6 +134,8 @@
             <button class="btn btn-danger" id="add-ad" type="button" <?if(count($info['items'][1])>=6){echo 'disabled="disabled"';}?> >创建广告图</button>
         </div>
     </div>
+
+    <?if($info['id']==2){?>
     <br/>
     
     <div class="wrap-top">
@@ -243,6 +244,7 @@
         </div>
     </div>
     <br>
+    <? } ?>
 </div>
 <? } ?>
 

@@ -31,10 +31,10 @@
     </div>
     <label>ALT描述：</label>
     <input type="input" class="form-control" name="alt" value="<?=$info['alt']?>">
-    <label>标题：</label>
-    <input type="input" class="form-control" name="desc" value="<?=$info['desc']?>">
-    <label>描述：</label>
-    <input type="input" class="form-control" name="text" value="<?=$info['text']?>">
+    <label>标题(6个字符内)：</label>
+    <input type="input" class="form-control" id="titel_d" name="desc" value="<?=$info['desc']?>">
+    <label>描述(10个字符内)：</label>
+    <input type="input" class="form-control" id="desc_d" name="text" value="<?=$info['text']?>">
     <div style="bottom:15px;position: fixed;">
         <button type="button" id="myButton" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;确定&nbsp;&nbsp;&nbsp;&nbsp;</button>
         <button type="button" onclick="closeAll();" class="btn btn-warning">&nbsp;&nbsp;&nbsp;&nbsp;取消&nbsp;&nbsp;&nbsp;&nbsp;</button>
@@ -67,6 +67,18 @@
         });
 
         $("#myButton").on('click', function (){
+            //检测输入
+            var title = $.trim($('#titel_d').val());
+            var desc = $.trim($('#desc_d').val());
+            if(title.length>6){
+                layer.msg('标题应在6个字符以内');
+                return false;
+            }
+            if(desc.length>10){
+                layer.msg('描述应在10个字符以内');
+                return false;
+            }
+            //提交数据
             var _this = $(this);
             var data = $("#setSlide").serialize();
             _this.attr('disabled', true)

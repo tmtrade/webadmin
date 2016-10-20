@@ -10,7 +10,7 @@ header("Content-type: text/html; charset=utf-8");
 class moduleAction extends AppAction
 {
 //	public $debug = true;
-	
+
 	/**
 	 * 首页模块设置列表
 	 * 
@@ -138,6 +138,7 @@ class moduleAction extends AppAction
 			$id = $res;
 		}else{
 			$res = $this->load('module')->updateModule($name, $isUse, $id,$type);
+			if($res===-1) $this->returnAjax(array('code'=>3,'msg'=>'操作失败, 分类中含有不同的商品类型'));
 		}
 		if ( $res ){
 			$this->returnAjax(array('code'=>1,'msg'=>'成功','moduleId'=>$id));

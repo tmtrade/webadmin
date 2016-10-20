@@ -246,11 +246,36 @@ class ModuleModule extends AppModule
 	//编辑首页模块推广链接
     public function updateModule($name,$isUse, $id,$type=1)
     {
+        $res = $this->checkType($id,$type);
+        if(!$res) return -1;
         $r['eq'] = array('id'=>$id);
 		$data['name'] = $name;
 		$data['isUse'] = $isUse;
 		$data['type'] = $type;
         return $this->import('module')->modify($data, $r);
+    }
+
+    /**
+     * 检测是否能修改模块的类型
+     * @param $id
+     * @param $type
+     * @return bool
+     */
+    public function checkType($id,$type){
+        if($type==3) return true;
+        //得到该模块对应的所有分类
+        $data = $this->getModuleClassList($id);
+        //分析数据
+        if($data['total']){
+            foreach($data['rows'] as $item){
+                if($item['type']==1 && $type==2){
+                    return false;
+                }elseif($item['type']==2 && $type==1){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 	
 	//删除首页模块推广链接

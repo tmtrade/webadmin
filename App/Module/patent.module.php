@@ -853,5 +853,14 @@ class PatentModule extends AppModule
         $this->commit('income');
         return 0;
     }
+
+    //获得专利信息
+    public function getPatentByNumber($number)
+    {
+        $r['eq'] = array(
+            'number' => $number,
+        );
+        return $this->import('patent')->find($r);
+    }
 }
 ?>

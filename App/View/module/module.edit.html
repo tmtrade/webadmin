@@ -40,6 +40,14 @@
 					</select>
 				</li>
 				<li>
+					<label>模块类型：</label>
+					<select name="type" id="type" >
+						<option value="1" <?if($module['type'] == 1){ echo "selected";} ?>> 商标</option>
+						<option value="2" <?if($module['type'] == 2){ echo "selected";} ?>> 专利</option>
+						<option value="3" <?if($module['type'] == 3){ echo "selected";} ?>> 混合</option>
+					</select>
+				</li>
+				<li>
 				<p style="margin:20px 0;padding:0 5px 0 5px;background-color:#FFFF99;border:1px solid #dadada;width:700px;">您可以在此管理首页推荐的商品模块，并为每个模块添加分类和商品。建议每个模块至少有两个分类。</p>
 				</li>
 				<li>
@@ -59,16 +67,18 @@
 				<tbody>
 				<tr>
 					<td>模块分类名称</td>
+					<td>分类中商品类型</td>
 					<td>包含商品</td>
 					<td>操作</td>
 				</tr>
 				<?foreach ($moduleClass['rows'] as $ky => $vl) { ?>
 				<tr>
 					<td><?=$vl['name']?></td>
+					<td><?=$class_type[$vl['type']]?></td>
 					<td><?=$vl['itemNum']?></td>
 					<td>
 						<a href="javascript:void(0);" onclick="delClass(<?=$module['id']?>,<?=$vl['id']?>);">删除</a>
-						<a href="javascript:void(0);" onclick="setClass(<?=$module['id']?>,<?=$vl['id']?>);">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
+						<a href="javascript:void(0);" onclick="setClass(<?=$module['id']?>,<?=$vl['id']?>,<?=$module['type']?>);">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
 						<span onclick="sortChaneg(<?=$vl['id']?>, 4 , 1,['moduleId',<?=$moduleId?>])"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
 						<span class="img-flip" onclick="sortChaneg(<?=$vl['id']?>, 4, 2,['moduleId',<?=$moduleId?>])"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
 					</td>
@@ -184,7 +194,7 @@
 		
 		/**新增分类**/
 		$('#addclass').click(function(){
-			setClass(moduleId,0);
+			setClass(moduleId,0,<?=$module['type']?>);
 		})
     })
 

@@ -1,6 +1,7 @@
 function setModule(moduleId){
 	var name = $('#modulename').val();
 	var isUse = $('#isUse').val();
+	var type = $('#type').val();
 	if(!name){
 		layer.msg('请先填写模块标题', {
 			time: 2000 //2秒关闭（如果不配置，默认是3秒）
@@ -9,7 +10,7 @@ function setModule(moduleId){
 	$.ajax({
 			type : 'post',
 			url  : '/module/setModule/',
-			data : {'id':moduleId,'name':name,'isUse':isUse},
+			data : {'id':moduleId,'name':name,'isUse':isUse,'type':type},
 			dataType : 'json',
 			success : function (data){
 				if (data.code==1){
@@ -149,17 +150,20 @@ function delPic(moduleId, id)
 
 
 //设置分类
-function setClass(moduleId, id)
+function setClass(moduleId, id,type)
 {
 	if(!checkModule(moduleId))return false;
 	if ( moduleId <= 0 || moduleId == '' ) return false;
 	var url = '?moduleId='+moduleId+'&id='+id;
+	if(type){
+		url += '&type='+type;
+	}
 	layer.open({
 		type: 2,
 		title: false,
 		closeBtn: false,
 		area: ['640px', '400px'],
-		content: '/module/classes/'+url,
+		content: '/module/classes/'+url
 	});
 }
 

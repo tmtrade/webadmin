@@ -233,21 +233,23 @@ class ModuleModule extends AppModule
 	
 	
 	//添加首页模块推广链接
-    public function addModule($name,$isUse)
+    public function addModule($name,$isUse,$type=1)
     {    
         $data['name'] = $name;
 		$data['isUse'] = $isUse;
+		$data['type'] = $type;
 		$sort = $this->getLastSort(1);
 		$data['sort'] =  $sort + rand(2,5);
         return $this->import('module')->create($data);
     }
 	
 	//编辑首页模块推广链接
-    public function updateModule($name,$isUse, $id)
+    public function updateModule($name,$isUse, $id,$type=1)
     {
         $r['eq'] = array('id'=>$id);
 		$data['name'] = $name;
 		$data['isUse'] = $isUse;
+		$data['type'] = $type;
         return $this->import('module')->modify($data, $r);
     }
 	
@@ -331,13 +333,14 @@ class ModuleModule extends AppModule
 	
 	
 	//添加首页模块分类
-    public function addClass($name,$moduleId)
+    public function addClass($name,$moduleId,$type=1)
     {    
 		
 		$sort = $this->getLastSort(4,array('moduleId'=>$moduleId));
 		$data['sort'] = $sort + rand(2,5);
 		
 		$data['name'] = $name;
+		$data['type'] = $type;
         $data['moduleId'] = $moduleId;
         $data['date'] = time();
         return $this->import('moduleClass')->create($data);
@@ -346,10 +349,11 @@ class ModuleModule extends AppModule
 	
 	
 	//编辑首页模块分类
-    public function updateClass($name, $id)
+    public function updateClass($name, $id,$type=1)
     {
         $r['eq'] = array('id'=>$id);
 		 $data['name'] = $name;
+        $data['type'] = $type;
         return $this->import('moduleClass')->modify($data, $r);
     }
 	

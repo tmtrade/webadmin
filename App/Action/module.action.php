@@ -20,8 +20,7 @@ class moduleAction extends AppAction
 	 * @return	void
 	 */
 	public function index()
-	{	
-
+	{
 		//参数
 		$params = array();
 		$page 	= $this->input('page', 'int', '1');
@@ -34,12 +33,12 @@ class moduleAction extends AppAction
 		$pager 		= $this->pager($total, $this->rowNum);
         $pageBar 	= empty($list) ? '' : getPageBar($pager);
 		$this->set('total', $total);
+		$this->set('module_type', C('MODULE_CLASS'));
         $this->set("pageBar",$pageBar);
 		$this->set('s', $params);
 		$this->set('list', $res['rows']);
 		$this->display();
 	}
-	
 	
 	/**
 	 * 添加/编辑首页模块设置
@@ -74,6 +73,7 @@ class moduleAction extends AppAction
 		$referr = Session::get('edit_referr');
 
 		$this->set('module', $module);
+		$this->set('class_type', C('CLASS_TYPE'));
 		$this->set('moduleId', $moduleId);
 		$this->set('moduleClass', $moduleClass);
 		$this->set('moduleAds', $moduleAds);
@@ -81,8 +81,7 @@ class moduleAction extends AppAction
 		$this->set('referr', $referr);
 		$this->display();
 	}
-	
-	
+
 	/**
 	 * 删除
 	 * 
@@ -114,7 +113,6 @@ class moduleAction extends AppAction
 		
 	}
 	
-	
 	/**
 	 * 添加/编辑模块链接
 	 * 
@@ -128,6 +126,7 @@ class moduleAction extends AppAction
 		//参数
 		$id 	= $this->input('id','int','0');
 		$isUse  = $this->input('isUse','int','0');
+		$type  = $this->input('type','int',1);
 		$name = $this->input('name','text','');
 		
 		if ( $name == '' ){
@@ -135,10 +134,10 @@ class moduleAction extends AppAction
 		}
 		
 		if ( $id <= 0 ){
-			$res = $this->load('module')->addModule($name,$isUse);
+			$res = $this->load('module')->addModule($name,$isUse,$type);
 			$id = $res;
 		}else{
-			$res = $this->load('module')->updateModule($name, $isUse, $id);
+			$res = $this->load('module')->updateModule($name, $isUse, $id,$type);
 		}
 		if ( $res ){
 			$this->returnAjax(array('code'=>1,'msg'=>'成功','moduleId'=>$id));
@@ -157,13 +156,22 @@ class moduleAction extends AppAction
 	public function classes()
 	{	
 		$moduleId = $this->input('moduleId', 'int', 0);
+		$module_type = $this->input('type', 'int', 1);//模块的类型
 		$id = $this->input('id', 'int', 0);
 		$classes = $classesItem = array();
 		if ( $id > 0 ){
 			$classes = $this->load('module')->getClassInfo($moduleId, $id);
 			$classesItem = $this->load('module')->getModuleClassItemsList($id);
 		}
+		//得到可选的分类类型
+		$types = array(1=>'商标',2=>'专利');
+		if($module_type==1){
+			$types = array(1=>'商标');
+		}elseif($module_type==2){
+			$types = array(2=>'专利');
+		}
 		$this->set('id', $id);
+		$this->set('module_type', $types);
 		$this->set('moduleId', $moduleId);
 		$this->set('classes', $classes);
 		$this->set('classesItem', $classesItem);
@@ -171,7 +179,7 @@ class moduleAction extends AppAction
 	}
 
 	/**
-	 * 添加模块分类
+	 * 添加/编辑模块分类
 	 *
 	 * @author	Dower
 	 * @since	2016-02-29
@@ -180,7 +188,9 @@ class moduleAction extends AppAction
 	 */
 	public function addClass(){
 		$moduleId = $this->input('moduleId','int',0);
+		$id = $this->input('id','int',0);
 		$name = $this->input('name','string','');
+		$type = $this->input('type','int',1);
 		if(!$moduleId){
 			$result['code'] = 1;
 			$this->returnAjax($result);
@@ -189,12 +199,24 @@ class moduleAction extends AppAction
 			$result['code'] = 2;
 			$this->returnAjax($result);
 		}
-		$classId = $this->load('module')->addClass($name, $moduleId);
-		$result['code'] = 0;
-		$result['classId'] = $classId;
+		if($id==0){
+			$rst = $classId = $this->load('module')->addClass($name, $moduleId,$type);
+			$id = $rst;
+		}else{
+			$rst = $this->load('module')->updateClass($name, $id,$type);
+			$this->load('module')->delClassItems($id);//清空之前的商品项
+		}
+		if($rst){
+			$result['code'] = 0;
+			$result['classId'] = $id;
+		}else{
+			$result['code'] = 3;
+			$result['classId'] = '保存信息失败';
+		}
 		//code: 0 成功; 1 非法参数,无module id ;2 分类名不能为空
 		$this->returnAjax($result);
 	}
+
 	/**
 	 * 添加/修改模块分类的商标
 	 *
@@ -208,18 +230,25 @@ class moduleAction extends AppAction
 		$number = $this->input('number', 'string', '');
 		$classId = $this->input('classId', 'int', 0);
 		$opt = $this->input('opt', 'string', '');
+		$type = $this->input('type', 'int', 1);
 		$id = $this->input('id', 'int', '0');
 		//参数合法性
 		if($number && $classId){
-			//检测商标是否存在
-			$data = $this->load('internal')->getSaleByNumber($number);
-			if($data){
-				$name = $data['name'];
-				//商标是否在售状态
-				if($data['status']!=1){
+			//检测商品是否存在
+			if($type==1){
+				$data = $this->load('internal')->getSaleByNumber($number);
+				//检测商标状态
+				if($data && $data['status']!=1){
 					$res['code'] = 5;
 					$this->returnAjax($res);
 				}
+			}else{
+				//专利数据
+				$data = $this->load('patent')->getPatentByNumber($number);
+				if($data) $data['name'] = $data['title'];
+			}
+			if($data){
+				$name = $data['name'];
 				//判断是添加还是编辑操作
 				if($opt=='edit'){
 					//编辑
@@ -251,11 +280,11 @@ class moduleAction extends AppAction
 			}
 		}else{
 			$res['code'] = 1;
-
 		}
-		// code: 0,10 正常;1 非法参数;2 无商标信息;3 添加数据出错;4 编辑数据出错; 5 商标已下架或审核中
+		// code: 0,10 正常;1 非法参数;2 无商品信息;3 添加数据出错;4 编辑数据出错; 5 商标已下架或审核中
 		$this->returnAjax($res);
 	}
+
 	/**
 	 * 添加推广链接
 	 * 
@@ -295,27 +324,18 @@ class moduleAction extends AppAction
 		if ( $params['moduleId'] <= 0 ){
 			$this->returnAjax(array('code'=>2,'msg'=>'参数错误'));
 		}
-		if ( $params['name'] == '' ){
-			$this->returnAjax(array('code'=>2,'msg'=>'请填写分类名称'));
-		}
 		$classId = $params['id'];
 		unset($params['id']);
-		
-		if ( $classId <= 0 ){
-			$params['date'] = time();
-			$classId = $this->load('module')->addClass($params['name'], $params['moduleId']);
-		}else{
-			$this->load('module')->updateClass($params['name'], $classId);
-			$this->load('module')->delClassItems($classId);
-		}
-		
+		//删除之前的信息
+		$this->load('module')->delClassItems($classId);
+		//保存当前的信息
 		if($params['numbers']){
 			foreach($params['numbers'] as $k => $v){
 				$arr = explode("===",$v);
 				$this->load('module')->addClassItems($arr[0],$arr[1], $classId);
 			}
 		}
-			
+		//返回结果
 		if ( $classId ){
 			$this->returnAjax(array('code'=>1,'msg'=>'成功'));
 		}
@@ -346,8 +366,7 @@ class moduleAction extends AppAction
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'删除错误'));
 	}
-	
-	
+
 	/**
 	 * 添加推广链接
 	 * 
@@ -370,7 +389,6 @@ class moduleAction extends AppAction
 		$this->set('pic', $pic);
 		$this->display();
 	}
-	
 	
 	//图片上传
 	public function ajaxUploadPic()
@@ -459,9 +477,7 @@ class moduleAction extends AppAction
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'删除错误'));
 	}
-	
-	
-	
+
 	/**
 	 * 添加推广链接
 	 * 
@@ -484,8 +500,7 @@ class moduleAction extends AppAction
 		$this->set('link', $link);
 		$this->display();
 	}
-	
-	
+
 	/**
 	 * 添加推广链接
 	 * 
@@ -520,9 +535,6 @@ class moduleAction extends AppAction
 		$this->returnAjax(array('code'=>2,'msg'=>'操作失败'));
 	}
 	
-	
-	
-	
 	/**
 	 * 删除推广链接
 	 * 
@@ -544,7 +556,6 @@ class moduleAction extends AppAction
 		}
 		$this->returnAjax(array('code'=>2,'msg'=>'删除错误'));
 	}
-	
 	
 	/**
 	 * 删除推广链接

@@ -17,9 +17,6 @@
 		<h1>子分类管理 </h1>
 	</div>
 	<br>
-	<form id="moduleclass" >
-	<input type="hidden" name="moduleId" class="h_modulId" value="<?=$moduleId?>">
-    <input type="hidden" name="id" id="id" class="h_id" value="<?=$id?>">
 	<ul class="confit-list borderBtmCd">
 		<li>
 			<label>
@@ -27,48 +24,63 @@
 				<input type="text" name="name" id="classname" maxlength="8" value="<?=$classes['name']?>"  class="inputbig" />
 			</label>
 		</li>
+		<li>
+			<label>分类中商品类型：</label>
+			<select name="type" id="type" >
+				<? foreach($module_type as $k11=>$v11): ?>
+				<option value="<?=$k11?>" <?if($classes['type'] == $k11){ echo "selected";} ?>> <?=$v11?></option>
+				<? endforeach; ?>
+			</select>
+		</li>
+		<li>
+			<a href="javascript:void(0)" class="nexta" style="width: 110px" id="savaClass">保存分类信息</a>
+			(此操作将清空商品信息)
+		</li>
 	</ul>
-	<table class="importable" id="classItems">
-		<tr>
-			<td width="40%" >对应商品</td>
-			<td width="20%">商标号</td>
-			<td width="40%">操作</td>
-		</tr>
-		<?foreach ($classesItem['rows'] as $ky => $vl) { ?>
-		<tr id="ClassItem-<?=$vl['id']?>" class="ClassItem">
-			<td class="ClassItemName" ><?=$vl['name']?></td>
-			<td class="ClassItemNumber" ><?=$vl['number']?></td>
-			<td>
-				<input type='hidden' value='<?=$vl['number']?>===<?=$vl['name']?>' name='numbers[]' id="item-<?=$vl['id']?>" >
-				<a href="javascript:void(0);" onclick="delClassItem(<?=$vl['id']?>)">删除</a>
-				<a href="javascript:void(0);" onclick="editClassItem(<?=$vl['number']?>,<?=$vl['id']?>);">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
-				<span onclick="sortChaneg(<?=$vl['id']?>, 5 , 1,['classId',<?=$id?>])"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
-				<span class="img-flip" onclick="sortChaneg(<?=$vl['id']?>, 5, 2,['classId',<?=$id?>])"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
-			</td>
-		</tr>
-		<?}?>
-	</table>
-	<table class="importable">
-		<tr id="newclassitem" style="display:none;">
-			<input type="hidden" id="sbclassitem" />
-			<td><input type="text" id="sbnumber" maxlength="20"  class="inputbig" placeholder="请输入商标号" isedit=""/></td>
-			<td><em id="tradetip"></em></td>
-			<td><a href="javascript:void(0)" class="nextanext" id="addsb">确定</a><a href="javascript:void(0)" class="cancelanext" id="cancelaclassitem">取消</a></td>
-		</tr>
-	</table>
-	<br>
-	<span class="addSpan"><a href="javascript:void(0)" class="nexta" id="addclassitem">+ 新增商品</a><br></span>
-	<div class="thistip" ><em  class="cFF6701" >每条分类最多可添加8条展示商品</em></div>
-	<br>
-	<a href="javascript:void(0)" class="nexta aaaa" id="adddata">确定删除</a><a href="javascript:void(0)" class="cancela cancel_create  aaaa">取消</a>
+	<form id="moduleclass" >
+		<input type="hidden" name="moduleId" class="h_modulId" value="<?=$moduleId?>">
+		<input type="hidden" name="id" id="id" class="h_id" value="<?=$id?>">
+		<div id="goods_body" style="display: none">
+		<table class="importable" id="classItems">
+			<tr>
+				<td width="40%" >对应商品</td>
+				<td width="20%">商品编号</td>
+				<td width="40%">操作</td>
+			</tr>
+			<?foreach ($classesItem['rows'] as $ky => $vl) { ?>
+			<tr id="ClassItem-<?=$vl['id']?>" class="ClassItem">
+				<td class="ClassItemName" ><?=$vl['name']?></td>
+				<td class="ClassItemNumber" ><?=$vl['number']?></td>
+				<td>
+					<input type='hidden' value='<?=$vl['number']?>===<?=$vl['name']?>' name='numbers[]' id="item-<?=$vl['id']?>" >
+					<a href="javascript:void(0);" onclick="delClassItem(<?=$vl['id']?>)">删除</a>
+					<a href="javascript:void(0);" onclick="editClassItem(<?=$vl['number']?>,<?=$vl['id']?>);">编辑</a>	&nbsp;&nbsp;|&nbsp;&nbsp;
+					<span onclick="sortChaneg(<?=$vl['id']?>, 5 , 1,['classId',<?=$id?>])"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>&nbsp;&nbsp;
+					<span class="img-flip" onclick="sortChaneg(<?=$vl['id']?>, 5, 2,['classId',<?=$id?>])"><img class="img" src="<?=StaticDir?>1.2/images/u85.gif"></span>
+				</td>
+			</tr>
+			<?}?>
+		</table>
+		<table class="importable">
+			<tr id="newclassitem" style="display:none;">
+				<input type="hidden" id="sbclassitem" />
+				<td><input type="text" id="sbnumber" maxlength="20"  class="inputbig" placeholder="请输入商品号" isedit=""/></td>
+				<td><em id="tradetip"></em></td>
+				<td><a href="javascript:void(0)" class="nextanext" id="addsb">确定</a><a href="javascript:void(0)" class="cancelanext" id="cancelaclassitem">取消</a></td>
+			</tr>
+		</table>
+		<br>
+		<span class="addSpan"><a href="javascript:void(0)" class="nexta" id="addclassitem">+ 新增商品</a><br></span>
+		<div class="thistip" ><em  class="cFF6701" >每条分类最多可添加8条展示商品</em></div>
+		<br>
+		<a href="javascript:void(0)" class="nexta aaaa" id="adddata">确定删除</a><a href="javascript:void(0)" class="cancela cancel_create  aaaa">取消</a>
+		</div>
 	</form>
 </div>
 <script type="text/javascript" src="<?=StaticDir?>1.2/js/module.js"></script>
 <script type="text/javascript">
+	var class_id = $('#id').val();
     $(function(){
-		<? if(!$id): ?>
-		$('#classname').focus();
-		<? endif; ?>
 		checkItemslen();
 		//添加商品界面显示
 		$('#addclassitem').click(function(){
@@ -77,27 +89,28 @@
 			}else{
 				$('#newclassitem').hide();
 			}
-                        $('#sbclassitem').val("");
-                        $('#sbnumber').val("");
-                        $("#newclassitem").insertAfter($("#classItems").last());//移动到最后面
-		})
+			$('#sbclassitem').val("");
+			$('#sbnumber').val("");
+			$("#newclassitem").insertAfter($("#classItems").last());//移动到最后面
+		});
 		//取消添加
 		$('#cancelaclassitem').click(function(){
 			$('#newclassitem').hide();
 			$('#sbclassitem').val('');
 			$('#sbnumber').val('');
 			$('#sbnumber').attr('isedit','');
-		})
-		//添加商标
+		});
+		//添加商品
 		$('#addsb').click(function(){
 			var number = $('#sbnumber').val();
+			var type = $('#type').val();
 			number = number.replace(/(^\s*)|(\s*$)/g, "");//去空
 			//判断是否是编辑商标
 			var isEdit = $('#sbnumber').attr('isedit');
 			$('#sbnumber').attr('isedit','');
 
-			if(!number || number == '请输入商标号'){
-				$('#tradetip').html('请输入商标号');
+			if(!number || number == '请输入商品号'){
+				$('#tradetip').html('请输入商品号');
 				$('#tradetip').show();
 				return false;
 			}
@@ -113,9 +126,9 @@
 			}
 			var itemId = $('#sbclassitem').val();
 			if(itemId){
-				var my_data = {number:number,classId:$('#id').val(),opt:'edit','id':itemId};
+				var my_data = {number:number,classId:$('#id').val(),opt:'edit','id':itemId,type:type};
 			}else{
-				var my_data = {number:number,classId:$('#id').val()};
+				var my_data = {number:number,classId:$('#id').val(),type:type};
 			}
 			$.ajax({
 				type : 'post',
@@ -161,7 +174,7 @@
 							case 1:
 								msg='非法参数';break;
 							case 2:
-								msg='该商标未出售';break;
+								msg='该商品未出售';break;
 							case 3:
 								msg='添加数据出错';break;
 							case 5:
@@ -178,17 +191,9 @@
 					});
 				}
 			});
-		})
+		});
 		//添加分类数据
 		$('#adddata').click(function(){
-			var classname = $('#classname').val();
-			if(!classname){
-				layer.msg('请填写分类名称', {
-					time: 2000 //2秒关闭（如果不配置，默认是3秒）
-				});
-				$('#classname').focus();
-				return false;
-			}
 			var data = $("#moduleclass").serialize();
 			$.ajax({
 				type : 'post',
@@ -214,66 +219,68 @@
 					});
 				}
 			});
-		})
-        //取消/添加 失去焦点事件
-		$(".aaaa").mouseover(function(){
-			$('#classname').unbind('blur');
 		});
-		$(".aaaa").mouseout(function(){
-			$('#classname').bind('blur',classNameFn);
+		//保存分类信息
+		$('#savaClass').click(function(){
+			var name = $('#classname').val();
+			if(name==''){
+				layer.msg('请输入分类名', {
+					time: 1500
+				});
+				$('#classname').focus();
+				return;
+			}
+			var type = $('#type').val();
+			var id = $('#id').val();
+			$.ajax({
+				type : 'post',
+				url  : '/module/addClass/',
+				data : {name:name,moduleId:$('.h_modulId').val(),type:type,id:id},
+				dataType : 'json',
+				success : function (data){
+					if(data.code==0){
+						layer.msg('操作成功', {
+							time: 1500
+						},function(){
+							parent.window.location.reload();
+						});
+					}else if(data.code==1){
+						layer.msg('非法参数', {
+							time: 1500
+						});
+					}else if(data.code==2){
+						layer.msg('请输入分类名', {
+							time: 1500
+						});
+					}else{
+						layer.msg('保存信息失败', {
+							time: 1500
+						});
+					}
+				},
+				error : function (data){
+					layer.msg('操作失败，请稍后重试。', {
+						time: 2000
+					});
+				}
+			});
 		});
+		//关闭事件
 		$(".im-title-span,.cancela,.closed").on("click",function(){
 			 //parent.layer.closeAll();
 			 parent.window.location.reload();
 		});
-		//分类框失去焦点时ajax请求, 添加分类
-		$('#classname').blur(classNameFn);
 	});
 	//检测商标数
 	function checkItemslen(){
+		if(class_id!=0){
+			$('#goods_body').show();
+		}
 		var ClassItemNum = $('.ClassItem').length;
 		if(ClassItemNum >= 8){
 			$('.addSpan').hide();
 			return false;
 		}
-	}
-    //添加分类函数
-	function classNameFn(){
-        var id = $('#id').val();
-        if(id==0){
-            var name = $(this).val();
-            if(name==''){
-                layer.msg('请输入分类名', {
-                    time: 1500 //2秒关闭（如果不配置，默认是3秒）
-                });
-				$('#classname').focus();
-                return;
-            }
-            $.ajax({
-                type : 'post',
-                url  : '/module/addClass/',
-                data : {name:name,moduleId:$('.h_modulId').val()},
-                dataType : 'json',
-                success : function (data){
-                    if(data.code==0){
-                        $('#id').val(data.classId);
-                    }else if(data.code==1){
-                        layer.msg('非法参数', {
-                            time: 1500 //2秒关闭（如果不配置，默认是3秒）
-                        });
-                    }else if(data.code==2){
-                        layer.msg('请输入分类名', {
-                            time: 1500 //2秒关闭（如果不配置，默认是3秒）
-                        });
-                    }
-                },
-                error : function (data){
-                    layer.msg('操作失败，请稍后重试。', {
-                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                    });
-                }
-            });
-        }
 	}
 	//编辑显示框
 	function editClassItem(number,itemId){
@@ -281,18 +288,14 @@
 		$('#sbnumber').val(number);
 		$('#sbnumber').attr('isedit','true');
 		$('#newclassitem').show();
-                //移动到当前tr后面
-                $("#newclassitem").insertAfter($("#ClassItem-"+itemId).last());
+		//移动到当前tr后面
+		$("#newclassitem").insertAfter($("#ClassItem-"+itemId).last());
 	}
-
 	//删除
-	function delClassItem(itemId)
-    {
+	function delClassItem(itemId){
 		$('#ClassItem-'+itemId).remove();
 		$('#item-'+itemId).remove();
     }
-
 </script>
-
 <? require(ViewDir.'/footer.html'); ?>
 

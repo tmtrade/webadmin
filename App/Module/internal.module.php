@@ -145,7 +145,7 @@ class InternalModule extends AppModule
             if ( !empty($params['isConfer']) ){
                 $_isConfer = ' OR `price` = 0 ';
             }
-            $_child = " AND ((`price` >= $_start AND `price` <= $_end) $_isConfer) ";
+            $_child .= " AND ((`price` >= $_start AND `price` <= $_end) $_isConfer) ";
         }
         if ( !empty($_child) ){
             $r['raw'] .= " AND `id` IN (select distinct(`saleId`) from t_sale_contact where 1 $_child) ";

@@ -117,6 +117,9 @@ class packageAction extends AppAction
             $seo_data['isUse']          = $this->input('seo_isUse', 'int', '1');
             $reArr = $this->load('seo')->viewSetSeo($sid,$seo_data,16);
         }
+        if($data['id']){
+            $this->deleteCache($data['id']);
+        }
         $this->returnAjax($rst);
     }
     
@@ -135,7 +138,16 @@ class packageAction extends AppAction
                 $this->returnAjax(array('code'=>1,'msg'=>'删除'.$v.'失败'));
             }
         }
+        $this->deleteCache($id);
         $this->returnAjax(array('code'=>0));
+    }
+
+    /**
+     * 删除对应的缓存
+     * @param $id
+     */
+    private function deleteCache($id){
+        $this->com('redisHtml')->remove('pack_detail_'.$id);
     }
 
 }

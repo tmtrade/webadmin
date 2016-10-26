@@ -24,6 +24,18 @@ class TaskAction extends QueueCommonAction
         exit('function closed');
     }
 
+    public function five()
+    {
+        $this->load('task')->runGoodsLessFive(1);
+        exit('function closed');
+    }
+
+    public function soon()
+    {
+        $this->load('task')->runSoonFallDue(1);
+        exit('function closed');
+    }
+
     public function one()
     {
         //$number = $this->input('n', 'string', '');

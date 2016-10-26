@@ -925,7 +925,6 @@ class InternalModule extends AppModule
 		
 		//出售数据
 		$other  = $this->load('trademark')->getTmOther($number);
-		
 
         if ( empty($other) ) return false;
         $platform   = implode(',', $other['platform']);
@@ -933,6 +932,7 @@ class InternalModule extends AppModule
 		$type	    = $other['type'];
 		$viewPhone  = $this->load('phone')->getRandPhone();
         $regDate    = strtotime($info['reg_date']) > 0 ? strtotime($info['reg_date']) : 0;
+        $endDate    = strtotime($info['valid_end']) > 0 ? strtotime($info['valid_end']) : 0;
 		$sale = array(
 			'tid'           => intval($info['tid']),
 			'number'        => $number,
@@ -954,10 +954,11 @@ class InternalModule extends AppModule
 			'label'         => '',
 			'length'        => $length,
             'regDate'       => $regDate,
+            'endDate'       => $endDate,
 			'date'          => $date,
 			'viewPhone'     => $viewPhone,
 			'hits'          => intval($hits),
-			'memo'          => $data['memo'],
+			'memo'          => $data['memo'] ? $data['memo'] : '后台导入商品',
 			'date'          => time(),
 			);
 		$tminfo = array(

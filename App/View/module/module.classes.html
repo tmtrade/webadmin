@@ -23,14 +23,20 @@
 				<span>分类名称</span>
 				<input type="text" name="name" id="classname" maxlength="8" value="<?=$classes['name']?>"  class="inputbig" />
 			</label>
+            <label>
+				<span>分类链接</span>
+				<input type="text" name="link" id="link" value="<?=$classes['link']?>"  class="inputbig" />
+			</label>
 		</li>
 		<li>
-			<label>分类中商品类型：</label>
+            <label>
+			<span>分类商品类型：</span>
 			<select name="type" id="type" >
 				<? foreach($module_type as $k11=>$v11): ?>
 				<option value="<?=$k11?>" <?if($classes['type'] == $k11){ echo "selected";} ?>> <?=$v11?></option>
 				<? endforeach; ?>
 			</select>
+            </label>
 		</li>
 		<li>
 			<a href="javascript:void(0)" class="nexta" style="width: 110px" id="savaClass">保存分类信息</a>
@@ -73,7 +79,7 @@
 		<span class="addSpan"><a href="javascript:void(0)" class="nexta" id="addclassitem">+ 新增商品</a><br></span>
 		<div class="thistip" ><em  class="cFF6701" >每条分类最多可添加8条展示商品</em></div>
 		<br>
-		<a href="javascript:void(0)" class="nexta aaaa" id="adddata">确定删除</a><a href="javascript:void(0)" class="cancela cancel_create  aaaa">取消</a>
+		<a href="javascript:void(0)" class="nexta aaaa" id="adddata">保存商品</a><a href="javascript:void(0)" class="cancela cancel_create  aaaa">取消</a>
 		</div>
 	</form>
 </div>
@@ -232,10 +238,11 @@
 			}
 			var type = $('#type').val();
 			var id = $('#id').val();
+            var link = $('#link').val();
 			$.ajax({
 				type : 'post',
 				url  : '/module/addClass/',
-				data : {name:name,moduleId:$('.h_modulId').val(),type:type,id:id},
+				data : {name:name,moduleId:$('.h_modulId').val(),type:type,link:link,id:id},
 				dataType : 'json',
 				success : function (data){
 					if(data.code==0){

@@ -162,7 +162,7 @@ function setClass(moduleId, id,type)
 		type: 2,
 		title: false,
 		closeBtn: false,
-		area: ['640px', '400px'],
+		area: ['650px', '500px'],
 		content: '/module/classes/'+url
 	});
 }

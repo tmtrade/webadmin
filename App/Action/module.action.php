@@ -192,6 +192,7 @@ class moduleAction extends AppAction
 		$id = $this->input('id','int',0);
 		$name = $this->input('name','string','');
 		$type = $this->input('type','int',1);
+        $link = $this->input('link','string','');
 		if(!$moduleId){
 			$result['code'] = 1;
 			$this->returnAjax($result);
@@ -201,10 +202,10 @@ class moduleAction extends AppAction
 			$this->returnAjax($result);
 		}
 		if($id==0){
-			$rst = $classId = $this->load('module')->addClass($name, $moduleId,$type);
+			$rst = $classId = $this->load('module')->addClass($name, $moduleId,$type,$link);
 			$id = $rst;
 		}else{
-			$rst = $this->load('module')->updateClass($name, $id,$type);
+			$rst = $this->load('module')->updateClass($name, $id,$type,$link);
 			$this->load('module')->delClassItems($id);//清空之前的商品项
 		}
 		if($rst){

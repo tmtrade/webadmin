@@ -358,7 +358,7 @@ class ModuleModule extends AppModule
 	
 	
 	//添加首页模块分类
-    public function addClass($name,$moduleId,$type=1)
+    public function addClass($name, $moduleId, $type=1, $link)
     {    
 		
 		$sort = $this->getLastSort(4,array('moduleId'=>$moduleId));
@@ -366,6 +366,7 @@ class ModuleModule extends AppModule
 		
 		$data['name'] = $name;
 		$data['type'] = $type;
+        $data['link'] = $link;
         $data['moduleId'] = $moduleId;
         $data['date'] = time();
         return $this->import('moduleClass')->create($data);
@@ -374,11 +375,12 @@ class ModuleModule extends AppModule
 	
 	
 	//编辑首页模块分类
-    public function updateClass($name, $id,$type=1)
+    public function updateClass($name, $id, $type=1, $link)
     {
         $r['eq'] = array('id'=>$id);
-		 $data['name'] = $name;
+		$data['name'] = $name;
         $data['type'] = $type;
+        $data['link'] = $link;
         return $this->import('moduleClass')->modify($data, $r);
     }
 	

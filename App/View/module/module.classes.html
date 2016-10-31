@@ -260,7 +260,8 @@
 							time: 1500
 						});
 					}else{
-						layer.msg('保存信息失败', {
+						_msg = data.classId ? data.classId : '保存信息失败';
+						layer.msg(_msg, {
 							time: 1500
 						});
 					}

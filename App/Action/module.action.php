@@ -193,6 +193,7 @@ class moduleAction extends AppAction
 		$name = $this->input('name','string','');
 		$type = $this->input('type','int',1);
         $link = $this->input('link','string','');
+
 		if(!$moduleId){
 			$result['code'] = 1;
 			$this->returnAjax($result);
@@ -205,8 +206,15 @@ class moduleAction extends AppAction
 			$rst = $classId = $this->load('module')->addClass($name, $moduleId,$type,$link);
 			$id = $rst;
 		}else{
+			$classInfo = $this->load('module')->getClassInfo($moduleId, $id);
+			$num = $this->load('module')->getModuleClassItemNum($id);
+			if ( $classInfo['type'] != $type && $num > 0){
+				$result['code'] = 4;
+				$result['classId'] = '分类有数据无法修改类型';
+				$this->returnAjax($result);
+			}
 			$rst = $this->load('module')->updateClass($name, $id,$type,$link);
-			$this->load('module')->delClassItems($id);//清空之前的商品项
+			//$this->load('module')->delClassItems($id);//清空之前的商品项
 		}
 		if($rst){
 			$result['code'] = 0;

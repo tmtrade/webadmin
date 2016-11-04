@@ -69,7 +69,7 @@
                         <span class="icon icon-delete">
                             <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
                         </span>
-                    <span class="icon icon-editor">
+                        <span class="icon icon-editor">
                             <a href="javascript:void(0);" onclick="showEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
                         </span>
                 </td>
@@ -98,17 +98,17 @@
             <tbody class="table-list">
             <tr>
                 <td style="vertical-align:middle">包装后出售机率</td>
-                <td style="vertical-align:middle"><input class="input input-sm" size="6" type="text" name="items[<?=$items[2][1]['id']?>]" value="<?=$items[2][1]['data2']?>"/>%</td>
+                <td style="vertical-align:middle"><input class="input input-sm baozFloat" id="baoz1" size="6" type="text" name="items[<?=$items[2][1]['id']?>]" value="<?=$items[2][1]['data2']?>"/>%</td>
                 <td style="vertical-align:middle"><?=$baoz?></td>
             </tr>
             <tr>
                 <td style="vertical-align:middle">未包装出售机率</td>
-                <td style="vertical-align:middle"><input class="input input-sm" size="6" type="text" name="items[<?=$items[2][2]['id']?>]" value="<?=$items[2][2]['data2']?>"/>%</td>
+                <td style="vertical-align:middle"><input class="input input-sm baozFloat" id="baoz2" size="6" type="text" name="items[<?=$items[2][2]['id']?>]" value="<?=$items[2][2]['data2']?>"/>%</td>
                 <td style="vertical-align:middle"><?=$nobaoz?></td>
             </tr>
             <tr>
                 <td style="vertical-align:middle">相差倍数</td>
-                <td style="vertical-align:middle"><?=abs($items[2][1]['data2']/$items[2][2]['data2'])?>倍</td>
+                <td style="vertical-align:middle"><span id="baoz3"><?=abs($items[2][1]['data2']/$items[2][2]['data2'])?></span>倍</td>
                 <td style="vertical-align:middle">-</td>
             </tr>
             </tbody>
@@ -135,7 +135,7 @@
             <tr>
                 <td style="vertical-align:middle"><?=$k+1?></td>
                 <td style="vertical-align:middle"><input class="input input-sm rotClass" data-id="<?=$v['id']?>" size="6" type="text" name="items[<?=$v['id']?>]" value="<?=$v['data1']?>"/>类</td>
-                <td style="vertical-align:middle" id="c-<?=$v['id']?>"><?=$CLASS[$v['data1']]?></td>
+                <td style="vertical-align:middle"><label id="c-<?=$v['id']?>"><?=$CLASS[$v['data1']]?></label></td>
             </tr>
             <? } ?>
             </tbody>
@@ -205,7 +205,7 @@
             <? foreach (C('COUNT_TYPE') as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$v?></td>
-                <td style="vertical-align:middle"><input class="input input-sm" size="6" type="text" name="items[<?=$items[5][$k]['id']?>]" value="<?=$items[5][$k]['data2']?>"/>%</td>
+                <td style="vertical-align:middle"><input class="input input-sm floatAll" size="6" type="text" name="items[<?=$items[5][$k]['id']?>]" value="<?=$items[5][$k]['data2']?>"/>%</td>
             </tr>
             <? } ?>
             </tbody>
@@ -222,7 +222,7 @@
             <? foreach (C('COUNT_NUM') as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$v?></td>
-                <td style="vertical-align:middle"><input class="input input-sm" size="6" type="text" name="items[<?=$items[6][$k]['id']?>]" value="<?=$items[6][$k]['data2']?>"/>%</td>
+                <td style="vertical-align:middle"><input class="input input-sm floatAll" size="6" type="text" name="items[<?=$items[6][$k]['id']?>]" value="<?=$items[6][$k]['data2']?>"/>%</td>
             </tr>
             <? } ?>
             </tbody>
@@ -241,18 +241,48 @@
 
 <script type="text/javascript">
     $(function(){
-        var _Class = eval('<?=json_encode($CLASS)?>');
+        var _Class = JSON.parse('<?=json_encode($CLASS)?>');
         $(".rotClass").on('change', (function (){
             _cla = $(this).val();
             _id  = $(this).attr('data-id');
-            if ( _cla <=0 || _cla > 45 ) {
-                _str = '类别错误';
-            }else{
-                _str = _Class[_cla];
+            console.log(_id);
+            if ( isNaN(_cla) || _cla <=0 || _cla > 45 ) {
+                layer.tips('填写有误（1~45）', $(this), {
+                    tips: 4
+                });
+                return;
             }
-            $("c-"+_id).text(_str);
-        });
+            _str = _Class[_cla];
+            $("#c-"+_id).text( _str );
+            layer.tips('看这里！！！', $("#c-"+_id), {
+                tips: 4
+            });
+        }));
 
+        $(".baozFloat").on('change', (function (){
+            _val = $(this).val();
+            if ( isNaN(_val) || _val <=0 || _val > 100 ) {
+                layer.tips('填写小数（大于0且小于等于100）', $(this), {
+                    tips: 4
+                });
+                return;
+            }
+            _val1 = $("#baoz1").val();
+            _val2 = $("#baoz2").val();
+            if ( _val1 <=0 || _val2 <=0 )  return ;
+            _beishu = (_val1/_val2).toFixed(2);
+            $("#baoz3").text(_beishu);
+        }));
+
+        $(".floatAll").on('change', (function (){
+            _cla = $(this).val();
+            if ( isNaN(_cla) || _cla <=0 || _cla > 100 ) {
+                layer.tips('填写小数（大于0且小于等于100）', $(this), {
+                    tips: 4
+                });
+                return;
+            }
+        }));
 
         //info
         $(".info-icon").hover(function(){

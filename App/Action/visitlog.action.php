@@ -239,7 +239,7 @@ class VisitlogAction extends AppAction
                 $dateEnd    = strtotime(date("Y-m-d 23:59:59"));
             }else{
                 $dateStart  = empty($dateStart) ? "" : strtotime($dateStart);
-                $dateEnd    = empty($dateEnd) ? "" : strtotime($dateEnd)+86399;//结束时间为一天的最后
+                $dateEnd    = empty($dateEnd) ? "" : strtotime($dateEnd)+86400;//结束时间为一天的最后
             }
             
             $res        = $this->load('keywordcount')->getKeywordList($type,$dateStart,$dateEnd,$page, $this->rowNum);

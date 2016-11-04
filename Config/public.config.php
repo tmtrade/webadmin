@@ -278,6 +278,9 @@ $define = array(
                 '304' => array(
                     'label' => '报价单管理',
                 ),
+                '41' => array(
+                    'label' => '出售数据分享',
+                ),
             ),
         ),
     ),
@@ -477,6 +480,11 @@ $define = array(
             'up' => '1',
             'label' => '报价单管理',
         ),
+        '41' => array(
+            'id' => '41',
+            'up' => '1',
+            'label' => '出售数据分享',
+        ),
     ),
     //SEO列表配置项
     'SEO_LIST' => array(
@@ -593,6 +601,7 @@ $define = array(
         'case/index' => '23',
         'seo/index' => '24',
         'quotation/index' => '304',
+        'saleanalysis/index' => '41',
     ),
     /* 平台入驻 */
     'SALE_PLATFORM' => array(
@@ -763,6 +772,25 @@ $define = array(
     'CLASS_TYPE'=>array(
         1=>'商标',
         2=>'专利',
+    ),
+    //count商标类型
+    'COUNT_TYPE' => array(
+        '1'  => '纯中文',
+        '2'  => '纯英文',
+        '3'  => '纯图形',
+        '4'  => '中+英',
+        '5'  => '中+图',
+        '6'  => '英+图',
+        '7'  => '中+英+图',
+        '8'  => '纯数字',
+    ),
+    //count商标字数
+    'COUNT_NUM' => array(
+        '1-2'  => '1-2个字',
+        '3'  => '3个字',
+        '4'  => '4个字',
+        '5'  => '5个字',
+        '6'  => '5个字及以上',
     ),
 );
 

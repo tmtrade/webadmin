@@ -29,7 +29,7 @@ class DataAnalyzeModule extends AppModule
             $r['raw'] .= " AND date >= ".$dateStart;
         }
         if ( !empty($dateEnd) ){
-            $r['raw'] .= " AND date <= ".$dateEnd;
+            $r['raw'] .= " AND date < ".$dateEnd;
         }
         $r['order'] = array('date'=>'asc');
         $res = $this->import('history')->findAll($r);

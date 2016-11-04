@@ -84,6 +84,11 @@ return $menu = array(
 						'url'   => '/quotation/index/',
 						'auth'	=> '304',
 					),
+                    '5' => array(
+                        'title' => '出售数据分享',
+                        'url'   => '/saleanalysis/index/',
+                        'auth'	=> '41',
+                    ),
 		),
 	),
 	'4' => array(

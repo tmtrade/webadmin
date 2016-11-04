@@ -22,7 +22,7 @@ class DataAnalyzeAction extends AppAction
         if($dateStart=="" && $dateEnd==""){
                 $d = date("Y-m-d");
                 $dateStart  = strtotime("$oneDay -6 day");
-                $dateEnd    = strtotime($d)+86399;
+                $dateEnd    = strtotime($d)+86400;
             }else{
                 $dateStart  = empty($dateStart) ? "" : strtotime($dateStart);
                 $dateEnd    = empty($dateEnd) ? "" : strtotime($dateEnd)+86399;//结束时间为一天的最后

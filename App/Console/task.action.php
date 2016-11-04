@@ -95,5 +95,10 @@ class TaskAction extends QueueCommonAction
         //$this->load('run')->deleteNoPhoneContact();
     }
 
+    public function testDate()
+    {
+        $this->load('analysis')->createSaleAnalysisReport();
+    }
+
 }
 ?>

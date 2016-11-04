@@ -16,7 +16,7 @@
     <ul class="placeul">
         <li>首页</li>
         <li>出售者平台</li>
-        <li>报价单列表</li>
+        <li>出售数据分享</li>
     </ul>
 </div>
 <div class="wrap">
@@ -29,9 +29,9 @@
                     <tr class="active">
 						<th>序号</th>
                         <th>标题</th>
-                        <th>创建者</th>
-                        <th>电话</th>
+                        <th>发布时间</th>
                         <th>创建时间</th>
+                        <th>更新时间</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -40,12 +40,11 @@
                 <tr>
 					<td><?=($k+1)?></td>
                     <td><?=$v['title']?></td>
-					<td><?=$v['username']?></td>
-					<td><?=$v['mobile']?></td>
+					<td><?=date('Y-m-d', $v['date'])?></td>
 					<td><?=$v['created']?></td>
+					<td><?=$v['updated']?></td>
                     <td>
-						<a href="javascript:void(0);" onclick="delTopic(<?=$v['id']?>,<?=$v['uid']?>);">删除</a>
-						<a href="<?=$v['url']?>" target="_blank">查看</a>
+						<a href="/saleanalysis/edit/?id=<?=$v['id']?>">编辑</a>
                     </td>
                 </tr>
                 <? } ?>

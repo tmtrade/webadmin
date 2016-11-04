@@ -287,6 +287,18 @@ $tbl['systemSetting'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['saleAnalysis'] = array(
+	'name'		=> $prefix.'sale_analysis',
+	'dbId'		=> $dbId, 
+	'configFile'=> $configFile,
+);
+
+$tbl['saleAnalysisItems'] = array(
+	'name'		=> $prefix.'sale_analysis_items',
+	'dbId'		=> $dbId, 
+	'configFile'=> $configFile,
+);
+
 //出售者平台数据
 $tbl['ad'] = array(
 	'name'		=> $prefixs.'ad',

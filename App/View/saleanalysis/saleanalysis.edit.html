@@ -198,14 +198,14 @@
             <thead>
             <tr class="active">
                 <th width="50%">组合类型分布占比</th>
-                <th width="50%"></th>
+                <th width="50%"><span id="typeAllCount">100</span>%</th>
             </tr>
             </thead>
             <tbody class="table-list">
             <? foreach (C('COUNT_TYPE') as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$v?></td>
-                <td style="vertical-align:middle"><input class="input input-sm floatAll" size="6" type="text" name="items[<?=$items[5][$k]['id']?>]" value="<?=$items[5][$k]['data2']?>"/>%</td>
+                <td style="vertical-align:middle"><input class="input input-sm floatAll typeAll" size="6" type="text" name="items[<?=$items[5][$k]['id']?>]" value="<?=$items[5][$k]['data2']?>"/>%</td>
             </tr>
             <? } ?>
             </tbody>
@@ -215,14 +215,14 @@
             <thead>
             <tr class="active">
                 <th width="50%">商标字数分布占比</th>
-                <th width="50%"></th>
+                <th width="50%"><span id="numAllCount">100</span>%</th>
             </tr>
             </thead>
             <tbody class="table-list">
             <? foreach (C('COUNT_NUM') as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$v?></td>
-                <td style="vertical-align:middle"><input class="input input-sm floatAll" size="6" type="text" name="items[<?=$items[6][$k]['id']?>]" value="<?=$items[6][$k]['data2']?>"/>%</td>
+                <td style="vertical-align:middle"><input class="input input-sm floatAll numAll" size="6" type="text" name="items[<?=$items[6][$k]['id']?>]" value="<?=$items[6][$k]['data2']?>"/>%</td>
             </tr>
             <? } ?>
             </tbody>
@@ -282,7 +282,20 @@
                 });
                 return;
             }
+            _totalCheck($(".numAll"), 'numAllCount');
+            _totalCheck($(".typeAll"), 'typeAllCount');
         }));
+
+        function _totalCheck(obj, str) {
+            total = 0;
+            obj.each(function(){
+                total += parseFloat($(this).val());
+            })
+            $("#"+str).text(total.toFixed(2));
+        }
+
+        _totalCheck($(".numAll"), 'numAllCount');
+        _totalCheck($(".typeAll"), 'typeAllCount');
 
         //info
         $(".info-icon").hover(function(){

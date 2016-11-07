@@ -150,6 +150,10 @@ class InternalModule extends AppModule
         if ( !empty($_child) ){
             $r['raw'] .= " AND `id` IN (select distinct(`saleId`) from t_sale_contact where 1 $_child) ";
         }
+        //是否包装过
+        if ( !empty($params['isBaoz']) ){
+            $r['raw'] .= " AND `id` IN (select saleId from t_sale_tminfo where embellish != '') ";
+        }
         //商标Tid查询
         if ( !empty($params['tid']) ){
             $_r['eq']   = array('auto'=>$params['tid']); 

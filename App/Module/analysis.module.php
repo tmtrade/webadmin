@@ -17,10 +17,13 @@ class AnalysisModule extends AppModule
     /*
      * 每个月初生成出售商品数据分析报告
      */
-    public function createSaleAnalysisReport()
+    public function createSaleAnalysisReport($type=0)
     {
         $month = date('Ym', strtotime('-1 month'));
-        if ( $this->isMonth($month) ) exit('data exist');
+        if ( $this->isMonth($month) ) {
+            if ( $type == 1 ) exit('data exist');
+            return false;
+        }
 
         $dateStart  = strtotime( $month.'01' );
         $dateEnd    = strtotime( '-1 day', strtotime( date('Y-m-01') ) );
@@ -132,18 +135,21 @@ class AnalysisModule extends AppModule
         $analyId = $this->import('analy')->create($analy);
         if ( $analyId <= 0 ) {
             $this->rollback('saleAnalysis');
-            exit('analy create faild');
+            if ( $type == 1 ) exit('analy create faild');
+            return false;
         }
         foreach ($items as $item){
             $item['analyId'] = $analyId;
             $flag = $this->import('analyItems')->create($item);
             if ( $flag <= 0 ){
                 $this->rollback('saleAnalysis');
-                exit('analy create faild');
+                if ( $type == 1 ) exit('analy create faild');
+                return false;
             }
         }
         $this->commit('saleAnalysis');
-        exit('finished');
+        if ( $type == 1 ) exit('finished');
+        return true;
     }
 
     public function checkData($data, $type, $num)

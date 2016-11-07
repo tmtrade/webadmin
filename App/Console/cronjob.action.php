@@ -115,5 +115,18 @@ class CronjobAction extends QueueCommonAction
         return $this->load('task')->runOffpriceGoods(0);
     }
 
+    /**
+     * 每月1号生成前月出售数据分享
+     * @author   Xuni
+     * @since    2016-11-07
+     * 每月1号00:05执行一次
+     * @access   public
+     * @return   boolean
+     */
+    public function addSaleAnalysis()
+    {
+        return $this->load('analysis')->createSaleAnalysisReport(0);
+    }
+
 }
 ?>

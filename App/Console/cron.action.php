@@ -76,13 +76,21 @@ class CronAction extends QueueCommonAction
                  'name' => 'trade_delete_goodsSale_cron',//设置执行文件唯一标识（每个task执行名称需不同）
                  ),
             //每月什么时段
+//            array(
+//                'type' => 'month',//设置时间执行一次
+//                'day'  => '10',// 1~28、29、30、31 （每月几号）
+//                'time' => '00:00',//24小时制时间如：08:30（表示早上8点半）
+//                'func' => 'delAd',
+//                'name' => 'trade_delete_ad_cron',//设置执行文件唯一标识（每个task执行名称需不同）
+//                ),
+            //每月什么时段
             array(
                 'type' => 'month',//设置时间执行一次
-                'day'  => '10',// 1~28、29、30、31 （每月几号）
-                'time' => '00:00',//24小时制时间如：08:30（表示早上8点半）
-                'func' => 'delAd',
-                'name' => 'trade_delete_ad_cron',//设置执行文件唯一标识（每个task执行名称需不同）
-                ),
+                'day'  => '1',// 1~28、29、30、31 （每月几号）
+                'time' => '00:05',//24小时制时间如：08:30（表示早上8点半）
+                'func' => 'addSaleAnalysis',
+                'name' => 'trade_add_saleAnalysis_cron',//设置执行文件唯一标识（每个task执行名称需不同）
+            ),
             );
 
         return $list;

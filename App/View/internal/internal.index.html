@@ -122,8 +122,8 @@
                     <label for="bq9">置项</label>
                 </div>
                 <div class="mj-checkbox">
-                    <input type="checkbox" name="listSort" <?if($s['listSort']==1){echo 'checked';}?> value="1" id="bq9"/>
-                    <label for="bq9">列表(排序)</label>
+                    <input type="checkbox" name="listSort" <?if($s['listSort']==1){echo 'checked';}?> value="1" id="bq10"/>
+                    <label for="bq10">列表(排序)</label>
                 </div>
 
                 <label>编号(tid)：</label>
@@ -145,7 +145,12 @@
             </dd>
             <dd>
                 <label>出售人联系电话：</label>
-                <input type="text" name="phone" value="<?=$s['phone']?>" class="input input-sm"/> 
+                <input type="text" name="phone" value="<?=$s['phone']?>" class="input input-sm"/>
+                <div class="mj-checkbox">
+                    <label for="bq11">是否包装过</label>
+                    <input type="checkbox" name="isBaoz" <?if($s['isBaoz']==1){echo 'checked';}?> value="1" id="bq11"/>
+                    <label for="bq11">（仅显示包装商品）</label>
+                </div>
             </dd>
             <dd style="height: 35px;">
                 <a href="javascript:void(0);" style="margin: 10px;float: left;" class="mj-sBtn" id="mj-sBtn">搜索</a>

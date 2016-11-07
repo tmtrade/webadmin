@@ -106,6 +106,10 @@ class InternalindexForm extends AppForm
             'field'  => 'phone',
             'method' => 'fieldName',
             ),
+        'isBaoz'    => array(
+            'field' => 'isBaoz',
+            'match' => array('int', '', ''),
+        ),
     );
 	
 	

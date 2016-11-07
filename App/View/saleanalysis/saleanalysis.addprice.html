@@ -1,0 +1,68 @@
+<? require(ViewDir.'/header.html');?>
+
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+
+<!--出售信息弹层-->
+<div class="mj-infoM" style="width:99%">
+<form name="setBanner" id="setPrice" >
+    <input type="hidden" name="id" value="<?=$id?>" />
+    <input type="hidden" name="analyId" value="<?=$analyId?>" />
+
+    <label>价格区间：</label>
+    <input type="input" class="input input-sm" size="10" name="data1" value="<?=$info['data1']?>">W元
+    &nbsp;&nbsp;&nbsp;&nbsp;
+
+    <label>数据占比：</label>
+    <input type="input" class="input input-sm" size="10" name="data2" value="<?=$info['data2']?>">%
+    &nbsp;&nbsp;&nbsp;&nbsp;
+
+    <button type="button" id="myButton" class="btn btn-warning">确定</button>
+    <button type="button" onclick="closeAll();" class="btn btn-warning">取消</button>
+</form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".mj-infoM").show();
+
+        $("#myButton").on('click', function (){
+            var _this = $(this);
+            var data = $("#setPrice").serialize();
+            _this.attr('disabled', true);
+            $.ajax({
+                type : 'post',
+                url  : '/saleanalysis/setPrice/',
+                data : data,
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            parent.window.location.reload();
+                        });
+                    }else{
+                        layer.msg(data.msg, {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        },function(){ _this.attr('disabled', false) });
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    },function(){ _this.attr('disabled', false) });
+                }
+            });
+        });
+
+    });
+
+    function closeAll()
+    {
+        parent.layer.closeAll();
+    }
+
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

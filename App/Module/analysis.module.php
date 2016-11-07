@@ -68,11 +68,11 @@ class AnalysisModule extends AppModule
             'data1'     => 2,
             'data2'     => 0,//未包装的百分比
         );
-        $items[] = array(
-            'type'      => 2,
-            'data1'     => 3,
-            'data2'     => 0,//相差倍数
-        );
+//        $items[] = array(
+//            'type'      => 2,
+//            'data1'     => 3,
+//            'data2'     => 0,//相差倍数
+//        );
 
         //分类排行 前10
         $res = $this->load('keywordcount')->getKeywordList(4,$dateStart,$dateEnd, 1,20);
@@ -235,6 +235,115 @@ class AnalysisModule extends AppModule
         $r['eq']    = array('analyId'=>$analyId);
         $r['order'] = array('data2'=>'desc');
         $r['limit'] = 200;
+        return $this->import('analyItems')->find($r);
+    }
+
+    //删除item
+    public function delItems($id)
+    {
+        if ( $id <= 0 ) return false;
+        $r['eq'] = array('id'=>$id);
+        return $this->import('analyItems')->remove($r);
+    }
+
+    //对某类别中某项进行上下排序
+    //$updown 1：向上，2：向下
+    public function orderUpDown($id, $updown, $type=4)
+    {
+        if ( empty($id) || empty($type)) return false;
+
+        $rl['eq']   = array('id'=>$id);
+        $rl['col']  = array('data2');
+        $res = $this->import('analyItems')->find($rl);
+        if ( empty($res) || empty($res['data2']) ) return false;
+
+        $order = $res['data2'];
+
+        $r['eq'] = array(
+            'type' => $type,
+        );
+        $r['raw']   = $updown == 1 ? " `data2` < $order " : " `data2` > $order ";
+        $ord        = $updown == 1 ? 'desc' : 'asc';
+        $r['order'] = array('data2'=>$ord);
+        $res = $this->import('analyItems')->find($r);
+        if ( empty($res) ) return false;
+
+        $changeOrder    = $res['data2'];
+        $changeId       = $res['id'];
+
+        $update1    = array('data2'=>$changeOrder);//需要交换的
+        $update2    = array('data2'=>$order);//被交换的
+
+        $this->begin('saleAnalysis');
+
+        $flag1 = $this->setItems($update1, $id);//需要变更的
+        $flag2 = $this->setItems($update2, $changeId);//被变更的
+
+        if ( $flag1 && $flag2 ) {
+            return $this->commit('saleAnalysis');
+        }
+        $this->rollback('saleAnalysis');
+        return false;
+    }
+
+    public function setItems($data, $id)
+    {
+        if ( $id <= 0 ) return false;
+        $r['eq'] = array('id'=>$id);
+        return $this->import('analyItems')->modify($data, $r);
+    }
+
+    public function setAnaly($data, $id)
+    {
+        if ( $id <= 0 ) return false;
+        $r['eq'] = array('id'=>$id);
+        return $this->import('analy')->modify($data, $r);
+    }
+
+    //更新items
+    public function setAnalyItems($items, $type=2)
+    {
+        if ( !is_array($items) || empty($items) ) return false;
+
+        $this->begin('saleAnalysis');
+        foreach ($items as $id => $v){
+            $data   = $type == 2 ? array('data2'=>$v) : array('data1'=>$v);
+            $res    = $this->setItems($data, $id);
+            if ( !$res ){
+                $this->rollback('saleAnalysis');
+                return false;
+            }
+        }
+        $this->commit('saleAnalysis');
+        return true;
+    }
+
+    public function addItems($data)
+    {
+        return $this->import('analyItems')->create($data);
+    }
+
+    public function addKeyword($id, $keyword)
+    {
+        $r['eq']    = array('analyId'=>$id,'type'=>4);
+        $r['order'] = array('data2'=>'asc');
+        $res        = $this->import('analyItems')->find($r);
+        if ( empty($res) ) return false;
+
+        $sort = $res['data2']--;
+        $data = array(
+            'analyId'   => $id,
+            'type'      => 4,
+            'data1'     => $keyword,
+            'data2'     => $sort,
+        );
+        return $this->addItems($data);
+    }
+
+    public function getItems($id)
+    {
+        if ( $id <= 0 ) return array();
+        $r['eq'] = array('id'=>$id);
         return $this->import('analyItems')->find($r);
     }
 

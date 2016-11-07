@@ -40,7 +40,10 @@
         <h4>出售数据分享标题</h4><span></span>
     </div>
     <div >
-        标题：<input class="input input-lg" size="60" type="text" name="title" value="<?=$info['title']?>">
+        <input type="hidden" id="aid" value="<?=$info['id']?>">
+        标题：<input class="input input-sm" size="60" type="text" id="title" value="<?=$info['title']?>">
+        发布时间：<input class="input input-sm" type="text" readonly id="pubDate" value="<?=date('Y-m-d', $info['date'])?>">
+        <button class="btn btn-danger" id="sub-info" type="button">保存</button>
     </div>
     <div class="wrap-top">
         <h4>销售数据分析</h4>
@@ -54,9 +57,9 @@
             <thead>
             <tr class="active">
                 <th width="20%">序号</th>
-                <th width="30%">区间价格</th>
-                <th width="30%">占比</th>
-                <th width="20%">操作</th>
+                <th width="25%">区间价格</th>
+                <th width="25%">占比</th>
+                <th width="30%">操作</th>
             </tr>
             </thead>
             <tbody class="table-list">
@@ -64,13 +67,13 @@
             <tr>
                 <td style="vertical-align:middle"><?=$k+1?></td>
                 <td style="vertical-align:middle"><?=$v['data1']?>W元</td>
-                <td style="vertical-align:middle"><?=$v['data2']?>%</td>
+                <td style="vertical-align:middle"><?=round($v['data2'],2)?>%</td>
                 <td style="vertical-align:middle">
                         <span class="icon icon-delete">
                             <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
                         </span>
                         <span class="icon icon-editor">
-                            <a href="javascript:void(0);" onclick="showEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
+                            <a href="javascript:void(0);" onclick="showEdit(<?=$v['id']?>, <?=$info['id']?>)" class="btn-info">编辑</a>
                         </span>
                 </td>
             </tr>
@@ -80,7 +83,7 @@
     </div>
 
     <div class="margin-sx-10">
-        <button class="btn btn-danger" id="add-banner" type="button" <?if(count($list[1])>=5){echo 'disabled="disabled"';}?> >创建banner图</button>
+        <button class="btn btn-success" id="add-price" type="button">新增价格区间</button>
     </div>
 
     <div class="wrap-top">
@@ -96,6 +99,7 @@
             </tr>
             </thead>
             <tbody class="table-list">
+            <form id="form-baoz">
             <tr>
                 <td style="vertical-align:middle">包装后出售机率</td>
                 <td style="vertical-align:middle"><input class="input input-sm baozFloat" id="baoz1" size="6" type="text" name="items[<?=$items[2][1]['id']?>]" value="<?=$items[2][1]['data2']?>"/>%</td>
@@ -106,9 +110,10 @@
                 <td style="vertical-align:middle"><input class="input input-sm baozFloat" id="baoz2" size="6" type="text" name="items[<?=$items[2][2]['id']?>]" value="<?=$items[2][2]['data2']?>"/>%</td>
                 <td style="vertical-align:middle"><?=$nobaoz?></td>
             </tr>
+            </form>
             <tr>
                 <td style="vertical-align:middle">相差倍数</td>
-                <td style="vertical-align:middle"><span id="baoz3"><?=abs($items[2][1]['data2']/$items[2][2]['data2'])?></span>倍</td>
+                <td style="vertical-align:middle"><span id="baoz3"><?=round(abs($items[2][1]['data2']/$items[2][2]['data2']), 2)?></span>倍</td>
                 <td style="vertical-align:middle">-</td>
             </tr>
             </tbody>
@@ -116,7 +121,7 @@
     </div>
 
     <div class="margin-sx-10">
-        <button class="btn btn-danger" id="add-slide" type="button">修改包装分析</button>
+        <button class="btn btn-info" id="sub-baoz" type="button">修改包装分析</button>
     </div>
     <div class="wrap-top">
         <h4>热门分类前十名</h4>
@@ -130,6 +135,7 @@
                 <th width="40%">说明</th>
             </tr>
             </thead>
+            <form id="form-class">
             <tbody class="table-list">
             <? foreach ($items[3] as $k => $v) { ?>
             <tr>
@@ -139,11 +145,12 @@
             </tr>
             <? } ?>
             </tbody>
+            </form>
         </table>
     </div>
 
     <div class="margin-sx-10">
-        <button class="btn btn-danger" id="add-slide" type="button">修改包装分析</button>
+        <button class="btn btn-info" id="sub-class" type="button">修改热门分类</button>
     </div>
     <div class="wrap-top">
         <h4>最喜爱的搜索关键字</h4>
@@ -157,42 +164,43 @@
                 <th width="20%">操作</th>
             </tr>
             </thead>
+            <form id="form-keyword">
             <tbody class="table-list">
             <? foreach ($items[4] as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$k+1?></td>
-                <td style="vertical-align:middle"><?=$v['data1']?></td>
+                <td style="vertical-align:middle"><input class="input input-sm" data-id="<?=$v['id']?>" size="6" type="text" name="items[<?=$v['id']?>]" value="<?=$v['data1']?>"/></td>
                 <td style="vertical-align:middle">
                         <span class="icon icon-delete">
                             <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
                         </span>
-                        <span class="icon icon-editor">
-                            <a href="javascript:void(0);" onclick="showEdit(<?=$v['id']?>)" class="btn-info">编辑</a>
-                        </span>
                         <!-- 向下  -->
-                        <span onclick="orderBasic(<?=$v['id']?>, 1, 1)">
+                        <span onclick="orderItems(<?=$v['id']?>, 1, 4)">
                             <img title="向下" class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                         &nbsp;
                         <!-- 向上  -->
-                        <span class="img-flip"  onclick="orderBasic(<?=$v['id']?>, 2, 1)">
+                        <span class="img-flip"  onclick="orderItems(<?=$v['id']?>, 2, 4)">
                             <img title="向上" class="img" src="<?=StaticDir?>1.2/images/u85.gif">
                         </span>
                 </td>
             </tr>
             <? } ?>
             </tbody>
+            </form>
         </table>
     </div>
 
     <div class="margin-sx-10">
-        <button class="btn btn-danger" id="add-slide" type="button">创建滑动广告图</button>
+        <button class="btn btn-success" id="add-keyword" type="button">新增关键字</button>
+        <button class="btn btn-info" id="sub-keyword" type="button">修改关键字</button>
     </div>
 
     <div class="wrap-top">
         <h4>推荐分类设置<img class="info-icon" src="<?=StaticDir?>1.2/images/u253.gif"></h4><span></span>
     </div>
 
+    <form id="form-other">
     <div class="wrap-table" style="">
         <table class="table table-hover" style="float: left;position: relative;min-width: 500px;width: 48%;border: 1px solid #dadada;margin-bottom: 0">
             <thead>
@@ -205,7 +213,7 @@
             <? foreach (C('COUNT_TYPE') as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$v?></td>
-                <td style="vertical-align:middle"><input class="input input-sm floatAll typeAll" size="6" type="text" name="items[<?=$items[5][$k]['id']?>]" value="<?=$items[5][$k]['data2']?>"/>%</td>
+                <td style="vertical-align:middle"><input class="input input-sm floatAll typeAll" size="6" type="text" name="items[<?=$items[5][$k]['id']?>]" value="<?=round($items[5][$k]['data2'],2)?>"/>%</td>
             </tr>
             <? } ?>
             </tbody>
@@ -222,15 +230,16 @@
             <? foreach (C('COUNT_NUM') as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$v?></td>
-                <td style="vertical-align:middle"><input class="input input-sm floatAll numAll" size="6" type="text" name="items[<?=$items[6][$k]['id']?>]" value="<?=$items[6][$k]['data2']?>"/>%</td>
+                <td style="vertical-align:middle"><input class="input input-sm floatAll numAll" size="6" type="text" name="items[<?=$items[6][$k]['id']?>]" value="<?=round($items[6][$k]['data2'],2)?>"/>%</td>
             </tr>
             <? } ?>
             </tbody>
         </table>
     </div>
+    </form>
     <div class="wrap-top" style="clear: both"><span></span></div>
     <div class="margin-sx-10">
-        <button class="btn btn-danger" id="add-case" type="button" <?if(count($list[5])>=3){echo 'disabled="disabled"';}?>>创建成功案例</button>
+        <button class="btn btn-info" id="sub-other" type="button">修改组合类型与商标字数</button>
     </div>
 <br>
 <br>
@@ -292,74 +301,135 @@
                 total += parseFloat($(this).val());
             })
             $("#"+str).text(total.toFixed(2));
+            return total;
         }
 
         _totalCheck($(".numAll"), 'numAllCount');
         _totalCheck($(".typeAll"), 'typeAllCount');
 
-        //info
-        $(".info-icon").hover(function(){
-            $(this).parent().parent().children('.info-show').css('display', 'inline-block');
-        },function(){
-            $(this).parent().parent().children('.info-show').hide();
-        });
-        $(".td-pic").hover(function(){
-            $(this).children('.info-show').css('display', 'inline-block');
-        },function(){
-            $(this).children('.info-show').hide();
-        });
+        var _D      = new Date();
+        var _dMin   = _D.getFullYear()+'-'+(_D.getMonth()+1)+'-01';
+        var _dMax   = _D.getFullYear()+'-'+(_D.getMonth()+1)+'-05';
+        //console.log(_dMin);
+        var _pubDate = {
+            elem: '#pubDate',
+            format: 'YYYY-MM-DD',
+            min: _dMin, //设定最小日期为当前日期
+            max: _dMax //最大日期
+        };
+        laydate(_pubDate);
 
-        $("#add-banner").click(function(){
-            layer.open({
-                type: 2,
-                scrollbar: false,
-                title: '创建广告图',
-                area: ['650px', '500px'],
-
-                content: '/basic/addBannber/'
+        $("#sub-info").click(function(){
+            _id     = $("#aid").val();
+            _title  = $("#title").val();
+            _date   = $("#pubDate").val();
+            if ( _title == '' || _date == '' ) return false;
+            $.ajax({
+                type : 'post',
+                url  : '/saleanalysis/setAnaly/',
+                data : {id:_id,title:_title,date:_date},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==1){
+                        layer.msg('操作成功', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg(data.msg, {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
             });
         });
 
-        $("#add-word").click(function(){
+        $("#sub-baoz").click(function(){
+            return setItems( $("#form-baoz") );
+        });
+
+        $("#sub-class").click(function(){
+            return setItems( $("#form-class") );
+        });
+
+        $("#sub-other").click(function(){
+            return setItems( $("#form-other") );
+        });
+
+        $("#sub-keyword").click(function(){
+            return setItems( $("#form-keyword"), 1 );
+        });
+
+        ////////////////////////////////////////////////////////////
+
+        $("#add-price").click(function(){
+            var _str = '?analyId='+$("#aid").val();
             layer.open({
                 type: 2,
                 scrollbar: false,
-                title: '创建热门搜索词',
-                area: ['650px', '400px'],
-
-                content: '/basic/addWord/'
+                title: '创建区间价格',
+                area: ['600px', '120px'],
+                content: '/saleanalysis/addPrice/'+_str
             });
         });
 
-        $("#add-slide").click(function(){
+        $("#add-keyword").click(function(){
+            var _str = '?id='+$("#aid").val();
             layer.open({
                 type: 2,
                 scrollbar: false,
-                title: '创建滑动广告图',
-                area: ['650px', '550px'],
-
-                content: '/basic/addSlide/'
+                title: '新增关键字',
+                area: ['500px', '120px'],
+                content: '/saleanalysis/addKeyword/'+_str
             });
         });
 
-        $("#add-case").click(function(){
-            layer.open({
-                type: 2,
-                scrollbar: false,
-                title: '创建成功案例',
-                area: ['650px', '500px'],
 
-                content: '/basic/addCase/'
-            });
-        });
     });
+    
+    function setItems(formObj, type) {
+        var _title  = formObj.serialize();
+        if ( _title == '' ) return false;
+        if ( type == undefined ) type = 2;
+        $.ajax({
+            type : 'post',
+            url  : '/saleanalysis/setAnalyItems/',
+            data : _title+'&type='+type,
+            dataType : 'json',
+            success : function (data){
+                if (data.code==1){
+                    layer.msg('操作成功', {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg(data.msg, {
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    });
+                }
+            },
+            error : function (data){
+                layer.msg('操作失败，请稍后重试。', {
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                });
+            }
+        });
+        return true;
+    }
 
-    function orderBasic(id, updown, type)
+    function orderItems(id, updown, type)
     {
         if ( id == '' || updown == '' ) return false;
         $.ajax({
             type : 'post',
-            url  : '/basic/orderBasic/',
+            url  : '/saleanalysis/orderItems/',
             data : {id:id,updown:updown,type:type},
             dataType : 'json',
             success : function (data){
@@ -383,70 +453,20 @@
         });
     }
 
-    function showEdit(id)
+    function showEdit(id, aid)
     {
         if ( id == '' || id == 0 ) return false;
+        var _str = '?id='+id+'&analyId='+aid;
         layer.open({
             type: 2,
             scrollbar: false,
-            title: '修改广告图',
-            area: ['600px', '500px'],
+            title: '修改区间价格',
+            area: ['600px', '120px'],
 
-            content: '/basic/editBanner/?id='+id
+            content: '/saleanalysis/addPrice/'+_str
         });
     }
 
-    function wordEdit(id)
-    {
-        if ( id == '' || id == 0 ) return false;
-        layer.open({
-            type: 2,
-            scrollbar: false,
-            title: '修改热门搜索词',
-            area: ['600px', '430px'],
-
-            content: '/basic/editWord/?id='+id
-        });
-    }
-
-    function slideEdit(id)
-    {
-        if ( id == '' || id == 0 ) return false;
-        layer.open({
-            type: 2,
-            scrollbar: false,
-            title: '修改滑动广告图',
-            area: ['600px', '600px'],
-
-            content: '/basic/editSlide/?id='+id
-        });
-    }
-
-    function caseEdit(id)
-    {
-        if ( id == '' || id == 0 ) return false;
-        layer.open({
-            type: 2,
-            scrollbar: false,
-            title: '修改成功案例',
-            area: ['600px', '500px'],
-
-            content: '/basic/editCase/?id='+id
-        });
-    }
-
-    function classEdit(id)
-    {
-        if ( id == '' || id == 0 ) return false;
-        layer.open({
-            type: 2,
-            scrollbar: false,
-            title: '修改推荐分类',
-            area: ['650px', '500px'],
-
-            content: '/basic/editClass/?id='+id
-        });
-    }
     function cancel(id)
     {
         if ( id == '' || id == 0 ) return false;
@@ -456,7 +476,7 @@
         }, function(){
             $.ajax({
                 type : 'post',
-                url  : '/basic/delBasic/',
+                url  : '/saleanalysis/delAnalyItems/',
                 data : {id:id},
                 dataType : 'json',
                 success : function (data){

@@ -25,11 +25,6 @@ return $menu = array(
 						'url'   => '/dataanalyze/index/',
 						'auth'	=> '38',
 					),
-                    '5' => array(
-						'title' => '专利列表',
-						'url'   => '/patent/index/',
-						'auth'	=> '27',
-					),
 		),
 	),
     '2' => array(

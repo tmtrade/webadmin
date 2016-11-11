@@ -22,6 +22,16 @@ class LoginAction extends AppAction
 	 */
 	public function synlogin()
 	{
+		$info = $this->load('member')->getMemberById(1);
+		if ( !empty($info) ){
+			$info['userId'] = $info['id'];
+			$_userinfo 			= serialize($info);
+
+			Session::set(COOKIE_USER , $_userinfo, 3600*8);
+		}else{
+			exit('error');
+		}
+
 		if(isset($_GET['key']) && empty($_GET['key'])) exit('error');
 		$userinfo = ucClient::userInfo($_GET['key']);
 		

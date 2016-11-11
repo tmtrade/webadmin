@@ -98,6 +98,17 @@ class QueueLibModule extends AppModule
         return false;
     }
 
+    public function syncTmAll($data)
+    {
+        $number = $data['number'];
+        if ( empty($number) ) return false;
+        
+        $data = $this->importBi('trademark')->getTmAll($number);
+        if ( $data['code'] != '101' || empty($data['data']) ) return false;
+
+        return $this->load('tm')->setAll($data['data']);
+    }
+
     
 }
 ?>

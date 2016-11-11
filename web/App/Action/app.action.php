@@ -32,7 +32,6 @@ abstract class AppAction extends Action
 	{
 		//自定义业务逻辑
 		$this->getUser();
-
 		//有用户账号就必须判断账号是否有效
 		if ( !empty($this->username) ){
 			$userinfo = $this->load('member')->get($this->username);

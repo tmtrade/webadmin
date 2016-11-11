@@ -198,7 +198,7 @@ class OpenApiModule extends AppModule
         return array($_class, $_group);
     }
 
-    public function getAllInfo($number, $isInfo=0, $isProposer=0, $isSecond=0, $isImage=0)
+    public function getTmAll($number, $isInfo=0, $isProposer=0, $isSecond=0, $isImage=0)
     {
         return $this->load('trademark')->getAllInfo($number, $isInfo, $isProposer, $isSecond, $isImage);
     }

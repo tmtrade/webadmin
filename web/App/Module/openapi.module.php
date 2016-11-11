@@ -67,7 +67,7 @@ class OpenApiModule extends AppModule
             return $this->getViewImg($saleId);
         }
 
-        return $this->load('trademark')->getImg($data['number']);
+        return $this->load('trademark')->getImg($number);
     }
 
     /**
@@ -197,5 +197,11 @@ class OpenApiModule extends AppModule
         ksort($_class);
         return array($_class, $_group);
     }
+
+    public function getAllInfo($number, $isInfo=0, $isProposer=0, $isSecond=0, $isImage=0)
+    {
+        return $this->load('trademark')->getAllInfo($number, $isInfo, $isProposer, $isSecond, $isImage);
+    }
+
 }
 ?>

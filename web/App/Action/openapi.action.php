@@ -128,6 +128,26 @@ class OpenApiAction extends RpcServer {
         return $msg;
     }
 
+    /////////////////////////////////////
+    protected function getTmAll($params)
+    {
+        $msg        = $this->getMsg(101);
+        $number     = $params['number'];
+
+        if ( empty($number) ) return $msg;
+
+        $isInfo     = $params['isInfo'] ? 1 : 0 ;
+        $isProposer = $params['isProposer'] ? 1 : 0;
+        $isSecond   = $params['isSecond'] ? 1 : 0;
+        $isImage    = $params['isImage'] ? 1 : 0;
+
+        if ( !$isInfo && !$isProposer && !$isSecond !$isImage ) return $msg;
+
+        $data   = $this->load('openapi')->getTmAll( $number, $isInfo, $isProposer, $isSecond, $isImage );
+        $msg['data'] = $data;
+        return $msg;
+    }
+
 
     /**
      * 获取相应返回信息

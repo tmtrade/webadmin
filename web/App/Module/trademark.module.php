@@ -429,5 +429,35 @@ class TrademarkModule extends AppModule
         }
         return $total;
     }
+
+    public function getAllInfo($number, $isInfo=0, $isProposer=0, $isSecond=0, $isImage=0)
+    {
+        if ( empty($number) ) return array();
+        $data = array();
+        if ( $isInfo ){
+            $r['eq']        = array('id'=>$number);
+            $r['limit']     = 100;
+            $data['info']   = $this->import('tm')->find($r);
+        }
+
+        if ( $isInfo && $isProposer ){
+            $data['proposer']       = $this->load('proposer')->get($data['info']['proposer_id']);
+            $data['proposerNew']    = $this->load('proposer')->getNew($data['info']['pid']);
+        }
+
+        if ( $isSecond ){
+            $r['eq']        = array('trademark_id'=>$number);
+            $r['limit']     = 100;
+            $data['second'] = $this->import('second')->find($r);
+        }
+
+        if ( $isImage ){
+            $r['eq']        = array('trademark_id'=>$number);
+            $r['limit']     = 1;
+            $data['image']  = $this->import('img')->find($r);
+        }
+
+        return $data;
+    }
 }
 ?>

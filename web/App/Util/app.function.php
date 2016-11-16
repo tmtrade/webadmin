@@ -1,5 +1,41 @@
 <?
 /**
+ * 模拟HTTP请求
+ *
+ * @param   string  $url        请求的地址
+ * @param   string  $method     0为GET、1为POST
+ * @param   string  $param      提交的参数
+ * @param   int     $timeout    超时时间（秒）
+ * @return  string
+ */
+function httpRequest($url, $method = 0, $param = '', $timeout = 10)
+{
+    $userAgent ="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)";
+    $ch        = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+    if ( $method == 1 ) {
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $param);
+    }
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+    curl_setopt( $ch,CURLOPT_HTTPHEADER, array(
+    'Accept-Language: zh-cn',
+    'Connection: Keep-Alive',
+    'Cache-Control: no-cache',
+    ));
+    $document = curl_exec($ch);
+    $info     = curl_getinfo($ch);
+    if ( $info['http_code'] == "405" ) {
+        curl_close($ch);
+        return 'error';
+    }
+    curl_close($ch);
+    return $document;
+}
+
+/**
  * 返回数组中指定的一列 (可见php5.5新函数array_column)
  * @static
  * @access public

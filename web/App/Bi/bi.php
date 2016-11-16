@@ -23,11 +23,32 @@ abstract class Bi extends RpcClient
 	public function request($name, $param)
 	{
 		$response = parent::request($name, $param);
+		
 		if ( empty($response) ) {
 			return array('code' => '404', 'msg' => '系统异常', 'data' => '');
 		}
 		
 		return $response;
+	}
+
+	
+	/**
+	 * 发送请求(curl请求)
+	 * @author	void
+	 * @since	2016-03-04
+	 *
+	 * @access	public
+	 * @param	string	$name	请求的接口
+	 * @param	string  $param	提交的参数
+	 * @return	array
+	 */
+	public function invoke($name, $param)
+	{
+		$param['token'] = $this->token;
+		$response       = httpRequest($this->url.$name, 1, http_build_query($param));
+		$response       = json_decode($response, true);
+		
+		return isset($response['body']['data']) ? $response['body']['data'] : array();
 	}
 }
 ?>

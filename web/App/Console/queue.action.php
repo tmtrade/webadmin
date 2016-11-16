@@ -11,7 +11,7 @@
  */
 class QueueAction extends QueueCommonAction
 {
-    const TOTAL     = 20;//总进程数
+    const TOTAL     = 5;//总进程数
     const SECOND    = 2;//超时秒数
 
     private $cacheType      = 'redisQc';//缓存类型

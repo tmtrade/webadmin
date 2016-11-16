@@ -32,7 +32,7 @@ class TrademarkBi extends Bi
             'data'  	=> $data,
         );
         
-        $params['sign'] = sign($params);
+        $params['sign'] = $this->sign($params);
         return $this->request("openapi/request", $params);
     }
 

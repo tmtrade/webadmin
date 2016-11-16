@@ -42,6 +42,7 @@ abstract class AppModule extends Module
 		$className      = $name.'Bi';
 		$bi             = new $className();
 		$bi->url        = $config[$bi->apiId]['url'];
+        $bi->token      = $config[$bi->apiId]['token'];
 		$objList[$name] = $bi;
 		
 		return $bi;

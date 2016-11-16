@@ -100,5 +100,31 @@ class TaskAction extends QueueCommonAction
         $this->load('analysis')->createSaleAnalysisReport();
     }
 
+    public function syncTm()
+    {
+        $data = $this->load('sync')->getSyncList(2, 10000);
+        foreach ($data['rows'] as $v) {
+            $arr = array('number'=>$v['number']);
+            $this->load('queuelib')->addQueue('syncTmAll', $arr, '同步商标数据');
+        }
+        echo "finshed. total={$data['total']}";
+    }
+
+    public function syncTest()
+    {
+        $data = $this->load('sync')->getSyncFaild(50);
+        if ( empty($data) ) exit('no data');
+        
+        foreach ($data as $val) {
+            $_arr   = unserialize($val['data']);
+            $id     = $this->load('queuelib')->syncTmAll($_arr['data']);
+            if ( $id ) {
+                $this->load('sync')->updateLog($val['id']);
+            }
+            echo "number:{$_arr['data']['number']}-id:{$id} \n";
+        }
+        exit('finshed');
+    }
+
 }
 ?>

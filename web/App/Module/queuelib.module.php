@@ -102,10 +102,19 @@ class QueueLibModule extends AppModule
     {
         $number = $data['number'];
         if ( empty($number) ) return false;
+
+        $info = $this->load('tm')->existTmData($number);
+        if ( $info ) {
+            $data = unserialize($info['data']);
+            return $this->load('tm')->setAll($data);
+        }
         
         $data = $this->importBi('trademark')->getTmAll($number);
+
         if ( $data['code'] != '101' || empty($data['data']) ) return false;
 
+        return $this->load('tm')->setTmData($number, $data['data']);
+        
         return $this->load('tm')->setAll($data['data']);
     }
 

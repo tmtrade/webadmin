@@ -14,7 +14,8 @@ class QueueModule extends AppModule
      *  默认队列处理的方法，方便记录日志与管理
      */
     public $methodList = array(
-        'offpriceDown'       => '21',//特价下架，回归定价
+        'offpriceDown'      => '21',//特价下架，回归定价
+        'syncTmAll'         => '22',
         );
 
     /*
@@ -28,6 +29,10 @@ class QueueModule extends AppModule
         return $this->load('queuelib')->offpriceDown($data);
     }
 
+    public function syncTmAll($data)
+    {
+        return $this->load('queuelib')->syncTmAll($data);
+    }
     
 }
 ?>

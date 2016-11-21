@@ -102,7 +102,7 @@ class TaskAction extends QueueCommonAction
 
     public function syncTm()
     {
-        $data = $this->load('sync')->getSyncList(2, 10000);
+        $data = $this->load('sync')->getSyncList(4, 2500);
         foreach ($data['rows'] as $v) {
             $arr = array('number'=>$v['number']);
             $this->load('queuelib')->addQueue('syncTmAll', $arr, '同步商标数据');

@@ -11,7 +11,7 @@
  */
 class QueueAction extends QueueCommonAction
 {
-    const TOTAL     = 5;//总进程数
+    const TOTAL     = 2;//总进程数
     const SECOND    = 2;//超时秒数
 
     private $cacheType      = 'redisQc';//缓存类型
@@ -123,6 +123,7 @@ class QueueAction extends QueueCommonAction
             
             //判断资源是否释放
             if ( !is_resource($this->thread[$key]) ){
+                $this->closeCourse($this->thread[$key]);//释放
                 $this->courseNum++;//释放
                 continue;
             }

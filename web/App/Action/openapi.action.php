@@ -141,9 +141,21 @@ class OpenApiAction extends RpcServer {
         $isSecond   = $params['isSecond'] ? 1 : 0;
         $isImage    = $params['isImage'] ? 1 : 0;
 
-        if ( !$isInfo && !$isProposer && !$isSecond !$isImage ) return $msg;
+        if ( !$isInfo && !$isProposer && !$isSecond && !$isImage ) return $msg;
 
         $data   = $this->load('openapi')->getTmAll( $number, $isInfo, $isProposer, $isSecond, $isImage );
+        $msg['data'] = $data;
+        return $msg;
+    }
+
+    protected function syncTm($params)
+    {        
+        $msg        = $this->getMsg(101);
+        $number     = $params['number'];
+
+        if ( empty($number) ) return $msg;
+
+        $data   = $this->load('openapi')->syncTm( $number );
         $msg['data'] = $data;
         return $msg;
     }

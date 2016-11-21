@@ -203,5 +203,19 @@ class OpenApiModule extends AppModule
         return $this->load('trademark')->getAllInfo($number, $isInfo, $isProposer, $isSecond, $isImage);
     }
 
+    public function syncTm($number)
+    {
+        $arr    = array_filter( array_unique( explode(',', $number) ) );
+        if ( empty($arr) ) return array();
+        $data = array();
+        foreach ($arr as $k => $v) {
+            $_data  = array('number'=>$v);
+            $res    = $this->load('queuelib')->syncTmAll($_data);
+            $data[$v] = $res;
+        }
+        
+        return $data;
+    }
+
 }
 ?>

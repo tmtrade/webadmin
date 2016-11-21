@@ -113,7 +113,7 @@ class QueueLibModule extends AppModule
 
         if ( $data['code'] != '101' || empty($data['data']) ) return false;
 
-        return $this->load('tm')->setTmData($number, $data['data']);
+        $this->load('tm')->setTmData($number, $data['data']);
         
         return $this->load('tm')->setAll($data['data']);
     }

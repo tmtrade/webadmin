@@ -1201,6 +1201,33 @@ class InternalModule extends AppModule
         return true;
     }
     
+    /**
+     * 更新商标信息 (更新:商标名称,注册日期,类别,群组)
+     * @param $number string 商标号
+     * @return bool
+     */
+    public function updateTm($number){
+        //得到最新信息
+        $tminfo = $this->load('trademark')->getTminfo($number);
+        if($tminfo){
+            //准备数据
+            $class = implode(',',$tminfo['class']);
+            $reg_time = strtotime($tminfo['reg_date']);
+            $data = array(
+                'name'=>$tminfo['name'],
+                'class'=>$class,
+                'regDate'=>$reg_time,
+                'group'=>$tminfo['group'],
+            );
+            $r = array('eq'=>array('number'=>$number));
+            //更新数据
+            $res = $this->import('sale')->modify($data,$r);
+            if($res){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
 ?>

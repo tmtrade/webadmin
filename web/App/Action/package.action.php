@@ -19,6 +19,7 @@ class packageAction extends AppAction
 		//参数
 		$params = array();
 		$page 	= $this->input('page', 'int', '1');
+        $params['keyword'] = $this->input('title', 'string');
 		//得到列表
 		$res 	= $this->load('package')->getList($params, $page, $this->rowNum);
 		//分页
@@ -31,6 +32,7 @@ class packageAction extends AppAction
 		$this->set("pageBar",$pageBar);
 		$this->set('s', $params);
 		$this->set('list', $res['rows']);
+		$this->set('keyword', $params['keyword']);
 		$this->display();
 	}
 

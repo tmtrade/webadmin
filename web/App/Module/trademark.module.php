@@ -441,8 +441,9 @@ class TrademarkModule extends AppModule
         }
 
         if ( $isInfo && $isProposer ){
-            $data['proposer']       = $this->load('proposer')->get($data['info']['proposer_id']);
-            $data['proposerNew']    = $this->load('proposer')->getNew($data['info']['pid']);
+            $_info                  = current($data['info']);
+            $data['proposer']       = $this->load('proposer')->get($_info['proposer_id']);
+            $data['proposerNew']    = $this->load('proposer')->getNew($_info['pid']);
         }
 
         if ( $isSecond ){

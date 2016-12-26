@@ -25,6 +25,11 @@ return $menu = array(
 						'url'   => '/dataanalyze/index/',
 						'auth'	=> '38',
 					),
+                    '5' => array(
+						'title' => '专利列表',
+						'url'   => '/patent/index/',
+						'auth'	=> '27',
+					),
 		),
 	),
     '2' => array(
@@ -140,6 +145,11 @@ return $menu = array(
 				'title' => 'SEO设置',
 				'url'   => '/seo/index/',
 				'auth'	=> '24',
+			),
+			'11' => array(
+				'title' => '需求管理',
+				'url'   => '/require/index/',
+				'auth'	=> '411',
 			),
 		),
 	),

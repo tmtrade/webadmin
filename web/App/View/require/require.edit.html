@@ -1,0 +1,192 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+<style>
+.img-flip {
+        position:absolute;
+        width:16px;
+        height:16px;
+        -webkit-transform:rotate(180deg);
+        -moz-transform:rotate(180deg);
+        -ms-transform:rotate(180deg);
+        transform:rotate(180deg);
+    }
+</style>
+<div class="place">
+	<span>位置：</span>
+	<ul class="placeul">
+		<li><a href="/require/index">需求列表</a></li>
+		<li>需求详情</li>
+	</ul>
+</div>
+<div class="mj-screening">
+	<div class="">
+		<a class="mj-a" href="/require/edit/?id=<?=$id?>" <? if($type==1): ?>style="border-bottom: 1px red solid"<? endif; ?>>需求信息</a> |
+		<a class="mj-a" href="/require/edit/?id=<?=$id?>&type=2" <? if($type==2): ?>style="border-bottom: 1px red solid"<? endif; ?>>
+		竞标信息
+		<? if($type==1): ?>
+			(<?=$tips['count']?>)
+		<? else: ?>
+			(<?=$bids['total']?>)
+		<? endif; ?>
+		<font color="red"><?=$tips['isNew']?'NEW':''?></font>
+		</a>
+	</div>
+</div><br/>
+<div class="wrap">
+	<div class="mj-ztBar f-clearfix">
+		<div class="mj-sellT">
+		<!--需求信息-->
+		<? if($type==1): ?>
+			<form id="myForm">
+			<table class="mj-table">
+				<tr>
+					<td class="f-clearfix">
+						<div class="fl">
+							<label>添加时间:</label>
+							<input type="text" name="date" size="30" value="<?=date('Y/m/d H:i:s',$require['date'])?>" readonly onclick="laydate({format:'YYYY/MM/DD hh:mm:ss',istime:true})">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="f-clearfix">
+						<div class="fl">
+							<label>当前状态:</label>
+							<span><?=($require['status']==0?'未展示':($require['status']==1?'征集中':'已结束'))?></span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="f-clearfix">
+						<div class="fl">
+							<label>联系人:</label>
+							<input type="text" name="name" size="30" value="<?=$require['name']?>"/>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="f-clearfix">
+						<div class="fl">
+							<label>联系电话:</label>
+							<input type="text" name="mobile" size="30" value="<?=$require['mobile']?>"/>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="f-clearfix">
+						<div class="fl">
+							<label>需求描述:</label>
+							<textarea id="desc" name="desc" disabled cols="100" rows="5"><?=$require['desc']?></textarea><br/>
+							<label><input type="checkbox" id="editDesc"/>描述不太准确,美化一下</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="f-clearfix">
+						<div class="fl">
+							<label>设置需求状态：</label>
+							<input type="radio"  name="status" value="0" <? if($require['status']==0) echo "checked='checked'";?> />不展示到前台&nbsp;&nbsp;
+							<input type="radio"  name="status" value="1" <? if($require['status']==1) echo "checked='checked'";?> />展示: 征集中&nbsp;&nbsp;
+							<input type="radio"  name="status" value="2" <? if($require['status']==2) echo "checked='checked'";?> />展示: 已结束&nbsp;&nbsp;
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="f-clearfix">
+						<input type="hidden" name="id" id="id" value="<?=$id?>">
+						<button type="button" id="myButton" class="btn btn-warning">确定</button>
+					</td>
+				</tr>
+			</table>
+			</form>
+		<!--竞标信息-->
+		<? else: ?>
+			<input type="hidden" name="id" id="id" value="<?=$id?>">
+			<p>共用 <?=$bids['total']?> 条竞标信息  <a href="<?=$quotation_url?>" target="_blank" style="float: right;margin-right: 100px">生成报价单</a></p><br>
+			<table>
+				<tbody>
+				<tr>
+					<td>联系人</td>
+					<td>联系电话</td>
+					<td>商标图</td>
+					<td>商标号</td>
+					<td>商标名</td>
+					<td>报价</td>
+					<td>添加时间</td>
+					<td>信息状态</td>
+					<td>操作</td>
+				</tr>
+				<? foreach($bids['rows'] as $item): ?>
+				<tr>
+					<td><?=$item['name']?></td>
+					<td><?=$item['mobile']?></td>
+					<td><a href="<?=$item['tm']['yzc']?>" target="_blank"><img src="<?=$item['tm']['imgUrl']?>" width="100px" height="50px" /></a></td>
+					<td><?=$item['number']?><font color="red"><?=$item['isNew']?'NEW':''?></font></td>
+					<td><?=$item['tm']['trademark']?></td>
+					<td><?=$item['price']?></td>
+					<td><?=date('Y-m-d H:i:s',$item['date'])?></td>
+					<td><?=$item['status']==1?'有效':'无效'?></td>
+					<td>
+						<? if($item['status']==1): ?>
+						<a href="javascript:void(0);" onclick="changeBid(<?=$item['id']?>,2);">无用,不用提示</a>
+						<? else: ?>
+						<a href="javascript:void(0);" onclick="changeBid(<?=$item['id']?>,1);">有用信息</a>
+						<? endif; ?>
+						<a href="<?=$item['tm']['yzc']?>" target="_blank">查看详情</a>
+					</td>
+				</tr>
+				<? endforeach; ?>
+				</tbody>
+			</table>
+			<div id="page" align="center"><?=$pageBar?></div>
+		<? endif; ?>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+    $(function(){
+		//美化需求描述效果
+		$('#editDesc').click(function(){
+			var flag = $(this).prop('checked');
+			$('#desc').attr('disabled',!flag);
+		});
+		//保存需求信息
+		$('#myButton').click(function(){
+			//得到内容
+			var my_data = $('#myForm').serialize();
+			//提交数据
+			$.post('/require/handleRequire',my_data,function(data){
+				if (data.code==0){
+					layer.msg('操作成功', {
+						time: 1000
+					}, function(){
+						window.location.reload();
+					});
+				}else{
+					layer.msg( data.msg, {
+						time: 2000
+					});
+				}
+			},'json');
+		});
+    });
+	//改变竞标信息的状态
+	function changeBid(id,type){
+		if(!id || !type) return false;
+		//提交数据
+		$.getJSON('/require/changeBid/?id='+id+'&type='+type,'',function(data){
+			if (data.code==0){
+				layer.msg('操作成功', {
+					time: 1000
+				}, function(){
+					window.location.reload();
+				});
+			}else{
+				layer.msg( data.msg, {
+					time: 2000
+				});
+			}
+		});
+	}
+</script>
+<? require(ViewDir.'/footer.html'); ?>
+

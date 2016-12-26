@@ -58,3 +58,6 @@ dt{
     float: right;
 }
 
+.mj-a:hover{
+    text-decoration: none !important;
+}

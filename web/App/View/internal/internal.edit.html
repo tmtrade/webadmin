@@ -30,6 +30,7 @@
             <?}?>
         </div>
         <span class="mj-ztBr">
+            <a class="btn btn-info" href="javacript:void(0);" onclick="updateTm(<?=$sale['number']?>)">更新商标数据</a>
             <a class="btn btn-info" href="javacript:void(0);" onclick="window.location.href=window.location.href;return false;">刷新</a>
             <a class="btn btn-info" href="<?=$referr?>">返回</a>
         </span>
@@ -410,6 +411,25 @@
             });
         });
     });
+
+    //更新商标数据
+    function updateTm(tid){
+        if(!tid) return false;
+        layer.load(1, {
+            shade: [0.1, '#fff'] //0.1透明度的白色背景
+        });
+        $.post('/internal/updateTm',{number:tid},function(data){
+            layer.closeAll('loading');
+            if(data.code==0){
+                layer.confirm('更新完毕，点击确定重新加载商标',function(index){
+                    location.reload();
+                    layer.close(index);
+                });
+            }else{
+                layer.msg(data.msg);
+            }
+        },'json');
+    }
     
 </script>
 

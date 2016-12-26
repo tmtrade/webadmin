@@ -16,6 +16,12 @@ $tbl['member'] = array(
 	'configFile'=> $configFile,
 );
 
+$tbl['memberOptions'] = array(
+	'name'		=> $prefix.'member_options',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+
 $tbl['remind'] = array(
 	'name'		=> $prefix.'remind',
 	'dbId'		=> $dbId, 
@@ -355,7 +361,15 @@ $tbl['quotation'] = array(
 	'dbId'		=> $dbId,
 	'configFile'=> $configFile,
 );
-
-
+$tbl['require'] = array(
+	'name'		=> $prefix.'require',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
+$tbl['requireBid'] = array(
+	'name'		=> $prefix.'require_bid',
+	'dbId'		=> $dbId,
+	'configFile'=> $configFile,
+);
 
 ?>

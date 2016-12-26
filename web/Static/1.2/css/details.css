@@ -161,6 +161,18 @@ label{
     padding: 15px;
     border-bottom: dashed 1px #ddd;
 }
+.mj-table tbody td label{
+    display: inline-block;
+    min-width: 70px;
+    float: left;
+}
+.mj-table tbody td label input[type="checkbox"]{
+    vertical-align: middle;
+    margin-bottom: 12px;
+    margin-right: 5px;
+    margin-left:70px;
+    margin-top:10px;
+}
 .mj-table tbody td label,.mj-thbT label{
     font-weight: normal;
     vertical-align: middle;

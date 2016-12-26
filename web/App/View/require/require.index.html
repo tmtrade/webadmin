@@ -1,0 +1,162 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<style>
+.img-flip {
+        position:absolute;
+        width:16px;
+        height:16px;
+        -webkit-transform:rotate(180deg);
+        -moz-transform:rotate(180deg);
+        -ms-transform:rotate(180deg);
+        transform:rotate(180deg);
+    }
+</style>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>站点管理</li>
+        <li>需求列表</li>
+    </ul>
+</div>
+<div class="mj-screening">
+    <div class="">
+        <p class="mj-screening-lf">
+            <a class="mj-a" href="/require/index/" <? if($t_type==1): ?>style="border-bottom: 1px red solid"<? endif; ?>>页面展示需求</a> |
+            <a class="mj-a" href="/require/raw/" <? if($t_type==2): ?>style="border-bottom: 1px red solid"<? endif; ?>>需求汇总<font color="red"><?=$isNew?'NEW':''?></font></a>
+        </p>
+
+        <div style="float: right;margin-right: 100px">
+            <a href="javascript:void(0);" class="btn btn-success" id="require_add">添加需求</a>
+            <a href="javascript:void(0);" class="btn btn-success" id="require_delete">删除需求</a>
+        </div>
+    </div>
+</div>
+<div class="wrap">
+    <div class="wrap-content">
+		<br>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                    <tr class="active">
+						<th width="5%"></th>
+						<th>序号</th>
+                        <th width="30%">需求描述</th>
+                        <th>竞标信息</th>
+                        <th>联系人</th>
+                        <th>联系电话</th>
+                        <th width="10%">添加时间</th>
+                        <th>状态</th>
+                        <th width="20%">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="table-list">
+                <? if($total==0): ?>
+                <tr><td colspan="8"> ! 暂无信息</td></tr>
+                <? else: ?>
+                <? foreach ($list as $k => $v) {  ?>
+                <tr>
+                    <td><input type="checkbox" class="del_item" data-id="<?=$v['id']?>"></td>
+                    <td><?=($k+1)?></td>
+                    <td><span data-title="<?=$v['desc']?>" class="tip_item"><?=mbSub($v['desc'],0,20)?></span></td>
+                    <td><?=$v['count']?> <font color="red"><?=$v['hasNew']?'NEW':''?></font></td>
+                    <td><?=$v['name']?></td>
+                    <td><?=$v['mobile']?></td>
+                    <td><?=date('Y-m-d H:i:s',$v['date'])?></td>
+                    <td><?=($v['status']==0?'未展示':($v['status']==1?'征集中':'已结束'))?></td>
+                    <td>
+                        <a href="/require/edit/?type=2&id=<?=$v['id']?>">查看竞标信息</a>
+                        <a href="/require/edit/?id=<?=$v['id']?>">编辑</a>
+                        <a href="javascript:void(0);" data-id="<?=$v['id']?>" class="require_delete">删除</a>
+                    </td>
+                </tr>
+                <? } ?>
+                <? endif; ?>
+                </tbody>
+            </table>
+        </div>
+		<br>
+        <div id="page" align="center"><?=$pageBar?></div>
+    </div>
+</div>
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        //删除事件
+        $('.require_delete').click(function(){
+            var id = $(this).data('id');
+            if(id){
+                delete_item(id);
+            }else{
+                layer.msg('参数错误');
+            }
+        });
+        //多项删除事件
+        $('#require_delete').click(function(){
+            var ids = $('.del_item:checked');
+            if(ids.length==0){
+                layer.msg('请选择要删除的需求');
+                return false;
+            }
+            //得到ids
+            var myid = '';
+            ids.each(function(){
+                myid += $(this).data('id')+',';
+            });
+            if(myid){
+                myid = myid.slice(0,-1);
+                delete_item(myid);
+            }
+        });
+        //添加新需求
+        $('#require_add').click(function(){
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '创建新需求',
+                area: ['600px', '400px'],
+                content: '/require/addrequire/'
+            });
+        });
+        //提示全称
+        $('.tip_item').mouseenter(function(){
+            var tip = $(this).data('title');
+            layer.tips(tip, this,{time:0});
+        }).mouseout(function(){
+            layer.closeAll('tips');
+        });
+    });
+    //删除需求
+    function delete_item(id){
+        if (!id) return false;
+        layer.confirm('确认要删除吗？<br>', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                type : 'post',
+                url  : '/require/removeRequire/',
+                data : {'id':id},
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==0){
+                        layer.msg('操作成功', {
+                            time: 1000
+                        }, function(){
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg( data.msg, {
+                            time: 2000
+                        });
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请刷新页面', {
+                        time: 2000
+                    });
+                }
+            });
+        });
+    }
+</script>
+<? require(ViewDir.'/footer.html'); ?>

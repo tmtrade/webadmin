@@ -29,10 +29,11 @@
                     <tr class="active">
 						<th>序号</th>
                         <th>标题</th>
-                        <th>发布时间</th>
+                        <!--<th>发布时间</th>-->
                         <th>创建时间</th>
-                        <th>更新时间</th>
-                        <th>操作</th>
+                        <!--<th>更新时间</th>-->
+                        <th>状态</th>
+                        <th width="15%">操作</th>
                     </tr>
                 </thead>
                 <tbody class="table-list">
@@ -40,11 +41,18 @@
                 <tr>
 					<td><?=($k+1)?></td>
                     <td><?=$v['title']?></td>
-					<td><?=date('Y-m-d', $v['date'])?></td>
+					<!--<td><?=date('Y-m-d', $v['date'])?></td>-->
 					<td><?=$v['created']?></td>
-					<td><?=$v['updated']?></td>
+					<!--<td><?=$v['updated']?></td>-->
+					<td><?=$v['status']==1?'展示中':'未发布';?></td>
                     <td>
 						<a href="/saleanalysis/edit/?id=<?=$v['id']?>">编辑</a>
+                        <? if($v['status']==0): ?>
+                        <a _href="/saleanalysis/fabu/?id=<?=$v['id']?>" href="javascript:;" class="fabu">发布</a>
+                        <? endif; ?>
+						<a href="<?=SELLER_URL?>saleanalysis/report/?id=<?=$v['id']?>" target="_blank">查看</a>
+						<a _href="/saleanalysis/createPic/?id=<?=$v['id']?>" href="javascript:;" class="create_pic">生成报告</a>
+						<a target="_blank" href="/saleanalysis/view/?id=<?=$v['id']?>">查看报告</a>
                     </td>
                 </tr>
                 <? } ?>
@@ -57,6 +65,42 @@
 </div>
 <script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+    $(function(){
+        //创建报告图片
+        $('.create_pic').click(function(){
+            layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+            var url = $(this).attr('_href');
+            $.getJSON(url,function(data){
+                layer.closeAll();
+                if(data.code==0){
+                    layer.msg('创建成功',{time:1500},function(){
+                        window.location.reload();
+                    });
+                } else{
+                    layer.msg(data.msg);
+                }
+            });
+        });
+        //发布分享
+        $('.fabu').click(function(){
+            layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+            var url = $(this).attr('_href');
+            $.getJSON(url,function(data){
+                layer.closeAll();
+                if(data.code==0){
+                    layer.msg('发布成功',{time:1500},function(){
+                        window.location.reload();
+                    });
+                } else{
+                    layer.msg(data.msg);
+                }
+            });
+        });
+    });
     //删除链接
     function delTopic(id,uid)
     {

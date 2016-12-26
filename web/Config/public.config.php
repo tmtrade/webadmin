@@ -4,6 +4,8 @@
  * 定义应用所需常量
  */
 $define = array(
+    'HTMLTOIMG' 	=> '/usr/bin/wkhtmltoimage',//image生成软件位置
+//    'HTMLTOIMG' 	=> 'D:/wkhtmltopdf.exe',
     //'SYS_API_KEY' => 'JyZyZcXmChOfN2016ZxWlQkF',//api 加密 key
     'API_USERS' => array(
         'MyCenter' => 'api1010', //我的用户
@@ -229,6 +231,9 @@ $define = array(
                 ),
                 '24' => array(
                     'label' => 'SEO设置',
+                ),
+                '411' => array(
+                    'label' => '需求管理',
                 ),
             ),
         ),
@@ -484,6 +489,11 @@ $define = array(
             'id' => '41',
             'up' => '1',
             'label' => '出售数据分享',
+        ),
+        '411' => array(
+            'id' => '411',
+            'up' => '1',
+            'label' => '需求管理',
         ),
     ),
     //SEO列表配置项

@@ -1,0 +1,98 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/main.css">
+<style>
+.img-flip {
+        position:absolute;
+        width:16px;
+        height:16px;
+        -webkit-transform:rotate(180deg);
+        -moz-transform:rotate(180deg);
+        -ms-transform:rotate(180deg);
+        transform:rotate(180deg);
+    }
+</style>
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li>首页</li>
+        <li>站点管理</li>
+        <li>需求列表</li>
+    </ul>
+</div>
+<div class="mj-screening">
+    <div class="">
+        <a class="mj-a" href="/require/index/" <? if($t_type==1): ?>style="border-bottom: 1px red solid"<? endif; ?>>页面展示需求</a> |
+        <a class="mj-a" href="/require/raw/" <? if($t_type==2): ?>style="border-bottom: 1px red solid"<? endif; ?>>需求汇总</a>
+    </div>
+</div>
+<div class="wrap">
+    <div class="wrap-content">
+		<br>
+        <div class="wrap-table">
+            <table class="table table-hover" style="border: 1px solid #dadada;margin-bottom: 0">
+                <thead>
+                    <tr class="active">
+                        <th width="30%">需求描述</th>
+                        <th>联系人</th>
+                        <th>联系电话</th>
+                        <th width="10%">添加时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody class="table-list">
+                <? if($total==0): ?>
+                <tr><td colspan="4"> ! 暂无信息</td></tr>
+                <? else: ?>
+                <? foreach ($list as $k => $v) {  ?>
+                <tr>
+                    <td><span data-title="<?=$v['remarks']?>" class="tip_item"><?=mbSub($v['remarks'],0,20)?></span><font color="red"><?=$v['isNew']?'NEW':''?></font></td>
+                    <td><?=$v['name']?></td>
+                    <td><?=$v['mobile']?></td>
+                    <td><?=date('Y-m-d H:i:s',$v['recorddate'])?></td>
+                    <td>
+                        <a data-id="<?=$v['id']?>" href="javascript:;" class="add_to_require"><?=($v['isuse']==1?'再次提交':'提取到前台显示')?></a>
+                    </td>
+                </tr>
+                <? } ?>
+                <? endif; ?>
+                </tbody>
+            </table>
+        </div>
+		<br>
+        <div id="page" align="center"><?=$pageBar?></div>
+    </div>
+</div>
+<script src="<?=StaticDir?>1.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        //提取需求信息到前台显示
+        $('.add_to_require').click(function(){
+            layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+            var id = $(this).data('id');
+            if(!id){
+                layer.closeAll();
+                return false;
+            }
+            $.getJSON('/require/addToRequire/?id='+id,'',function(data){
+                layer.closeAll();
+                if(data.code==0){
+                    layer.msg('提取成功',{time:1500},function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg(data.msg);
+                }
+            });
+        });
+        //提示全称
+        $('.tip_item').mouseenter(function(){
+            var tip = $(this).data('title');
+            layer.tips(tip, this,{time:0});
+        }).mouseout(function(){
+            layer.closeAll('tips');
+        });
+    });
+</script>
+<? require(ViewDir.'/footer.html'); ?>

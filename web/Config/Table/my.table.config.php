@@ -8,7 +8,11 @@ $tbl['buyTrademark'] = array(
 	'dbId'		=> $dbId, 
 	'configFile'=> $configFile,
 );
-
+$tbl['buybrand'] = array(
+	'name'        => $prefix.'buy_trademark',
+	'dbId'        => $dbId,
+	'configFile'=> $configFile,
+);
 $tbl['changePrice'] = array(
 	'name'		=> $prefix.'change_price',
 	'dbId'		=> $dbId, 

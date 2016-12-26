@@ -241,7 +241,7 @@ class MessegeModule extends AppModule
             $r = array();
             $r['limit'] = $this->limit;
             $data = $this->import('messege_monitor')->find($r);
-            $this->com('redisHtml')->set('messege_monitor', $data, 0);//设置缓存
+            $this->com('redisHtml')->set('messege_monitor', $data, 3600*24);//设置缓存
         }
         return $data;
     }

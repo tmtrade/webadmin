@@ -165,7 +165,7 @@ class SystemApiAction extends RpcServer
     	if ( !in_array($user, $this->users) )  return $this->getMsg('110', $params, $type);
         //判断签名是否正确
         if ( empty($sign) ) return $this->getMsg('902', $params, $type);
-        if ( $sign != $this->sign($data, $user) ) return $this->getMsg('111', $params, $type);
+        if ( $sign != $this->sign($data, $user) ) return $this->getMsg('902', $params, $type);
         //判断数据是否正确
         if ( empty($data) ) return $this->getMsg('903', $params, $type);
 

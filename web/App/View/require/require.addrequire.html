@@ -1,0 +1,60 @@
+<? require(ViewDir.'/header.html');?>
+<link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
+<!--出售信息弹层-->
+<div class="mj-infoM" style="width:99%">
+    <form id="setData" >
+        <input type="hidden" name="id" value="<?=$id?>">
+        <label> 姓名 ：</label>
+        <input type="text" class="input input-sm" size="20" name="name"><br><br>
+        <label> 手机号 ：</label>
+        <input type="text" class="input input-sm" size="20" name="mobile"><br><br>
+        <label>需求信息：</label>
+        <textarea name="desc" rows="6" cols="20"></textarea><br><br>
+        <button type="button" id="myButton" class="btn btn-warning">确定</button>
+        <button type="button" onclick="closeAll();" class="btn btn-warning">取消</button>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $(".mj-infoM").show();
+        $("#myButton").on('click', function (){
+            var _this = $(this);
+            var data = $("#setData").serialize();
+            _this.attr('disabled', true)
+            $.ajax({
+                type : 'post',
+                url  : '/require/handleRequire/',
+                data : data,
+                dataType : 'json',
+                success : function (data){
+                    if (data.code==0){
+                        layer.msg('操作成功！', {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            parent.window.location.reload();
+                        });
+                    }else{
+                        layer.msg(data.msg, {
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        },function(){ _this.attr('disabled', false) });
+                    }
+                },
+                error : function (data){
+                    layer.msg('操作失败，请稍后重试。', {
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    },function(){ _this.attr('disabled', false) });
+                }
+            });
+        });
+
+    });
+
+    function closeAll()
+    {
+        parent.layer.closeAll();
+    }
+
+</script>
+
+<? require(ViewDir.'/footer.html'); ?>
+

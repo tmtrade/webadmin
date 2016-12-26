@@ -28,6 +28,9 @@ class PackageModule extends AppModule
     public function getList($params, $page, $limit=20)
     {
         $r = array();
+        if(!empty($params['keyword'])){
+            $r['like'] = array('title'=>$params['keyword']);
+        }
         $r['page']  = $page;
         $r['limit'] = $limit;
         $r['col'] = array('id','username','title','created');

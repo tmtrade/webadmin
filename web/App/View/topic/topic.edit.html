@@ -1,6 +1,8 @@
 <? require(ViewDir.'/header.html');?>
 <link rel="stylesheet" href="<?=StaticDir?>1.2/css/details.css">
 <link rel="stylesheet" href="<?=StaticDir?>1.2/css/import.css" />
+<link rel="stylesheet" href="<?=StaticDir?>1.2/js/colpick/colpick.css" />
+<script type="text/javascript" src="<?=StaticDir?>1.2/js/colpick/colpick.js"></script>
 
 <style>
 .img-flip {
@@ -49,13 +51,13 @@
 					</p>
 					<span ><label>ALT描述: </label><input type="text" name="alt1" value="<?=$topic['alt1']?>"></span><br/>
 				</li>
-                                <li><br><hr><br></li>
+                 <li><br><hr><br></li>
                 <li>
                     <label>是否上架：</label>
                                         <input type="radio"  name="isUse" value="1" <?if($topic['isUse']==1) echo "checked";?> />上架
                                         <input type="radio"  name="isUse" value="2" <?if($topic['isUse']==2) echo "checked";?> />下架
                 </li>
-                                <li><br><hr><br></li>
+                 <li><br><hr><br></li>
                 <li>
                     <label>是否置顶详情页面排序：</label>
                     <input type="radio"  name="isMore" value="1" <?if($topic['isMore']==1) echo "checked='checked'";?> />是
@@ -124,6 +126,44 @@
 				</li>
 				<li><br><hr><br></li>
 				<li>
+					<label>图片背景色：</label>
+					<p>
+					<div>
+						<input type="text" id="img_color" value="<?=$topic['img_color']?>" readonly name="img_color" style="display: inline-block;"/>
+					</div>
+					</p>
+				</li>
+				<li><br><hr><br></li>
+				<li>
+					<label>专题描述：</label>
+					<p>
+					<div>
+						<input type="checkbox" id="is_has_desc" name="has_desc" style="display: inline-block;"/>
+					</div>
+					</p>
+				</li>
+				<li><br><hr><br></li>
+				<div id="mydesc" style="display: none">
+					<li>
+						<label>描述标题：</label>
+						<p>
+						<div>
+							<input type="text" name="desc_title" value="<?=$topic['desc_title']?>" id="desc_title" disabled style="display: inline-block;"/>
+						</div>
+						</p>
+					</li>
+					<li><br><hr><br></li>
+					<li>
+						<label>描述内容：</label>
+						<p>
+						<div>
+							<textarea cols="72" rows="5" name="desc_content" id="desc_content" disabled><?=$topic['desc_content']?></textarea>
+						</div>
+						</p>
+					</li>
+					<li><br><hr><br></li>
+				</div>
+				<!--<li>
 					<label>背景设置：</label>
 					<input type="text" name="bgColor" id="bgColor" value="<?=$topic['bgColor']?>" maxlength="8" /><a href="javascript:void(0);"  class="btn btn-default" id="cp5" >选色</a>
 					<p style="margin:20px 0;padding:0 5px 0 5px;">请输入色码或选择颜色</p>
@@ -144,12 +184,12 @@
 							<option value="1" <?if($topic['bgImgShow'] == 1)echo "selected"; ?>>展示一次</option>
 							<option value="2" <?if($topic['bgImgShow'] == 2)echo "selected"; ?>>平铺</option>
 						</select>
-				</li>
+				</li>-->
         </div>
 			</ul>
-		</form>
         </div>
-		<hr>   
+		</form>
+		<hr>
 		<div class="mj-deiBlist">
 			<div class="mj-deiBtns">
 				<a href="javascript:void(0);" id="addtopic">确定</a>
@@ -293,7 +333,37 @@
         $("#ztbg").change(function(){
             upImg($("#tjformuploadbg"),$('#showbg'),$('#bgImg'));
         });
-	})
+
+		//背景色选择
+		$('#img_color').colpick({
+			onSubmit:function(hsb,hex,rgb,el) {
+				$(el).val('#'+hex);
+				$(el).css('color', '#'+hex);
+				$(el).colpickHide();
+			}
+		});
+		//是否有描述效果
+		$('#is_has_desc').click(function(){
+			var flag = $(this).prop('checked');
+			if(flag){
+				$('#desc_content').attr('disabled',false);
+				$('#desc_title').attr('disabled',false);
+				$('#mydesc').show();
+			}else{
+				$('#mydesc').hide();
+				$('#desc_content').attr('disabled',true);
+				$('#desc_title').attr('disabled',true);
+			}
+		});
+		//加载时--显示是否有描述模块
+		var is_desc = "<?=$topic['has_desc']?>";
+		if(is_desc==1){
+			$('#is_has_desc').prop('checked',true);
+			$('#desc_content').attr('disabled',false);
+			$('#desc_title').attr('disabled',false);
+			$('#mydesc').show();
+		}
+	});
 	
 	function setitems(id)
 	{

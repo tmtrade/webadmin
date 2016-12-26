@@ -24,7 +24,13 @@
         <p class="text-left"
            style="float:left;margin-top:20px;padding:0 5px 0 5px;border:1px solid #dadada;">
             共有 <b class="red"><?=$total?></b> 条数据</p>
+        <? if($keyword): ?>
+        <p class="text-left" style="float:left;margin-left:50px;margin-top:20px;padding:0 5px 0 5px;border:1px solid #dadada;">
+            标题中带有<b class="red"><?=$keyword?></b>的共有<b class="red"><?=$total?></b> 条数据
+        </p>
+        <? endif; ?>
         <div class="wrap-tittle">
+            <input type="text" style="width: 200px;border:1px #CCC solid;margin-right: 30px" id="title" placeholder="请输入标题" value="<?=$keyword?>"><button id="search" class="btn" style="margin-right: 50px">搜索</button>
             <a href="/package/add" class="btn btn-danger add-case">添加打包</a>
             <button type="button" class="btn btn-info" onclick="delMoreSale();">批量删除</button>
         </div>
@@ -100,7 +106,13 @@
             });
         });
     }
-    
+    //搜索
+    $('#search').click(function(){
+        //得到title
+        var title = $('#title').val();
+        title = encodeURIComponent(title);
+        location.href = '/package/index/?title='+title;
+    });
     //选中商品
     $('#chkAll').click(function(){ 
         $('.chklist').prop("checked",this.checked);

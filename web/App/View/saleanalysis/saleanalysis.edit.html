@@ -44,6 +44,7 @@
         标题：<input class="input input-sm" size="60" type="text" id="title" value="<?=$info['title']?>">
         发布时间：<input class="input input-sm" type="text" readonly id="pubDate" value="<?=date('Y-m-d', $info['date'])?>">
         <button class="btn btn-danger" id="sub-info" type="button">保存</button>
+        <button class="btn btn-success" _href="/saleanalysis/check/?id=<?=$info['id']?>" id="check_bfb" type="button">检测百分比</button>
     </div>
     <div class="wrap-top">
         <h4>销售数据分析</h4>
@@ -66,8 +67,8 @@
             <? foreach ($items[1] as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$k+1?></td>
-                <td style="vertical-align:middle"><?=$v['data1']?>W元</td>
-                <td style="vertical-align:middle"><?=round($v['data2'],2)?>%</td>
+                <td style="vertical-align:middle"><?=$v['data1']?></td>
+                <td style="vertical-align:middle"><?=$v['data2']?>%</td>
                 <td style="vertical-align:middle">
                         <span class="icon icon-delete">
                             <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
@@ -131,8 +132,10 @@
             <thead>
             <tr class="active">
                 <th width="20%">序号</th>
-                <th width="40%">分类名</th>
-                <th width="40%">说明</th>
+                <th width="30%">分类名</th>
+                <th width="20%">说明</th>
+                <th width="15%">数量</th>
+                <th width="15%">操作</th>
             </tr>
             </thead>
             <form id="form-class">
@@ -142,6 +145,18 @@
                 <td style="vertical-align:middle"><?=$k+1?></td>
                 <td style="vertical-align:middle"><input class="input input-sm rotClass" data-id="<?=$v['id']?>" size="6" type="text" name="items[<?=$v['id']?>]" value="<?=$v['data1']?>"/>类</td>
                 <td style="vertical-align:middle"><label id="c-<?=$v['id']?>"><?=$CLASS[$v['data1']]?></label></td>
+                <td style="vertical-align:middle"><input class="input input-sm" size="6" type="text" name="other[<?=$v['id']?>]" value="<?=$v['data2']?>"/></label></td>
+                <td style="vertical-align:middle">
+                    <!-- 向下  -->
+                    <span onclick="orderItems(<?=$v['id']?>, 1, 3)">
+                        <img title="向下" class="img" src="<?=StaticDir?>1.2/images/u85.gif">
+                    </span>
+                    &nbsp;
+                    <!-- 向上  -->
+                    <span class="img-flip"  onclick="orderItems(<?=$v['id']?>, 2, 3)">
+                        <img title="向上" class="img" src="<?=StaticDir?>1.2/images/u85.gif">
+                    </span>
+                </td>
             </tr>
             <? } ?>
             </tbody>
@@ -169,7 +184,7 @@
             <? foreach ($items[4] as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$k+1?></td>
-                <td style="vertical-align:middle"><input class="input input-sm" data-id="<?=$v['id']?>" size="6" type="text" name="items[<?=$v['id']?>]" value="<?=$v['data1']?>"/></td>
+                <td style="vertical-align:middle"><input class="input input-sm" data-id="<?=$v['id']?>" size="20" type="text" name="items[<?=$v['id']?>]" value="<?=$v['data1']?>"/></td>
                 <td style="vertical-align:middle">
                         <span class="icon icon-delete">
                             <a href="javascript:;" onclick="cancel(<?=$v['id']?>)"  class="btn-warning">删除</a>
@@ -201,6 +216,7 @@
     </div>
 
     <form id="form-other">
+        <input type="hidden" name="analyId" value="<?=$info['id']?>">
     <div class="wrap-table" style="">
         <table class="table table-hover" style="float: left;position: relative;min-width: 500px;width: 48%;border: 1px solid #dadada;margin-bottom: 0">
             <thead>
@@ -213,7 +229,7 @@
             <? foreach (C('COUNT_TYPE') as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$v?></td>
-                <td style="vertical-align:middle"><input class="input input-sm floatAll typeAll" size="6" type="text" name="items[<?=$items[5][$k]['id']?>]" value="<?=round($items[5][$k]['data2'],2)?>"/>%</td>
+                <td style="vertical-align:middle"><input class="input input-sm floatAll typeAll" size="6" type="text" name="items[<?=($items[5][$k]['id'])?:$k.'-5'?>]" value="<?=round($items[5][$k]['data2'],2)?>"/>%</td>
             </tr>
             <? } ?>
             </tbody>
@@ -230,7 +246,7 @@
             <? foreach (C('COUNT_NUM') as $k => $v) { ?>
             <tr>
                 <td style="vertical-align:middle"><?=$v?></td>
-                <td style="vertical-align:middle"><input class="input input-sm floatAll numAll" size="6" type="text" name="items[<?=$items[6][$k]['id']?>]" value="<?=round($items[6][$k]['data2'],2)?>"/>%</td>
+                <td style="vertical-align:middle"><input class="input input-sm floatAll numAll" size="6" type="text" name="items[<?=($items[6][$k]['id']?:$k.'-6')?>]" value="<?=round($items[6][$k]['data2'],2)?>"/>%</td>
             </tr>
             <? } ?>
             </tbody>
@@ -267,6 +283,22 @@
                 tips: 4
             });
         }));
+
+        //发布分享
+        $('#check_bfb').click(function(){
+            layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+            var url = $(this).attr('_href');
+            $.getJSON(url,function(data){
+                layer.closeAll();
+                if(data.code==0){
+                    layer.msg('检测成功');
+                } else{
+                    layer.msg(data.msg);
+                }
+            });
+        });
 
         $(".baozFloat").on('change', (function (){
             _val = $(this).val();
@@ -355,7 +387,7 @@
         });
 
         $("#sub-class").click(function(){
-            return setItems( $("#form-class") );
+            return setItems( $("#form-class"), 3 );
         });
 
         $("#sub-other").click(function(){
@@ -427,10 +459,11 @@
     function orderItems(id, updown, type)
     {
         if ( id == '' || updown == '' ) return false;
+        var aid = $('#aid').val();
         $.ajax({
             type : 'post',
             url  : '/saleanalysis/orderItems/',
-            data : {id:id,updown:updown,type:type},
+            data : {id:id,aid:aid,updown:updown,type:type},
             dataType : 'json',
             success : function (data){
                 if (data.code==1){

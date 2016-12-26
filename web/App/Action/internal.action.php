@@ -838,6 +838,19 @@ class InternalAction extends AppAction {
         $this->returnAjax($flag);
     }
 
+    /**
+     * 更新商标数据--抓取最新数据
+     */
+    public function updateTm(){
+        $number = $this->input('number','string');
+        $rst = $this->load('internal')->updateTm($number);
+        if($rst){
+            $this->returnAjax(array('code'=>0));
+        }else{
+            $this->returnAjax(array('code'=>1,'msg'=>'更新数据失败'));
+        }
+    }
+
 }
 
 ?>

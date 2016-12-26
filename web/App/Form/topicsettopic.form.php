@@ -14,6 +14,22 @@ class TopicSetTopicForm extends AppForm
 			'field' => 'title',
 			'method' => 'fieldName',
 			),
+		'img_color'    => array(
+			'field' => 'img_color',
+			'method' => 'fieldName',
+		),
+		'has_desc'    => array(
+			'field' => 'has_desc',
+			'method' => 'handleCheck',
+		),
+		'desc_title'    => array(
+			'field' => 'desc_title',
+			'method' => 'fieldName',
+		),
+		'desc_content'    => array(
+			'field' => 'desc_content',
+			'method' => 'fieldName',
+		),
 		'pic'    => array(
 			'field' => 'pic',
 			'method' => 'fieldName',
@@ -90,5 +106,14 @@ class TopicSetTopicForm extends AppForm
     {
         return trim($value);
     }
+
+	/**
+	 * 处理多选框
+	 * @param $value
+	 * @return int
+	 */
+	public function handleCheck($value){
+		return $value=='on'?1:0;
+	}
 
 }
